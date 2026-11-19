@@ -1,102 +1,32 @@
 [project]
-name = "lcalc-registry"
+name = "verified-lcalc-tools"
 version = "0.1.0"
-description = "Candidate Lean proof bundles and dated verification records for elliptic curve data"
+description = "Development and benchmark tools for the Lean certificate library"
 requires-python = ">=3.11"
-dependencies = [
-  "fastapi>=0.142,<1",
-  "sqlmodel>=0.0.47,<0.1",
-  "psycopg[binary]>=3.3,<4",
-  "mcp>=1.26,<2",
-  "uvicorn>=0.40,<1",
-  "jinja2>=3.1.6,<4",
-  "cryptography>=48,<51",
-  "typing-extensions>=4.16,<5",
-]
-[project.scripts]
-lcalc-registry = "lcalc_registry.cli:main"
+dependencies = []
+
 [dependency-groups]
-dev = ["pytest>=9,<10", "httpx>=0.28,<1", "ruff>=0.17.4,<0.18", "ty>=0.0.100,<0.1"]
-[build-system]
-requires = ["hatchling>=1.32"]
-build-backend = "hatchling.build"
-[tool.hatch.build.targets.wheel]
-packages = ["lcalc_registry"]
-exclude = ["**/__pycache__", "**/*.pyc"]
-[tool.hatch.build.targets.sdist]
-include = ["lcalc_registry/**", "worker/lean/**", "worker/bridge.c", "worker/test_wasm.mjs", "pyproject.toml", "uv.lock", "docs/REGISTRY.md", "registry-tests/**", "tests/**", "scripts/**", "Makefile", "compose.yaml", ".env.example"]
-exclude = ["**/__pycache__", "**/*.pyc"]
-[tool.pytest.ini_options]
-testpaths = ["registry-tests", "tests"]
-addopts = "-ra"
-markers = ["postgres: requires REGISTRY_TEST_DATABASE_URL for a disposable PostgreSQL database", "lean: invokes the real Lean kernel"]
+dev = ["pytest>=9,<10", "ruff>=0.17.4,<0.18", "ty>=0.0.100,<0.1", "psycopg>=3.3,<4"]
 
 [tool.uv]
+package = false
 environments = ["sys_platform == 'darwin'", "sys_platform == 'linux'"]
 
-# Exact wheel metadata, copied from the locally cached official distributions,
-# permits offline universal locking without downloading another platform's wheel.
-# These entries change dependency resolution only; uv.lock retains wheel hashes.
-
-[[tool.uv.dependency-metadata]]
-name = "psycopg-binary"
-version = "3.3.9"
-requires-dist = []
-requires-python = ">=3.10"
-
-[[tool.uv.dependency-metadata]]
-name = "cffi"
-version = "2.1.1"
-requires-dist = ["pycparser; implementation_name != \"PyPy\""]
-requires-python = ">=3.10"
-
-[[tool.uv.dependency-metadata]]
-name = "pydantic_core"
-version = "2.46.4"
-requires-dist = ["typing-extensions>=4.14.1"]
-requires-python = ">=3.9"
-
-[[tool.uv.dependency-metadata]]
-name = "pydantic_core"
-version = "2.46.5"
-requires-dist = ["typing-extensions>=4.14.1"]
-requires-python = ">=3.9"
-
-[[tool.uv.dependency-metadata]]
-name = "pydantic_core"
-version = "2.50.1"
-requires-dist = ["typing-extensions>=4.16.0"]
-requires-python = ">=3.10"
-
-[[tool.uv.dependency-metadata]]
-name = "pydantic_core"
-version = "2.50.4"
-requires-dist = ["typing-extensions>=4.16.0"]
-requires-python = ">=3.10"
-
-[[tool.uv.dependency-metadata]]
-name = "MarkupSafe"
-version = "3.0.3"
-requires-dist = []
-requires-python = ">=3.9"
-
-[[tool.uv.dependency-metadata]]
-name = "rpds-py"
-version = "2026.9.1"
-requires-dist = []
-requires-python = ">=3.11"
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
 
 [tool.ruff]
 target-version = "py311"
 line-length = 88
-extend-exclude = [".lake", "data", "output", "dist", "worker/build"]
+extend-exclude = [".lake", "data", "output", "dist"]
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I", "UP", "B", "ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "ANN205", "ANN206"]
 
 [tool.ty.src]
-include = ["lcalc_registry", "registry-tests", "scripts", "tests"]
-exclude = ["worker/build"]
+include = ["scripts", "tests"]
+exclude = []
 
 [tool.ty.environment]
 python = ".venv"

@@ -1,0 +1,18 @@
+import Lake
+open Lake DSL
+
+package «verified-lcalc»
+
+require mathlib from "../mathlib4"
+
+lean_lib VerifiedLcalc
+
+-- JSON is an explicit Lake input. Editing a witness invalidates its consumers.
+input_dir certificateWitnesses where
+  path := "data/witnesses"
+  text := true
+
+@[default_target]
+lean_lib CertifiedCurves where
+  srcDir := "examples/certify_ec"
+  extraDepTargets := #[`certificateWitnesses]

@@ -233,16 +233,15 @@ The 10,000 additional SQL curves have been downloaded and verified against
 their raw snapshot and provenance. The full conductor campaign is running;
 its checkpointed reports distinguish completed timings from pending work.
 
-## Candidate registry, API and MCP
+## Local certificate command
 
-The [candidate-first registry](docs/REGISTRY.md) is a uv-managed Python service
-using PostgreSQL, SQLModel, FastAPI and MCP. It stores immutable source snapshots,
-unchecked Lean proof candidates, explicit verification campaigns, dated signed
-check records and compiled proof artifacts. Generate candidates cheaply, export
-only the selection needed for an argument, and run kernel verification on demand
-or through periodic campaigns. Reference ranks remain separate external claims.
+The Python/PostgreSQL registry and browser volunteer application have been
+retired. Their source is preserved in Git baseline `fcdc4f2`; local database and
+signing-key state have not been deleted. The supported interface is now Lean's
+`certify_ec` command: supply exact JSON or typed Lean witness data, compile once,
+and import the resulting `.olean` theorem. No search is performed by default.
+See [CERTIFY_EC.md](docs/CERTIFY_EC.md) for local examples and build instructions.
 
-All supported Python code now lives in `lcalc_registry`; there is one FastAPI
-service. The minimal Lean worker lives in `worker/`. The unfinished browser
-prototype is archived under `experiments/browser-worker/` and is not served.
-Run `make check` for Ruff, formatting and ty checks, and `make test` for tests.
+The Python files under `scripts/` remain optional database-download and benchmark
+tools. They are not part of certificate validation. `make check` runs Ruff and
+ty; `make test` runs the remaining snapshot/benchmark plumbing tests.

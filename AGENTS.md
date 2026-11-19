@@ -22,3 +22,16 @@
 - Tame additive arithmetic (p >= 5) is in TameCore/TameArithmetic. Its formula-correctness proofs remain independent of modularity. The single authorized axiom now has type GeneralEllipticModularity, explicitly including tameLevel_eq/tameSign_eq for globally minimal models with no additive reduction at 2 or 3. Document changes to its content, not merely its axiom name. Wild additive cases must remain unresolved until supported. Run AuditTame.lean and certificates/Tame.lean after changing this route.
 
 - Wild additive support is in WildTateCore/WildRootCore/WildArithmetic. Tate transcripts, polynomial congruences, characters and valuations are checked independently of modularity. The authorized general-modularity package now explicitly includes wildLevel_eq/wildSign_eq under proved global minimality and validated transcripts; geometric Tate/Ogg/Halberstadt compatibility remains assumed, and this strengthened content must be documented. Run wild-witnesses --check, AuditWild.lean, and certificates/Wild.lean after changes. Arithmetic-only classification does not certify the 48 unresolved minimal models. Keep the PARI-derived root table attribution and GPL-2.0-or-later license with the implementation.
+
+- The Python registry/volunteer application was retired in favor of `certify_ec`.
+  Its source is preserved in baseline commit `fcdc4f2`; do not restore it as part
+  of local certificate work. Keep download/benchmark Python tooling separate.
+- The command implementation is `VerifiedLcalc/Tactic/CertifyEC.lean`; supplied
+  data types and JSON decoding live in `VerifiedLcalc/Certificate/`. Commands must
+  not search by default, use native verification axioms, or leave partial
+  declarations after rejection. Audit finite and analytic proof dependencies.
+- Build command examples with `lake -f lakefile.certificates.lean build CertifiedCurves`.
+  This configuration tracks JSON inputs explicitly. Run `tests/CertifyEC.lean`,
+  `tests/CertifyECJson.lean`, and the import-only
+  `certificates/CertifiedECConsumer.lean` with the same Lake configuration.
+  Coordinate a single build owner when multiple agents share these dependencies.
