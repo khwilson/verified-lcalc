@@ -1,20 +1,11 @@
 module
 
 public import VerifiedLcalc.EllipticCurve.Arithmetic
+public import Mathlib.Data.Nat.PadicValNat
 
 @[expose] public section
 
 namespace VerifiedLcalc.EllipticCurve
-
-/-- Division-based valuation with a structural fuel bound. -/
-def valuationFuel (p : Nat) : Nat → Nat → Nat
-  | 0, _ => 0
-  | fuel + 1, n =>
-    if 2 ≤ p ∧ 0 < n ∧ n % p = 0 then
-      1 + valuationFuel p fuel (n / p)
-    else 0
-
-def primeExponent (p n : Nat) : Nat := valuationFuel p n n
 
 structure ModelEulerFactor where
   prime : Nat
@@ -34,7 +25,7 @@ def modelFactors (e : (WeierstrassCurve ℤ)) (limit : Nat) : List ModelEulerFac
 def coefficientFromFactors (factors : List ModelEulerFactor) (n : Nat) : Int :=
   if n = 0 then 0 else
     (factors.map fun f =>
-      let k := primeExponent f.prime n
+      let k := padicValNat f.prime n
       if k = 0 then 1 else localCoefficient f.trace f.quadratic k).prod
 
 /-- a₁ through a_limit. Prime counts are computed once and shared by all rows. -/

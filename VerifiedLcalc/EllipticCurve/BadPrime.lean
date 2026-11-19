@@ -10,7 +10,7 @@ namespace VerifiedLcalc.EllipticCurve
 theorem nodeValue_correct (e : (WeierstrassCurve ℤ)) (p n : ℕ) :
     (WeierstrassCurve.baseChange e (ZMod p)).nodePolynomial.eval (n : ZMod p) =
       (nodeValue e n : ZMod p) := by
-  simp [WeierstrassCurve.nodePolynomial_def, nodeValue, modelC4, WeierstrassCurve.b₂, WeierstrassCurve.b₄, WeierstrassCurve.b₆,
+  simp [WeierstrassCurve.nodePolynomial_def, nodeValue, WeierstrassCurve.c₄, WeierstrassCurve.b₂, WeierstrassCurve.b₄, WeierstrassCurve.b₆,
     WeierstrassCurve.baseChange, WeierstrassCurve.c₄, WeierstrassCurve.b₂, WeierstrassCurve.b₄,
     WeierstrassCurve.b₆]
 
@@ -56,15 +56,15 @@ theorem singularTrace_correct (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Pri
     simp only [hd, Bool.false_eq_true] at this
   rw [frobeniusTrace_eq_tauceti]
   unfold singularTrace
-  by_cases hc : modelC4 e % (p : Int) = 0
+  by_cases hc : e.c₄ % (p : Int) = 0
   · rw [ite_eq_left hc]
     symm
     apply WeierstrassCurve.frobeniusTrace_eq_zero_of_c₄_eq_zero _ hΔ
-    rw [weierstrass_c4, ← modelC4_correct]
+    rw [weierstrass_c4]
     exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr (Int.dvd_iff_emod_eq_zero.mpr hc)
   · rw [ite_eq_right hc]
     have hc' : (WeierstrassCurve.baseChange e (ZMod p)).c₄ ≠ 0 := by
-      rw [weierstrass_c4, ← modelC4_correct]
+      rw [weierstrass_c4]
       simpa only [ne_eq, ZMod.intCast_zmod_eq_zero_iff_dvd, Int.dvd_iff_emod_eq_zero] using hc
     by_cases hs : hasNodeRoot e p = true
     · rw [ite_eq_left hs]

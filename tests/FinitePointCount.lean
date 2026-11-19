@@ -1,4 +1,4 @@
-import VerifiedLcalc.EllipticCurve.FinitePointCount
+import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCount
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.Field.ZMod
 import Lean

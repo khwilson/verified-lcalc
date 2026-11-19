@@ -26,4 +26,21 @@ theorem pointCountFinite_eq_pointCount (W : WeierstrassCurve F) :
   rw [pointCount_def]
   exact congrArg (fun n : ℕ => n + 1) (@Fintype.card_eq_nat_card _ _)
 
+/-- Transport the projective equation count through an actual residue-field
+isomorphism; singular points remain included. -/
+theorem pointCount_map_equiv {F K : Type*} [Field F] [Field K]
+    (W : WeierstrassCurve F) (k : F ≃+* K) :
+    (W.map k.toRingHom).pointCount = W.pointCount := by
+  rw [WeierstrassCurve.pointCount_def, WeierstrassCurve.pointCount_def]
+  congr 1
+  apply Nat.card_congr
+  exact ((k.toEquiv.prodCongr k.toEquiv).subtypeEquiv
+    (fun xy => (W.toAffine.map_equation (f := k.toRingHom) k.injective xy.1 xy.2).symm)).symm
+
+theorem frobeniusTrace_map_equiv {F K : Type*} [Field F] [Field K] [Finite F] [Finite K]
+    (W : WeierstrassCurve F) (k : F ≃+* K) :
+    (W.map k.toRingHom).frobeniusTrace = W.frobeniusTrace := by
+  rw [WeierstrassCurve.frobeniusTrace_def, WeierstrassCurve.frobeniusTrace_def,
+    pointCount_map_equiv, Nat.card_congr k.toEquiv]
+
 end WeierstrassCurve

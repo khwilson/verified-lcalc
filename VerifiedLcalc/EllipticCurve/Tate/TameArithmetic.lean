@@ -16,23 +16,9 @@ def GloballyMinimalInput (e : (WeierstrassCurve ℤ)) : Prop :=
       ((WeierstrassCurve.baseChange e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
         ((rationalPlace p).adicCompletion ℚ))
 
-theorem isSquareMod_correct (p : ℕ) [Fact p.Prime] (a : Int) :
+theorem isSquareMod_correct (p : ℕ) [NeZero p] (a : Int) :
     isSquareMod p a = true ↔ IsSquare (a : ZMod p) := by
-  simp only [isSquareMod, List.any_eq_true, List.mem_range, decide_eq_true_eq]
-  constructor
-  · rintro ⟨x, hx, h⟩
-    refine ⟨(x : ZMod p), ?_⟩
-    have hz := (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr
-      (Int.dvd_iff_emod_eq_zero.mpr h)
-    push_cast at hz
-    simpa only [pow_two] using (sub_eq_zero.mp hz).symm
-  · rintro ⟨x, hx⟩
-    refine ⟨x.val, ZMod.val_lt x, ?_⟩
-    apply Int.dvd_iff_emod_eq_zero.mp
-    apply (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp
-    push_cast
-    rw [ZMod.natCast_zmod_val]
-    simp only [pow_two, hx, sub_self]
+  simp [isSquareMod, NeZero.ne p]
 
 /-- Equality to mathlib's mathematical Legendre symbol, not to a database sign. -/
 theorem legendreValue_correct (p : ℕ) [Fact p.Prime] (_hp : p ≠ 2) (a : Int) :
@@ -54,14 +40,14 @@ theorem legendreValue_correct (p : ℕ) [Fact p.Prime] (_hp : p ≠ 2) (a : Int)
 /-- The valuation-based mathematical condition for negative j-valuation.
 The explicit c4 nonzero guard is essential at j=0. -/
 def NegativeJValuation (e : (WeierstrassCurve ℤ)) (p : ℕ) : Prop :=
-  modelC4 e ≠ 0 ∧ 3 * (modelC4 e).natAbs.factorization p <
+  e.c₄ ≠ 0 ∧ 3 * (e.c₄).natAbs.factorization p <
     (e.Δ).natAbs.factorization p
   deriving Decidable
 
 theorem potentiallyMultiplicative_correct (e : (WeierstrassCurve ℤ)) (p : ℕ)
     (hp : p.Prime) : potentiallyMultiplicative e p = true ↔ NegativeJValuation e p := by
   simp only [potentiallyMultiplicative, Bool.and_eq_true, bne_iff_ne,
-    decide_eq_true_eq, primeExponent_correct hp, NegativeJValuation]
+    decide_eq_true_eq, Nat.padicValNat_def, Nat.multiplicity_eq_factorization hp, NegativeJValuation]
 
 /-- The standard tame additive formula, expressed using mathematical
 factorization valuations and mathlib's Legendre symbol. Its arithmetic-to-
@@ -79,7 +65,7 @@ theorem tameAdditiveRoot_correct (e : (WeierstrassCurve ℤ)) (p : ℕ)
     [Fact p.Prime] (hp : 3 < p) : tameAdditiveRoot e p = tameAdditiveRootSpec e p := by
   have h2 : p ≠ 2 := by omega
   have hpot := potentiallyMultiplicative_correct e p (Fact.out : p.Prime)
-  simp only [tameAdditiveRoot, tameAdditiveRootSpec, primeExponent_correct (Fact.out : p.Prime),
+  simp only [tameAdditiveRoot, tameAdditiveRootSpec, Nat.padicValNat_def, Nat.multiplicity_eq_factorization (Fact.out : p.Prime),
     legendreValue_correct p h2]
   by_cases h : NegativeJValuation e p
   · rw [ite_eq_left h, ite_eq_left (hpot.mpr h)]

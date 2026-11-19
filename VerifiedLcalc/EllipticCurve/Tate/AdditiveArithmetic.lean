@@ -1,59 +1,14 @@
 module
 
+public import VerifiedLcalc.UpstreamCandidates.TauCeti.Minimality
 public import VerifiedLcalc.EllipticCurve.MinimalArithmetic
 public import VerifiedLcalc.EllipticCurve.ReductionCore
 
 @[expose] public section
+open WeierstrassCurve
 open IsDedekindDomain.HeightOneSpectrum IsDiscreteValuationRing
 open scoped WithZero
-namespace VerifiedLcalc.EllipticCurve
 
-/-- Discreteness of the value group bounds a change-of-variables scale. -/
-theorem scale_bound (a d : WithZero (Multiplicative ℤ)) (n : ℕ) (_hn : 0 < n)
-    (hd : WithZero.exp (-(n : ℤ)) < d) (h : a ^ n * d ≤ 1) : a ≤ 1 := by
-  by_contra ha
-  have ha : 1 < a := lt_of_not_ge ha
-  have ha0 : a ≠ 0 := ne_of_gt (lt_trans zero_lt_one ha)
-  have hz : 1 ≤ WithZero.log a := by
-    have : WithZero.exp (0 : ℤ) < WithZero.exp (WithZero.log a) := by simpa only [WithZero.exp_zero, WithZero.exp_log ha0] using ha
-    have := WithZero.exp_lt_exp.mp this
-    omega
-  have hea : WithZero.exp (1 : ℤ) ≤ a := by
-    rw [← WithZero.exp_log ha0]
-    exact WithZero.exp_le_exp.mpr hz
-  have hpow : WithZero.exp (n : ℤ) ≤ a ^ n := by
-    simpa only [← WithZero.exp_nsmul, nsmul_eq_mul, mul_one] using pow_le_pow_left₀ bot_le hea n
-  have hmul : 1 < WithZero.exp (n : ℤ) * d := by
-    have := mul_lt_mul_of_pos_left hd (show 0 < WithZero.exp (n : ℤ) from WithZero.exp_pos)
-    simpa only [← WithZero.exp_add, add_neg_cancel, WithZero.exp_zero] using this
-  exact (not_lt_of_ge h) (hmul.trans_le (mul_le_mul_of_nonneg_right hpow bot_le))
-
-variable {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
-  {K : Type*} [Field K] [Algebra R K] [IsFractionRing R K]
-
-/-- An integral equation with discriminant valuation below twelve is minimal.
-The valuation may be any normalized integer-valued valuation with integer ring R. -/
-theorem minimal_of_small_discriminant (W : WeierstrassCurve K) [WeierstrassCurve.IsIntegral R W]
-    (v : Valuation K (WithZero (Multiplicative ℤ))) (hv : v.Integers R)
-    (hd : WithZero.exp (-12 : ℤ) < v W.Δ) : WeierstrassCurve.IsMinimal R W := by
-  refine ⟨⟨by simpa using ‹WeierstrassCurve.IsIntegral R W›, ?_⟩⟩
-  intro C hC _
-  simp only [one_smul, ← Subtype.coe_le_coe,
-    WeierstrassCurve.valuation_Δ_aux_eq_of_isIntegral R (C • W),
-    WeierstrassCurve.valuation_Δ_aux_eq_of_isIntegral R W]
-  have hint : v (C • W).Δ ≤ 1 := by
-    rw [← WeierstrassCurve.integralModel_Δ_eq R (C • W)]
-    exact hv.map_le_one _
-  rw [WeierstrassCurve.variableChange_Δ, map_mul, map_pow] at hint
-  have hinv : v ((C.u : K)⁻¹) ≤ 1 := by
-    exact scale_bound _ _ 12 (by decide) hd (by simpa only [Units.val_inv_eq_inv_val] using hint)
-  obtain ⟨r, hr⟩ := hv.exists_of_le_one hinv
-  have hrval : valuation K (maximalIdeal R) ((C.u : K)⁻¹) ≤ 1 := by
-    rw [← hr]
-    exact valuation_le_one _ _
-  simpa [WeierstrassCurve.variableChange_Δ, map_mul, map_pow] using
-    mul_le_of_le_one_left' (pow_le_one' hrval 12)
-end VerifiedLcalc.EllipticCurve
 
 namespace VerifiedLcalc.EllipticCurve
 open NumberField IsDedekindDomain
@@ -151,10 +106,6 @@ end VerifiedLcalc.EllipticCurve
 namespace VerifiedLcalc.EllipticCurve
 open NumberField IsDedekindDomain
 
-/-- The executable c4 invariant is mathlib's invariant. -/
-theorem modelC4_correct (e : (WeierstrassCurve ℤ)) :
-    modelC4 e = e.c₄ := rfl
-
 /-- Exact specification of the sufficient local minimality test. -/
 theorem discriminantMinimalAt_correct (e : (WeierstrassCurve ℤ)) (p : ℕ) :
     discriminantMinimalAt e p = true ↔ ¬ (p : ℤ) ^ 12 ∣ e.Δ := by
@@ -165,10 +116,10 @@ invariants. It becomes a statement about the elliptic curve once minimality is p
 theorem modelReduction_additive_iff (e : (WeierstrassCurve ℤ)) (p : ℕ) :
     modelReduction e p = .additive ↔
       (WeierstrassCurve.baseChange e (ZMod p)).Δ = 0 ∧ (WeierstrassCurve.baseChange e (ZMod p)).c₄ = 0 := by
-  rw [weierstrass_discriminant, weierstrass_c4, ← modelC4_correct]
+  rw [weierstrass_discriminant, weierstrass_c4]
   simp only [ZMod.intCast_zmod_eq_zero_iff_dvd, Int.dvd_iff_emod_eq_zero]
   by_cases hd : e.Δ % (p : ℤ) = 0 <;>
-    by_cases hc : modelC4 e % (p : ℤ) = 0 <;>
+    by_cases hc : e.c₄ % (p : ℤ) = 0 <;>
     simp [modelReduction, hd, hc]
 
 /-- The good branch is exactly smooth reduction of the supplied equation. -/
@@ -176,17 +127,17 @@ theorem modelReduction_good_iff (e : (WeierstrassCurve ℤ)) (p : ℕ) :
     modelReduction e p = .good ↔ (WeierstrassCurve.baseChange e (ZMod p)).Δ ≠ 0 := by
   rw [← goodReduction_correct]
   by_cases hd : e.Δ % (p : ℤ) = 0 <;>
-    by_cases hc : modelC4 e % (p : ℤ) = 0 <;>
+    by_cases hc : e.c₄ % (p : ℤ) = 0 <;>
     simp [modelReduction, goodReduction, hd, hc]
 
 /-- The multiplicative branch is a nodal cubic: Delta vanishes and c4 does not. -/
 theorem modelReduction_multiplicative_iff (e : (WeierstrassCurve ℤ)) (p : ℕ) :
     modelReduction e p = .multiplicative ↔
       (WeierstrassCurve.baseChange e (ZMod p)).Δ = 0 ∧ (WeierstrassCurve.baseChange e (ZMod p)).c₄ ≠ 0 := by
-  rw [weierstrass_discriminant, weierstrass_c4, ← modelC4_correct]
+  rw [weierstrass_discriminant, weierstrass_c4]
   simp only [ne_eq, ZMod.intCast_zmod_eq_zero_iff_dvd, Int.dvd_iff_emod_eq_zero]
   by_cases hd : e.Δ % (p : ℤ) = 0 <;>
-    by_cases hc : modelC4 e % (p : ℤ) = 0 <;>
+    by_cases hc : e.c₄ % (p : ℤ) = 0 <;>
     simp [modelReduction, hd, hc]
 
 /-- Additive reduction has zero trace, including in characteristics two and three. -/

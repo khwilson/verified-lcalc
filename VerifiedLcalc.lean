@@ -6,4 +6,4 @@ public import VerifiedLcalc.NumericalRankSeparation
 public import VerifiedLcalc.Numerics.DerivativeQuadrature
 public import VerifiedLcalc.EllipticCurve.Tate.WildArithmetic
 public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
-public import VerifiedLcalc.EllipticCurve.FinitePointCount
+public import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCount

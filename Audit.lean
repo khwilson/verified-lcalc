@@ -90,8 +90,6 @@ import VerifiedLcalcTests.Fixtures.Curve11Arithmetic
 #print axioms VerifiedLcalc.Numerics.rationalExpBounds_correct
 #print axioms VerifiedLcalc.Numerics.rationalWeightedBounds_correct
 #print axioms VerifiedLcalc.Numerics.rationalExpSumBounds_correct
-#print axioms VerifiedLcalc.EllipticCurve.valuationFuel_correct
-#print axioms VerifiedLcalc.EllipticCurve.primeExponent_correct
 #print axioms VerifiedLcalc.EllipticCurve.modelFactor_correct
 #print axioms VerifiedLcalc.EllipticCurve.modelFactors_correct
 #print axioms VerifiedLcalc.EllipticCurve.modelFactors_prime

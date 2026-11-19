@@ -22,7 +22,7 @@ def twoCharacter (a n : Int) : Int :=
 
 /-- Finite encoding of infinite valuation, only for zero c4 or c6. -/
 def wildValuation (p : Nat) (a : Int) : Nat :=
-  if a = 0 then 12 else primeExponent p a.natAbs
+  if a = 0 then 12 else padicValNat p a.natAbs
 
 def wildUnit (p modulus : Nat) (a : Int) : Int :=
   (a / (p : Int)^(wildValuation p a)) % (modulus : Int)
@@ -124,12 +124,12 @@ def threeRootTable (K : Int → Int) (v4 v6 vd : Nat)
 
 /-- Local sign for a separately checked minimal additive Tate transcript. -/
 def wildRoot (e : (WeierstrassCurve ℤ)) (p : Nat) (w : TateWitness) : Int :=
-  let v4 := wildValuation p (modelC4 e)
-  let v6 := wildValuation p (modelC6 e)
+  let v4 := wildValuation p (e.c₄)
+  let v6 := wildValuation p (e.c₆)
   let vd := wildValuation p (e.Δ)
   let modulus := if p = 2 then 64 else 81
-  let u := wildUnit p modulus (modelC4 e)
-  let v := wildUnit p modulus (modelC6 e)
+  let u := wildUnit p modulus (e.c₄)
+  let v := wildUnit p modulus (e.c₆)
   let d := wildUnit p modulus (e.Δ)
   if p = 2 then twoRootTable twoCharacter v4 v6 vd u v d w.kodaira
   else threeRootTable (legendreValue 3) v4 v6 vd u v d w.kodaira
@@ -170,7 +170,7 @@ theorem wildData?_sound (e : (WeierstrassCurve ℤ)) (d : WildData)
 
 def wildExponent (e : (WeierstrassCurve ℤ)) (d : WildData) (p : Nat) : Nat :=
   match (if p = 2 then d.atTwo else if p = 3 then d.atThree else none) with
-  | some w => primeExponent p (e.Δ).natAbs - w.offset
+  | some w => padicValNat p (e.Δ).natAbs - w.offset
   | none => localExponent e p
 
 def wildLocalRoot (e : (WeierstrassCurve ℤ)) (d : WildData) (p : Nat) : Int :=

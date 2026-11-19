@@ -40,7 +40,7 @@ theorem minimal_localPolynomial (e : (WeierstrassCurve ℤ))
   have hinput : (W.map (IsLocalRing.residue R)).map k.toRingHom = WeierstrassCurve.baseChange e (ZMod p) := by
     simp only [W, weierstrass_map]
   have ht : (W.map (IsLocalRing.residue R)).frobeniusTrace = frobeniusTrace e p := by
-    rw [frobeniusTrace_eq_tauceti, ← hinput, frobeniusTrace_map_equiv]
+    rw [frobeniusTrace_eq_tauceti, ← hinput, WeierstrassCurve.frobeniusTrace_map_equiv]
   have hg : (W.map (IsLocalRing.residue R)).Δ ≠ 0 ↔ goodReduction e p = true := by
     rw [goodReduction_correct, ← hinput, WeierstrassCurve.map_Δ]
     constructor

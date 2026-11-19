@@ -134,7 +134,7 @@ def TateWitness.Path (w : TateWitness) (e : (WeierstrassCurve ℤ)) (p : Nat) : 
 Minimality itself is supplied separately by the existing arithmetic proofs. -/
 def TateWitness.Valid (w : TateWitness) (e : (WeierstrassCurve ℤ)) (p : Nat) : Prop :=
   (p = 2 ∨ p = 3) ∧ e.Δ ≠ 0 ∧ modelReduction e p = .additive ∧
-    w.Path e p ∧ w.offset < primeExponent p (e.Δ).natAbs
+    w.Path e p ∧ w.offset < padicValNat p (e.Δ).natAbs
   deriving Decidable
 
 /-- Candidate search is allowed to stop; every returned chain is checked again
@@ -176,7 +176,7 @@ def tateCandidate (e : (WeierstrassCurve ℤ)) (p : Nat) : Option TateWitness :=
     let base := {base with cubicRoot := x}
     let c := translateIntegral b (x*(p : Int)) 0 0
     if (aa+3*(x : Int)) % (p : Int) ≠ 0 then
-      let chain ← starChainCandidate p c true 2 (primeExponent p (e.Δ).natAbs + 1)
+      let chain ← starChainCandidate p c true 2 (padicValNat p (e.Δ).natAbs + 1)
       return {base with chain := chain, kodaira := -(5+(chain.length : Int))}
     match (List.range p).find? (fun (x : Nat) =>
         decide (quadraticRepeated p 1 (c.a₃/(p : Int)^2) (-(c.a₆/(p : Int)^4)) x)) with

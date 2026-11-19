@@ -78,3 +78,8 @@ Curve labels, LMFDB imports, raw numerical cutoffs and policy-specific “numeri
 See [the FLT modularity comparison](FLT_MODULARITY.md) before replacing the
 current classical realization package with a Galois/Hecke formulation. The
 restricted FLT definition is not a drop-in replacement for additive curves.
+
+
+The concrete extracted modules and submission-sized entries are in
+[TAUCETI_BACKLOG.md](TAUCETI_BACKLOG.md); the later full-source interface review
+is in [INTERFACE_REUSE_AUDIT.md](INTERFACE_REUSE_AUDIT.md).

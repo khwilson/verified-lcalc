@@ -15,7 +15,7 @@ private theorem baseMinimalAt_correct (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fa
         ((rationalPlace p).adicCompletion ℚ)) := by
   rcases Bool.or_eq_true_iff.mp h with h | h
   · exact minimal_at_of_discriminant_not_dvd e p ((discriminantMinimalAt_correct e p).mp h)
-  · have hc : p = 2 ∧ modelC4 e % 64 = 0 ∧ modelC4 e % 128 ≠ 0 := by
+  · have hc : p = 2 ∧ e.c₄ % 64 = 0 ∧ e.c₄ % 128 ≠ 0 := by
       simpa only [twoAdicC4MinimalAt, decide_eq_true_eq] using h
     obtain ⟨rfl, h6, h7⟩ := hc
     apply minimal_at_two_of_c4 e

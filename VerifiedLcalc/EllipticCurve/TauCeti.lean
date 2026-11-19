@@ -1,5 +1,6 @@
 module
 
+public import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCount
 public import VerifiedLcalc.EllipticCurve.Correctness
 public import VerifiedLcalc.EllipticCurve.Euler
 public import VerifiedLcalc.EllipticCurve.Bounds
@@ -8,6 +9,7 @@ public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.LFu
 
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
+open WeierstrassCurve
 
 /-- Our enumerator agrees with TauCeti's projective-model count, including at
 singular reduction. -/
@@ -20,23 +22,6 @@ theorem frobeniusTrace_eq_tauceti (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p
     frobeniusTrace e p = (WeierstrassCurve.baseChange e (ZMod p)).frobeniusTrace := by
   rw [frobeniusTrace, computePointCount_eq_pointCount, WeierstrassCurve.frobeniusTrace_def]
   simp [Nat.card_eq_fintype_card]
-
-/-- Transport the projective equation count through an actual residue-field
-isomorphism; singular points remain included. -/
-theorem pointCount_map_equiv {F K : Type*} [Field F] [Field K]
-    (W : WeierstrassCurve F) (k : F ≃+* K) :
-    (W.map k.toRingHom).pointCount = W.pointCount := by
-  rw [WeierstrassCurve.pointCount_def, WeierstrassCurve.pointCount_def]
-  congr 1
-  apply Nat.card_congr
-  exact ((k.toEquiv.prodCongr k.toEquiv).subtypeEquiv
-    (fun xy => (W.toAffine.map_equation (f := k.toRingHom) k.injective xy.1 xy.2).symm)).symm
-
-theorem frobeniusTrace_map_equiv {F K : Type*} [Field F] [Field K] [Finite F] [Finite K]
-    (W : WeierstrassCurve F) (k : F ≃+* K) :
-    (W.map k.toRingHom).frobeniusTrace = W.frobeniusTrace := by
-  rw [WeierstrassCurve.frobeniusTrace_def, WeierstrassCurve.frobeniusTrace_def,
-    pointCount_map_equiv, Nat.card_congr k.toEquiv]
 
 section Local
 variable {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
@@ -53,7 +38,7 @@ theorem localPolynomial_eq_modelFactor (e : (WeierstrassCurve ℤ)) (p : ℕ)
       1 - Polynomial.C (modelFactor e p).trace * Polynomial.X +
         Polynomial.C (modelFactor e p).quadratic * Polynomial.X ^ 2 := by
   have ht : ((W.minimal R).reduction R).frobeniusTrace = frobeniusTrace e p := by
-    rw [frobeniusTrace_eq_tauceti, ← hmodel, frobeniusTrace_map_equiv]
+    rw [frobeniusTrace_eq_tauceti, ← hmodel, WeierstrassCurve.frobeniusTrace_map_equiv]
   have hc : Nat.card (IsLocalRing.ResidueField R) = p := by
     rw [Nat.card_congr k.toEquiv]
     simp [Nat.card_eq_fintype_card]

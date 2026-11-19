@@ -7,7 +7,7 @@ public import VerifiedLcalcTests.Arithmetic.Examples
 
 namespace VerifiedLcalc.EllipticCurve.Examples
 
-example : primeExponent 2 72 = 3 ∧ primeExponent 3 72 = 2 ∧ primeExponent 5 72 = 0 := by
+example : padicValNat 2 72 = 3 ∧ padicValNat 3 72 = 2 ∧ padicValNat 5 72 = 0 := by
   decide +kernel
 
 /-- Includes mixed-prime coefficients, prime powers and the singular prime 11.

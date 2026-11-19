@@ -64,7 +64,7 @@ def wildUnitSpec (p modulus : Nat) (a : Int) : Int :=
 
 theorem wildValuation_correct (p : Nat) (hp : p.Prime) (a : Int) :
     wildValuation p a = wildValuationSpec p a := by
-  simp [wildValuation, wildValuationSpec, primeExponent_correct hp]
+  simp [wildValuation, wildValuationSpec, Nat.padicValNat_def, Nat.multiplicity_eq_factorization hp]
 
 theorem wildUnit_correct (p : Nat) (hp : p.Prime) (modulus : Nat) (a : Int) :
     wildUnit p modulus a = wildUnitSpec p modulus a := by
@@ -92,7 +92,7 @@ theorem wildRoot_correct (e : (WeierstrassCurve ℤ)) (p : Nat) (hp : p.Prime) (
   have hK : twoCharacter = twoCharacterSpec := funext fun a => funext (twoCharacter_correct a)
   have h3 : legendreValue 3 = legendreSym 3 := funext (legendreValue_correct 3 (by decide))
   simp only [wildRoot, wildRootSpec, wildValuation_correct p hp, wildUnit_correct p hp,
-    modelC4_correct, modelC6_correct, hK, h3]
+    hK, h3]
 
 /-- The actual reduction and valuation meaning of an executable Tate witness. -/
 def TateWitness.ArithmeticSpec (w : TateWitness) (e : (WeierstrassCurve ℤ)) (p : Nat) : Prop :=
@@ -107,11 +107,11 @@ theorem tateWitness_valid_correct (w : TateWitness) (e : (WeierstrassCurve ℤ))
   · rintro ⟨hp, hn, hr, hw, ho⟩
     have hprime : p.Prime := by rcases hp with rfl | rfl <;> decide
     exact ⟨hp, hn, (modelReduction_additive_iff e p).mp hr, hw,
-      by simpa only [primeExponent_correct hprime] using ho⟩
+      by simpa only [Nat.padicValNat_def, Nat.multiplicity_eq_factorization hprime] using ho⟩
   · rintro ⟨hp, hn, hr, hw, ho⟩
     have hprime : p.Prime := by rcases hp with rfl | rfl <;> decide
     exact ⟨hp, hn, (modelReduction_additive_iff e p).mpr hr, hw,
-      by simpa only [primeExponent_correct hprime] using ho⟩
+      by simpa only [Nat.padicValNat_def, Nat.multiplicity_eq_factorization hprime] using ho⟩
 
 noncomputable def wildExponentSpec (e : (WeierstrassCurve ℤ)) (d : WildData) (p : Nat) : Nat :=
   match (if p = 2 then d.atTwo else if p = 3 then d.atThree else none) with
@@ -125,7 +125,7 @@ noncomputable def wildLocalRootSpec (e : (WeierstrassCurve ℤ)) (d : WildData) 
 
 theorem wildExponent_correct (e : (WeierstrassCurve ℤ)) (d : WildData) (p : Nat) (hp : p.Prime) :
     wildExponent e d p = wildExponentSpec e d p := by
-  simp only [wildExponent, wildExponentSpec, primeExponent_correct hp,
+  simp only [wildExponent, wildExponentSpec, Nat.padicValNat_def, Nat.multiplicity_eq_factorization hp,
     localExponent_correct]
   rfl
 

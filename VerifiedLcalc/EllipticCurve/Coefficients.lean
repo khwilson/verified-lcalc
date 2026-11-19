@@ -9,30 +9,6 @@ public import Mathlib.Tactic.Linarith
 
 namespace VerifiedLcalc.EllipticCurve
 
-theorem valuationFuel_correct {p n fuel : Nat} (hp : p.Prime) (hn : 0 < n)
-    (hf : n ≤ fuel) : valuationFuel p fuel n = n.factorization p := by
-  induction fuel generalizing n with
-  | zero => omega
-  | succ fuel ih =>
-    by_cases hd : p ∣ n
-    · have hdiv : n / p < n := Nat.div_lt_self hn hp.one_lt
-      have hpos : 0 < n / p := Nat.div_pos (Nat.le_of_dvd hn hd) hp.pos
-      have hi := ih hpos (by omega : n / p ≤ fuel)
-      rw [valuationFuel, ite_eq_left ⟨hp.two_le, hn, Nat.mod_eq_zero_of_dvd hd⟩, hi]
-      rw [Nat.factorization_div hd, Finsupp.tsub_apply, hp.factorization_self]
-      have := hp.factorization_pos_of_dvd hn.ne' hd
-      omega
-    · rw [valuationFuel, ite_eq_right (by
-        intro h
-        exact hd (Nat.dvd_of_mod_eq_zero h.2.2))]
-      exact (Nat.factorization_eq_zero_of_not_dvd hd).symm
-
-theorem primeExponent_correct {p n : Nat} (hp : p.Prime) :
-    primeExponent p n = n.factorization p := by
-  cases n with
-  | zero => simp [primeExponent, valuationFuel]
-  | succ n => exact valuationFuel_correct hp (by omega) (by rfl)
-
 /-- Finite Euler-product coefficient, specified by mathematical prime
 factorization rather than the implementation's repeated-division loop. -/
 theorem coefficientFromFactors_correct (factors : List ModelEulerFactor) (n : Nat)
@@ -43,7 +19,7 @@ theorem coefficientFromFactors_correct (factors : List ModelEulerFactor) (n : Na
   congr 1
   apply List.map_congr_left
   intro f hm
-  rw [primeExponent_correct (hf f hm)]
+  rw [Nat.padicValNat_def, Nat.multiplicity_eq_factorization (hf f hm)]
   split <;> rename_i h
   · simp [h, localCoefficient, localPair]
   · rfl

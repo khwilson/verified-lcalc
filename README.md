@@ -111,3 +111,8 @@ The production/test layout is documented in [tests/README.md](tests/README.md).
 Explicit assumptions are isolated in [Assumptions/README.md](VerifiedLcalc/Assumptions/README.md),
 local reduction in [Tate/README.md](VerifiedLcalc/EllipticCurve/Tate/README.md),
 and active numerical modules in [Numerics/README.md](VerifiedLcalc/Numerics/README.md).
+
+
+The follow-up [interface audit](docs/INTERFACE_REUSE_AUDIT.md) records direct
+Mathlib/TauCeti reuse and remaining bridges. [TAUCETI_BACKLOG.md](docs/TAUCETI_BACKLOG.md)
+contains the extracted, compiled upstream candidates and separate proof obligations.

@@ -15,7 +15,7 @@ also needs a computable decision procedure for the defining predicate.
 
 TauCeti's `WeierstrassCurve.pointCount` uses `Nat.card` and accepts arbitrary
 fields. Retain that mathematical API. The proposed finite-field companion
-[`WeierstrassCurve.pointCountFinite`](../VerifiedLcalc/EllipticCurve/FinitePointCount.lean)
+[`WeierstrassCurve.pointCountFinite`](../VerifiedLcalc/UpstreamCandidates/TauCeti/PointCount.lean)
 requires `[Fintype F] [DecidableEq F]`, explicitly decides the Weierstrass
 equation, and uses `Fintype.card` of its solution subtype plus one. Its general
 correctness theorem is `pointCountFinite_eq_pointCount`. This addition is local;
