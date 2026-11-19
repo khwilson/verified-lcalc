@@ -1,0 +1,8 @@
+import VerifiedLcalc.Certificates.GeneralModularityExamples
+
+#check VerifiedLcalc.Certificates.GeneralModularityExamples.additive_modularity
+#check VerifiedLcalc.Certificates.GeneralModularityExamples.curve11_via_general_interface
+#check VerifiedLcalc.Certificates.GeneralModularityExamples.curve37_via_general_interface
+
+#eval VerifiedLcalc.Certificates.GeneralModularityExamples.certifiedRank.val
+#eval VerifiedLcalc.Certificates.GeneralModularityExamples.certifiedLowerBound.val

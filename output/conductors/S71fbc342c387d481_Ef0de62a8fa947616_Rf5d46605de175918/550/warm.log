@@ -1,0 +1,902 @@
+⚠ [7695/7803] Replayed VerifiedLcalc.Assumptions.FirstDerivative
+warning: VerifiedLcalc/Assumptions/FirstDerivative.lean:71:38: This simp argument is unused:
+  Complex.real_smul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [one_div, Real.log_inv, Complex.ofReal_neg]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: VerifiedLcalc/Assumptions/FirstDerivative.lean:90:68: This simp argument is unused:
+  Complex.ofReal_div
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [ModularRealization.imaginaryFunction, Complex.ofReal_mul,
+    mul_div_cancel_right₀ _ (show (Real.sqrt m.level : ℂ) ≠ 0 by exact_mod_cast hpos.ne')]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [7767/7803] Replayed VerifiedLcalc.Numerics.RealInterval
+warning: VerifiedLcalc/Numerics/RealInterval.lean:104:15: Unused tactic linter: `<;>` can be replaced with `;`.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/RealInterval.lean:104:15: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [7792/7911] Replayed VerifiedLcalc.Numerics.FourierInterval
+warning: VerifiedLcalc/Numerics/FourierInterval.lean:85:22: This simp argument is unused:
+  ← neg_mul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hr] at he
+
+Note: Simp arguments with `←` have the additional effect of removing the other direction from the simp set, even if the simp argument itself is unused. If the hint above does not work, try replacing `←` with `-` to only get that effect and silence this warning.
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: VerifiedLcalc/Numerics/FourierInterval.lean:87:14: This simp argument is unused:
+  ← neg_mul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hr] at he
+
+Note: Simp arguments with `←` have the additional effect of removing the other direction from the simp set, even if the simp argument itself is unused. If the hint above does not work, try replacing `←` with `-` to only get that effect and silence this warning.
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [7794/7911] Replayed VerifiedLcalc.Numerics.DerivativeTail
+info: VerifiedLcalc/Numerics/DerivativeTail.lean:45:6: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:27:45: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:38:24: Unused tactic linter: `<;>` can be replaced with `;`.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:38:39: Unused tactic linter: `<;>` can be replaced with `;`.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:38:24: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:38:39: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+info: VerifiedLcalc/Numerics/DerivativeTail.lean:80:41: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:80:29: Unused tactic linter: `congr 1` does not change the goal.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:80:37: Unused tactic linter: `<;>` can be replaced with `;`.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:94:4: Unused tactic linter: `<;>` can be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:94:8: Unused tactic linter: `ring` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:94:8: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:80:37: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [7798/7911] Replayed VerifiedLcalc.EllipticCurve.Derivative
+warning: VerifiedLcalc/EllipticCurve/Derivative.lean:75:10: This simp argument is unused:
+  Set.mem_Icc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+ℹ [7834/7911] Replayed VerifiedLcalc.Assumptions.DerivativeEvaluator
+info: VerifiedLcalc/Assumptions/DerivativeEvaluator.lean:25:4: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+⚠ [7874/7911] Replayed VerifiedLcalc.EllipticCurve.TameArithmetic
+warning: VerifiedLcalc/EllipticCurve/TameArithmetic.lean:159:20: This simp argument is unused:
+  hr
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: VerifiedLcalc/EllipticCurve/TameArithmetic.lean:160:30: This simp argument is unused:
+  hr
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+ℹ [7908/7911] Replayed VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:15:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a1.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:19:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a1.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:22:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a1.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:26:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a1.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:29:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a1.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:32:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a1.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:38:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a1.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:41:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a1.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:44:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a1.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:54:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a2.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:58:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a2.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:61:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a2.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:65:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a2.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:68:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a2.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:71:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a2.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:77:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a2.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:80:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a2.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:83:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a2.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:93:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_b1.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:97:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_b1.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:100:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_b1.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:104:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_b1.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:107:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_b1.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:110:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_b1.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:116:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_b1.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:119:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_b1.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:122:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_b1.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:132:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c1.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:136:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c1.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:139:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c1.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:143:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c1.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:146:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c1.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:149:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c1.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:152:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c1.rank_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:156:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c1.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:159:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c1.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:162:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c1.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:172:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c2.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:176:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c2.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:179:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c2.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:183:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c2.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:186:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c2.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:189:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c2.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:192:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c2.rank_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:198:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c2.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:201:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c2.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:204:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c2.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:214:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d1.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:218:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d1.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:221:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d1.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:225:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d1.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:228:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d1.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:231:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d1.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:234:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d1.rank_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:238:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d1.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:241:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d1.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:244:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d1.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:254:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d2.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:258:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d2.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:261:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d2.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:265:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d2.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:268:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d2.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:271:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d2.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:274:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d2.rank_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:280:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d2.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:283:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d2.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:286:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d2.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:296:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e1.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:300:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e1.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:303:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e1.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:307:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e1.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:310:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e1.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:313:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e1.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:316:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e1.rank_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:320:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e1.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:323:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e1.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:326:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e1.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:336:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e2.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:340:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e2.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:343:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e2.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:347:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e2.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:350:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e2.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:353:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e2.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:356:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e2.rank_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:362:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e2.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:365:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e2.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:368:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e2.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:378:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e3.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:382:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e3.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:385:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e3.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:389:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e3.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:392:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e3.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:395:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e3.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:398:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e3.rank_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:404:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e3.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:407:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e3.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:410:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e3.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:420:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f1.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:424:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f1.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:427:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f1.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:431:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f1.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:434:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f1.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:437:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f1.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:443:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f1.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:446:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f1.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:449:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f1.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:459:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f2.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:463:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f2.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:466:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f2.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:470:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f2.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:473:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f2.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:476:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f2.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:482:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f2.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:485:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f2.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:488:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f2.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:498:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_g1.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:502:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_g1.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:505:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_g1.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:509:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_g1.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:512:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_g1.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:515:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_g1.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:521:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_g1.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:524:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_g1.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:527:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_g1.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:537:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_h1.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:541:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_h1.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:544:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_h1.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:548:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_h1.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:551:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_h1.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:554:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_h1.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:557:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_h1.rank_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:561:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_h1.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:564:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_h1.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:567:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_h1.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:577:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i1.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:581:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i1.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:584:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i1.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:588:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i1.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:591:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i1.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:594:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i1.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:597:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i1.rank_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:601:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i1.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:604:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i1.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:607:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i1.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:617:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i2.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:621:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i2.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:624:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i2.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:628:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i2.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:631:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i2.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:634:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i2.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:637:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i2.rank_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:643:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i2.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:646:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i2.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:649:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i2.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:659:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j1.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:663:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j1.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:666:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j1.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:670:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j1.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:673:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j1.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:676:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j1.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:682:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j1.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:685:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j1.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:688:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j1.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:698:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j2.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:702:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j2.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:705:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j2.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:709:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j2.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:712:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j2.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:715:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j2.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:721:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j2.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:724:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j2.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:727:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j2.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:737:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j3.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:741:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j3.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:744:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j3.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:748:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j3.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:751:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j3.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:754:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j3.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:760:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j3.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:763:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j3.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:766:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j3.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:776:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k1.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:780:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k1.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:783:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k1.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:787:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k1.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:790:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k1.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:793:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k1.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:799:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k1.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:802:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k1.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:805:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k1.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:815:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k2.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:819:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k2.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:822:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k2.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:826:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k2.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:829:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k2.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:832:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k2.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:838:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k2.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:841:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k2.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:844:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k2.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:854:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_l1.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:858:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_l1.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:861:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_l1.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:865:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_l1.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:868:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_l1.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:871:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_l1.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:877:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_l1.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:880:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_l1.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:883:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_l1.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:893:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m1.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:897:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m1.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:900:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m1.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:904:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m1.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:907:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m1.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:910:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m1.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:916:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m1.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:919:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m1.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:922:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m1.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:932:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m2.nonsingular' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:936:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m2.minimality_valid' does not depend on any axioms
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:939:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m2.globally_minimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:943:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m2.local_data_valid' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:946:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m2.conductor_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:949:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m2.root_formula' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:955:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m2.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:958:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m2.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+info: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550.lean:961:0: 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m2.coefficients_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+⚠ [7910/7911] Replayed VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550Checked
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:13:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a1.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:13:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:27:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_a2.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:27:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:41:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_b1.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:41:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:55:10: Unused tactic linter: `exact
+  Or.inl
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c1.root_formula` does not change the goal.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:71:10: Unused tactic linter: `exact
+  Or.inl
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_c2.root_formula` does not change the goal.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:87:10: Unused tactic linter: `exact
+  Or.inl
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d1.root_formula` does not change the goal.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:103:10: Unused tactic linter: `exact
+  Or.inl
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_d2.root_formula` does not change the goal.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:119:10: Unused tactic linter: `exact
+  Or.inl
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e1.root_formula` does not change the goal.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:135:10: Unused tactic linter: `exact
+  Or.inl
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e2.root_formula` does not change the goal.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:151:10: Unused tactic linter: `exact
+  Or.inl
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_e3.root_formula` does not change the goal.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:167:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f1.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:167:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:181:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_f2.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:181:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:195:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_g1.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:195:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:209:10: Unused tactic linter: `exact
+  Or.inl
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_h1.root_formula` does not change the goal.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:225:10: Unused tactic linter: `exact
+  Or.inl
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i1.root_formula` does not change the goal.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:241:10: Unused tactic linter: `exact
+  Or.inl
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_i2.root_formula` does not change the goal.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:257:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j1.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:257:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:271:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j2.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:271:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:285:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_j3.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:285:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:299:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k1.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:299:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:313:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_k2.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:313:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:327:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_l1.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:327:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:341:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m1.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:341:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:355:128: Unused tactic linter: `exact
+  Or.inr
+    VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N550.C550_m2.root_formula` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Certificates/ConductorRuns/S71fbc342c387d481_Ef0de62a8fa947616/N550Checked.lean:355:128: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Build completed successfully (7911 jobs).

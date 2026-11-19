@@ -1,0 +1,212 @@
+[
+  {
+    "name": "build",
+    "command": [
+      "lake",
+      "build"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 6.032
+  },
+  {
+    "name": "cubic-fresh",
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "VerifiedLcalc/Certificates/Cubic.lean"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 2.792
+  },
+  {
+    "name": "audits",
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "/private/tmp/lcalc-audit-all.lean"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 39.015
+  },
+  {
+    "name": "consumers",
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "/private/tmp/lcalc-consumers-all.lean"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 22.585
+  },
+  {
+    "name": "intervals",
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "tests/DerivativeIntervals.lean"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 2.351
+  },
+  {
+    "name": "derivative-rollback",
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "tests/DerivativeRegistryRollback.lean"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 49.716
+  },
+  {
+    "name": "zero-rollback",
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "tests/RegistryRollback.lean"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 66.388
+  },
+  {
+    "name": "bundle-dependency",
+    "command": [
+      "lake",
+      "env",
+      "lean",
+      "tests/BundleDependency.lean"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 50.292
+  },
+  {
+    "name": "zero-seal",
+    "command": [
+      ".lake/build/bin/certify-batch",
+      "--seal-cache"
+    ],
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "elapsed_seconds": 17.771
+  },
+  {
+    "name": "derivative-seal",
+    "command": [
+      ".lake/build/bin/certify-derivatives",
+      "--seal-cache"
+    ],
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "elapsed_seconds": 8.418
+  },
+  {
+    "name": "inventory",
+    "command": [
+      ".lake/build/bin/lmfdb-check",
+      "--inventory"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 0.011
+  },
+  {
+    "name": "conditional",
+    "command": [
+      ".lake/build/bin/lmfdb-check",
+      "--conditional"
+    ],
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "elapsed_seconds": 0.012
+  },
+  {
+    "name": "axiom-free",
+    "command": [
+      ".lake/build/bin/lmfdb-check"
+    ],
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "elapsed_seconds": 0.01
+  },
+  {
+    "name": "additive",
+    "command": [
+      ".lake/build/bin/additive-witnesses",
+      "--check"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 4.289
+  },
+  {
+    "name": "expanded",
+    "command": [
+      ".lake/build/bin/additive-witnesses",
+      "--expanded",
+      "--check"
+    ],
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "elapsed_seconds": 4.223
+  },
+  {
+    "name": "wild",
+    "command": [
+      ".lake/build/bin/wild-witnesses",
+      "--check"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 4.476
+  },
+  {
+    "name": "negative",
+    "command": [
+      ".lake/build/bin/negative-certificates",
+      "--check"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 4.943
+  },
+  {
+    "name": "zero-hashes",
+    "command": [
+      "shasum",
+      "-a",
+      "256",
+      "-c",
+      "output/batch/proof-bundles.sha256"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 0.028
+  },
+  {
+    "name": "derivative-hashes",
+    "command": [
+      "shasum",
+      "-a",
+      "256",
+      "-c",
+      "output/derivative/proof-bundles.sha256"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "elapsed_seconds": 0.016
+  }
+]

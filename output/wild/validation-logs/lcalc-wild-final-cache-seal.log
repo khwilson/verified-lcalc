@@ -1,0 +1,3 @@
+Sealed 822 checked rank-zero certificates for 1100 inputs.
+LMFDB: 1100 curves; 822 matches, 0 mismatches, 278 inconclusive.
+Conditional certificate cache: exact ranks depend on ellipticModularity; unresolved curves fail coverage.

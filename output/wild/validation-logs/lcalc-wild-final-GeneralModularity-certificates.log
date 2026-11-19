@@ -1,0 +1,17 @@
+VerifiedLcalc.Certificates.GeneralModularityExamples.additive_modularity :
+  Nonempty
+    (VerifiedLcalc.Assumptions.ModularRealization VerifiedLcalc.Certificates.GeneralModularityExamples.additiveCurve)
+VerifiedLcalc.Certificates.GeneralModularityExamples.curve11_via_general_interface :
+  analyticOrderAt
+      (VerifiedLcalc.Assumptions.modularWitness VerifiedLcalc.Certificates.Batch.C11_a2.result.equation
+          VerifiedLcalc.Certificates.Batch.C11_a2.nonsingular).formL
+      1 =
+    0
+VerifiedLcalc.Certificates.GeneralModularityExamples.curve37_via_general_interface :
+  1 ≤
+    analyticOrderAt
+      (VerifiedLcalc.Assumptions.modularWitness VerifiedLcalc.Certificates.AssumedCurve37.equation
+          VerifiedLcalc.Certificates.AssumedCurve37.nonsingular).formL
+      1
+0
+1

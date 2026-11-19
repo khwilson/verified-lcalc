@@ -1,0 +1,98 @@
+{
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_a1.conductor_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_a1.local_data_valid": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_a1.nonsingular": [],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_a1.root_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_b1.conductor_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_b1.local_data_valid": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_b1.nonsingular": [],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_b1.root_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_c1.conductor_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_c1.local_data_valid": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_c1.nonsingular": [],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_c1.root_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_d1.conductor_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_d1.local_data_valid": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_d1.nonsingular": [],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_d1.root_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_e1.conductor_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_e1.local_data_valid": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_e1.nonsingular": [],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_e1.root_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_f1.conductor_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_f1.local_data_valid": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_f1.nonsingular": [],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N352.C352_f1.root_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ]
+}

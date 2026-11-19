@@ -1,0 +1,78 @@
+{
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c1.analytic_rank": [
+    "Classical.choice",
+    "Quot.sound",
+    "VerifiedLcalc.Assumptions.ellipticModularity",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c1.coefficients_correct": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c1.conductor_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c1.globally_minimal": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c1.local_data_valid": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c1.minimality_valid": [],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c1.nonsingular": [],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c1.payload_correct": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c1.root_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c2.analytic_rank": [
+    "Classical.choice",
+    "Quot.sound",
+    "VerifiedLcalc.Assumptions.ellipticModularity",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c2.coefficients_correct": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c2.conductor_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c2.globally_minimal": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c2.local_data_valid": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c2.minimality_valid": [],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c2.nonsingular": [],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c2.payload_correct": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c2.root_formula": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ]
+}

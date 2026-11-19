@@ -1,0 +1,26 @@
+{
+  "input_count": 1100,
+  "conditional_exact_rank_zero": 822,
+  "conditional_rank_lower_bounds": 229,
+  "wild_transcripts_checked": 492,
+  "reference_rank_mismatches": 0,
+  "exact_rank_inconclusive": 278,
+  "remaining": {
+    "needs_derivatives": 229,
+    "minimality_unresolved": 48,
+    "central_interval_not_separated": 1
+  },
+  "full_default_build": "passed",
+  "axiom_audits": "all ten passed",
+  "saved_consumers": "passed",
+  "wrong_curve_rejection_and_restoration": "passed",
+  "changed_bundle_rejection_and_restoration": "passed",
+  "strict_rank_regression_expected_exit_code": 1,
+  "expanded_minimality_replay_expected_exit_code": 1,
+  "cold_bundled_replay_milliseconds": 453021,
+  "cached_reseal_milliseconds": 19868,
+  "conditional_assumption": "VerifiedLcalc.Assumptions.ellipticModularity (including explicit Tate/Ogg/Halberstadt arithmetic compatibility)",
+  "kernel_proves_geometric_Tate_conductor_or_epsilon_factor_theory": false,
+  "logs": "output/wild/validation-logs",
+  "bundle_digests": "output/batch/proof-bundles.sha256"
+}

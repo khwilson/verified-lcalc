@@ -1,0 +1,9 @@
+{
+  "exit_code": 124,
+  "limit_hit": "process-wall-limit",
+  "wall_seconds": 180.0997692910023,
+  "process_timeout_seconds": 180,
+  "cbv_wall_limit_seconds": 60,
+  "cbv_max_steps": 5000000,
+  "detailed_profiler": false
+}

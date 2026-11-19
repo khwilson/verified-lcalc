@@ -1,0 +1,28 @@
+{"producer_milliseconds": 8,
+ "module":
+ "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N323",
+ "conductor": 323,
+ "cases":
+ [{"terms": 24,
+   "steps": null,
+   "status": "proposed-exact-rank-zero",
+   "proposed_rank": 0,
+   "producer_milliseconds": 6,
+   "namespace":
+   "VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N323.C323_a1",
+   "lower_bound": null,
+   "label": "323.a1",
+   "equation": "{ a1 := 0, a2 := 0, a3 := 1, a4 := -46, a6 := 277 }",
+   "cutoff": null,
+   "conductor": 323,
+   "components":
+   ["nonsingular",
+    "minimality_valid",
+    "globally_minimal",
+    "local_data_valid",
+    "conductor_formula",
+    "root_formula",
+    "payload_correct",
+    "analytic_rank",
+    "coefficients_correct"],
+   "bits": 53}]}

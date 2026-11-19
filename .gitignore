@@ -1,0 +1,16 @@
+.venv/
+.uv-cache/
+__pycache__/
+*.pyc
+.registry-state/
+.lcalc-cache/
+.pytest_cache/
+dist/
+.env
+
+worker/build/
+volunteer/
+.ruff_cache/
+
+# Rebuildable Lean dependencies and compiler output.
+.lake/

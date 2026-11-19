@@ -1,0 +1,35 @@
+{
+  "active": [
+    {
+      "conductor": 594,
+      "error": "TimeoutExpired(['lake', 'build', 'VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N594Checked'], 3600)",
+      "status": "failed"
+    }
+  ],
+  "audited_components": 14903,
+  "certified_ranks": {
+    "0": 911,
+    "1": 632
+  },
+  "checked_conductors": 217,
+  "checked_curves": 1636,
+  "cold_kernel_max_seconds": 3458.230318,
+  "cold_kernel_median_seconds": 61.141274,
+  "complete": false,
+  "conditional_axiom": "VerifiedLcalc.Assumptions.ellipticModularity",
+  "inconclusive_count": 93,
+  "inconclusive_reasons": {
+    "interval-not-separated": 4,
+    "minimality-unresolved": 89
+  },
+  "kernel_build_seconds": 29640.890718,
+  "latest_session_elapsed_seconds": 34360.660828,
+  "pending_revalidation": 0,
+  "producer_seconds": 276.201128,
+  "reference_mismatches": 0,
+  "resume_validation_seconds": 72.62837999999999,
+  "selected_conductors": 1171,
+  "selected_curves": 10000,
+  "verified_count": 1543,
+  "warm_validation_seconds": 1239.217771
+}

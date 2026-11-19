@@ -1,0 +1,5 @@
+import VerifiedLcalc.Certificates.AssumedCurve37
+
+#check VerifiedLcalc.Certificates.AssumedCurve37.central_vanishing
+#check VerifiedLcalc.Certificates.AssumedCurve37.analytic_rank_at_least_one
+#print axioms VerifiedLcalc.Certificates.AssumedCurve37.analytic_rank_at_least_one

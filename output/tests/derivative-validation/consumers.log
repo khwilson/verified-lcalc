@@ -1,0 +1,53 @@
+VerifiedLcalc.Certificates.Cubic.certified_analytic_order : analyticOrderAt (fun z => z ^ 3) 0 = 3
+'VerifiedLcalc.Certificates.Cubic.certified_computation' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.Certificates.Cubic.certified_analytic_order' depends on axioms: [propext, Classical.choice, Quot.sound]
+VerifiedLcalc.EllipticCurve.ReductionExamples.curve32_coefficient_four :
+  (VerifiedLcalc.EllipticCurve.weierstrass VerifiedLcalc.EllipticCurve.AdditiveExamples.C32_a4.equation ℚ).LFunction 4 =
+    0
+[1, 0, 0, 0, -2, 0, 0, 0]
+VerifiedLcalc.Assumptions.generatedCertificateKeys_sound (e : VerifiedLcalc.Artifacts.CurveEquation) (N : ℕ)
+  (h : (e, N) ∈ VerifiedLcalc.Regression.generatedCertificateKeys) :
+  ∃ (hn : VerifiedLcalc.EllipticCurve.discriminant e ≠ 0),
+    analyticOrderAt (VerifiedLcalc.Assumptions.modularWitness e hn).formL 1 = 0
+'VerifiedLcalc.Assumptions.generatedCertificateKeys_sound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+822
+0
+229
+VerifiedLcalc.Certificates.GeneralModularityExamples.additive_modularity :
+  Nonempty
+    (VerifiedLcalc.Assumptions.ModularRealization VerifiedLcalc.Certificates.GeneralModularityExamples.additiveCurve)
+VerifiedLcalc.Certificates.GeneralModularityExamples.curve11_via_general_interface :
+  analyticOrderAt
+      (VerifiedLcalc.Assumptions.modularWitness VerifiedLcalc.Certificates.Batch.C11_a2.result.equation
+          VerifiedLcalc.Certificates.Batch.C11_a2.nonsingular).formL
+      1 =
+    0
+VerifiedLcalc.Certificates.GeneralModularityExamples.curve37_via_general_interface :
+  1 ≤
+    analyticOrderAt
+      (VerifiedLcalc.Assumptions.modularWitness VerifiedLcalc.Certificates.AssumedCurve37.equation
+          VerifiedLcalc.Certificates.AssumedCurve37.nonsingular).formL
+      1
+0
+1
+0
+0
+0
+0
+1
+VerifiedLcalc.Assumptions.generatedRankOneKeys_sound (e : Artifacts.CurveEquation) (N : ℕ)
+  (h : (e, N) ∈ Regression.generatedRankOneKeys) :
+  ∃ (hn : discriminant e ≠ 0), analyticOrderAt (modularWitness e hn).formL 1 = 1
+'VerifiedLcalc.Assumptions.generatedRankOneKeys_sound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ ellipticModularity]
+228
+1
+1
+(2056742584159248245803442298987194899185758696923 / 38474595214591328006951561873567500000000000000000,
+  51320061435730532810654646681477333720630245909020600202859890518136873 /
+    60435752838000564184031212465819750139404534583438406250000000000000000)

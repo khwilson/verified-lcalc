@@ -1,0 +1,72 @@
+name = "verified-lcalc"
+version = "0.1.0"
+defaultTargets = ["VerifiedLcalc", "verified-lcalc", "lmfdb-check", "ec-coefficients", "exp-enclosure", "precision-policy", "ec-central", "ec-batch", "certify-batch", "additive-witnesses", "negative-certificates", "import-lmfdb", "wild-witnesses", "derivative-batch", "certify-derivatives", "conductor-certificates"]
+
+# Local checkout at 3440367ed1804626334f13a3a534a9cbb3385a59.
+# See docs/BUILD.md for the portable dependency configuration.
+[[require]]
+name = "mathlib"
+path = "../mathlib4"
+
+[[lean_lib]]
+name = "VerifiedLcalc"
+
+[[lean_exe]]
+name = "verified-lcalc"
+root = "Main"
+
+[[lean_exe]]
+name = "lmfdb-check"
+root = "RegressionMain"
+
+[[lean_exe]]
+name = "ec-coefficients"
+root = "EcMain"
+
+[[lean_exe]]
+name = "exp-enclosure"
+root = "ExpMain"
+
+[[lean_exe]]
+name = "precision-policy"
+root = "PrecisionMain"
+
+[[lean_exe]]
+name = "ec-central"
+root = "CentralMain"
+
+[[lean_exe]]
+name = "ec-batch"
+root = "BatchMain"
+
+[[lean_exe]]
+name = "certify-batch"
+root = "CertifyBatchMain"
+
+[[lean_exe]]
+name = "additive-witnesses"
+root = "AdditiveMain"
+
+[[lean_exe]]
+name = "import-lmfdb"
+root = "ImportLmfdbMain"
+
+[[lean_exe]]
+name = "negative-certificates"
+root = "NegativeMain"
+
+[[lean_exe]]
+name = "wild-witnesses"
+root = "WildMain"
+
+[[lean_exe]]
+name = "derivative-batch"
+root = "DerivativeBatchMain"
+
+[[lean_exe]]
+name = "certify-derivatives"
+root = "CertifyDerivativeMain"
+
+[[lean_exe]]
+name = "conductor-certificates"
+root = "ConductorMain"

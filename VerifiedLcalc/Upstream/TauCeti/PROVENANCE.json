@@ -1,0 +1,99 @@
+{
+  "repository": "https://github.com/TauCetiProject/TauCeti",
+  "initial_changes": [
+    "Rewrite TauCeti import paths to VerifiedLcalc.Upstream.TauCeti; keep theorem namespaces unchanged."
+  ],
+  "files": [
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/LocalPolynomial.lean",
+      "sha256": "7bc06f3d771f371b3c9b056428036da760d8d2a1301c3d5b648e1aa165b0e1ca",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/LocalPolynomial.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "657d36f6ce85c709572e349243d8f79dfb7dccdb3702ee9d7d717bbdb4f46e54"
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/SingularPointCount.lean",
+      "sha256": "ae8d61d628f97e1ba1589c4b96c3101dd99fcdd325aac870a4773c58a388f539",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/SingularPointCount.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "dc3338b14f3f76af8dd869d5908eedee8eb096a84f88df5f3137c28112f89855"
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Singular.lean",
+      "sha256": "837db63645d10d5630928b33711910ff8ee84cee6a72f106d70b5d0ec9d15261",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Singular.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "837db63645d10d5630928b33711910ff8ee84cee6a72f106d70b5d0ec9d15261"
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/PointCount.lean",
+      "sha256": "1b3171f2b30aefa64f72c8179295fa8f2e8f5bdd6c7e0132a0b76e873bed5416",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/PointCount.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "14315b6c4206ebcfb6df12fe47387d89ad4343b3d6ef28b1d7c6908154f64877"
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Formula/VariableChange.lean",
+      "sha256": "4cdd0fec094f8033cf5c6c01ca510bf7e5c8f2da7756fcb53cde9b91c7b9554f",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Formula/VariableChange.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "4cdd0fec094f8033cf5c6c01ca510bf7e5c8f2da7756fcb53cde9b91c7b9554f"
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/NodePolynomial.lean",
+      "sha256": "5ae3a8ce2f6d9501303c8861d21227aba01afc2c68ac1437d64d68909bad4f22",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/NodePolynomial.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "45bd308c0d12279b497160196c8f15247a504b63cc7ab6ae7476519972bb469e"
+    },
+    {
+      "source": "TauCeti/Algebra/Polynomial/QuadraticDiscriminant.lean",
+      "sha256": "8df515b76023afffe4613d9d507021ba01877bbbeafc96cb0e4812672a8c0cc5",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/Algebra/Polynomial/QuadraticDiscriminant.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "1000f969b1f013abd9928b8c3b6bc489f3ba2dd909592fd7d1823e5a9c7676da"
+    },
+    {
+      "source": "TauCeti/Algebra/QuadraticDiscriminant.lean",
+      "sha256": "ad428db270b680aeb1888347539ad6b4cebd75378149466657ed4337d50ec8a7",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/Algebra/QuadraticDiscriminant.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "ad428db270b680aeb1888347539ad6b4cebd75378149466657ed4337d50ec8a7"
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/LFunction/Basic.lean",
+      "revision": "0642eae29e0a59ef798d04de325386445906e755",
+      "sha256": "be118581d934cff0a205b14fe8dc449a1048b62e1ea4ab2f31d1a951386faf27",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/LFunction/Basic.lean",
+      "excerpt": "Local power-series constant term, local multiplicativity, global multiplicativity, coefficient at one. Continuation import/theorem omitted.",
+      "ported_sha256": "2537119f49e6d4040cb9ec2205cd4ee26e1259e224bae502a2986e19147e7e35"
+    },
+    {
+      "source": "TauCeti/RingTheory/DedekindDomain/AdicValuation/Completion.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "sha256": "eade83d1c3761bf78944625ff32da393b44851c0931cd4c5de191c078bce8c51",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/RingTheory/DedekindDomain/AdicValuation/Completion.lean",
+      "ported_sha256": "f8ba5683303456e66c8f5ccb3e5876d1ae9a29ea9aef711fa557130fca7a8204",
+      "adaptations": [
+        "Omit unused public import TauCeti.RingTheory.Henselian.Basic; all declarations retained.",
+        "Replace deprecated umbrella AdicValuation import by its Completion and Valuation modules."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/Basic.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "sha256": "64396868736b78c5552035782de3a3ec02180631cf1756094c0185a76b9bf43f",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/Basic.lean",
+      "ported_sha256": "c0deb15fb1dd61649ebb37c4a9fac7cbded9644da438fa632c9c597652318154",
+      "excerpt": "Declarations through VariableChange.exists_unit_algebraMap_eq_u_of_isMinimal_smul. Omit unused TauCeti imports and subsequent split-reduction invariance declarations; proof bodies unchanged.",
+      "additional_attribution": "VerifiedLcalc/Upstream/TauCeti/NOTICE.md"
+    }
+  ],
+  "default_revision": "d01c9825761c7e6168457c383458afa8668196a7",
+  "port_changes": [
+    "Rewrite TauCeti import paths under VerifiedLcalc.Upstream.TauCeti; theorem namespaces retained.",
+    "SingularPointCount: replace obsolete unqualified polynomial coeff projection with a typed lambda.",
+    "Polynomial/QuadraticDiscriminant: replace broad Mathlib.Tactic import with explicit tactic modules.",
+    "LFunction/Basic: omit continuation interface and finite-order theorem; multiplicativity proof bodies unchanged."
+  ]
+}

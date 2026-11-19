@@ -1,0 +1,149 @@
+✔ [475/632] Built VerifiedLcalc.Regression.Generated (442ms)
+✔ [832/976] Built VerifiedLcalc.Regression.ConditionalCore (358ms)
+⚠ [7781/7885] Replayed VerifiedLcalc.EllipticCurve.TameArithmetic
+warning: VerifiedLcalc/EllipticCurve/TameArithmetic.lean:159:20: This simp argument is unused:
+  hr
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: VerifiedLcalc/EllipticCurve/TameArithmetic.lean:160:30: This simp argument is unused:
+  hr
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [7898/7949] Replayed VerifiedLcalc.Assumptions.FirstDerivative
+warning: VerifiedLcalc/Assumptions/FirstDerivative.lean:71:38: This simp argument is unused:
+  Complex.real_smul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [one_div, Real.log_inv, Complex.ofReal_neg]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: VerifiedLcalc/Assumptions/FirstDerivative.lean:90:68: This simp argument is unused:
+  Complex.ofReal_div
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [ModularRealization.imaginaryFunction, Complex.ofReal_mul,
+    mul_div_cancel_right₀ _ (show (Real.sqrt m.level : ℂ) ≠ 0 by exact_mod_cast hpos.ne')]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [7902/7949] Replayed VerifiedLcalc.Numerics.RealInterval
+warning: VerifiedLcalc/Numerics/RealInterval.lean:104:15: Unused tactic linter: `<;>` can be replaced with `;`.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/RealInterval.lean:104:15: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [7908/7949] Replayed VerifiedLcalc.Numerics.FourierInterval
+warning: VerifiedLcalc/Numerics/FourierInterval.lean:85:22: This simp argument is unused:
+  ← neg_mul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hr] at he
+
+Note: Simp arguments with `←` have the additional effect of removing the other direction from the simp set, even if the simp argument itself is unused. If the hint above does not work, try replacing `←` with `-` to only get that effect and silence this warning.
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: VerifiedLcalc/Numerics/FourierInterval.lean:87:14: This simp argument is unused:
+  ← neg_mul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [hr] at he
+
+Note: Simp arguments with `←` have the additional effect of removing the other direction from the simp set, even if the simp argument itself is unused. If the hint above does not work, try replacing `←` with `-` to only get that effect and silence this warning.
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [7910/7949] Replayed VerifiedLcalc.Numerics.DerivativeTail
+info: VerifiedLcalc/Numerics/DerivativeTail.lean:45:6: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:27:45: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:38:24: Unused tactic linter: `<;>` can be replaced with `;`.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:38:39: Unused tactic linter: `<;>` can be replaced with `;`.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:38:24: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:38:39: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+info: VerifiedLcalc/Numerics/DerivativeTail.lean:80:41: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:80:29: Unused tactic linter: `congr 1` does not change the goal.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:80:37: Unused tactic linter: `<;>` can be replaced with `;`.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:94:4: Unused tactic linter: `<;>` can be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:94:8: Unused tactic linter: `ring` is never executed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:94:8: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: VerifiedLcalc/Numerics/DerivativeTail.lean:80:37: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+⚠ [7914/7949] Replayed VerifiedLcalc.EllipticCurve.Derivative
+warning: VerifiedLcalc/EllipticCurve/Derivative.lean:75:10: This simp argument is unused:
+  Set.mem_Icc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+ℹ [7916/7949] Replayed VerifiedLcalc.Assumptions.DerivativeEvaluator
+info: VerifiedLcalc/Assumptions/DerivativeEvaluator.lean:25:4: Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+✖ [7946/7949] Building VerifiedLcalc.Assumptions.Generated (4.7s)
+trace: .> LEAN_PATH=/Users/kevin/repo/math/verified-lcalc/.lake/packages/Cli/.lake/build/lib/lean:/Users/kevin/repo/math/verified-lcalc/.lake/packages/batteries/.lake/build/lib/lean:/Users/kevin/repo/math/verified-lcalc/.lake/packages/Qq/.lake/build/lib/lean:/Users/kevin/repo/math/verified-lcalc/.lake/packages/aesop/.lake/build/lib/lean:/Users/kevin/repo/math/verified-lcalc/.lake/packages/proofwidgets/.lake/build/lib/lean:/Users/kevin/repo/math/verified-lcalc/.lake/packages/importGraph/.lake/build/lib/lean:/Users/kevin/repo/math/verified-lcalc/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/Users/kevin/repo/math/verified-lcalc/.lake/packages/plausible/.lake/build/lib/lean:/Users/kevin/repo/math/mathlib4/.lake/build/lib/lean:/Users/kevin/repo/math/verified-lcalc/.lake/build/lib/lean /Users/kevin/.elan/toolchains/leanprover--lean4---v4.36.0-rc2/bin/lean /Users/kevin/repo/math/verified-lcalc/VerifiedLcalc/Assumptions/Generated.lean -o /Users/kevin/repo/math/verified-lcalc/.lake/build/lib/lean/VerifiedLcalc/Assumptions/Generated.olean -i /Users/kevin/repo/math/verified-lcalc/.lake/build/lib/lean/VerifiedLcalc/Assumptions/Generated.ilean -c /Users/kevin/repo/math/verified-lcalc/.lake/build/ir/VerifiedLcalc/Assumptions/Generated.c --setup /Users/kevin/repo/math/verified-lcalc/.lake/build/ir/VerifiedLcalc/Assumptions/Generated.setup.json --json
+error: VerifiedLcalc/Assumptions/Generated.lean:18:49: Application type mismatch: The argument
+  Certificates.Batch.C11_a2.nonsingular
+has type
+  discriminant Certificates.Batch.C11_a2.result.equation ≠ 0
+but is expected to have type
+  discriminant ({ a1 := 0, a2 := 0, a3 := 1, a4 := -7, a6 := 6 }, 5077).1 ≠ 0
+in the application
+  Exists.intro Certificates.Batch.C11_a2.nonsingular
+info: VerifiedLcalc/Assumptions/Generated.lean:31:0: 'VerifiedLcalc.Assumptions.generatedCertificateKeys_sound' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+error: VerifiedLcalc/Assumptions/Generated.lean:30:0: ❌️ Docstring on `#guard_msgs` does not match generated message:
+
+- info: 'VerifiedLcalc.Assumptions.generatedCertificateKeys_sound' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity]
++ info: 'VerifiedLcalc.Assumptions.generatedCertificateKeys_sound' depends on axioms: [propext,
++  sorryAx,
++  Classical.choice,
++  Quot.sound,
++  VerifiedLcalc.Assumptions.ellipticModularity]
+Some required targets logged failures:
+- VerifiedLcalc.Assumptions.Generated
+error: build failed

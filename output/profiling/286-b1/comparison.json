@@ -1,0 +1,16 @@
+{
+  "curve": "286.b1",
+  "precision_bits": 53,
+  "terms": 40,
+  "steps_per_unit": 1,
+  "cutoff": 16,
+  "kernel_payload_seconds": 19.229342,
+  "native_payload_seconds": 0.050555,
+  "payload_speedup": 380.36479082187714,
+  "kernel_file_wall_seconds": 69.84,
+  "native_file_wall_seconds": 46.71,
+  "native_evaluation_axiom": "VerifiedLcalc.ProfileNativeCurve.payload_correct._native.native_decide.ax_1",
+  "experimental_only": true,
+  "production_policy_unchanged": true,
+  "context": "Instrumented scratch runs alongside the ongoing conductor benchmark; whole-file times include loading, profiling and resource contention."
+}

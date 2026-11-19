@@ -1,0 +1,11 @@
+name = "lcalc-volunteer"
+version = "0.1.0"
+defaultTargets = ["certificate-worker"]
+[[require]]
+name = "verified-lcalc"
+path = "../.."
+[[lean_lib]]
+name = "LcalcVolunteer"
+[[lean_exe]]
+name = "certificate-worker"
+root = "WorkerMain"

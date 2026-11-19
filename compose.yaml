@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: lcalc_registry
+      POSTGRES_USER: registry
+      POSTGRES_PASSWORD: ${REGISTRY_POSTGRES_PASSWORD:-registry}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - registry-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U registry -d lcalc_registry"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+volumes:
+  registry-postgres:

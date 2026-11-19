@@ -1,0 +1,228 @@
+'VerifiedLcalc.Box.valid_correct' depends on axioms: [propext]
+'VerifiedLcalc.Box.isZero_correct' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.Box.excludesZero_correct' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.scan_correct' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.certify_correct' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.Box.isZero_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Box.excludesZero_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Witness.sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.scan_analyticOrderAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.computeRank_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Examples.cubic_rank' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Examples.cubicResult_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Regression.checkCase_correct' depends on axioms: [propext]
+'VerifiedLcalc.Regression.pendingBackend_correct' does not depend on any axioms
+'VerifiedLcalc.Lmfdb.has_100_cases' does not depend on any axioms
+'VerifiedLcalc.Lmfdb.distinct_labels' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Lmfdb.ranks_covered' does not depend on any axioms
+'VerifiedLcalc.Artifacts.Subject.center_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Artifacts.check_correct' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.Artifacts.check_request_eq' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.Artifacts.validate_correct' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.Artifacts.check_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Artifacts.check_monomial_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Artifacts.ellipticCurve_not_denotes' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Examples.cubicArtifact_rank' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Examples.firstCurve_no_evidence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Certificates.Cubic.certified_analytic_order' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Regression.CurveInput.equation_correct' does not depend on any axioms
+'VerifiedLcalc.EllipticCurve.weierstrass_correct' does not depend on any axioms
+'VerifiedLcalc.EllipticCurve.b2_correct' depends on axioms: [propext]
+'VerifiedLcalc.EllipticCurve.b4_correct' depends on axioms: [propext]
+'VerifiedLcalc.EllipticCurve.b6_correct' depends on axioms: [propext]
+'VerifiedLcalc.EllipticCurve.b8_correct' depends on axioms: [propext]
+'VerifiedLcalc.EllipticCurve.discriminant_correct' depends on axioms: [propext]
+'VerifiedLcalc.EllipticCurve.residual_correct' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.EllipticCurve.onCurve_correct' depends on axioms: [propext]
+'VerifiedLcalc.EllipticCurve.onCurve_equation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.affinePoints_correct' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.EllipticCurve.affinePoints_nodup' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.EllipticCurve.affineCount_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.pointCount_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.frobeniusTrace_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.isPrime_correct' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.EllipticCurve.goodReduction_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.analysePrime_correct' depends on axioms: [propext]
+'VerifiedLcalc.EllipticCurve.analysePrime_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.pointCount_eq_card_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.localPair_correct' depends on axioms: [propext]
+'VerifiedLcalc.EllipticCurve.localCoefficient_correct' depends on axioms: [propext]
+'VerifiedLcalc.EllipticCurve.localCoefficient_unique' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.EllipticCurve.localSeries_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.localSeries_inverse' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Certificates.Curve11Arithmetic.point_count_two' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'VerifiedLcalc.Certificates.Curve11Arithmetic.trace_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Certificates.Curve11Arithmetic.euler_factor_two' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'VerifiedLcalc.Numerics.boxOfDyadics_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.rational_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.square_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Inclusion.IntervalDyadicReal.expBounds_bounds' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Inclusion.IntervalDyadicReal.exp_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.exponentialBox_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.exp_one_enclosure' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.exp_neg_one_enclosure' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.exp_negative_interval' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.weightedExpBounds_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.expSumBounds_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.expSumBox_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.analyticOrder_zero_of_expSum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.Examples.signedTerms_separated' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.Examples.signedTerms_uncertain' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.PrecisionPolicy.cutoff_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.globalPrecision_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Box.withinCutoff_correct' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.Box.withinCutoff_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.NumericalRanks.check_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.NumericalRanks.check_request_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.NumericalRanks.validate_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.NumericalRanks.enclosures_small' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.NumericalRanks.check_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.NumericalRanks.check_conditional_lowerBound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Certificates.NumericalQuartic.checked' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Certificates.NumericalQuartic.certified_small_derivatives' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'VerifiedLcalc.Certificates.NumericalQuartic.conditional_analytic_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'VerifiedLcalc.Certificates.NumericalQuartic.small_does_not_imply_rank_four' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'VerifiedLcalc.Numerics.rationalExpBounds_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.rationalWeightedBounds_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Numerics.rationalExpSumBounds_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.valuationFuel_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.primeExponent_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.modelFactor_correct' does not depend on any axioms
+'VerifiedLcalc.EllipticCurve.modelFactors_correct' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.EllipticCurve.modelFactors_prime' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.EllipticCurve.coefficientFromFactors_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.modelCoefficients_correct' does not depend on any axioms
+'VerifiedLcalc.EllipticCurve.modelCoefficients_euler' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.piBounds_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.alphaBounds_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.centralTerms_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.centralBox_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.centralFiniteBounds_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.squareTailRatio_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.squareTailBound_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.square_geometric_majorant' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.central_tail_error' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.evaluateCentral_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.centralPayload_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.evaluateCentral_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.analyticOrder_zero_of_central' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.EllipticCurve.Examples.curve11_coefficient_prefix' does not depend on any axioms
+'VerifiedLcalc.Certificates.Central_11_a2_M8_P53_plus.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'VerifiedLcalc.Certificates.Central_11_a2_M8_P53_plus.encloses' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'VerifiedLcalc.EllipticCurve.coefficientFromFactors_model_eq_euler' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'VerifiedLcalc.EllipticCurve.model_eulerCoefficient_abs_le_cube' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'VerifiedLcalc.Numerics.mellin_one_split' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Assumptions.ellipticModularity' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Assumptions.ModularRealization.formL_differentiable' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'VerifiedLcalc.Assumptions.ModularRealization.formL_hasSum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Assumptions.ModularRealization.formL_eq_curveLSeries' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'VerifiedLcalc.Assumptions.modularWitness_normalized' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Assumptions.modularWitness_goodPrime' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Assumptions.modularWitness_formL_differentiable' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Assumptions.modularWitness_formL_hasSum' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Certificates.AssumedCurve11.continuedL_entire' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Certificates.AssumedCurve11.continuedL_matches_euler_series' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Certificates.AssumedCurve11.continuedL_agrees_with_curveLSeries' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Certificates.AssumedCurve11.form_coefficient_two' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Assumptions.check_assumed_exact_sound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Assumptions.check_assumed_numerical_sound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Assumptions.check_assumed_numerical_lowerBound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Assumptions.ModularRealization.central_upper_mellin' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'VerifiedLcalc.Assumptions.ModularRealization.central_zero_of_negative_sign' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'VerifiedLcalc.Certificates.AssumedCurve11.arithmetic_level' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Certificates.AssumedCurve11.arithmetic_sign' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Certificates.AssumedCurve11.realization_level' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Certificates.AssumedCurve11.continuedL_central_integral' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Certificates.AssumedCurve37.arithmetic_sign' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.Certificates.AssumedCurve37.central_vanishing' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Certificates.AssumedCurve37.analytic_rank_at_least_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Certificates.AssumedCurve11Central.actual_prefix' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Certificates.AssumedCurve11Central.analytic_rank_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Certificates.AssumedCurve11Central.certifiedRank_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+'VerifiedLcalc.Assumptions.conditionalCertifiedBackend_sound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]

@@ -1,0 +1,1311 @@
+{
+  "table": "ec_curvedata",
+  "timestamp": "2026-11-18T03:25:40.182282",
+  "data": [
+    {
+      "id": 198,
+      "lmfdb_label": "72.a4",
+      "ainvs": [
+        0,
+        0,
+        0,
+        -39,
+        -70
+      ],
+      "conductor": 72,
+      "analytic_rank": 0
+    },
+    {
+      "id": 197,
+      "lmfdb_label": "72.a5",
+      "ainvs": [
+        0,
+        0,
+        0,
+        6,
+        -7
+      ],
+      "conductor": 72,
+      "analytic_rank": 0
+    },
+    {
+      "id": 202,
+      "lmfdb_label": "72.a6",
+      "ainvs": [
+        0,
+        0,
+        0,
+        141,
+        4718
+      ],
+      "conductor": 72,
+      "analytic_rank": 0
+    },
+    {
+      "id": 204,
+      "lmfdb_label": "73.a1",
+      "ainvs": [
+        1,
+        -1,
+        0,
+        -1,
+        0
+      ],
+      "conductor": 73,
+      "analytic_rank": 0
+    },
+    {
+      "id": 203,
+      "lmfdb_label": "73.a2",
+      "ainvs": [
+        1,
+        -1,
+        0,
+        4,
+        -3
+      ],
+      "conductor": 73,
+      "analytic_rank": 0
+    },
+    {
+      "id": 216,
+      "lmfdb_label": "75.a1",
+      "ainvs": [
+        0,
+        1,
+        1,
+        -208,
+        -1256
+      ],
+      "conductor": 75,
+      "analytic_rank": 0
+    },
+    {
+      "id": 215,
+      "lmfdb_label": "75.a2",
+      "ainvs": [
+        0,
+        1,
+        1,
+        2,
+        4
+      ],
+      "conductor": 75,
+      "analytic_rank": 0
+    },
+    {
+      "id": 213,
+      "lmfdb_label": "75.b1",
+      "ainvs": [
+        1,
+        0,
+        1,
+        -54001,
+        -4834477
+      ],
+      "conductor": 75,
+      "analytic_rank": 0
+    },
+    {
+      "id": 211,
+      "lmfdb_label": "75.b2",
+      "ainvs": [
+        1,
+        0,
+        1,
+        -3376,
+        -75727
+      ],
+      "conductor": 75,
+      "analytic_rank": 0
+    },
+    {
+      "id": 214,
+      "lmfdb_label": "75.b3",
+      "ainvs": [
+        1,
+        0,
+        1,
+        -2751,
+        -104477
+      ],
+      "conductor": 75,
+      "analytic_rank": 0
+    },
+    {
+      "id": 210,
+      "lmfdb_label": "75.b4",
+      "ainvs": [
+        1,
+        0,
+        1,
+        -2001,
+        34273
+      ],
+      "conductor": 75,
+      "analytic_rank": 0
+    },
+    {
+      "id": 209,
+      "lmfdb_label": "75.b5",
+      "ainvs": [
+        1,
+        0,
+        1,
+        -251,
+        -727
+      ],
+      "conductor": 75,
+      "analytic_rank": 0
+    },
+    {
+      "id": 208,
+      "lmfdb_label": "75.b6",
+      "ainvs": [
+        1,
+        0,
+        1,
+        -126,
+        523
+      ],
+      "conductor": 75,
+      "analytic_rank": 0
+    },
+    {
+      "id": 207,
+      "lmfdb_label": "75.b7",
+      "ainvs": [
+        1,
+        0,
+        1,
+        -1,
+        23
+      ],
+      "conductor": 75,
+      "analytic_rank": 0
+    },
+    {
+      "id": 212,
+      "lmfdb_label": "75.b8",
+      "ainvs": [
+        1,
+        0,
+        1,
+        874,
+        -5227
+      ],
+      "conductor": 75,
+      "analytic_rank": 0
+    },
+    {
+      "id": 205,
+      "lmfdb_label": "75.c1",
+      "ainvs": [
+        0,
+        -1,
+        1,
+        -8,
+        -7
+      ],
+      "conductor": 75,
+      "analytic_rank": 0
+    },
+    {
+      "id": 206,
+      "lmfdb_label": "75.c2",
+      "ainvs": [
+        0,
+        -1,
+        1,
+        42,
+        443
+      ],
+      "conductor": 75,
+      "analytic_rank": 0
+    },
+    {
+      "id": 217,
+      "lmfdb_label": "76.a1",
+      "ainvs": [
+        0,
+        -1,
+        0,
+        -21,
+        -31
+      ],
+      "conductor": 76,
+      "analytic_rank": 0
+    },
+    {
+      "id": 218,
+      "lmfdb_label": "77.a1",
+      "ainvs": [
+        0,
+        0,
+        1,
+        2,
+        0
+      ],
+      "conductor": 77,
+      "analytic_rank": 1
+    },
+    {
+      "id": 221,
+      "lmfdb_label": "77.b1",
+      "ainvs": [
+        0,
+        1,
+        1,
+        -89,
+        295
+      ],
+      "conductor": 77,
+      "analytic_rank": 0
+    },
+    {
+      "id": 219,
+      "lmfdb_label": "77.b2",
+      "ainvs": [
+        0,
+        1,
+        1,
+        -49,
+        600
+      ],
+      "conductor": 77,
+      "analytic_rank": 0
+    },
+    {
+      "id": 220,
+      "lmfdb_label": "77.b3",
+      "ainvs": [
+        0,
+        1,
+        1,
+        441,
+        -15815
+      ],
+      "conductor": 77,
+      "analytic_rank": 0
+    },
+    {
+      "id": 223,
+      "lmfdb_label": "77.c1",
+      "ainvs": [
+        1,
+        1,
+        0,
+        -51,
+        110
+      ],
+      "conductor": 77,
+      "analytic_rank": 0
+    },
+    {
+      "id": 222,
+      "lmfdb_label": "77.c2",
+      "ainvs": [
+        1,
+        1,
+        0,
+        4,
+        11
+      ],
+      "conductor": 77,
+      "analytic_rank": 0
+    },
+    {
+      "id": 227,
+      "lmfdb_label": "78.a1",
+      "ainvs": [
+        1,
+        1,
+        0,
+        -20739,
+        1140957
+      ],
+      "conductor": 78,
+      "analytic_rank": 0
+    },
+    {
+      "id": 226,
+      "lmfdb_label": "78.a2",
+      "ainvs": [
+        1,
+        1,
+        0,
+        -2339,
+        -15747
+      ],
+      "conductor": 78,
+      "analytic_rank": 0
+    },
+    {
+      "id": 225,
+      "lmfdb_label": "78.a3",
+      "ainvs": [
+        1,
+        1,
+        0,
+        -1299,
+        17325
+      ],
+      "conductor": 78,
+      "analytic_rank": 0
+    },
+    {
+      "id": 224,
+      "lmfdb_label": "78.a4",
+      "ainvs": [
+        1,
+        1,
+        0,
+        -19,
+        685
+      ],
+      "conductor": 78,
+      "analytic_rank": 0
+    },
+    {
+      "id": 228,
+      "lmfdb_label": "79.a1",
+      "ainvs": [
+        1,
+        1,
+        1,
+        -2,
+        0
+      ],
+      "conductor": 79,
+      "analytic_rank": 1
+    },
+    {
+      "id": 231,
+      "lmfdb_label": "80.a1",
+      "ainvs": [
+        0,
+        0,
+        0,
+        -107,
+        426
+      ],
+      "conductor": 80,
+      "analytic_rank": 0
+    },
+    {
+      "id": 229,
+      "lmfdb_label": "80.a2",
+      "ainvs": [
+        0,
+        0,
+        0,
+        -7,
+        6
+      ],
+      "conductor": 80,
+      "analytic_rank": 0
+    },
+    {
+      "id": 230,
+      "lmfdb_label": "80.a3",
+      "ainvs": [
+        0,
+        0,
+        0,
+        -2,
+        -1
+      ],
+      "conductor": 80,
+      "analytic_rank": 0
+    },
+    {
+      "id": 232,
+      "lmfdb_label": "80.a4",
+      "ainvs": [
+        0,
+        0,
+        0,
+        13,
+        34
+      ],
+      "conductor": 80,
+      "analytic_rank": 0
+    },
+    {
+      "id": 236,
+      "lmfdb_label": "80.b1",
+      "ainvs": [
+        0,
+        -1,
+        0,
+        -41,
+        116
+      ],
+      "conductor": 80,
+      "analytic_rank": 0
+    },
+    {
+      "id": 235,
+      "lmfdb_label": "80.b2",
+      "ainvs": [
+        0,
+        -1,
+        0,
+        -36,
+        140
+      ],
+      "conductor": 80,
+      "analytic_rank": 0
+    },
+    {
+      "id": 234,
+      "lmfdb_label": "80.b3",
+      "ainvs": [
+        0,
+        -1,
+        0,
+        -1,
+        0
+      ],
+      "conductor": 80,
+      "analytic_rank": 0
+    },
+    {
+      "id": 233,
+      "lmfdb_label": "80.b4",
+      "ainvs": [
+        0,
+        -1,
+        0,
+        4,
+        -4
+      ],
+      "conductor": 80,
+      "analytic_rank": 0
+    },
+    {
+      "id": 238,
+      "lmfdb_label": "82.a1",
+      "ainvs": [
+        1,
+        0,
+        1,
+        -12,
+        -16
+      ],
+      "conductor": 82,
+      "analytic_rank": 1
+    },
+    {
+      "id": 237,
+      "lmfdb_label": "82.a2",
+      "ainvs": [
+        1,
+        0,
+        1,
+        -2,
+        0
+      ],
+      "conductor": 82,
+      "analytic_rank": 1
+    },
+    {
+      "id": 239,
+      "lmfdb_label": "83.a1",
+      "ainvs": [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "conductor": 83,
+      "analytic_rank": 1
+    },
+    {
+      "id": 245,
+      "lmfdb_label": "84.a1",
+      "ainvs": [
+        0,
+        -1,
+        0,
+        -36,
+        -72
+      ],
+      "conductor": 84,
+      "analytic_rank": 0
+    },
+    {
+      "id": 244,
+      "lmfdb_label": "84.a2",
+      "ainvs": [
+        0,
+        -1,
+        0,
+        -1,
+        -2
+      ],
+      "conductor": 84,
+      "analytic_rank": 0
+    },
+    {
+      "id": 243,
+      "lmfdb_label": "84.b1",
+      "ainvs": [
+        0,
+        1,
+        0,
+        -1828,
+        -30700
+      ],
+      "conductor": 84,
+      "analytic_rank": 0
+    },
+    {
+      "id": 242,
+      "lmfdb_label": "84.b2",
+      "ainvs": [
+        0,
+        1,
+        0,
+        -113,
+        -516
+      ],
+      "conductor": 84,
+      "analytic_rank": 0
+    },
+    {
+      "id": 241,
+      "lmfdb_label": "84.b3",
+      "ainvs": [
+        0,
+        1,
+        0,
+        -28,
+        -28
+      ],
+      "conductor": 84,
+      "analytic_rank": 0
+    },
+    {
+      "id": 240,
+      "lmfdb_label": "84.b4",
+      "ainvs": [
+        0,
+        1,
+        0,
+        7,
+        0
+      ],
+      "conductor": 84,
+      "analytic_rank": 0
+    },
+    {
+      "id": 246,
+      "lmfdb_label": "85.a1",
+      "ainvs": [
+        1,
+        1,
+        0,
+        -8,
+        -13
+      ],
+      "conductor": 85,
+      "analytic_rank": 0
+    },
+    {
+      "id": 247,
+      "lmfdb_label": "85.a2",
+      "ainvs": [
+        1,
+        1,
+        0,
+        -3,
+        -22
+      ],
+      "conductor": 85,
+      "analytic_rank": 0
+    },
+    {
+      "id": 248,
+      "lmfdb_label": "88.a1",
+      "ainvs": [
+        0,
+        0,
+        0,
+        -4,
+        4
+      ],
+      "conductor": 88,
+      "analytic_rank": 1
+    },
+    {
+      "id": 249,
+      "lmfdb_label": "89.a1",
+      "ainvs": [
+        1,
+        1,
+        1,
+        -1,
+        0
+      ],
+      "conductor": 89,
+      "analytic_rank": 1
+    },
+    {
+      "id": 251,
+      "lmfdb_label": "89.b1",
+      "ainvs": [
+        1,
+        1,
+        0,
+        -1,
+        0
+      ],
+      "conductor": 89,
+      "analytic_rank": 0
+    },
+    {
+      "id": 250,
+      "lmfdb_label": "89.b2",
+      "ainvs": [
+        1,
+        1,
+        0,
+        4,
+        5
+      ],
+      "conductor": 89,
+      "analytic_rank": 0
+    },
+    {
+      "id": 255,
+      "lmfdb_label": "90.a1",
+      "ainvs": [
+        1,
+        -1,
+        0,
+        -1149,
+        -14707
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 254,
+      "lmfdb_label": "90.a2",
+      "ainvs": [
+        1,
+        -1,
+        0,
+        -69,
+        -235
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 253,
+      "lmfdb_label": "90.a3",
+      "ainvs": [
+        1,
+        -1,
+        0,
+        -24,
+        18
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 252,
+      "lmfdb_label": "90.a4",
+      "ainvs": [
+        1,
+        -1,
+        0,
+        6,
+        0
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 259,
+      "lmfdb_label": "90.b1",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -218,
+        -269
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 257,
+      "lmfdb_label": "90.b2",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -128,
+        587
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 256,
+      "lmfdb_label": "90.b3",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -8,
+        11
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 258,
+      "lmfdb_label": "90.b4",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        52,
+        -53
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 267,
+      "lmfdb_label": "90.c1",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -48002,
+        4059929
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 266,
+      "lmfdb_label": "90.c2",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -4082,
+        14681
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 265,
+      "lmfdb_label": "90.c3",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -3002,
+        63929
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 263,
+      "lmfdb_label": "90.c4",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -2597,
+        -50281
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 264,
+      "lmfdb_label": "90.c5",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -617,
+        5231
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 261,
+      "lmfdb_label": "90.c6",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -167,
+        -709
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 262,
+      "lmfdb_label": "90.c7",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -122,
+        1721
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 260,
+      "lmfdb_label": "90.c8",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        13,
+        -61
+      ],
+      "conductor": 90,
+      "analytic_rank": 0
+    },
+    {
+      "id": 268,
+      "lmfdb_label": "91.a1",
+      "ainvs": [
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "conductor": 91,
+      "analytic_rank": 1
+    },
+    {
+      "id": 271,
+      "lmfdb_label": "91.b1",
+      "ainvs": [
+        0,
+        1,
+        1,
+        -117,
+        -1245
+      ],
+      "conductor": 91,
+      "analytic_rank": 1
+    },
+    {
+      "id": 269,
+      "lmfdb_label": "91.b2",
+      "ainvs": [
+        0,
+        1,
+        1,
+        -7,
+        5
+      ],
+      "conductor": 91,
+      "analytic_rank": 1
+    },
+    {
+      "id": 270,
+      "lmfdb_label": "91.b3",
+      "ainvs": [
+        0,
+        1,
+        1,
+        13,
+        42
+      ],
+      "conductor": 91,
+      "analytic_rank": 1
+    },
+    {
+      "id": 274,
+      "lmfdb_label": "92.a1",
+      "ainvs": [
+        0,
+        0,
+        0,
+        -1,
+        1
+      ],
+      "conductor": 92,
+      "analytic_rank": 1
+    },
+    {
+      "id": 273,
+      "lmfdb_label": "92.b1",
+      "ainvs": [
+        0,
+        1,
+        0,
+        -18,
+        -43
+      ],
+      "conductor": 92,
+      "analytic_rank": 0
+    },
+    {
+      "id": 272,
+      "lmfdb_label": "92.b2",
+      "ainvs": [
+        0,
+        1,
+        0,
+        2,
+        1
+      ],
+      "conductor": 92,
+      "analytic_rank": 0
+    },
+    {
+      "id": 276,
+      "lmfdb_label": "94.a1",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -10,
+        -9
+      ],
+      "conductor": 94,
+      "analytic_rank": 0
+    },
+    {
+      "id": 275,
+      "lmfdb_label": "94.a2",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        0,
+        -1
+      ],
+      "conductor": 94,
+      "analytic_rank": 0
+    },
+    {
+      "id": 282,
+      "lmfdb_label": "96.a1",
+      "ainvs": [
+        0,
+        -1,
+        0,
+        -32,
+        -60
+      ],
+      "conductor": 96,
+      "analytic_rank": 0
+    },
+    {
+      "id": 283,
+      "lmfdb_label": "96.a2",
+      "ainvs": [
+        0,
+        -1,
+        0,
+        -17,
+        33
+      ],
+      "conductor": 96,
+      "analytic_rank": 0
+    },
+    {
+      "id": 281,
+      "lmfdb_label": "96.a3",
+      "ainvs": [
+        0,
+        -1,
+        0,
+        -2,
+        0
+      ],
+      "conductor": 96,
+      "analytic_rank": 0
+    },
+    {
+      "id": 284,
+      "lmfdb_label": "96.a4",
+      "ainvs": [
+        0,
+        -1,
+        0,
+        8,
+        -8
+      ],
+      "conductor": 96,
+      "analytic_rank": 0
+    },
+    {
+      "id": 279,
+      "lmfdb_label": "96.b1",
+      "ainvs": [
+        0,
+        1,
+        0,
+        -32,
+        60
+      ],
+      "conductor": 96,
+      "analytic_rank": 0
+    },
+    {
+      "id": 278,
+      "lmfdb_label": "96.b2",
+      "ainvs": [
+        0,
+        1,
+        0,
+        -17,
+        -33
+      ],
+      "conductor": 96,
+      "analytic_rank": 0
+    },
+    {
+      "id": 277,
+      "lmfdb_label": "96.b3",
+      "ainvs": [
+        0,
+        1,
+        0,
+        -2,
+        0
+      ],
+      "conductor": 96,
+      "analytic_rank": 0
+    },
+    {
+      "id": 280,
+      "lmfdb_label": "96.b4",
+      "ainvs": [
+        0,
+        1,
+        0,
+        8,
+        8
+      ],
+      "conductor": 96,
+      "analytic_rank": 0
+    },
+    {
+      "id": 290,
+      "lmfdb_label": "98.a1",
+      "ainvs": [
+        1,
+        1,
+        0,
+        -133795,
+        18781197
+      ],
+      "conductor": 98,
+      "analytic_rank": 0
+    },
+    {
+      "id": 289,
+      "lmfdb_label": "98.a2",
+      "ainvs": [
+        1,
+        1,
+        0,
+        -8355,
+        291341
+      ],
+      "conductor": 98,
+      "analytic_rank": 0
+    },
+    {
+      "id": 288,
+      "lmfdb_label": "98.a3",
+      "ainvs": [
+        1,
+        1,
+        0,
+        -1740,
+        22184
+      ],
+      "conductor": 98,
+      "analytic_rank": 0
+    },
+    {
+      "id": 286,
+      "lmfdb_label": "98.a4",
+      "ainvs": [
+        1,
+        1,
+        0,
+        -515,
+        -4717
+      ],
+      "conductor": 98,
+      "analytic_rank": 0
+    },
+    {
+      "id": 285,
+      "lmfdb_label": "98.a5",
+      "ainvs": [
+        1,
+        1,
+        0,
+        -25,
+        -111
+      ],
+      "conductor": 98,
+      "analytic_rank": 0
+    },
+    {
+      "id": 287,
+      "lmfdb_label": "98.a6",
+      "ainvs": [
+        1,
+        1,
+        0,
+        220,
+        2192
+      ],
+      "conductor": 98,
+      "analytic_rank": 0
+    },
+    {
+      "id": 292,
+      "lmfdb_label": "99.a1",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -17,
+        30
+      ],
+      "conductor": 99,
+      "analytic_rank": 1
+    },
+    {
+      "id": 291,
+      "lmfdb_label": "99.a2",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -2,
+        0
+      ],
+      "conductor": 99,
+      "analytic_rank": 1
+    },
+    {
+      "id": 295,
+      "lmfdb_label": "99.b1",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -1319,
+        -18084
+      ],
+      "conductor": 99,
+      "analytic_rank": 0
+    },
+    {
+      "id": 294,
+      "lmfdb_label": "99.b2",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -104,
+        -102
+      ],
+      "conductor": 99,
+      "analytic_rank": 0
+    },
+    {
+      "id": 293,
+      "lmfdb_label": "99.b3",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        -59,
+        186
+      ],
+      "conductor": 99,
+      "analytic_rank": 0
+    },
+    {
+      "id": 296,
+      "lmfdb_label": "99.b4",
+      "ainvs": [
+        1,
+        -1,
+        1,
+        391,
+        -1092
+      ],
+      "conductor": 99,
+      "analytic_rank": 0
+    },
+    {
+      "id": 298,
+      "lmfdb_label": "99.c1",
+      "ainvs": [
+        1,
+        -1,
+        0,
+        -150,
+        -667
+      ],
+      "conductor": 99,
+      "analytic_rank": 0
+    },
+    {
+      "id": 297,
+      "lmfdb_label": "99.c2",
+      "ainvs": [
+        1,
+        -1,
+        0,
+        -15,
+        8
+      ],
+      "conductor": 99,
+      "analytic_rank": 0
+    },
+    {
+      "id": 301,
+      "lmfdb_label": "99.d1",
+      "ainvs": [
+        0,
+        0,
+        1,
+        -70383,
+        7187035
+      ],
+      "conductor": 99,
+      "analytic_rank": 0
+    }
+  ],
+  "start": 200,
+  "offset": 300,
+  "query": "/api/ec_curvedata/?_format=json&_offset=200&_fields=lmfdb_label,ainvs,conductor,analytic_rank",
+  "next": "/api/ec_curvedata/?_format=json&_offset=300&_fields=lmfdb_label,ainvs,conductor,analytic_rank",
+  "rec_id": "lmfdb_label"
+}

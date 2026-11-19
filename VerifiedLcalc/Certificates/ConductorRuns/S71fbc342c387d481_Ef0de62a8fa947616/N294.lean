@@ -1,0 +1,712 @@
+module
+public import VerifiedLcalc.Assumptions.DerivativeCertification
+@[expose] public section
+set_option maxRecDepth 100000
+set_option maxHeartbeats 10000000
+set_option pp.fullNames true
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a1
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 1, a3 := 0, a4 := -34864, a6 := 2503936 }
+def label : String := "294.a1"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a1.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a1.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a1.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a1.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a1.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a1.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 1, a3 := 0, a4 := -34864, a6 := 2503936 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, -1, -1, 1, -3, 1, 0, -1, 1, 3, 3, -1, 4, 0, 3, 1, 0, -1, 4, -3, 0, -3, 0, 1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (209945806105000391430101873739487566134512836822292722924800038735926635193233136882154724430771153470804712513904198170377170968384783700998107763897881933520513160003517760674504909045539707301532779872615375748732561467320825421496193030352749372270400333150332694953760659827187888186049067100323679760030981534816613507066727845240192807951 : Rat)/1452552398596560062696239430633415352358141802531729953821074974672103686229239583148104817227634481535399639726835092123772859819699212187411251721607689867955929873472716887822564244572520011179753851522800146887780579079348362188163767886423219905337784263856104785569269275809553069131929033958724949488885866589448898388648393800109082542080,            reHi := (30428034919353447963014903044978210932555344868917708351739604546737946321304462098448703326974274862260285880814946573988948282444029689639145931088955226477824831684636520729969425230568267444852996043247008115501628297776563184438071186308195867238122402047698853882934079015558101945422160722059794544984670799530873263602182864301462174073 : Rat)/25483375413974737942039288256726585129090207061960174628439911836352696249635782160493066968905868097112274381172545475855664207363144073463355293361538418736068945148644155926711653413552982652276383360049125383996150510164006354178311717305670524655048846734317627817004724137009702967226825157170613148927822220867524533134182347370334781440,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a1.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a1.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a1.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a1
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a2
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 1, a3 := 0, a4 := 1151, a6 := 18901 }
+def label : String := "294.a2"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a2.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a2.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a2.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a2.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a2.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a2.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 1, a3 := 0, a4 := 1151, a6 := 18901 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, -1, -1, 1, -3, 1, 0, -1, 1, 3, 3, -1, 4, 0, 3, 1, 0, -1, 4, -3, 0, -3, 0, 1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (209945806105000391430101873739487566134512836822292722924800038735926635193233136882154724430771153470804712513904198170377170968384783700998107763897881933520513160003517760674504909045539707301532779872615375748732561467320825421496193030352749372270400333150332694953760659827187888186049067100323679760030981534816613507066727845240192807951 : Rat)/1452552398596560062696239430633415352358141802531729953821074974672103686229239583148104817227634481535399639726835092123772859819699212187411251721607689867955929873472716887822564244572520011179753851522800146887780579079348362188163767886423219905337784263856104785569269275809553069131929033958724949488885866589448898388648393800109082542080,            reHi := (30428034919353447963014903044978210932555344868917708351739604546737946321304462098448703326974274862260285880814946573988948282444029689639145931088955226477824831684636520729969425230568267444852996043247008115501628297776563184438071186308195867238122402047698853882934079015558101945422160722059794544984670799530873263602182864301462174073 : Rat)/25483375413974737942039288256726585129090207061960174628439911836352696249635782160493066968905868097112274381172545475855664207363144073463355293361538418736068945148644155926711653413552982652276383360049125383996150510164006354178311717305670524655048846734317627817004724137009702967226825157170613148927822220867524533134182347370334781440,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a2.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a2.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a2.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_a2
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b1
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 1, a3 := 0, a4 := -6738, a6 := -209880 }
+def label : String := "294.b1"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b1.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b1.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b1.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b1.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b1.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b1.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 1, a3 := 0, a4 := -6738, a6 := -209880 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, -1, -1, 1, 4, 1, 0, -1, 1, -4, -4, -1, 4, 0, -4, 1, 0, -1, 4, 4, 0, 4, 0, 1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (257133181904661171562215707713957263778356500032797748689157958875837489401861418899869198745772559966382835756050884416211595205733207829956826266075443090364348623678578964663884574245044867880722172425838894971235041345054691126917922918169370569590095894106663957650718957827982119922852958976721096829578865208538595899930772328448544881669 : Rat)/484184132865520020898746476877805117452713934177243317940358324890701228743079861049368272409211493845133213242278364041257619939899737395803750573869229955985309957824238962607521414857506670393251283840933382295926859693116120729387922628807739968445928087952034928523089758603184356377309677986241649829628622196482966129549464600036360847360,            reHi := (120834301579585780816739241395117517052983325650881142175964357879787713523442750475458215181032412077900718959026175591500877796153206973699665340724388468351782747986389712431561593198289311919636267338096800759379282301312638486452444269490689135012970131576767477803893700369961924294536338542609524042180671904404429655777036762999179324523 : Rat)/76450126241924213826117864770179755387270621185880523885319735509058088748907346481479200906717604291336823143517636427566992622089432220390065880084615256208206835445932467780134960240658947956829150080147376151988451530492019062534935151917011573965146540202952883451014172411029108901680475471511839446783466662602573599402547042111004344320,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b1.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b1.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b1.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b1
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b2
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 1, a3 := 0, a4 := 122, a6 := -10940 }
+def label : String := "294.b2"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b2.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 2, 2, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b2.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b2.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b2.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b2.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b2.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 1, a3 := 0, a4 := 122, a6 := -10940 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, -1, -1, 1, 4, 1, 0, -1, 1, -4, -4, -1, 4, 0, -4, 1, 0, -1, 4, 4, 0, 4, 0, 1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (257133181904661171562215707713957263778356500032797748689157958875837489401861418899869198745772559966382835756050884416211595205733207829956826266075443090364348623678578964663884574245044867880722172425838894971235041345054691126917922918169370569590095894106663957650718957827982119922852958976721096829578865208538595899930772328448544881669 : Rat)/484184132865520020898746476877805117452713934177243317940358324890701228743079861049368272409211493845133213242278364041257619939899737395803750573869229955985309957824238962607521414857506670393251283840933382295926859693116120729387922628807739968445928087952034928523089758603184356377309677986241649829628622196482966129549464600036360847360,            reHi := (120834301579585780816739241395117517052983325650881142175964357879787713523442750475458215181032412077900718959026175591500877796153206973699665340724388468351782747986389712431561593198289311919636267338096800759379282301312638486452444269490689135012970131576767477803893700369961924294536338542609524042180671904404429655777036762999179324523 : Rat)/76450126241924213826117864770179755387270621185880523885319735509058088748907346481479200906717604291336823143517636427566992622089432220390065880084615256208206835445932467780134960240658947956829150080147376151988451530492019062534935151917011573965146540202952883451014172411029108901680475471511839446783466662602573599402547042111004344320,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b2.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b2.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b2.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_b2
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c1
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 0, a3 := 1, a4 := -138, a6 := 592 }
+def label : String := "294.c1"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c1.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c1.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c1.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c1.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c1.conductor_formula
+theorem root_formula : wildSign equation localData = -1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c1.root_formula
+theorem rank_lower_bound : 1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) := rank_lower_bound_of_wild_negative equation nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c1.rank_lower_bound
+def result : DerivativeResult := { equation := { a1 := 1, a2 := 0, a3 := 1, a4 := -138, a6 := 592 },   conductor := 294,   policy := { precisionBits := 53 },   termLimit := 40,   stepsPerUnit := 1,   cutoff := 16,   coefficients := [1, -1, 1, 1, -4, -1, 0, -1, 1, 4, -4, 1, -4, 0, -4, 1, 0, -1, -4, -4, 0, 4, 0, -1, 11, 4, 1, 0, 2, 4,                    -8, -1, -4, 0, 0, 1, -6, 4, -4, 4],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   finite := ((596822517591133 : Rat)/562949953421312, (2902092106600933 : Rat)/1125899906842624),   tail := (47136558381680307594923146418094635009765625 : Rat)/185579410471328438333400162148060905202515968,   box := { reLo := (19609566690672334666242110917959576559097893030739 : Rat)/24324264489297961069235426053070638966704172957696,            reHi := (137751826310370247323628343473708774759330927864139 : Rat)/48648528978595922138470852106141277933408345915392,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : DerivativePayloadCorrect result := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c1.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 1 := certifyDerivativeModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c1.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 40 = (List.range 40).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 40
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c1.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c1
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c2
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 0, a3 := 1, a4 := 2, a6 := 32 }
+def label : String := "294.c2"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c2.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 2, 2, 3, 3, 3, 3, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c2.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c2.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c2.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c2.conductor_formula
+theorem root_formula : wildSign equation localData = -1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c2.root_formula
+theorem rank_lower_bound : 1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) := rank_lower_bound_of_wild_negative equation nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c2.rank_lower_bound
+def result : DerivativeResult := { equation := { a1 := 1, a2 := 0, a3 := 1, a4 := 2, a6 := 32 },   conductor := 294,   policy := { precisionBits := 53 },   termLimit := 40,   stepsPerUnit := 1,   cutoff := 16,   coefficients := [1, -1, 1, 1, -4, -1, 0, -1, 1, 4, -4, 1, -4, 0, -4, 1, 0, -1, -4, -4, 0, 4, 0, -1, 11, 4, 1, 0, 2, 4,                    -8, -1, -4, 0, 0, 1, -6, 4, -4, 4],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   finite := ((596822517591133 : Rat)/562949953421312, (2902092106600933 : Rat)/1125899906842624),   tail := (47136558381680307594923146418094635009765625 : Rat)/185579410471328438333400162148060905202515968,   box := { reLo := (19609566690672334666242110917959576559097893030739 : Rat)/24324264489297961069235426053070638966704172957696,            reHi := (137751826310370247323628343473708774759330927864139 : Rat)/48648528978595922138470852106141277933408345915392,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : DerivativePayloadCorrect result := by
+  have h := VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c1.payload_correct
+  exact ⟨h.1,h.2.1,h.2.2.1,by decide +kernel,h.2.2.2.2⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c2.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 1 := certifyDerivativeModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c2.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 40 = (List.range 40).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 40
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c2.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_c2
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d1
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 0, a3 := 1, a4 := -712, a6 := -7402 }
+def label : String := "294.d1"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d1.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d1.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d1.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d1.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d1.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d1.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 0, a3 := 1, a4 := -712, a6 := -7402 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, -1, 1, 1, 3, -1, 0, -1, 1, -3, 3, 1, -4, 0, 3, 1, 0, -1, -4, 3, 0, -3, 0, -1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (13168755328395105612689234167569323355264374119671231737517834141928980498759043099046011802639075396787003989230156165556406463589224303525929050603424983068841495119904863014910581846805213159159129688472054573402805453044177551532187901828167963893891911070349892025334207937824342429895474037285034225551889042957856523250933103957932845649 : Rat)/15290025248384842765223572954035951077454124237176104777063947101811617749781469296295840181343520858267364628703527285513398524417886444078013176016923051241641367089186493556026992048131789591365830016029475230397690306098403812506987030383402314793029308040590576690202834482205821780336095094302367889356693332520514719880509408422200868864,            reHi := (555096788099136235133444969148671235154251472414956733637710332782277890500646059427758497291494935274559392333882518454970299034380243488679294023099587873451088856482345181470051520908669357435041062999461854261625353909028028697406343052578074326044461627050348343756046319630587290708616825519832572146304942623887906445419268059189354290173 : Rat)/290510479719312012539247886126683070471628360506345990764214994934420737245847916629620963445526896307079927945367018424754571963939842437482250344321537973591185974694543377564512848914504002235950770304560029377556115815869672437632753577284643981067556852771220957113853855161910613826385806791744989897777173317889779677729678760021816508416,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d1.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d1.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d1.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d1
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d2
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 0, a3 := 1, a4 := 23, a6 := -52 }
+def label : String := "294.d2"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d2.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 3, 3, 3, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d2.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d2.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d2.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d2.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d2.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 0, a3 := 1, a4 := 23, a6 := -52 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, -1, 1, 1, 3, -1, 0, -1, 1, -3, 3, 1, -4, 0, 3, 1, 0, -1, -4, 3, 0, -3, 0, -1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (13168755328395105612689234167569323355264374119671231737517834141928980498759043099046011802639075396787003989230156165556406463589224303525929050603424983068841495119904863014910581846805213159159129688472054573402805453044177551532187901828167963893891911070349892025334207937824342429895474037285034225551889042957856523250933103957932845649 : Rat)/15290025248384842765223572954035951077454124237176104777063947101811617749781469296295840181343520858267364628703527285513398524417886444078013176016923051241641367089186493556026992048131789591365830016029475230397690306098403812506987030383402314793029308040590576690202834482205821780336095094302367889356693332520514719880509408422200868864,            reHi := (555096788099136235133444969148671235154251472414956733637710332782277890500646059427758497291494935274559392333882518454970299034380243488679294023099587873451088856482345181470051520908669357435041062999461854261625353909028028697406343052578074326044461627050348343756046319630587290708616825519832572146304942623887906445419268059189354290173 : Rat)/290510479719312012539247886126683070471628360506345990764214994934420737245847916629620963445526896307079927945367018424754571963939842437482250344321537973591185974694543377564512848914504002235950770304560029377556115815869672437632753577284643981067556852771220957113853855161910613826385806791744989897777173317889779677729678760021816508416,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d2.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d2.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d2.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_d2
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e1
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 1, a3 := 1, a4 := -6910, a6 := -232261 }
+def label : String := "294.e1"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e1.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e1.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e1.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e1.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e1.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e1.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 1, a3 := 1, a4 := -6910, a6 := -232261 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, 1, -1, 1, 1, -1, 0, 1, 1, 1, 5, -1, 0, 0, -1, 1, -4, 1, 8, 1, 0, 5, -4, -1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (170816571446052372164016366170243092915152566369507696160227681745197756681758919983143269084919064854059434933494369026255049508536396792435905104433390593581937538441856009489115162769002282208368564318938113016835846291388668281723475839863026099697463979732764147982358954100997563318769400421718078698546835279703004205605715819679433215619559 : Rat)/131064920273366534887899142471768939101238487259209171987086226560798278765146002387132842354462711295463367492275197158552735736039013530448722943803524631931715826275653608416605219914120459470296251372018813253797432250775048372824315363905725919150863149346400839497904066194200442314750212064121874288497163193032581369991120455963688755527680,            reHi := (16229950773200024976520026249066423007670587299668365357828432362135582964640716704558123284980207071558114019341616423588792763909056689090095748876678527102762288358270878712889295981022167163110940204158211292895740121799158036255044812356570757762918788958548626299834950387727916621286539983700938858668042348143295091889487484804196836177571 : Rat)/6898153698598238678310481182724681005328341434695219578267696134778856777112947494059623281813826910287545657488168271502775565054684922655195944410711822733248201382929137285084485258637918919489276388000990171252496434251318335411806071784511890481624376281389517868310740326010549595513169056006414436236692799633293756315322129261246776606720,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e1.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e1.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e1.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e1
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e2
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 1, a3 := 1, a4 := -50, a6 := 293 }
+def label : String := "294.e2"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e2.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 3, 7, 7, 7, 7, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e2.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e2.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e2.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e2.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e2.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 1, a3 := 1, a4 := -50, a6 := 293 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, 1, -1, 1, 1, -1, 0, 1, 1, 1, 5, -1, 0, 0, -1, 1, -4, 1, 8, 1, 0, 5, -4, -1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (170816571446052372164016366170243092915152566369507696160227681745197756681758919983143269084919064854059434933494369026255049508536396792435905104433390593581937538441856009489115162769002282208368564318938113016835846291388668281723475839863026099697463979732764147982358954100997563318769400421718078698546835279703004205605715819679433215619559 : Rat)/131064920273366534887899142471768939101238487259209171987086226560798278765146002387132842354462711295463367492275197158552735736039013530448722943803524631931715826275653608416605219914120459470296251372018813253797432250775048372824315363905725919150863149346400839497904066194200442314750212064121874288497163193032581369991120455963688755527680,            reHi := (16229950773200024976520026249066423007670587299668365357828432362135582964640716704558123284980207071558114019341616423588792763909056689090095748876678527102762288358270878712889295981022167163110940204158211292895740121799158036255044812356570757762918788958548626299834950387727916621286539983700938858668042348143295091889487484804196836177571 : Rat)/6898153698598238678310481182724681005328341434695219578267696134778856777112947494059623281813826910287545657488168271502775565054684922655195944410711822733248201382929137285084485258637918919489276388000990171252496434251318335411806071784511890481624376281389517868310740326010549595513169056006414436236692799633293756315322129261246776606720,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e2.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e2.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e2.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_e2
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f1
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 0, a3 := 0, a4 := -141, a6 := 657 }
+def label : String := "294.f1"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f1.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f1.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f1.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f1.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f1.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f1.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 0, a3 := 0, a4 := -141, a6 := 657 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, 1, 1, 1, -1, 1, 0, 1, 1, -1, 5, 1, 0, 0, -1, 1, 4, 1, -8, -1, 0, 5, -4, 1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (11639630525115486200518367514586104900183198006999128127360150137427496304413360073068221128340908608511321246767983211771514124221818277006385462800903725306649171808511962198720186764403223163801947304325118145094552963697079524796061757936600404024061201521722507971395862152068956346988302714723869083019436359019844737354215890570292347144541 : Rat)/6898153698598238678310481182724681005328341434695219578267696134778856777112947494059623281813826910287545657488168271502775565054684922655195944410711822733248201382929137285084485258637918919489276388000990171252496434251318335411806071784511890481624376281389517868310740326010549595513169056006414436236692799633293756315322129261246776606720,            reHi := (358705473221942340199713115339154937334069354457174680058355385746500749430268538791757274768182133067259835122588024045590781365950227563397237917440672202196880204727017967831465009394080134002976298342245146304979722333039845378247548995707225974255155839392387403171026484155143023078452610848353272193515260156396652550024648312435861267500569 : Rat)/131064920273366534887899142471768939101238487259209171987086226560798278765146002387132842354462711295463367492275197158552735736039013530448722943803524631931715826275653608416605219914120459470296251372018813253797432250775048372824315363905725919150863149346400839497904066194200442314750212064121874288497163193032581369991120455963688755527680,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f1.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f1.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f1.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f1
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f2
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 0, a3 := 0, a4 := -1, a6 := -1 }
+def label : String := "294.f2"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f2.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 3, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f2.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f2.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f2.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f2.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f2.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 0, a3 := 0, a4 := -1, a6 := -1 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, 1, 1, 1, -1, 1, 0, 1, 1, -1, 5, 1, 0, 0, -1, 1, 4, 1, -8, -1, 0, 5, -4, 1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (11639630525115486200518367514586104900183198006999128127360150137427496304413360073068221128340908608511321246767983211771514124221818277006385462800903725306649171808511962198720186764403223163801947304325118145094552963697079524796061757936600404024061201521722507971395862152068956346988302714723869083019436359019844737354215890570292347144541 : Rat)/6898153698598238678310481182724681005328341434695219578267696134778856777112947494059623281813826910287545657488168271502775565054684922655195944410711822733248201382929137285084485258637918919489276388000990171252496434251318335411806071784511890481624376281389517868310740326010549595513169056006414436236692799633293756315322129261246776606720,            reHi := (358705473221942340199713115339154937334069354457174680058355385746500749430268538791757274768182133067259835122588024045590781365950227563397237917440672202196880204727017967831465009394080134002976298342245146304979722333039845378247548995707225974255155839392387403171026484155143023078452610848353272193515260156396652550024648312435861267500569 : Rat)/131064920273366534887899142471768939101238487259209171987086226560798278765146002387132842354462711295463367492275197158552735736039013530448722943803524631931715826275653608416605219914120459470296251372018813253797432250775048372824315363905725919150863149346400839497904066194200442314750212064121874288497163193032581369991120455963688755527680,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f2.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f2.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f2.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_f2
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g1
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 0, a3 := 0, a4 := -65857, a6 := -6510547 }
+def label : String := "294.g1"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g1.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 3, 3, 7, 7, 7, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g1.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g1.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g1.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g1.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g1.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 0, a3 := 0, a4 := -65857, a6 := -6510547 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, 1, 1, 1, 2, 1, 0, 1, 1, 2, -4, 1, -6, 0, 2, 1, -2, 1, 4, 2, 0, -4, 8, 1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (3168249478033980849552809128895225110060038217651732415896272660364042640485890588268126296483464394766099822326822541902507204349979621055507711343725847777779960595058073836345372215817880656799979910412611609232856758914652457838408852009043054878400508033254478870732719138252043038371658884390392893985909041835064961112047886616622862834796731 : Rat)/1703843963553764953542688852132996208316100334369719235832120945290377623946898031032726950608015246841023777399577563061185564568507175895833398269445820215112305741583496909415867858883565973113851267836244572299366619260075628846716099730774436948961220941503210913472752860524605750091752756833584365750463121509423557809884565927527953821859840,            reHi := (260864836327142442258960377809177141997304842021094668775428019457783567605757414002185934806482975186267053862415470294225859812913160838223204889476131673377721703400880309732348809324979897367148425115852645108142859882000064991099740741008437567082213161345116334638791937212747343972088111252050335364722796613312536177028406734745925768283719 : Rat)/89675998081777102818036255375420853069268438651037854517480049752125138102468317422775102663579749833738093547346187529536082345710903994517547277339253695532226617978078784706098308362292945953360593044012872226282453645267138360353478933198654576261116891658063732288039624238137144741671197728083387671077006395232818832099187680396208095887360,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g1.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g1.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g1.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g1
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g2
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 0, a3 := 0, a4 := -44787, a6 := 3609423 }
+def label : String := "294.g2"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g2.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g2.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g2.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g2.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g2.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g2.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 0, a3 := 0, a4 := -44787, a6 := 3609423 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, 1, 1, 1, 2, 1, 0, 1, 1, 2, -4, 1, -6, 0, 2, 1, -2, 1, 4, 2, 0, -4, 8, 1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (3168249478033980849552809128895225110060038217651732415896272660364042640485890588268126296483464394766099822326822541902507204349979621055507711343725847777779960595058073836345372215817880656799979910412611609232856758914652457838408852009043054878400508033254478870732719138252043038371658884390392893985909041835064961112047886616622862834796731 : Rat)/1703843963553764953542688852132996208316100334369719235832120945290377623946898031032726950608015246841023777399577563061185564568507175895833398269445820215112305741583496909415867858883565973113851267836244572299366619260075628846716099730774436948961220941503210913472752860524605750091752756833584365750463121509423557809884565927527953821859840,            reHi := (260864836327142442258960377809177141997304842021094668775428019457783567605757414002185934806482975186267053862415470294225859812913160838223204889476131673377721703400880309732348809324979897367148425115852645108142859882000064991099740741008437567082213161345116334638791937212747343972088111252050335364722796613312536177028406734745925768283719 : Rat)/89675998081777102818036255375420853069268438651037854517480049752125138102468317422775102663579749833738093547346187529536082345710903994517547277339253695532226617978078784706098308362292945953360593044012872226282453645267138360353478933198654576261116891658063732288039624238137144741671197728083387671077006395232818832099187680396208095887360,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g2.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g2.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g2.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g2
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g3
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 0, a3 := 0, a4 := -5097, a6 := -49995 }
+def label : String := "294.g3"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g3.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g3.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g3.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g3.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g3.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g3.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 0, a3 := 0, a4 := -5097, a6 := -49995 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, 1, 1, 1, 2, 1, 0, 1, 1, 2, -4, 1, -6, 0, 2, 1, -2, 1, 4, 2, 0, -4, 8, 1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (3168249478033980849552809128895225110060038217651732415896272660364042640485890588268126296483464394766099822326822541902507204349979621055507711343725847777779960595058073836345372215817880656799979910412611609232856758914652457838408852009043054878400508033254478870732719138252043038371658884390392893985909041835064961112047886616622862834796731 : Rat)/1703843963553764953542688852132996208316100334369719235832120945290377623946898031032726950608015246841023777399577563061185564568507175895833398269445820215112305741583496909415867858883565973113851267836244572299366619260075628846716099730774436948961220941503210913472752860524605750091752756833584365750463121509423557809884565927527953821859840,            reHi := (260864836327142442258960377809177141997304842021094668775428019457783567605757414002185934806482975186267053862415470294225859812913160838223204889476131673377721703400880309732348809324979897367148425115852645108142859882000064991099740741008437567082213161345116334638791937212747343972088111252050335364722796613312536177028406734745925768283719 : Rat)/89675998081777102818036255375420853069268438651037854517480049752125138102468317422775102663579749833738093547346187529536082345710903994517547277339253695532226617978078784706098308362292945953360593044012872226282453645267138360353478933198654576261116891658063732288039624238137144741671197728083387671077006395232818832099187680396208095887360,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g3.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g3.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g3.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g3
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g4
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 0, a3 := 0, a4 := -4117, a6 := -101935 }
+def label : String := "294.g4"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g4.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 2, 2, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g4.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g4.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g4.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g4.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g4.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 0, a3 := 0, a4 := -4117, a6 := -101935 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, 1, 1, 1, 2, 1, 0, 1, 1, 2, -4, 1, -6, 0, 2, 1, -2, 1, 4, 2, 0, -4, 8, 1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (3168249478033980849552809128895225110060038217651732415896272660364042640485890588268126296483464394766099822326822541902507204349979621055507711343725847777779960595058073836345372215817880656799979910412611609232856758914652457838408852009043054878400508033254478870732719138252043038371658884390392893985909041835064961112047886616622862834796731 : Rat)/1703843963553764953542688852132996208316100334369719235832120945290377623946898031032726950608015246841023777399577563061185564568507175895833398269445820215112305741583496909415867858883565973113851267836244572299366619260075628846716099730774436948961220941503210913472752860524605750091752756833584365750463121509423557809884565927527953821859840,            reHi := (260864836327142442258960377809177141997304842021094668775428019457783567605757414002185934806482975186267053862415470294225859812913160838223204889476131673377721703400880309732348809324979897367148425115852645108142859882000064991099740741008437567082213161345116334638791937212747343972088111252050335364722796613312536177028406734745925768283719 : Rat)/89675998081777102818036255375420853069268438651037854517480049752125138102468317422775102663579749833738093547346187529536082345710903994517547277339253695532226617978078784706098308362292945953360593044012872226282453645267138360353478933198654576261116891658063732288039624238137144741671197728083387671077006395232818832099187680396208095887360,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g4.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g4.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g4.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g4
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g5
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 0, a3 := 0, a4 := -197, a6 := -2367 }
+def label : String := "294.g5"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g5.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 7, 7, 7, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g5.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g5.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g5.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g5.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g5.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 0, a3 := 0, a4 := -197, a6 := -2367 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, 1, 1, 1, 2, 1, 0, 1, 1, 2, -4, 1, -6, 0, 2, 1, -2, 1, 4, 2, 0, -4, 8, 1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (3168249478033980849552809128895225110060038217651732415896272660364042640485890588268126296483464394766099822326822541902507204349979621055507711343725847777779960595058073836345372215817880656799979910412611609232856758914652457838408852009043054878400508033254478870732719138252043038371658884390392893985909041835064961112047886616622862834796731 : Rat)/1703843963553764953542688852132996208316100334369719235832120945290377623946898031032726950608015246841023777399577563061185564568507175895833398269445820215112305741583496909415867858883565973113851267836244572299366619260075628846716099730774436948961220941503210913472752860524605750091752756833584365750463121509423557809884565927527953821859840,            reHi := (260864836327142442258960377809177141997304842021094668775428019457783567605757414002185934806482975186267053862415470294225859812913160838223204889476131673377721703400880309732348809324979897367148425115852645108142859882000064991099740741008437567082213161345116334638791937212747343972088111252050335364722796613312536177028406734745925768283719 : Rat)/89675998081777102818036255375420853069268438651037854517480049752125138102468317422775102663579749833738093547346187529536082345710903994517547277339253695532226617978078784706098308362292945953360593044012872226282453645267138360353478933198654576261116891658063732288039624238137144741671197728083387671077006395232818832099187680396208095887360,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g5.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g5.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g5.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g5
+
+namespace VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g6
+open VerifiedLcalc VerifiedLcalc.EllipticCurve VerifiedLcalc.Assumptions
+def equation : Artifacts.CurveEquation := { a1 := 1, a2 := 0, a3 := 0, a4 := 18913, a6 := -381333 }
+def label : String := "294.g6"
+def inputConductor : Nat := 294
+theorem nonsingular : discriminant equation ≠ 0 := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g6.nonsingular
+def minimality : MinimalityWitness := { primes := [2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7, 7] }
+theorem minimality_valid : minimality.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g6.minimality_valid
+theorem globally_minimal : GloballyMinimalInput equation := minimal_of_witness equation minimality minimality_valid
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g6.globally_minimal
+def localData : WildData := { atTwo := none, atThree := none }
+theorem local_data_valid : localData.Valid equation := by decide +kernel
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g6.local_data_valid
+theorem conductor_formula : wildLevel equation localData = 294 := (wildLevel_eq_fast equation localData).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g6.conductor_formula
+theorem root_formula : wildSign equation localData = 1 := (wildSign_eq_fast equation localData local_data_valid).trans (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g6.root_formula
+def result : CentralResult := { equation := { a1 := 1, a2 := 0, a3 := 0, a4 := 18913, a6 := -381333 },   conductor := 294,   rootNumber := 1,   policy := { precisionBits := 53 },   termLimit := 24,   coefficients := [1, 1, 1, 1, 2, 1, 0, 1, 1, 2, -4, 1, -6, 0, 2, 1, -2, 1, 4, 2, 0, -4, 8, 1],   alphaLo := (2698607540904403791717525880832 : Rat)/7364334835998841381072998046875,   alphaHi := (5397215081808807583452231630848 : Rat)/14728669671997682666778564453125,   geometricUpper := (24389658260043 : Rat)/35184372088832,   tail := (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/35641084495069563555299703855561657523203086799944300179636240330563211537952142881808485271197018317639544589052511155042887003305096606242454955750403382847648874333768050247149165613360814898288648056012762774819790923306302593256380024203734999517550834593451227716090523268545039115002552667371486921577373735479055291096758527790678016,   box := { reLo := (3168249478033980849552809128895225110060038217651732415896272660364042640485890588268126296483464394766099822326822541902507204349979621055507711343725847777779960595058073836345372215817880656799979910412611609232856758914652457838408852009043054878400508033254478870732719138252043038371658884390392893985909041835064961112047886616622862834796731 : Rat)/1703843963553764953542688852132996208316100334369719235832120945290377623946898031032726950608015246841023777399577563061185564568507175895833398269445820215112305741583496909415867858883565973113851267836244572299366619260075628846716099730774436948961220941503210913472752860524605750091752756833584365750463121509423557809884565927527953821859840,            reHi := (260864836327142442258960377809177141997304842021094668775428019457783567605757414002185934806482975186267053862415470294225859812913160838223204889476131673377721703400880309732348809324979897367148425115852645108142859882000064991099740741008437567082213161345116334638791937212747343972088111252050335364722796613312536177028406734745925768283719 : Rat)/89675998081777102818036255375420853069268438651037854517480049752125138102468317422775102663579749833738093547346187529536082345710903994517547277339253695532226617978078784706098308362292945953360593044012872226282453645267138360353478933198654576261116891658063732288039624238137144741671197728083387671077006395232818832099187680396208095887360,            imLo := 0,            imHi := 0 } }
+theorem payload_correct : CentralPayloadCorrect result := by
+  unfold CentralPayloadCorrect
+  exact ⟨by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, by decide +kernel, (18702639974213520748029193633031427345055650055249214649443405599676164736666234064798239282757617995619485389441322785269744604475082187958497948251841949839490176209719971900846209968508873917402436627609637654692954995749301325991326380706552402386751130140387903394150253701709785172809471309235929324462244300226480479722745058766796875 : Rat)/71282168990139127110599407711123315046406173599888600359272480661126423075904285763616970542394036635279089178105022310085774006610193212484909911500806765695297748667536100494298331226721629796577296112025525549639581846612605186512760048407469999035101669186902455432181046537090078230005105334742973843154747470958110582193517055581356032, by decide +kernel, by decide +kernel, by decide +kernel⟩
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g6.payload_correct
+theorem analytic_rank : analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 0 := certifyWildCentralModel result nonsingular minimality minimality_valid localData local_data_valid (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g6.analytic_rank
+theorem coefficients_correct : modelCoefficients equation 24 = (List.range 24).map (fun j => (weierstrass equation ℚ).LFunction (j+1)) := minimal_prefix equation nonsingular globally_minimal 24
+
+#print axioms VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g6.coefficients_correct
+end VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N294.C294_g6

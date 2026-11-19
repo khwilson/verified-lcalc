@@ -1,0 +1,10 @@
+VerifiedLcalc.Assumptions.generatedCertificateKeys_sound (e : VerifiedLcalc.Artifacts.CurveEquation) (N : ℕ)
+  (h : (e, N) ∈ VerifiedLcalc.Regression.generatedCertificateKeys) :
+  ∃ (hn : VerifiedLcalc.EllipticCurve.discriminant e ≠ 0),
+    analyticOrderAt (VerifiedLcalc.Assumptions.modularWitness e hn).formL 1 = 0
+'VerifiedLcalc.Assumptions.generatedCertificateKeys_sound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+822
+0

@@ -1,0 +1,8 @@
+{
+  "exit_code": 124,
+  "timeout": true,
+  "wall_seconds": 180.02652129204944,
+  "timeout_seconds": 180,
+  "cbv_max_steps": 5000000,
+  "detailed_profiler": false
+}

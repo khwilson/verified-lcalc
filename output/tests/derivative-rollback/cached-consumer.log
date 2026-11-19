@@ -1,0 +1,14 @@
+VerifiedLcalc.Assumptions.generatedRankOneKeys_sound (e : VerifiedLcalc.Artifacts.CurveEquation) (N : ℕ)
+  (h : (e, N) ∈ VerifiedLcalc.Regression.generatedRankOneKeys) :
+  ∃ (hn : VerifiedLcalc.EllipticCurve.discriminant e ≠ 0),
+    analyticOrderAt (VerifiedLcalc.Assumptions.modularWitness e hn).formL 1 = 1
+'VerifiedLcalc.Assumptions.generatedRankOneKeys_sound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+228
+1
+1
+(2056742584159248245803442298987194899185758696923 / 38474595214591328006951561873567500000000000000000,
+  51320061435730532810654646681477333720630245909020600202859890518136873 /
+    60435752838000564184031212465819750139404534583438406250000000000000000)

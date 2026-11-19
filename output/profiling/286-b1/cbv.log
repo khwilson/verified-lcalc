@@ -1,0 +1,120 @@
+'VerifiedLcalc.ProfileCbvCurve.nonsingular' does not depend on any axioms
+'VerifiedLcalc.ProfileCbvCurve.minimality_valid' does not depend on any axioms
+'VerifiedLcalc.ProfileCbvCurve.globally_minimal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.ProfileCbvCurve.local_data_valid' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.ProfileCbvCurve.conductor_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.ProfileCbvCurve.root_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+[Elab.command] [0.028741] ✅️ theorem rank_lower_bound :
+        1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+      rank_lower_bound_of_wild_negative equation nonsingular minimality minimality_valid localData local_data_valid
+        (by decide +kernel)
+  [Elab.definition.value] [0.010534] ✅️ VerifiedLcalc.ProfileCbvCurve.rank_lower_bound
+'VerifiedLcalc.ProfileCbvCurve.rank_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+[Elab.command] [0.066089] ✅️ def result : DerivativeResult :=
+      { equation := { a1 := 1, a2 := 1, a3 := 0, a4 := -33, a6 := 61 }, conductor := 286,
+        policy := { precisionBits := 53 }, termLimit := 40, stepsPerUnit := 1, cutoff := 16,
+        coefficients :=
+          [1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1, -1, 1, -8, 1, -4, 1, 5, 1, -8, -1, 0,
+            -1, 1, 1, -1, -2, 7, 4, 1, 1],
+        alphaLo := (2698607540904403791717525880832 : Rat) / 7263448771128582668304443359375,
+        alphaHi := (5397215081808807583452231630848 : Rat) / 14526897542257165241241455078125,
+        finite := ((1004990881850203 : Rat) / 1125899906842624, (1243869816965115 : Rat) / 562949953421312),
+        tail := (24488496693844250985806728371143341064453125 : Rat) / 106238359499268304943252251032734806956834816,
+        box :=
+          {
+            reLo :=
+              (18439485331339155463487404512331582969915722911813 : Rat) /
+                27849748512576190531043918094725233234892506005504,
+            reHi :=
+              (33977554845201439907166270663480196454015443040165 : Rat) /
+                13924874256288095265521959047362616617446253002752,
+            imLo := 0, imHi := 0 } }
+  [Elab.definition.value] [0.056770] ✅️ VerifiedLcalc.ProfileCbvCurve.result
+    [Elab.step] [0.056666] ✅️ expected type: VerifiedLcalc.EllipticCurve.DerivativeResult, term
+        { equation := { a1 := 1, a2 := 1, a3 := 0, a4 := -33, a6 := 61 }, conductor := 286,
+          policy := { precisionBits := 53 }, termLimit := 40, stepsPerUnit := 1, cutoff := 16,
+          coefficients :=
+            [1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1, -1, 1, -8, 1, -4, 1, 5, 1, -8, -1,
+              0, -1, 1, 1, -1, -2, 7, 4, 1, 1],
+          alphaLo := (2698607540904403791717525880832 : Rat) / 7263448771128582668304443359375,
+          alphaHi := (5397215081808807583452231630848 : Rat) / 14526897542257165241241455078125,
+          finite := ((1004990881850203 : Rat) / 1125899906842624, (1243869816965115 : Rat) / 562949953421312),
+          tail := (24488496693844250985806728371143341064453125 : Rat) / 106238359499268304943252251032734806956834816,
+          box :=
+            {
+              reLo :=
+                (18439485331339155463487404512331582969915722911813 : Rat) /
+                  27849748512576190531043918094725233234892506005504,
+              reHi :=
+                (33977554845201439907166270663480196454015443040165 : Rat) /
+                  13924874256288095265521959047362616617446253002752,
+              imLo := 0, imHi := 0 } }
+      [Elab.structInst] [0.056313] ✅️ structure instance elaboration for `VerifiedLcalc.EllipticCurve.DerivativeResult`:
+            { equation := { a1 := 1, a2 := 1, a3 := 0, a4 := -33, a6 := 61 }, conductor := 286,
+              policy := { precisionBits := 53 }, termLimit := 40, stepsPerUnit := 1, cutoff := 16,
+              coefficients :=
+                let y :=
+                  let y :=
+                    let y := [-2, 7, 4, 1, 1];
+                    0 :: -1 :: 1 :: 1 :: -1 :: y;
+                  let y := 1 :: 5 :: 1 :: -8 :: -1 :: y;
+                  -1 :: 1 :: -8 :: 1 :: -4 :: y;
+                let y :=
+                  let y := 1 :: -1 :: 2 :: -4 :: -1 :: y;
+                  -1 :: -1 :: -1 :: -1 :: 1 :: y;
+                let y := 1 :: 1 :: -1 :: -2 :: 1 :: y;
+                1 :: -1 :: -1 :: 1 :: -1 :: y,
+              alphaLo := 2698607540904403791717525880832 / 7263448771128582668304443359375,
+              alphaHi := 5397215081808807583452231630848 / 14526897542257165241241455078125,
+              finite := (1004990881850203 / 1125899906842624, 1243869816965115 / 562949953421312),
+              tail := 24488496693844250985806728371143341064453125 / 106238359499268304943252251032734806956834816,
+              box :=
+                {
+                  reLo :=
+                    18439485331339155463487404512331582969915722911813 /
+                      27849748512576190531043918094725233234892506005504,
+                  reHi :=
+                    33977554845201439907166270663480196454015443040165 /
+                      13924874256288095265521959047362616617446253002752,
+                  imLo := 0, imHi := 0 } }
+        [Elab.structInst] [0.047766] ✅️ elaborating field `coefficients` : List ℤ
+          [Elab.step] [0.047746] ✅️ expected type: List ℤ, term
+              [1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1, -1, 1, -8, 1, -4, 1, 5, 1, -8,
+                -1, 0, -1, 1, 1, -1, -2, 7, 4, 1, 1]
+            [Elab.step] [0.047723] ✅️ expected type: List ℤ, term
+                %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1, -1, 1, -8, 1, -4, 1, 5, 1, -8,
+                  -1, 0, -1, 1, 1, -1, -2, 7, 4, 1, 1 | List.nil✝]
+              [Elab.step] [0.047681] ✅️ expected type: List ℤ, term
+                  let y✝ := %[-1, 1, -8, 1, -4, 1, 5, 1, -8, -1, 0, -1, 1, 1, -1, -2, 7, 4, 1, 1 | List.nil✝]
+                  %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1 | y✝]
+                [Elab.step] [0.011419] ✅️ expected type: List ?m.43, term
+                    %[-1, 1, -8, 1, -4, 1, 5, 1, -8, -1, 0, -1, 1, 1, -1, -2, 7, 4, 1, 1 | List.nil✝]
+                  [Elab.step] [0.011400] ✅️ expected type: List ?m.43, term
+                      let y✝ := %[0, -1, 1, 1, -1, -2, 7, 4, 1, 1 | List.nil✝]
+                      %[-1, 1, -8, 1, -4, 1, 5, 1, -8, -1 | y✝]
+                [Elab.step] [0.036117] ✅️ expected type: List ℤ, term
+                    %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1 | y✝]
+                  [Elab.step] [0.036103] ✅️ expected type: List ℤ, term
+                      let y✝ := %[-1, -1, -1, -1, 1, 1, -1, 2, -4, -1 | y✝¹]
+                      %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1 | y✝]
+                    [Elab.step] [0.015874] ✅️ expected type: List ?m.43, term
+                        %[-1, -1, -1, -1, 1, 1, -1, 2, -4, -1 | y✝]
+                      [Elab.step] [0.015859] ✅️ expected type: List ?m.43, term
+                          let y✝ := %[1, -1, 2, -4, -1 | y✝¹]
+                          %[-1, -1, -1, -1, 1 | y✝]
+                    [Elab.step] [0.020126] ✅️ expected type: List ℤ, term
+                        %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1 | y✝]
+                      [Elab.step] [0.020114] ✅️ expected type: List ℤ, term
+                          let y✝ := %[1, 1, -1, -2, 1 | y✝¹]
+                          %[1, -1, -1, 1, -1 | y✝]
+                        [Elab.step] [0.014012] ✅️ expected type: List ℤ, term
+                            %[1, -1, -1, 1, -1 | y✝]
+                          [Elab.step] [0.014002] ✅️ expected type: List ℤ, term
+                              List.cons✝ 1 (List.cons✝ (-1) (List.cons✝ (-1) (List.cons✝ 1 (List.cons✝ (-1) y✝))))
+                time: command terminated abnormally
+real 212.78
+user 0.29
+sys 0.66

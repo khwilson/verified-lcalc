@@ -1,0 +1,2 @@
+Registry proof failed; sources restored but artifact rebuild also failed. See output/batch/rollback-registry.log
+Rejected a false bundle despite an unchanged wrapper; restored sources and checked registry artifacts.

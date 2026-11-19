@@ -1,0 +1,3 @@
+VerifiedLcalc.Certificates.Cubic.certified_analytic_order : analyticOrderAt (fun z => z ^ 3) 0 = 3
+'VerifiedLcalc.Certificates.Cubic.certified_computation' depends on axioms: [propext, Quot.sound]
+'VerifiedLcalc.Certificates.Cubic.certified_analytic_order' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,6 @@
+{
+  "test_only": true,
+  "uses_expected_ranks_only_as_external_reference": true,
+  "checked_global_signs": 492,
+  "parity_mismatches": []
+}

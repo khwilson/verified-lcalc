@@ -1,0 +1,158 @@
+'VerifiedLcalc.ProfileNativeCurve.nonsingular' does not depend on any axioms
+'VerifiedLcalc.ProfileNativeCurve.minimality_valid' does not depend on any axioms
+'VerifiedLcalc.ProfileNativeCurve.globally_minimal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.ProfileNativeCurve.local_data_valid' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.ProfileNativeCurve.conductor_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.ProfileNativeCurve.root_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+[Elab.command] [0.033018] ✅️ theorem rank_lower_bound :
+        1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+      rank_lower_bound_of_wild_negative equation nonsingular minimality minimality_valid localData local_data_valid
+        (by decide +kernel)
+  [Elab.definition.header] [0.011248] ✅️ VerifiedLcalc.ProfileNativeCurve.rank_lower_bound
+    [Elab.step] [0.011213] ✅️ expected type: Sort ?u.1, term
+        1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ)
+      [Elab.step] [0.011192] ✅️ expected type: Sort ?u.1, term
+          binrel% LE.le✝ 1 (analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ))
+        [Elab.step] [0.010451] ✅️ expected type: <not-available>, term
+            analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ)
+          [Elab.app.args] [0.010347] ✅️ elabAppArgs (2 args) `@analyticOrderAt`
+  [Elab.definition.value] [0.011264] ✅️ VerifiedLcalc.ProfileNativeCurve.rank_lower_bound
+  [Elab.def.processPreDef] [0.010156] ✅️ process pre-definitions
+    [addDecl] [0.010116] ✅️ adding declarations [VerifiedLcalc.ProfileNativeCurve.rank_lower_bound]
+      [Kernel] [0.010010] ✅️ typechecking declarations [VerifiedLcalc.ProfileNativeCurve.rank_lower_bound]
+'VerifiedLcalc.ProfileNativeCurve.rank_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+[Elab.command] [0.092467] ✅️ def result : DerivativeResult :=
+      { equation := { a1 := 1, a2 := 1, a3 := 0, a4 := -33, a6 := 61 }, conductor := 286,
+        policy := { precisionBits := 53 }, termLimit := 40, stepsPerUnit := 1, cutoff := 16,
+        coefficients :=
+          [1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1, -1, 1, -8, 1, -4, 1, 5, 1, -8, -1, 0,
+            -1, 1, 1, -1, -2, 7, 4, 1, 1],
+        alphaLo := (2698607540904403791717525880832 : Rat) / 7263448771128582668304443359375,
+        alphaHi := (5397215081808807583452231630848 : Rat) / 14526897542257165241241455078125,
+        finite := ((1004990881850203 : Rat) / 1125899906842624, (1243869816965115 : Rat) / 562949953421312),
+        tail := (24488496693844250985806728371143341064453125 : Rat) / 106238359499268304943252251032734806956834816,
+        box :=
+          {
+            reLo :=
+              (18439485331339155463487404512331582969915722911813 : Rat) /
+                27849748512576190531043918094725233234892506005504,
+            reHi :=
+              (33977554845201439907166270663480196454015443040165 : Rat) /
+                13924874256288095265521959047362616617446253002752,
+            imLo := 0, imHi := 0 } }
+  [Elab.definition.value] [0.063104] ✅️ VerifiedLcalc.ProfileNativeCurve.result
+    [Elab.step] [0.062992] ✅️ expected type: VerifiedLcalc.EllipticCurve.DerivativeResult, term
+        { equation := { a1 := 1, a2 := 1, a3 := 0, a4 := -33, a6 := 61 }, conductor := 286,
+          policy := { precisionBits := 53 }, termLimit := 40, stepsPerUnit := 1, cutoff := 16,
+          coefficients :=
+            [1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1, -1, 1, -8, 1, -4, 1, 5, 1, -8, -1,
+              0, -1, 1, 1, -1, -2, 7, 4, 1, 1],
+          alphaLo := (2698607540904403791717525880832 : Rat) / 7263448771128582668304443359375,
+          alphaHi := (5397215081808807583452231630848 : Rat) / 14526897542257165241241455078125,
+          finite := ((1004990881850203 : Rat) / 1125899906842624, (1243869816965115 : Rat) / 562949953421312),
+          tail := (24488496693844250985806728371143341064453125 : Rat) / 106238359499268304943252251032734806956834816,
+          box :=
+            {
+              reLo :=
+                (18439485331339155463487404512331582969915722911813 : Rat) /
+                  27849748512576190531043918094725233234892506005504,
+              reHi :=
+                (33977554845201439907166270663480196454015443040165 : Rat) /
+                  13924874256288095265521959047362616617446253002752,
+              imLo := 0, imHi := 0 } }
+      [Elab.structInst] [0.062597] ✅️ structure instance elaboration for `VerifiedLcalc.EllipticCurve.DerivativeResult`:
+            { equation := { a1 := 1, a2 := 1, a3 := 0, a4 := -33, a6 := 61 }, conductor := 286,
+              policy := { precisionBits := 53 }, termLimit := 40, stepsPerUnit := 1, cutoff := 16,
+              coefficients :=
+                let y :=
+                  let y :=
+                    let y := [-2, 7, 4, 1, 1];
+                    0 :: -1 :: 1 :: 1 :: -1 :: y;
+                  let y := 1 :: 5 :: 1 :: -8 :: -1 :: y;
+                  -1 :: 1 :: -8 :: 1 :: -4 :: y;
+                let y :=
+                  let y := 1 :: -1 :: 2 :: -4 :: -1 :: y;
+                  -1 :: -1 :: -1 :: -1 :: 1 :: y;
+                let y := 1 :: 1 :: -1 :: -2 :: 1 :: y;
+                1 :: -1 :: -1 :: 1 :: -1 :: y,
+              alphaLo := 2698607540904403791717525880832 / 7263448771128582668304443359375,
+              alphaHi := 5397215081808807583452231630848 / 14526897542257165241241455078125,
+              finite := (1004990881850203 / 1125899906842624, 1243869816965115 / 562949953421312),
+              tail := 24488496693844250985806728371143341064453125 / 106238359499268304943252251032734806956834816,
+              box :=
+                {
+                  reLo :=
+                    18439485331339155463487404512331582969915722911813 /
+                      27849748512576190531043918094725233234892506005504,
+                  reHi :=
+                    33977554845201439907166270663480196454015443040165 /
+                      13924874256288095265521959047362616617446253002752,
+                  imLo := 0, imHi := 0 } }
+        [Elab.structInst] [0.045707] ✅️ elaborating field `coefficients` : List ℤ
+          [Elab.step] [0.045689] ✅️ expected type: List ℤ, term
+              [1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1, -1, 1, -8, 1, -4, 1, 5, 1, -8,
+                -1, 0, -1, 1, 1, -1, -2, 7, 4, 1, 1]
+            [Elab.step] [0.045669] ✅️ expected type: List ℤ, term
+                %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1, -1, 1, -8, 1, -4, 1, 5, 1, -8,
+                  -1, 0, -1, 1, 1, -1, -2, 7, 4, 1, 1 | List.nil✝]
+              [Elab.step] [0.045623] ✅️ expected type: List ℤ, term
+                  let y✝ := %[-1, 1, -8, 1, -4, 1, 5, 1, -8, -1, 0, -1, 1, 1, -1, -2, 7, 4, 1, 1 | List.nil✝]
+                  %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1 | y✝]
+                [Elab.step] [0.013102] ✅️ expected type: List ?m.43, term
+                    %[-1, 1, -8, 1, -4, 1, 5, 1, -8, -1, 0, -1, 1, 1, -1, -2, 7, 4, 1, 1 | List.nil✝]
+                  [Elab.step] [0.013088] ✅️ expected type: List ?m.43, term
+                      let y✝ := %[0, -1, 1, 1, -1, -2, 7, 4, 1, 1 | List.nil✝]
+                      %[-1, 1, -8, 1, -4, 1, 5, 1, -8, -1 | y✝]
+                [Elab.step] [0.032390] ✅️ expected type: List ℤ, term
+                    %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1 | y✝]
+                  [Elab.step] [0.032378] ✅️ expected type: List ℤ, term
+                      let y✝ := %[-1, -1, -1, -1, 1, 1, -1, 2, -4, -1 | y✝¹]
+                      %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1 | y✝]
+                    [Elab.step] [0.014054] ✅️ expected type: List ?m.43, term
+                        %[-1, -1, -1, -1, 1, 1, -1, 2, -4, -1 | y✝]
+                      [Elab.step] [0.014043] ✅️ expected type: List ?m.43, term
+                          let y✝ := %[1, -1, 2, -4, -1 | y✝¹]
+                          %[-1, -1, -1, -1, 1 | y✝]
+                    [Elab.step] [0.018247] ✅️ expected type: List ℤ, term
+                        %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1 | y✝]
+                      [Elab.step] [0.018238] ✅️ expected type: List ℤ, term
+                          let y✝ := %[1, 1, -1, -2, 1 | y✝¹]
+                          %[1, -1, -1, 1, -1 | y✝]
+                        [Elab.step] [0.012930] ✅️ expected type: List ℤ, term
+                            %[1, -1, -1, 1, -1 | y✝]
+                          [Elab.step] [0.012922] ✅️ expected type: List ℤ, term
+                              List.cons✝ 1 (List.cons✝ (-1) (List.cons✝ (-1) (List.cons✝ 1 (List.cons✝ (-1) y✝))))
+                            [Elab.app.args] [0.012645] ✅️ elabAppArgs (2 args) `@List.cons`
+                              [Elab.step] [0.012551] ✅️ expected type: List ℤ, term
+                                  List.cons✝ (-1) (List.cons✝ (-1) (List.cons✝ 1 (List.cons✝ (-1) y✝)))
+                                [Elab.app.args] [0.012505] ✅️ elabAppArgs (2 args) `@List.cons`
+                                  [Elab.step] [0.010039] ✅️ expected type: List ℤ, term
+                                      List.cons✝ (-1) (List.cons✝ 1 (List.cons✝ (-1) y✝))
+  [Elab.def.processPreDef] [0.028594] ✅️ process pre-definitions
+    [Compiler] [0.027863] ✅️ compiling: [VerifiedLcalc.ProfileNativeCurve.result]
+[Elab.command] [0.050555] ✅️ theorem payload_correct : DerivativePayloadCorrect result := by native_decide
+  [Elab.definition.value] [0.049668] ✅️ VerifiedLcalc.ProfileNativeCurve.payload_correct
+    [Elab.step] [0.049501] ✅️ native_decide
+      [Elab.step] [0.049488] ✅️ native_decide
+        [Elab.step] [0.049474] ✅️ native_decide
+'VerifiedLcalc.ProfileNativeCurve.payload_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.ProfileNativeCurve.payload_correct._native.native_decide.ax_1]
+[Elab.command] [0.023087] ✅️ theorem analytic_rank :
+        analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 1 :=
+      certifyDerivativeModel result nonsingular minimality minimality_valid localData local_data_valid
+        (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+  [Elab.definition.value] [0.016734] ✅️ VerifiedLcalc.ProfileNativeCurve.analytic_rank
+'VerifiedLcalc.ProfileNativeCurve.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity,
+ VerifiedLcalc.ProfileNativeCurve.payload_correct._native.native_decide.ax_1]
+'VerifiedLcalc.ProfileNativeCurve.coefficients_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+real 46.71
+user 1.83
+sys 6.16

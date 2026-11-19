@@ -1,0 +1,5 @@
+import VerifiedLcalc.Certificates.AssumedCurve11
+
+#check VerifiedLcalc.Certificates.AssumedCurve11.continuedL_matches_euler_series
+#print axioms VerifiedLcalc.Certificates.AssumedCurve11.continuedL_entire
+#print axioms VerifiedLcalc.Certificates.AssumedCurve11.continuedL_matches_euler_series

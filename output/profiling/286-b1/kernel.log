@@ -1,0 +1,211 @@
+'VerifiedLcalc.ProfileCurve.nonsingular' does not depend on any axioms
+'VerifiedLcalc.ProfileCurve.minimality_valid' does not depend on any axioms
+'VerifiedLcalc.ProfileCurve.globally_minimal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.ProfileCurve.local_data_valid' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.ProfileCurve.conductor_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VerifiedLcalc.ProfileCurve.root_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+[Elab.command] [0.019113] ✅️ theorem rank_lower_bound :
+        1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+      rank_lower_bound_of_wild_negative equation nonsingular minimality minimality_valid localData local_data_valid
+        (by decide +kernel)
+'VerifiedLcalc.ProfileCurve.rank_lower_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+[Elab.command] [0.062397] ✅️ def result : DerivativeResult :=
+      { equation := { a1 := 1, a2 := 1, a3 := 0, a4 := -33, a6 := 61 }, conductor := 286,
+        policy := { precisionBits := 53 }, termLimit := 40, stepsPerUnit := 1, cutoff := 16,
+        coefficients :=
+          [1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1, -1, 1, -8, 1, -4, 1, 5, 1, -8, -1, 0,
+            -1, 1, 1, -1, -2, 7, 4, 1, 1],
+        alphaLo := (2698607540904403791717525880832 : Rat) / 7263448771128582668304443359375,
+        alphaHi := (5397215081808807583452231630848 : Rat) / 14526897542257165241241455078125,
+        finite := ((1004990881850203 : Rat) / 1125899906842624, (1243869816965115 : Rat) / 562949953421312),
+        tail := (24488496693844250985806728371143341064453125 : Rat) / 106238359499268304943252251032734806956834816,
+        box :=
+          {
+            reLo :=
+              (18439485331339155463487404512331582969915722911813 : Rat) /
+                27849748512576190531043918094725233234892506005504,
+            reHi :=
+              (33977554845201439907166270663480196454015443040165 : Rat) /
+                13924874256288095265521959047362616617446253002752,
+            imLo := 0, imHi := 0 } }
+  [Elab.definition.value] [0.051733] ✅️ VerifiedLcalc.ProfileCurve.result
+    [Elab.step] [0.051654] ✅️ expected type: VerifiedLcalc.EllipticCurve.DerivativeResult, term
+        { equation := { a1 := 1, a2 := 1, a3 := 0, a4 := -33, a6 := 61 }, conductor := 286,
+          policy := { precisionBits := 53 }, termLimit := 40, stepsPerUnit := 1, cutoff := 16,
+          coefficients :=
+            [1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1, -1, 1, -8, 1, -4, 1, 5, 1, -8, -1,
+              0, -1, 1, 1, -1, -2, 7, 4, 1, 1],
+          alphaLo := (2698607540904403791717525880832 : Rat) / 7263448771128582668304443359375,
+          alphaHi := (5397215081808807583452231630848 : Rat) / 14526897542257165241241455078125,
+          finite := ((1004990881850203 : Rat) / 1125899906842624, (1243869816965115 : Rat) / 562949953421312),
+          tail := (24488496693844250985806728371143341064453125 : Rat) / 106238359499268304943252251032734806956834816,
+          box :=
+            {
+              reLo :=
+                (18439485331339155463487404512331582969915722911813 : Rat) /
+                  27849748512576190531043918094725233234892506005504,
+              reHi :=
+                (33977554845201439907166270663480196454015443040165 : Rat) /
+                  13924874256288095265521959047362616617446253002752,
+              imLo := 0, imHi := 0 } }
+      [Elab.structInst] [0.051384] ✅️ structure instance elaboration for `VerifiedLcalc.EllipticCurve.DerivativeResult`:
+            { equation := { a1 := 1, a2 := 1, a3 := 0, a4 := -33, a6 := 61 }, conductor := 286,
+              policy := { precisionBits := 53 }, termLimit := 40, stepsPerUnit := 1, cutoff := 16,
+              coefficients :=
+                let y :=
+                  let y :=
+                    let y := [-2, 7, 4, 1, 1];
+                    0 :: -1 :: 1 :: 1 :: -1 :: y;
+                  let y := 1 :: 5 :: 1 :: -8 :: -1 :: y;
+                  -1 :: 1 :: -8 :: 1 :: -4 :: y;
+                let y :=
+                  let y := 1 :: -1 :: 2 :: -4 :: -1 :: y;
+                  -1 :: -1 :: -1 :: -1 :: 1 :: y;
+                let y := 1 :: 1 :: -1 :: -2 :: 1 :: y;
+                1 :: -1 :: -1 :: 1 :: -1 :: y,
+              alphaLo := 2698607540904403791717525880832 / 7263448771128582668304443359375,
+              alphaHi := 5397215081808807583452231630848 / 14526897542257165241241455078125,
+              finite := (1004990881850203 / 1125899906842624, 1243869816965115 / 562949953421312),
+              tail := 24488496693844250985806728371143341064453125 / 106238359499268304943252251032734806956834816,
+              box :=
+                {
+                  reLo :=
+                    18439485331339155463487404512331582969915722911813 /
+                      27849748512576190531043918094725233234892506005504,
+                  reHi :=
+                    33977554845201439907166270663480196454015443040165 /
+                      13924874256288095265521959047362616617446253002752,
+                  imLo := 0, imHi := 0 } }
+        [Elab.structInst] [0.044625] ✅️ elaborating field `coefficients` : List ℤ
+          [Elab.step] [0.044606] ✅️ expected type: List ℤ, term
+              [1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1, -1, 1, -8, 1, -4, 1, 5, 1, -8,
+                -1, 0, -1, 1, 1, -1, -2, 7, 4, 1, 1]
+            [Elab.step] [0.044587] ✅️ expected type: List ℤ, term
+                %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1, -1, 1, -8, 1, -4, 1, 5, 1, -8,
+                  -1, 0, -1, 1, 1, -1, -2, 7, 4, 1, 1 | List.nil✝]
+              [Elab.step] [0.044405] ✅️ expected type: List ℤ, term
+                  let y✝ := %[-1, 1, -8, 1, -4, 1, 5, 1, -8, -1, 0, -1, 1, 1, -1, -2, 7, 4, 1, 1 | List.nil✝]
+                  %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1 | y✝]
+                [Elab.step] [0.011365] ✅️ expected type: List ?m.43, term
+                    %[-1, 1, -8, 1, -4, 1, 5, 1, -8, -1, 0, -1, 1, 1, -1, -2, 7, 4, 1, 1 | List.nil✝]
+                  [Elab.step] [0.011346] ✅️ expected type: List ?m.43, term
+                      let y✝ := %[0, -1, 1, 1, -1, -2, 7, 4, 1, 1 | List.nil✝]
+                      %[-1, 1, -8, 1, -4, 1, 5, 1, -8, -1 | y✝]
+                [Elab.step] [0.032255] ✅️ expected type: List ℤ, term
+                    %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1, -1, -1, -1, -1, 1, 1, -1, 2, -4, -1 | y✝]
+                  [Elab.step] [0.032242] ✅️ expected type: List ℤ, term
+                      let y✝ := %[-1, -1, -1, -1, 1, 1, -1, 2, -4, -1 | y✝¹]
+                      %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1 | y✝]
+                    [Elab.step] [0.013837] ✅️ expected type: List ?m.43, term
+                        %[-1, -1, -1, -1, 1, 1, -1, 2, -4, -1 | y✝]
+                      [Elab.step] [0.013826] ✅️ expected type: List ?m.43, term
+                          let y✝ := %[1, -1, 2, -4, -1 | y✝¹]
+                          %[-1, -1, -1, -1, 1 | y✝]
+                    [Elab.step] [0.018326] ✅️ expected type: List ℤ, term
+                        %[1, -1, -1, 1, -1, 1, 1, -1, -2, 1 | y✝]
+                      [Elab.step] [0.018317] ✅️ expected type: List ℤ, term
+                          let y✝ := %[1, 1, -1, -2, 1 | y✝¹]
+                          %[1, -1, -1, 1, -1 | y✝]
+                        [Elab.step] [0.012892] ✅️ expected type: List ℤ, term
+                            %[1, -1, -1, 1, -1 | y✝]
+                          [Elab.step] [0.012885] ✅️ expected type: List ℤ, term
+                              List.cons✝ 1 (List.cons✝ (-1) (List.cons✝ (-1) (List.cons✝ 1 (List.cons✝ (-1) y✝))))
+                            [Elab.app.args] [0.012814] ✅️ elabAppArgs (2 args) `@List.cons`
+                              [Elab.step] [0.012722] ✅️ expected type: List ℤ, term
+                                  List.cons✝ (-1) (List.cons✝ (-1) (List.cons✝ 1 (List.cons✝ (-1) y✝)))
+                                [Elab.app.args] [0.012678] ✅️ elabAppArgs (2 args) `@List.cons`
+                                  [Elab.step] [0.010154] ✅️ expected type: List ℤ, term
+                                      List.cons✝ (-1) (List.cons✝ 1 (List.cons✝ (-1) y✝))
+                                    [Elab.app.args] [0.010105] ✅️ elabAppArgs (2 args) `@List.cons`
+  [Elab.def.processPreDef] [0.010283] ✅️ process pre-definitions
+[Elab.command] [19.229342] ✅️ theorem payload_correct : DerivativePayloadCorrect result := by decide +kernel
+  [Elab.definition.value] [19.216312] ✅️ VerifiedLcalc.ProfileCurve.payload_correct
+    [Elab.step] [19.211939] ✅️ decide +kernel
+      [Elab.step] [19.211897] ✅️ decide +kernel
+        [Elab.step] [19.210978] ✅️ decide +kernel
+          [addDecl] [19.208292] ✅️ adding declarations [VerifiedLcalc.ProfileCurve.payload_correct._proof_1]
+            [Kernel] [19.206092] ✅️ typechecking declarations [VerifiedLcalc.ProfileCurve.payload_correct._proof_1]
+'VerifiedLcalc.ProfileCurve.payload_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+[Elab.command] [0.112440] ✅️ theorem analytic_rank :
+        analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 1 :=
+      certifyDerivativeModel result nonsingular minimality minimality_valid localData local_data_valid
+        (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+  [Elab.definition.header] [0.054294] ✅️ VerifiedLcalc.ProfileCurve.analytic_rank
+    [Elab.step] [0.052071] ✅️ expected type: Sort ?u.1, term
+        analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) = 1
+      [Elab.step] [0.050900] ✅️ expected type: Sort ?u.1, term
+          binrel% Eq✝ (analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ)) 1
+        [Elab.step] [0.039958] ✅️ expected type: <not-available>, term
+            analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ)
+          [Elab.app.args] [0.037483] ✅️ elabAppArgs (2 args) `@analyticOrderAt`
+            [Elab.step] [0.012787] ✅️ expected type: ℂ → ℂ, term
+                (modularWitness equation nonsingular).formL
+            [Elab.app.finalize] [0.016588] ✅️ analyticOrderAt
+                  (VerifiedLcalc.Assumptions.modularWitness VerifiedLcalc.ProfileCurve.equation
+                      VerifiedLcalc.ProfileCurve.nonsingular).formL
+                  1 : ℕ∞
+              [Meta.synthInstance] [0.014646] ✅️ NormedSpace ℂ ℂ
+                [Meta.isDefEq] [0.013411] ✅️ NormedSpace ℂ ℂ =?= NormedSpace ℂ ℂ
+                  [Meta.isDefEq] [0.012315] ✅️ NormedAddCommGroup.toSeminormedAddCommGroup =?= NonUnitalSeminormedRing.toSeminormedAddCommGroup
+                    [Meta.isDefEq] [0.011552] ✅️ have __src := Complex.instNormedAddCommGroup;
+                        { toNorm := __src.toNorm, toAddCommGroup := __src.toAddCommGroup,
+                          toPseudoMetricSpace := __src.toPseudoMetricSpace,
+                          dist_eq := ⋯ } =?= have __src := NonUnitalNormedRing.toNonUnitalSeminormedRing;
+                        { toNorm := __src.toNorm, toAddCommGroup := __src.toAddCommGroup,
+                          toPseudoMetricSpace := __src.toPseudoMetricSpace, dist_eq := ⋯ }
+                      [Meta.isDefEq] [0.011528] ✅️ { toNorm := Complex.instNormedAddCommGroup.toNorm,
+                            toAddCommGroup := Complex.instNormedAddCommGroup.toAddCommGroup,
+                            toPseudoMetricSpace := Complex.instNormedAddCommGroup.toPseudoMetricSpace,
+                            dist_eq :=
+                              ⋯ } =?= { toNorm := NonUnitalNormedRing.toNonUnitalSeminormedRing.toNorm,
+                            toAddCommGroup := NonUnitalNormedRing.toNonUnitalSeminormedRing.toAddCommGroup,
+                            toPseudoMetricSpace := NonUnitalNormedRing.toNonUnitalSeminormedRing.toPseudoMetricSpace,
+                            dist_eq := ⋯ }
+  [Elab.definition.value] [0.042318] ✅️ VerifiedLcalc.ProfileCurve.analytic_rank
+    [Elab.step] [0.011703] ✅️ expected type: analyticOrderAt
+            (VerifiedLcalc.Assumptions.modularWitness VerifiedLcalc.ProfileCurve.equation
+                VerifiedLcalc.ProfileCurve.nonsingular).formL
+            1 =
+          1, term
+        certifyDerivativeModel result nonsingular minimality minimality_valid localData local_data_valid
+          (by decide +kernel) (by decide +kernel) payload_correct (by decide +kernel)
+      [Elab.app.args] [0.010900] ✅️ elabAppArgs (10 args)
+            VerifiedLcalc.Assumptions.certifyDerivativeModel
+    [Elab.step] [0.015431] ✅️ decide +kernel
+      [Elab.step] [0.015052] ✅️ decide +kernel
+        [Elab.step] [0.015035] ✅️ decide +kernel
+  [Elab.def.processPreDef] [0.012016] ✅️ process pre-definitions
+    [addDecl] [0.011972] ✅️ adding declarations [VerifiedLcalc.ProfileCurve.analytic_rank]
+      [Kernel] [0.011943] ✅️ typechecking declarations [VerifiedLcalc.ProfileCurve.analytic_rank]
+'VerifiedLcalc.ProfileCurve.analytic_rank' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ VerifiedLcalc.Assumptions.ellipticModularity]
+[Elab.command] [0.027919] ✅️ theorem coefficients_correct :
+        modelCoefficients equation 40 = (List.range 40).map (fun j => (weierstrass equation ℚ).LFunction (j + 1)) :=
+      minimal_prefix equation nonsingular globally_minimal 40
+  [Elab.definition.header] [0.016321] ✅️ VerifiedLcalc.ProfileCurve.coefficients_correct
+    [Elab.step] [0.016279] ✅️ expected type: Sort ?u.1, term
+        modelCoefficients equation 40 = (List.range 40).map (fun j => (weierstrass equation ℚ).LFunction (j + 1))
+      [Elab.step] [0.016264] ✅️ expected type: Sort ?u.1, term
+          binrel% Eq✝ (modelCoefficients equation 40)
+            ((List.range 40).map (fun j => (weierstrass equation ℚ).LFunction (j + 1)))
+        [Elab.step] [0.015346] ✅️ expected type: <not-available>, term
+            (List.range 40).map (fun j => (weierstrass equation ℚ).LFunction (j + 1))
+          [Elab.app.args] [0.014245] ✅️ elabAppArgs (2 args) `@List.map`
+            [Elab.step] [0.014207] ✅️ expected type: ℕ → ℤ, term
+                (fun j => (weierstrass equation ℚ).LFunction (j + 1))
+              [Elab.step] [0.014198] ✅️ expected type: ℕ → ℤ, term
+                  fun j => (weierstrass equation ℚ).LFunction (j + 1)
+                [Elab.step] [0.013039] ✅️ expected type: ℤ, term
+                    (weierstrass equation ℚ).LFunction (j + 1)
+  [Elab.def.processPreDef] [0.010181] ✅️ process pre-definitions
+    [addDecl] [0.010143] ✅️ adding declarations [VerifiedLcalc.ProfileCurve.coefficients_correct]
+      [Kernel] [0.010100] ✅️ typechecking declarations [VerifiedLcalc.ProfileCurve.coefficients_correct]
+'VerifiedLcalc.ProfileCurve.coefficients_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+real 69.84
+user 17.16
+sys 7.71

@@ -1,0 +1,4 @@
+VerifiedLcalc.EllipticCurve.ReductionExamples.curve32_coefficient_four :
+  (VerifiedLcalc.EllipticCurve.weierstrass VerifiedLcalc.EllipticCurve.AdditiveExamples.C32_a4.equation ℚ).LFunction 4 =
+    0
+[1, 0, 0, 0, -2, 0, 0, 0]

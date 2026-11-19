@@ -1,0 +1,216 @@
+module
+
+public import VerifiedLcalc.EllipticCurve.TameCore
+public import VerifiedLcalc.EllipticCurve.BadPrime
+public import VerifiedLcalc.EllipticCurve.Coefficients
+public import Mathlib.NumberTheory.LegendreSymbol.Basic
+
+@[expose] public section
+namespace VerifiedLcalc.EllipticCurve
+open NumberField IsDedekindDomain
+
+/-- Mathematical minimality condition, independent of the modularity assumption. -/
+def GloballyMinimalInput (e : Artifacts.CurveEquation) : Prop :=
+  ∀ (p : ℕ) [Fact p.Prime],
+    WeierstrassCurve.IsMinimal ((rationalPlace p).adicCompletionIntegers ℚ)
+      ((weierstrass e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
+        ((rationalPlace p).adicCompletion ℚ))
+
+theorem isSquareMod_correct (p : ℕ) [Fact p.Prime] (a : Int) :
+    isSquareMod p a = true ↔ IsSquare (a : ZMod p) := by
+  simp only [isSquareMod, List.any_eq_true, List.mem_range, decide_eq_true_eq]
+  constructor
+  · rintro ⟨x, hx, h⟩
+    refine ⟨(x : ZMod p), ?_⟩
+    have hz := (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr
+      (Int.dvd_iff_emod_eq_zero.mpr h)
+    push_cast at hz
+    simpa only [pow_two] using (sub_eq_zero.mp hz).symm
+  · rintro ⟨x, hx⟩
+    refine ⟨x.val, ZMod.val_lt x, ?_⟩
+    apply Int.dvd_iff_emod_eq_zero.mp
+    apply (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp
+    push_cast
+    rw [ZMod.natCast_zmod_val]
+    simp only [pow_two, hx, sub_self]
+
+/-- Equality to mathlib's mathematical Legendre symbol, not to a database sign. -/
+theorem legendreValue_correct (p : ℕ) [Fact p.Prime] (_hp : p ≠ 2) (a : Int) :
+    legendreValue p a = legendreSym p a := by
+  unfold legendreValue
+  by_cases hz : a % (p : Int) = 0
+  · rw [ite_eq_left hz]
+    exact ((legendreSym.eq_zero_iff p a).mpr
+      ((ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr (Int.dvd_iff_emod_eq_zero.mpr hz))).symm
+  · rw [ite_eq_right hz]
+    have hn : (a : ZMod p) ≠ 0 := by
+      simpa only [ne_eq, ZMod.intCast_zmod_eq_zero_iff_dvd, Int.dvd_iff_emod_eq_zero] using hz
+    by_cases hs : isSquareMod p a = true
+    · rw [ite_eq_left hs]
+      exact ((legendreSym.eq_one_iff p hn).mpr ((isSquareMod_correct p a).mp hs)).symm
+    · rw [ite_eq_right hs]
+      exact ((legendreSym.eq_neg_one_iff p).mpr (mt (isSquareMod_correct p a).mpr hs)).symm
+
+/-- The valuation-based mathematical condition for negative j-valuation.
+The explicit c4 nonzero guard is essential at j=0. -/
+def NegativeJValuation (e : Artifacts.CurveEquation) (p : ℕ) : Prop :=
+  modelC4 e ≠ 0 ∧ 3 * (modelC4 e).natAbs.factorization p <
+    (discriminant e).natAbs.factorization p
+  deriving Decidable
+
+theorem potentiallyMultiplicative_correct (e : Artifacts.CurveEquation) (p : ℕ)
+    (hp : p.Prime) : potentiallyMultiplicative e p = true ↔ NegativeJValuation e p := by
+  simp only [potentiallyMultiplicative, Bool.and_eq_true, bne_iff_ne,
+    decide_eq_true_eq, primeExponent_correct hp, NegativeJValuation]
+
+/-- The standard tame additive formula, expressed using mathematical
+factorization valuations and mathlib's Legendre symbol. Its arithmetic-to-
+modular compatibility is an explicitly assumed standard theorem, not part of
+this executable-correctness proof. -/
+noncomputable def tameAdditiveRootSpec (e : Artifacts.CurveEquation) (p : ℕ) [Fact p.Prime] : Int :=
+  if NegativeJValuation e p then legendreSym p (-1)
+  else
+    let v := (discriminant e).natAbs.factorization p % 12
+    if v = 3 ∨ v = 9 then legendreSym p (-2)
+    else if v = 4 ∨ v = 8 then legendreSym p (-3)
+    else legendreSym p (-1)
+
+theorem tameAdditiveRoot_correct (e : Artifacts.CurveEquation) (p : ℕ)
+    [Fact p.Prime] (hp : 3 < p) : tameAdditiveRoot e p = tameAdditiveRootSpec e p := by
+  have h2 : p ≠ 2 := by omega
+  have hpot := potentiallyMultiplicative_correct e p (Fact.out : p.Prime)
+  simp only [tameAdditiveRoot, tameAdditiveRootSpec, primeExponent_correct (Fact.out : p.Prime),
+    legendreValue_correct p h2]
+  by_cases h : NegativeJValuation e p
+  · rw [ite_eq_left h, ite_eq_left (hpot.mpr h)]
+  · rw [ite_eq_right h, ite_eq_right (mt hpot.mp h)]
+    simp only [beq_iff_eq, Bool.or_eq_true]
+
+/-- Conductor exponents in the tame formulas: 0 at good reduction, 1 at a
+multiplicative prime, 2 at an additive prime of residue characteristic >=5. -/
+def tameConductorExponent (e : Artifacts.CurveEquation) (p : ℕ) : ℕ :=
+  if (weierstrass e (ZMod p)).Δ ≠ 0 then 0
+  else if (weierstrass e (ZMod p)).c₄ ≠ 0 then 1 else 2
+
+noncomputable def tameLocalRootSpec (e : Artifacts.CurveEquation) (p : ℕ) [Fact p.Prime] : Int :=
+  if (weierstrass e (ZMod p)).Δ ≠ 0 then 1
+  else if (weierstrass e (ZMod p)).c₄ ≠ 0 then -(frobeniusTrace e p)
+  else tameAdditiveRootSpec e p
+
+/-- Mathematical conductor product, evaluated only under minimality and no
+additive reduction at 2 or 3 when connected to a modular realization. -/
+noncomputable def tameLevel (e : Artifacts.CurveEquation) : ℕ :=
+  ∏ p ∈ (discriminant e).natAbs.primeFactors, p ^ tameConductorExponent e p
+
+noncomputable def tameSign (e : Artifacts.CurveEquation) : Int :=
+  -(∏ p ∈ (discriminant e).natAbs.primeFactors,
+    if hp : p.Prime then @tameLocalRootSpec e p ⟨hp⟩ else 1)
+
+end VerifiedLcalc.EllipticCurve
+
+namespace VerifiedLcalc.EllipticCurve
+
+theorem localExponent_correct (e : Artifacts.CurveEquation) (p : ℕ) :
+    localExponent e p = tameConductorExponent e p := by
+  unfold localExponent tameConductorExponent
+  cases h : modelReduction e p with
+  | good => simp [(modelReduction_good_iff e p).mp h]
+  | multiplicative =>
+    obtain ⟨hd, hc⟩ := (modelReduction_multiplicative_iff e p).mp h
+    simp [hd, hc]
+  | additive =>
+    obtain ⟨hd, hc⟩ := (modelReduction_additive_iff e p).mp h
+    simp [hd, hc]
+
+theorem localRoot_correct (e : Artifacts.CurveEquation) (p : ℕ) [Fact p.Prime]
+    (hs : modelReduction e p ≠ .additive ∨ 3 < p) :
+    localRoot e p = tameLocalRootSpec e p := by
+  unfold localRoot tameLocalRootSpec
+  cases h : modelReduction e p with
+  | good => simp [(modelReduction_good_iff e p).mp h]
+  | multiplicative =>
+    obtain ⟨hd, hc⟩ := (modelReduction_multiplicative_iff e p).mp h
+    have hg : goodReduction e p = false := by
+      cases h' : goodReduction e p
+      · rfl
+      · exact False.elim (((goodReduction_correct e p).mp h') hd)
+    simp [hd, hc, singularTrace_correct e p hg]
+  | additive =>
+    obtain ⟨hd, hc⟩ := (modelReduction_additive_iff e p).mp h
+    have hp : 3 < p := hs.resolve_left (by simp [h])
+    simp [hd, hc, tameAdditiveRoot_correct e p hp]
+
+/-- Every returned local record is prime, supported, and agrees with the
+mathematical conductor exponent and local sign formula. -/
+theorem localConductorRoot?_correct (e : Artifacts.CurveEquation) (p : ℕ)
+    (d : LocalConductorRoot) (h : localConductorRoot? e p = some d) :
+    ∃ hp : p.Prime, d.prime = p ∧
+      (modelReduction e p ≠ .additive ∨ 3 < p) ∧
+      d.exponent = tameConductorExponent e p ∧
+      d.root = @tameLocalRootSpec e p ⟨hp⟩ := by
+  have hp : p.Prime := by
+    by_contra hn
+    have hf : isPrime p = false := Bool.eq_false_iff.mpr (mt (isPrime_correct p).mp hn)
+    simp [localConductorRoot?, hf] at h
+  let : Fact p.Prime := ⟨hp⟩
+  have ht : isPrime p = true := (isPrime_correct p).mpr hp
+  have hs : modelReduction e p ≠ .additive ∨ 3 < p := by
+    cases hr : modelReduction e p with
+    | good => simp [hr]
+    | multiplicative => simp [hr]
+    | additive =>
+      right
+      by_contra hn
+      simp [localConductorRoot?, ht, hr, hn] at h
+  refine ⟨hp, ?_⟩
+  have he : d = ⟨p, localExponent e p, localRoot e p⟩ := by
+    cases hr : modelReduction e p <;>
+      simp_all [localConductorRoot?, localExponent, localRoot]
+  subst d
+  exact ⟨rfl, hs, localExponent_correct e p, localRoot_correct e p hs⟩
+
+theorem tameAtWild_correct (e : Artifacts.CurveEquation) :
+    tameAtWild e = true ↔
+      modelReduction e 2 ≠ .additive ∧ modelReduction e 3 ≠ .additive := by
+  simp [tameAtWild]
+
+/-- Kernel-evaluable versions of the mathematical finite products. -/
+noncomputable def tameLevelFast (e : Artifacts.CurveEquation) : ℕ :=
+  ∏ p ∈ (discriminant e).natAbs.primeFactors, p ^ localExponent e p
+noncomputable def tameSignFast (e : Artifacts.CurveEquation) : Int :=
+  -(∏ p ∈ (discriminant e).natAbs.primeFactors, localRoot e p)
+
+theorem tameLevel_eq_fast (e : Artifacts.CurveEquation) : tameLevel e = tameLevelFast e := by
+  simp only [tameLevel, tameLevelFast, localExponent_correct]
+
+theorem tameSign_eq_fast (e : Artifacts.CurveEquation) (hw : tameAtWild e = true) :
+    tameSign e = tameSignFast e := by
+  unfold tameSign tameSignFast
+  congr 1
+  apply Finset.prod_congr rfl
+  intro p hp
+  have hprime := (Nat.mem_primeFactors.mp hp).1
+  let : Fact p.Prime := ⟨hprime⟩
+  rw [dite_eq_left hprime]
+  symm
+  apply localRoot_correct
+  by_cases h : 3 < p
+  · exact Or.inr h
+  · left
+    have h23 : p = 2 ∨ p = 3 := by have := hprime.two_le; omega
+    rcases (tameAtWild_correct e).mp hw with ⟨h2, h3⟩
+    rcases h23 with rfl | rfl <;> assumption
+
+/-- Aggregation preserves every checked local record. Prime-list completeness
+is deliberately a separate global obligation. -/
+theorem conductorRootFromPrimes?_correct (e : Artifacts.CurveEquation) (ps : List Nat)
+    (r : Nat × Int) (h : conductorRootFromPrimes? e ps = some r) :
+    ∃ ds : List LocalConductorRoot,
+      ps.mapM (localConductorRoot? e) = some ds ∧
+      r = ((ds.map (fun d => d.prime ^ d.exponent)).prod, -(ds.map (·.root)).prod) := by
+  unfold conductorRootFromPrimes? at h
+  cases hd : ps.mapM (localConductorRoot? e) with
+  | none => simp [hd] at h
+  | some ds => exact ⟨ds, rfl, by simpa [hd] using h.symm⟩
+
+end VerifiedLcalc.EllipticCurve

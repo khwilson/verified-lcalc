@@ -1,0 +1,6 @@
+import VerifiedLcalc.Certificates.NumericalQuartic
+
+#check VerifiedLcalc.Certificates.NumericalQuartic.certified_small_derivatives
+#check VerifiedLcalc.Certificates.NumericalQuartic.conditional_analytic_lower_bound
+#print axioms VerifiedLcalc.Certificates.NumericalQuartic.certified_small_derivatives
+#print axioms VerifiedLcalc.Certificates.NumericalQuartic.conditional_analytic_lower_bound

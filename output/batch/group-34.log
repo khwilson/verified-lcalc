@@ -1,0 +1,24 @@
+⚠ [7770/7885] Replayed VerifiedLcalc.EllipticCurve.TameArithmetic
+warning: VerifiedLcalc/EllipticCurve/TameArithmetic.lean:159:20: This simp argument is unused:
+  hr
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: VerifiedLcalc/EllipticCurve/TameArithmetic.lean:160:30: This simp argument is unused:
+  hr
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [7870/7885] Built VerifiedLcalc.Certificates.Batch.C231_a1 (10s)
+✔ [7872/7885] Built VerifiedLcalc.Certificates.Batch.C231_a2 (10s)
+✔ [7874/7885] Built VerifiedLcalc.Certificates.Batch.C231_a3 (10s)
+✔ [7876/7885] Built VerifiedLcalc.Certificates.Batch.C231_a5 (10s)
+✔ [7878/7885] Built VerifiedLcalc.Certificates.Batch.C231_a6 (10s)
+✔ [7880/7885] Built VerifiedLcalc.Certificates.Batch.C233_a2 (10s)
+✔ [7882/7885] Built VerifiedLcalc.Certificates.Batch.C231_a4 (10s)
+✔ [7883/7885] Built VerifiedLcalc.Certificates.Batch.C233_a1 (10s)
+Build completed successfully (7885 jobs).

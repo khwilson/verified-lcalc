@@ -1,0 +1,5 @@
+✔ [7479/7485] Built CertifyBatchMain (2.7s)
+✔ [7481/7485] Built CertifyBatchMain:c.o (2.7s)
+✔ [7482/7485] Built «certify-batch»:exe (4.0s)
+✔ [7483/7485] Built VerifiedLcalc (12s)
+Build completed successfully (7485 jobs).
