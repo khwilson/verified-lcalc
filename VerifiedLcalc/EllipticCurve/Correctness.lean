@@ -13,80 +13,56 @@ public import Mathlib.Algebra.Field.ZMod
 namespace VerifiedLcalc.EllipticCurve
 open Artifacts
 
-/-- The actual mathlib Weierstrass model specified by the input coefficients. -/
-def weierstrass (e : CurveEquation) (R : Type*) [CommRing R] : WeierstrassCurve R :=
-  ⟨e.a1, e.a2, e.a3, e.a4, e.a6⟩
-
-theorem weierstrass_correct (e : CurveEquation) (R : Type*) [CommRing R] :
-    (weierstrass e R).a₁ = (e.a1 : R) ∧ (weierstrass e R).a₂ = (e.a2 : R) ∧
-    (weierstrass e R).a₃ = (e.a3 : R) ∧ (weierstrass e R).a₄ = (e.a4 : R) ∧
-    (weierstrass e R).a₆ = (e.a6 : R) := ⟨rfl, rfl, rfl, rfl, rfl⟩
+theorem weierstrass_correct (e : (WeierstrassCurve ℤ)) (R : Type*) [CommRing R] :
+    (WeierstrassCurve.baseChange e R).a₁ = (e.a₁ : R) ∧ (WeierstrassCurve.baseChange e R).a₂ = (e.a₂ : R) ∧
+    (WeierstrassCurve.baseChange e R).a₃ = (e.a₃ : R) ∧ (WeierstrassCurve.baseChange e R).a₄ = (e.a₄ : R) ∧
+    (WeierstrassCurve.baseChange e R).a₆ = (e.a₆ : R) := ⟨rfl, rfl, rfl, rfl, rfl⟩
 
 /-- Integer input equations commute with every coefficient-ring map. -/
-theorem weierstrass_map (e : CurveEquation) {R S : Type*} [CommRing R] [CommRing S]
-    (f : R →+* S) : (weierstrass e R).map f = weierstrass e S := by
-  ext <;> simp [weierstrass]
+theorem weierstrass_map (e : (WeierstrassCurve ℤ)) {R S : Type*} [CommRing R] [CommRing S]
+    (f : R →+* S) : (WeierstrassCurve.baseChange e R).map f = WeierstrassCurve.baseChange e S := by
+  ext <;> simp [WeierstrassCurve.baseChange]
 
-theorem weierstrass_discriminant (e : CurveEquation) (R : Type*) [CommRing R] :
-    (weierstrass e R).Δ = (discriminant e : R) := by
+theorem weierstrass_discriminant (e : (WeierstrassCurve ℤ)) (R : Type*) [CommRing R] :
+    (WeierstrassCurve.baseChange e R).Δ = (e.Δ : R) := by
   rw [← weierstrass_map e (Int.castRingHom R), WeierstrassCurve.map_Δ]
   rfl
 
-theorem weierstrass_c4 (e : CurveEquation) (R : Type*) [CommRing R] :
-    (weierstrass e R).c₄ = ((weierstrass e ℤ).c₄ : R) := by
+theorem weierstrass_c4 (e : (WeierstrassCurve ℤ)) (R : Type*) [CommRing R] :
+    (WeierstrassCurve.baseChange e R).c₄ = (e.c₄ : R) := by
   rw [← weierstrass_map e (Int.castRingHom R), WeierstrassCurve.map_c₄]
   rfl
 
-theorem b2_correct (e : CurveEquation) : b2 e = (weierstrass e Int).b₂ := rfl
-theorem b4_correct (e : CurveEquation) : b4 e = (weierstrass e Int).b₄ := rfl
-theorem b6_correct (e : CurveEquation) : b6 e = (weierstrass e Int).b₆ := rfl
-theorem b8_correct (e : CurveEquation) : b8 e = (weierstrass e Int).b₈ := rfl
-theorem discriminant_correct (e : CurveEquation) :
-    discriminant e = (weierstrass e Int).Δ := rfl
-
-theorem residual_correct (e : CurveEquation) (x y : Int) (R : Type*) [CommRing R] :
+theorem residual_correct (e : (WeierstrassCurve ℤ)) (x y : Int) (R : Type*) [CommRing R] :
     (residual e x y : R) =
-      (y : R) ^ 2 + (weierstrass e R).a₁ * x * y + (weierstrass e R).a₃ * y -
-        ((x : R) ^ 3 + (weierstrass e R).a₂ * (x : R) ^ 2 +
-          (weierstrass e R).a₄ * x + (weierstrass e R).a₆) := by
-  simp [residual, weierstrass]
+      (y : R) ^ 2 + (WeierstrassCurve.baseChange e R).a₁ * x * y + (WeierstrassCurve.baseChange e R).a₃ * y -
+        ((x : R) ^ 3 + (WeierstrassCurve.baseChange e R).a₂ * (x : R) ^ 2 +
+          (WeierstrassCurve.baseChange e R).a₄ * x + (WeierstrassCurve.baseChange e R).a₆) := by
+  simp [residual, WeierstrassCurve.baseChange]
 
 /-- Boolean modular evaluation is exactly mathlib's affine equation. -/
-theorem onCurve_equation (e : CurveEquation) (p : Nat) (xy : Fin p × Fin p) :
+theorem onCurve_equation (e : (WeierstrassCurve ℤ)) (p : Nat) (xy : Fin p × Fin p) :
     onCurve e p xy = true ↔
-      (weierstrass e (ZMod p)).toAffine.Equation (xy.1.val : ZMod p) (xy.2.val : ZMod p) := by
+      (WeierstrassCurve.baseChange e (ZMod p)).toAffine.Equation (xy.1.val : ZMod p) (xy.2.val : ZMod p) := by
   rw [onCurve_correct, ← Int.dvd_iff_emod_eq_zero,
     ← ZMod.intCast_zmod_eq_zero_iff_dvd,
     WeierstrassCurve.Affine.equation_iff']
   simp only [residual_correct, Int.cast_natCast]
 
-/-- Trial division is a proved primality test. -/
+/-- The backend uses Mathlib's primality decision procedure directly. -/
 theorem isPrime_correct (p : Nat) : isPrime p = true ↔ Nat.Prime p := by
-  rw [Nat.prime_def_lt']
-  simp only [isPrime, Bool.and_eq_true, decide_eq_true_eq, List.all_eq_true,
-    List.mem_range, Bool.or_eq_true, ne_eq, ← Nat.dvd_iff_mod_eq_zero]
-  constructor
-  · rintro ⟨hp, hd⟩
-    refine ⟨hp, fun d h2 hlt => ?_⟩
-    rcases hd d hlt with h | h
-    · omega
-    · exact h
-  · rintro ⟨hp, hd⟩
-    refine ⟨hp, fun d hlt => ?_⟩
-    by_cases h2 : d < 2
-    · exact Or.inl h2
-    · exact Or.inr (hd d (by omega) hlt)
+  simp [isPrime]
 
 /-- Modular discriminant testing really proves smooth reduction. -/
-theorem goodReduction_correct (e : CurveEquation) (p : Nat) :
-    goodReduction e p = true ↔ (weierstrass e (ZMod p)).Δ ≠ 0 := by
+theorem goodReduction_correct (e : (WeierstrassCurve ℤ)) (p : Nat) :
+    goodReduction e p = true ↔ (WeierstrassCurve.baseChange e (ZMod p)).Δ ≠ 0 := by
   simp only [goodReduction, decide_eq_true_eq, ne_eq, ← Int.dvd_iff_emod_eq_zero,
     ← ZMod.intCast_zmod_eq_zero_iff_dvd]
-  simp [discriminant, b2, b4, b6, b8, weierstrass, WeierstrassCurve.Δ,
+  simp [WeierstrassCurve.baseChange, WeierstrassCurve.Δ,
     WeierstrassCurve.b₂, WeierstrassCurve.b₄, WeierstrassCurve.b₆, WeierstrassCurve.b₈]
 
 /-- The enumerator visits each modular solution exactly once. -/
-theorem affinePoints_nodup (e : CurveEquation) (p : Nat) : (affinePoints e p).Nodup := by
+theorem affinePoints_nodup (e : (WeierstrassCurve ℤ)) (p : Nat) : (affinePoints e p).Nodup := by
   unfold affinePoints
   apply List.Nodup.filter
   rw [List.nodup_flatMap]
@@ -101,8 +77,8 @@ theorem affinePoints_nodup (e : CurveEquation) (p : Nat) : (affinePoints e p).No
 
 /-- The finite field solution type, including singular solutions. This agrees
 with TauCeti's projective-model point-count convention after adjoining infinity. -/
-def AffineSolutions (e : CurveEquation) (p : Nat) :=
-  {xy : ZMod p × ZMod p // (weierstrass e (ZMod p)).toAffine.Equation xy.1 xy.2}
+def AffineSolutions (e : (WeierstrassCurve ℤ)) (p : Nat) :=
+  {xy : ZMod p × ZMod p // (WeierstrassCurve.baseChange e (ZMod p)).toAffine.Equation xy.1 xy.2}
 
 /-- Every residue has a unique representative in `Fin p`, for p nonzero. -/
 def residueEquiv (p : Nat) [NeZero p] : Fin p ≃ ZMod p where
@@ -113,12 +89,12 @@ def residueEquiv (p : Nat) [NeZero p] : Fin p ≃ ZMod p where
     simp [ZMod.val_natCast, Nat.mod_eq_of_lt x.isLt]
   right_inv x := by simp
 
-def solutionEquiv (e : CurveEquation) (p : Nat) [NeZero p] :
+def solutionEquiv (e : (WeierstrassCurve ℤ)) (p : Nat) [NeZero p] :
     {xy : Fin p × Fin p // onCurve e p xy = true} ≃ AffineSolutions e p :=
   ((residueEquiv p).prodCongr (residueEquiv p)).subtypeEquiv
     (fun xy => onCurve_equation e p xy)
 
-theorem affineCount_correct (e : CurveEquation) (p : Nat) [NeZero p] :
+theorem affineCount_correct (e : (WeierstrassCurve ℤ)) (p : Nat) [NeZero p] :
     affineCount e p = Nat.card (AffineSolutions e p) := by
   classical
   let s : Finset (Fin p × Fin p) := Finset.univ.filter (fun xy => onCurve e p xy = true)
@@ -129,37 +105,37 @@ theorem affineCount_correct (e : CurveEquation) (p : Nat) [NeZero p] :
   rw [← Nat.card_congr (solutionEquiv e p)]
   simp [s, Nat.card_eq_fintype_card, Fintype.card_subtype]
 
-theorem pointCount_correct (e : CurveEquation) (p : Nat) [NeZero p] :
-    pointCount e p = Nat.card (AffineSolutions e p) + 1 := by
-  rw [pointCount, affineCount_correct]
+theorem computePointCount_correct (e : (WeierstrassCurve ℤ)) (p : Nat) [NeZero p] :
+    computePointCount e p = Nat.card (AffineSolutions e p) + 1 := by
+  rw [computePointCount, affineCount_correct]
 
-theorem frobeniusTrace_correct (e : CurveEquation) (p : Nat) [NeZero p] :
+theorem frobeniusTrace_correct (e : (WeierstrassCurve ℤ)) (p : Nat) [NeZero p] :
     frobeniusTrace e p = (p : Int) + 1 - (Nat.card (AffineSolutions e p) + 1 : Nat) := by
-  rw [frobeniusTrace, pointCount_correct]
+  rw [frobeniusTrace, computePointCount_correct]
 
 /-- At good reduction the projective equation count is the cardinality of the
 actual mathlib elliptic-curve point type, including its point at infinity. -/
-theorem pointCount_eq_card_point (e : CurveEquation) (p : Nat) [NeZero p]
+theorem computePointCount_eq_card_point (e : (WeierstrassCurve ℤ)) (p : Nat) [NeZero p]
     [Nontrivial (ZMod p)]
-    [(weierstrass e (ZMod p)).IsElliptic] :
-    pointCount e p = Nat.card (weierstrass e (ZMod p)).toAffine.Point := by
+    [(WeierstrassCurve.baseChange e (ZMod p)).IsElliptic] :
+    computePointCount e p = Nat.card (WeierstrassCurve.baseChange e (ZMod p)).toAffine.Point := by
   let : Finite (AffineSolutions e p) := by unfold AffineSolutions; infer_instance
-  rw [pointCount_correct, Nat.card_congr (weierstrass e (ZMod p)).toAffine.pointEquiv]
+  rw [computePointCount_correct, Nat.card_congr (WeierstrassCurve.baseChange e (ZMod p)).toAffine.pointEquiv]
   exact Finite.card_option.symm
 
 /-- End-to-end arithmetic guarantee for every supported prime calculation. -/
-theorem analysePrime_sound (e : CurveEquation) (p : Nat) (d : PrimeData)
+theorem analysePrime_sound (e : (WeierstrassCurve ℤ)) (p : Nat) (d : PrimeData)
     (h : analysePrime e p = some d) :
     Nat.Prime p ∧ d.prime = p ∧
-      d.points = Nat.card (weierstrass e (ZMod p)).toAffine.Point ∧
-      d.trace = (p : Int) + 1 - Nat.card (weierstrass e (ZMod p)).toAffine.Point := by
+      d.points = Nat.card (WeierstrassCurve.baseChange e (ZMod p)).toAffine.Point ∧
+      d.trace = (p : Int) + 1 - Nat.card (WeierstrassCurve.baseChange e (ZMod p)).toAffine.Point := by
   obtain ⟨hp, hg, hd, hpoints, htrace⟩ := analysePrime_correct e p d h
   have hp' := (isPrime_correct p).mp hp
   let : Fact (Nat.Prime p) := ⟨hp'⟩
   let : NeZero p := ⟨hp'.ne_zero⟩
   have hΔ := (goodReduction_correct e p).mp hg
-  let : (weierstrass e (ZMod p)).IsElliptic := ⟨isUnit_iff_ne_zero.mpr hΔ⟩
-  refine ⟨hp', hd, hpoints.trans (pointCount_eq_card_point e p), ?_⟩
-  rw [htrace, frobeniusTrace, pointCount_eq_card_point]
+  let : (WeierstrassCurve.baseChange e (ZMod p)).IsElliptic := ⟨isUnit_iff_ne_zero.mpr hΔ⟩
+  refine ⟨hp', hd, hpoints.trans (computePointCount_eq_card_point e p), ?_⟩
+  rw [htrace, frobeniusTrace, computePointCount_eq_card_point]
 
 end VerifiedLcalc.EllipticCurve

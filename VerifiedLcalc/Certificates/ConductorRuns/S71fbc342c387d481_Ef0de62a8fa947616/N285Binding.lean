@@ -1,5 +1,0 @@
-module
-public import VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285
-@[expose] public section
-example : VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c1.equation = ({ a1 := 1, a2 := 1, a3 := 0, a4 := -6007, a6 := -181724 } : VerifiedLcalc.Artifacts.CurveEquation) ∧ VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c1.inputConductor = 285 ∧ VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c1.label = "285.c1" := by decide +kernel
-example : VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c2.equation = ({ a1 := 1, a2 := 1, a3 := 0, a4 := -1237, a6 := 13054 } : VerifiedLcalc.Artifacts.CurveEquation) ∧ VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c2.inputConductor = 285 ∧ VerifiedLcalc.Certificates.ConductorRuns.S71fbc342c387d481_Ef0de62a8fa947616.N285.C285_c2.label = "285.c2" := by decide +kernel

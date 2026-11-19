@@ -17,7 +17,7 @@ def parseCurveRow (line : String) : Except String Regression.Case := do
   let a3 ← a[2]!.getInt?
   let a4 ← a[3]!.getInt?
   let a6 ← a[4]!.getInt?
-  return ⟨⟨label, conductor, a1, a2, a3, a4, a6⟩, rank⟩
+  return ⟨⟨label, conductor, ⟨a1, a2, a3, a4, a6⟩⟩, rank⟩
 
 /-- Data ingestion only. Expected ranks are kept in Regression.Case and never
 passed to the arithmetic or analytic backend. All input rows are retained. -/
@@ -48,7 +48,7 @@ def main : IO UInt32 := do
   IO.FS.writeFile "VerifiedLcalc/LmfdbSupplement.lean" source
   let records := cases.map fun c => Json.mkObj [
     ("label", toJson c.input.label), ("conductor", toJson c.input.conductor),
-    ("ainvs", toJson [c.input.a1,c.input.a2,c.input.a3,c.input.a4,c.input.a6]),
+    ("ainvs", toJson [c.input.equation.a₁,c.input.equation.a₂,c.input.equation.a₃,c.input.equation.a₄,c.input.equation.a₆]),
     ("analytic_rank", toJson c.expectedRank),
     ("source_url", toJson ("https://www.lmfdb.org/EllipticCurve/Q/data/" ++ c.input.label))]
   let fixture := Json.mkObj [

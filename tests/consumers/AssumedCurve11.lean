@@ -1,0 +1,5 @@
+import VerifiedLcalcTests.Fixtures.AssumedCurve11
+
+#check VerifiedLcalcTests.Fixtures.AssumedCurve11.continuedL_matches_euler_series
+#print axioms VerifiedLcalcTests.Fixtures.AssumedCurve11.continuedL_entire
+#print axioms VerifiedLcalcTests.Fixtures.AssumedCurve11.continuedL_matches_euler_series

@@ -1,7 +1,7 @@
 module
 
 public import VerifiedLcalc.EllipticCurve.DerivativeCore
-public import VerifiedLcalc.EllipticCurve.WildRootCore
+public import VerifiedLcalc.EllipticCurve.Tate.WildRootCore
 
 @[expose] public section
 

@@ -50,7 +50,7 @@ Run:
 ```sh
 lake exe additive-witnesses --check
 lake env lean AuditAdditive.lean
-lake env lean certificates/Additive.lean
+lake env lean tests/consumers/Additive.lean
 ```
 
 The producer reads only curve inputs, never reference ranks. It writes proposals

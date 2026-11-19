@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Assumptions.DerivativeCertification
+public import VerifiedLcalc.Certification.DerivativeCertification
 public import VerifiedLcalc.Certificate.Json
 public meta import VerifiedLcalc.Certificate.Json
 public meta import Lean
@@ -13,7 +13,7 @@ public meta section
 namespace VerifiedLcalc.CertifyEC
 open Lean Elab Command Meta EllipticCurve
 
-deriving instance ToExpr for Artifacts.CurveEquation
+deriving instance ToExpr for WeierstrassCurve
 deriving instance ToExpr for PrecisionPolicy
 deriving instance ToExpr for Box
 deriving instance ToExpr for TateWitness
@@ -71,9 +71,9 @@ def certify (name : Name) (input : TSyntax `term) : CommandElabM Unit := do
     else `(EllipticWitness.derivative $r $v $d)
   checked (base ++ `witness_eq) (← `($w = $expected)) (← `(by rfl))
   let curve := mkIdent (base ++ `curve)
-  emit (← `(def $curve : Artifacts.CurveEquation := ($r).equation))
+  emit (← `(def $curve : (WeierstrassCurve ℤ) := ($r).equation))
   let hn := mkIdent (base ++ `nonsingular)
-  checked (base ++ `nonsingular) (← `(discriminant $curve ≠ 0)) (← `(by decide +kernel))
+  checked (base ++ `nonsingular) (← `(WeierstrassCurve.Δ $curve ≠ 0)) (← `(by decide +kernel))
   let hv := mkIdent (base ++ `minimality_valid)
   checked (base ++ `minimality_valid) (← `(($v).Valid $curve)) (← `(by decide +kernel))
   let hd := mkIdent (base ++ `local_data_valid)
@@ -97,16 +97,16 @@ def certify (name : Name) (input : TSyntax `term) : CommandElabM Unit := do
   checked (base ++ `excludes_zero) (← `(($r).box.excludesZero = true)) (← `(by decide +kernel))
   let rank : TSyntax `term ← if central then `(0) else `(1)
   let rankType ← `(analyticOrderAt
-    (Assumptions.modularWitness $curve $hn).formL (1 : ℂ) = $rank)
+    (Modularity.modularWitness $curve $hn).formL (1 : ℂ) = $rank)
   let rankProof ← if central then
-    `(Assumptions.certifyWildCentralModel $r $hn $v $hv $d $hd $hN $hw $hp $hz)
-    else `(Assumptions.certifyDerivativeModel $r $hn $v $hv $d $hd $hN $hw $hp $hz)
+    `(Certification.certifyWildCentralModel $r $hn $v $hv $d $hd $hN $hw $hp $hz)
+    else `(Certification.certifyDerivativeModel $r $hn $v $hv $d $hd $hN $hw $hp $hz)
   checked (base ++ `analytic_rank) rankType rankProof true
   let rankTheorem := mkIdent (base ++ `analytic_rank)
   checked (base ++ `curve_analytic_rank) rankType (← `($rankTheorem)) true
   let certifiedRank := mkIdent (base ++ `certifiedRank)
   emit (← `(def $certifiedRank : {n : Nat // analyticOrderAt
-    (Assumptions.modularWitness $curve $hn).formL (1 : ℂ) = n} := ⟨$rank, $rankTheorem⟩))
+    (Modularity.modularWitness $curve $hn).formL (1 : ℂ) = n} := ⟨$rank, $rankTheorem⟩))
   logInfo m!"Certified {base}.analytic_rank (rank {if central then "0" else "1"}); conditional on ellipticModularity"
 
 /-- Roll back every generated declaration if any component fails. -/

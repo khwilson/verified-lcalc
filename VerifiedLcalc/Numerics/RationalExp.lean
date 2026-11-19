@@ -1,7 +1,8 @@
 module
 
 public import VerifiedLcalc.Numerics.RationalExpCore
-public import VerifiedLcalc.Numerics.Exponential
+public import VerifiedLcalc.Analytic
+public import VerifiedLcalc.Upstream.LedvinkaExponential
 public import Mathlib.Tactic.Linarith
 
 @[expose] public section

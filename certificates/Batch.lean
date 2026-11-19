@@ -1,6 +1,0 @@
-import VerifiedLcalc.Assumptions.Generated
-
-#check VerifiedLcalc.Assumptions.generatedCertificateKeys_sound
-#print axioms VerifiedLcalc.Assumptions.generatedCertificateKeys_sound
-#eval VerifiedLcalc.Regression.generatedCertificateKeys.length
-#eval VerifiedLcalc.Certificates.Batch.C15_a1.certifiedRank.val

@@ -1,4 +1,12 @@
-# Automated conditional central certificates
+# Retired batch workflow
+
+This workflow and its generated certificate corpus were retired on 2026-11-19.
+Use [`certify_ec`](CERTIFY_EC.md) for checked, importable per-curve theorems.
+The commands and paths below are historical documentation, not supported setup
+instructions. Their implementation is preserved in baseline commit `fcdc4f2`.
+The generic mathematical certifiers remain available.
+
+## Historical workflow
 
 Run the complete producer, kernel checker, certificate-cache update and strict
 regression with:
@@ -40,7 +48,7 @@ only standard foundations and `ellipticModularity`.
 
 ## Outputs and cache
 
-- `VerifiedLcalc/Certificates/Batch/`: complete generated Lean certificates.
+- `tests/VerifiedLcalcTests/Fixtures/Batch/`: complete generated Lean certificates.
 - `output/batch/proposals.tsv`: untrusted producer proposals and skip reasons.
 - `output/batch/report.json`: statuses after kernel replay, resource choices,
   source hashes and logs for rejections.

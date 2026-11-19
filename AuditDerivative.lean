@@ -1,5 +1,4 @@
-import VerifiedLcalc.Assumptions.DerivativeCertification
-import VerifiedLcalc.Assumptions.GeneratedRankOne
+import VerifiedLcalc.Certification.DerivativeCertification
 
 /-- info: 'VerifiedLcalc.Numerics.intervalMul_sound' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
@@ -25,31 +24,23 @@ import VerifiedLcalc.Assumptions.GeneratedRankOne
 #guard_msgs (whitespace := lax) in
 #print axioms VerifiedLcalc.EllipticCurve.derivativePayload_contains
 
-/-- info: 'VerifiedLcalc.Assumptions.ModularRealization.mellin_first_derivative' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'VerifiedLcalc.Modularity.ModularRealization.mellin_first_derivative' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Assumptions.ModularRealization.mellin_first_derivative
+#print axioms VerifiedLcalc.Modularity.ModularRealization.mellin_first_derivative
 
-/-- info: 'VerifiedLcalc.Assumptions.ModularRealization.deriv_one_re_integral' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'VerifiedLcalc.Modularity.ModularRealization.deriv_one_re_integral' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Assumptions.ModularRealization.deriv_one_re_integral
+#print axioms VerifiedLcalc.Modularity.ModularRealization.deriv_one_re_integral
 
-/-- info: 'VerifiedLcalc.Assumptions.ModularRealization.realDerivativeBounds_contains' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'VerifiedLcalc.Modularity.ModularRealization.realDerivativeBounds_contains' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Assumptions.ModularRealization.realDerivativeBounds_contains
+#print axioms VerifiedLcalc.Modularity.ModularRealization.realDerivativeBounds_contains
 
-/-- info: 'VerifiedLcalc.Assumptions.ModularRealization.analyticOrder_one_of_derivativePayload' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'VerifiedLcalc.Modularity.ModularRealization.analyticOrder_one_of_derivativePayload' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Assumptions.ModularRealization.analyticOrder_one_of_derivativePayload
+#print axioms VerifiedLcalc.Modularity.ModularRealization.analyticOrder_one_of_derivativePayload
 
-/-- info: 'VerifiedLcalc.Assumptions.certifyDerivativeModel' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity] -/
+/-- info: 'VerifiedLcalc.Certification.certifyDerivativeModel' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Assumptions.certifyDerivativeModel
-
-/-- info: 'VerifiedLcalc.Assumptions.generatedRankOneKeys_sound' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity] -/
-#guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Assumptions.generatedRankOneKeys_sound
-
-/-- info: 'VerifiedLcalc.Certificates.DerivativeBatch.C37_a1.analytic_rank_one' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity] -/
-#guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Certificates.DerivativeBatch.C37_a1.analytic_rank_one
+#print axioms VerifiedLcalc.Certification.certifyDerivativeModel
 

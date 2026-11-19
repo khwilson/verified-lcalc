@@ -1,5 +1,12 @@
 # Wild additive reduction at 2 and 3
 
+Workflow status (2026-11-19): legacy batch/derivative/conductor generators,
+`lmfdb-check`, generated registries and bulk certificate directories described
+below have been retired. Their command examples and cache counts are historical,
+with implementation preserved in baseline commit `fcdc4f2`. The mathematical
+proof engine remains; use [`certify_ec`](CERTIFY_EC.md) for current witness
+verification and importable theorem generation.
+
 The backend has three separate parts:
 
 * `WildTateCore.lean` constructs and checks Tate reduction transcripts for
@@ -148,7 +155,7 @@ matches, zero mismatches and the intentional coverage failure for 278 inputs.
 The checked wrapper hashes are in `output/batch/report.json`; the nine bundle
 source digests are in `output/batch/proof-bundles.sha256`.
 
-Run `lake env lean certificates/Wild.lean` to execute saved proof-carrying
+Run `lake env lean tests/consumers/Wild.lean` to execute saved proof-carrying
 values: exact rank 0 for 27.a1, 32.a4 and 36.a1, followed by the proved lower
 bound 1 for 112.a1. The final value does not claim exact rank one.
 

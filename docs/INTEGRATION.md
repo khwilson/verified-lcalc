@@ -1,5 +1,12 @@
 # TauCeti and mathlib integration
 
+Workflow status (2026-11-19): legacy batch/derivative/conductor generators,
+`lmfdb-check`, generated registries and bulk certificate directories described
+below have been retired. Their command examples and cache counts are historical,
+with implementation preserved in baseline commit `fcdc4f2`. The mathematical
+proof engine remains; use [`certify_ec`](CERTIFY_EC.md) for current witness
+verification and importable theorem generation.
+
 The modularity axiom is unchanged. No numerical bound, evaluation formula,
 vanishing principle or extra arithmetic axiom was added.
 
@@ -56,9 +63,9 @@ or numerical-zero cutoff participates in the proof.
 
 The theorem is paired with executable data in `certifiedRank`. Run:
 
-    lake build VerifiedLcalc.Certificates.AssumedCurve11Central
-    lake env lean VerifiedLcalc/Certificates/AssumedCurve11Central.lean
-    lake env lean certificates/AssumedCurve11Central.lean
+    lake build VerifiedLcalcTests.Fixtures.AssumedCurve11Central
+    lake env lean tests/VerifiedLcalcTests/Fixtures/AssumedCurve11Central.lean
+    lake env lean tests/consumers/AssumedCurve11Central.lean
 
 The final consumer imports the cached checked theorem, prints its axiom
 list, and evaluates the certified rank value to 0.

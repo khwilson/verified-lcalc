@@ -1,6 +1,7 @@
 module
 
-public import VerifiedLcalc.Numerics.ExpSumCore
+public import VerifiedLcalc.Scan
+public import VerifiedLcalc.Upstream.LedvinkaExponentialCore
 
 @[expose] public section
 

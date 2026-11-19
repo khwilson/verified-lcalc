@@ -1,17 +1,17 @@
 module
 
-public import VerifiedLcalc.EllipticCurve.TwoAdicMinimality
-public import VerifiedLcalc.EllipticCurve.InvariantMinimality
+public import VerifiedLcalc.EllipticCurve.Tate.TwoAdicMinimality
+public import VerifiedLcalc.EllipticCurve.Tate.InvariantMinimality
 
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
 open NumberField IsDedekindDomain
 
 /-- Every successful executable local minimality check proves local minimality. -/
-private theorem baseMinimalAt_correct (e : Artifacts.CurveEquation) (p : ℕ) [Fact p.Prime]
+private theorem baseMinimalAt_correct (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime]
     (h : (discriminantMinimalAt e p || twoAdicC4MinimalAt e p) = true) :
     WeierstrassCurve.IsMinimal ((rationalPlace p).adicCompletionIntegers ℚ)
-      ((weierstrass e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
+      ((WeierstrassCurve.baseChange e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
         ((rationalPlace p).adicCompletion ℚ)) := by
   rcases Bool.or_eq_true_iff.mp h with h | h
   · exact minimal_at_of_discriminant_not_dvd e p ((discriminantMinimalAt_correct e p).mp h)
@@ -23,20 +23,20 @@ private theorem baseMinimalAt_correct (e : Artifacts.CurveEquation) (p : ℕ) [F
     · simpa only [Int.reducePow, Int.dvd_iff_emod_eq_zero] using h7
 
 /-- Soundness of every executable sufficient criterion in the dispatcher. -/
-theorem modelMinimalAt_correct (e : Artifacts.CurveEquation) (p : ℕ) [Fact p.Prime]
+theorem modelMinimalAt_correct (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime]
     (h : modelMinimalAt e p = true) :
     WeierstrassCurve.IsMinimal ((rationalPlace p).adicCompletionIntegers ℚ)
-      ((weierstrass e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
+      ((WeierstrassCurve.baseChange e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
         ((rationalPlace p).adicCompletion ℚ)) := by
   rcases Bool.or_eq_true_iff.mp h with h | h
   · exact baseMinimalAt_correct e p h
   · exact invariantMinimalAt_correct e p h
 
 /-- Standalone correctness theorem for the executable 2-adic c4 check. -/
-theorem twoAdicC4MinimalAt_correct (e : Artifacts.CurveEquation) (p : ℕ) [Fact p.Prime]
+theorem twoAdicC4MinimalAt_correct (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime]
     (h : twoAdicC4MinimalAt e p = true) :
     WeierstrassCurve.IsMinimal ((rationalPlace p).adicCompletionIntegers ℚ)
-      ((weierstrass e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
+      ((WeierstrassCurve.baseChange e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
         ((rationalPlace p).adicCompletion ℚ)) := by
   apply modelMinimalAt_correct e p
   simp only [modelMinimalAt, h, Bool.or_true, Bool.true_or]
@@ -54,12 +54,12 @@ private theorem prime_eq_member_of_dvd_prod (p : ℕ) (hp : p.Prime)
 
 /-- A checked finite factorization certifies minimality at every finite place,
 including additive primes in characteristics two and three. -/
-theorem minimal_of_witness (e : Artifacts.CurveEquation) (w : MinimalityWitness)
+theorem minimal_of_witness (e : (WeierstrassCurve ℤ)) (w : MinimalityWitness)
     (hw : w.Valid e) (p : ℕ) [Fact p.Prime] :
     WeierstrassCurve.IsMinimal ((rationalPlace p).adicCompletionIntegers ℚ)
-      ((weierstrass e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
+      ((WeierstrassCurve.baseChange e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
         ((rationalPlace p).adicCompletion ℚ)) := by
-  by_cases hpd : (p : ℤ) ∣ discriminant e
+  by_cases hpd : (p : ℤ) ∣ e.Δ
   · apply modelMinimalAt_correct e p
     have hall : w.primes.all isPrime = true := by
       rw [List.all_eq_true]

@@ -11,7 +11,7 @@ VerifiedLcalc.Assumptions.ellipticModularity
 ```
 
 Its complete proposition is `EllipticModularity`, defined in
-`VerifiedLcalc/Assumptions/ModularityStatement.lean`. For every integral
+`VerifiedLcalc/EllipticCurve/Modularity/Realization.lean`. For every integral
 Weierstrass equation with nonzero discriminant it asserts the existence of a
 modular realization consisting of:
 
@@ -77,11 +77,11 @@ The default `VerifiedLcalc` import, runtime executables, original certificates
 and `Audit.lean` do not import the axiom module. Opt in explicitly:
 
 ```
-lake build VerifiedLcalc.Assumptions.Certificates VerifiedLcalc.Certificates.AssumedCurve11 VerifiedLcalc.Certificates.AssumedCurve37
+lake build VerifiedLcalc.Certification.NumericalCertification VerifiedLcalcTests.Fixtures.AssumedCurve11 VerifiedLcalcTests.Fixtures.AssumedCurve37
 lake env lean AuditAssumptions.lean
-lake env lean certificates/AssumedCurve11.lean
-lake env lean certificates/AssumedCurve37.lean
-lake env lean certificates/AssumedCurve11Central.lean
+lake env lean tests/consumers/AssumedCurve11.lean
+lake env lean tests/consumers/AssumedCurve37.lean
+lake env lean tests/consumers/AssumedCurve11Central.lean
 ```
 
 The source of any dependent certificate should retain its assumption imports

@@ -33,7 +33,7 @@ ring with the original ideal quotient; the unused Henselian import is omitted.
 
 Validation:
 
-    lake build VerifiedLcalc.EllipticCurve.TauCeti VerifiedLcalc.Assumptions.CentralEvaluator
+    lake build VerifiedLcalc.EllipticCurve.TauCeti VerifiedLcalc.Certification.CentralEvaluator
     lake env lean AuditIntegration.lean
 
 The integration audit guards that the imported arithmetic and general analytic

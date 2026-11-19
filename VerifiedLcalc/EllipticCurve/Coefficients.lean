@@ -48,7 +48,7 @@ theorem coefficientFromFactors_correct (factors : List ModelEulerFactor) (n : Na
   · simp [h, localCoefficient, localPair]
   · rfl
 
-theorem modelFactors_prime (e : Artifacts.CurveEquation) (limit : Nat) :
+theorem modelFactors_prime (e : (WeierstrassCurve ℤ)) (limit : Nat) :
     ∀ f ∈ modelFactors e limit, f.prime.Prime := by
   intro f hm
   obtain ⟨p, _, hp, rfl⟩ := (modelFactors_correct e limit f).mp hm
@@ -57,7 +57,7 @@ theorem modelFactors_prime (e : Artifacts.CurveEquation) (limit : Nat) :
 /-- Every produced coefficient is the prime-power product of the model's
 computed local factors. Minimality and the global L-function identification are
 additional obligations, not consequences of this finite arithmetic theorem. -/
-theorem modelCoefficients_euler (e : Artifacts.CurveEquation) (limit : Nat) :
+theorem modelCoefficients_euler (e : (WeierstrassCurve ℤ)) (limit : Nat) :
     modelCoefficients e limit = (List.range limit).map (fun j =>
       ((modelFactors e limit).map fun f =>
         localCoefficient f.trace f.quadratic ((j + 1).factorization f.prime)).prod) := by

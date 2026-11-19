@@ -61,7 +61,7 @@ alone cannot. The stored precision does not itself imply the hypothesis.
 
 ## Replay and regression
 
-`VerifiedLcalc/Certificates/NumericalQuartic.lean` saves a worked polynomial
+`tests/VerifiedLcalcTests/Fixtures/NumericalQuartic.lean` saves a worked polynomial
 example with an immutable 53-bit policy and four non-singleton derivative boxes.
 It proves the numerical smallness statement and a separately named conditional
 analytic lower bound. It also kernel-checks rejection of changed precision,
@@ -72,8 +72,8 @@ smallness condition while its actual analytic order is zero.
 ```
 lake build
 lake exe precision-policy
-lake env lean VerifiedLcalc/Certificates/NumericalQuartic.lean
-lake env lean certificates/NumericalQuartic.lean
+lake env lean tests/VerifiedLcalcTests/Fixtures/NumericalQuartic.lean
+lake env lean tests/consumers/NumericalQuartic.lean
 lake env lean Audit.lean
 ```
 
@@ -81,11 +81,47 @@ Lake caches the proof module in the same way as the existing exact certificates.
 The compiled consumer imports the saved theorems; the source replay checks them
 afresh. No remote or content-addressed certificate store has been implemented.
 
-The elliptic subject interpretation and actual central derivative evaluator
-remain incomplete, so no elliptic numerical or exact rank has been fabricated.
-The strict 100-curve LMFDB analytic-rank gate remains inconclusive and failing.
-Future numerical comparisons must report their policy and use a separate result
-category; they must not turn these observations into exact-rank successes.
+Exact rank-zero and rank-one elliptic certificates are now supported by the
+separate central/first-derivative backend and `certify_ec`. They prove exact
+nonvanishing and are not tolerance-only rank observations. Higher derivatives
+needed for a real numerical rank-four observation are still missing; no such
+elliptic certificate is claimed by the numerical quartic example.
+
+## Explicit per-curve separation hypotheses
+
+`NumericalRanks.NonzeroDerivativeGap f center n gap` says that each nonzero raw
+derivative of order less than `n` has a real or imaginary coordinate of magnitude
+at least `gap`. With checked coordinatewise bounds at most `eps` and the strict
+margin `eps < gap`, `exactVanishing_of_gap` proves the earlier derivatives vanish.
+This supplies the existing `ExactVanishingHypothesis` interface. The strict
+margin avoids falsely treating the cutoff endpoints as zero.
+
+`lowerBound_of_small_gap` proves analytic order at least `n` under analyticity.
+`rank_eq_of_small_gap` additionally requires nonvanishing of derivative `n` to
+conclude exact rank. A central-value assumption alone does not imply rank four:
+orders zero through three must all be addressed.
+
+For elliptic curves, `Assumptions.CurvePrecisionClaim` stores the exact equation,
+precision policy, derivative count and rational nonzero gap. Its indexed
+`Hypotheses` proposition records the missing separation assumption and strict
+margin for that specific curve's arithmetic L-function at 1. The conditional
+lower-bound/exact-rank theorems keep this hypothesis explicit. An adapter derives
+the claim identity from checked numerical evidence, retaining actual enclosure
+proof obligations. It cannot replace those proofs with metadata or reference
+ranks.
+
+Use `VerifiedLcalc/Assumptions/Curves/` for explicitly opted-in per-curve
+assumption declarations. No blanket gap axiom or rank-four curve axiom has been
+added. Projects can carry a hypothesis parameter, prove an instance later, or
+postulate a separately named instance in their own opt-in module and accept that
+additional axiom dependency. Current exact `certify_ec` deliberately rejects
+such extra axioms; a future conditional higher-rank interface must display its
+assumptions separately.
+
+The generic gap-to-order theorems use only standard foundations. The elliptic
+wrappers also depend on the existing modularity package. Tests show that a small
+nonzero constant fails the proposed gap hypothesis; smallness alone still cannot
+establish rank four.
 
 Sources: [PARI implementation, lines 397–427](https://pari.math.u-bordeaux.fr/lcov-report/basemath/ellanal.c.gcov.html),
 [LMFDB reliability notes](https://www.lmfdb.org/knowledge/show/rcs.rigor.ec.q).

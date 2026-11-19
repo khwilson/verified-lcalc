@@ -1,4 +1,4 @@
-import VerifiedLcalc.EllipticCurve.ArithmeticExamples
+import VerifiedLcalcTests.Arithmetic.ArithmeticExamples
 
 -- Broader arithmetic is independent of the opt-in modularity axiom.
 /-- info: 'VerifiedLcalc.EllipticCurve.reduction_eq_variableChange' depends on axioms: [propext, Classical.choice, Quot.sound] -/

@@ -8,15 +8,15 @@ set_option maxHeartbeats 10000000
 
 -- These are new theorems obtained solely from imported .olean declarations.
 theorem imported_rank_zero :
-    analyticOrderAt (Assumptions.modularWitness DirectCurve.curve DirectCurve.nonsingular).formL
+    analyticOrderAt (Modularity.modularWitness DirectCurve.curve DirectCurve.nonsingular).formL
       (1 : ℂ) = 0 := DirectCurve.analytic_rank
 
 theorem imported_rank_one :
-    analyticOrderAt (Assumptions.modularWitness Curve37.curve Curve37.nonsingular).formL
+    analyticOrderAt (Modularity.modularWitness Curve37.curve Curve37.nonsingular).formL
       (1 : ℂ) = 1 := Curve37.analytic_rank
 
 theorem imported_wild_rank_one :
-    analyticOrderAt (Assumptions.modularWitness Curve112.curve Curve112.nonsingular).formL
+    analyticOrderAt (Modularity.modularWitness Curve112.curve Curve112.nonsingular).formL
       (1 : ℂ) = 1 := Curve112.analytic_rank
 
 -- Failed commands must not leave even their input definitions behind.
@@ -66,6 +66,6 @@ run_cmd do
               axiomName == ``Assumptions.ellipticModularity) do
           throwError "Unexpected axiom in {name ++ suffix}: {axiomName}"
 
-#eval Curve11.certifiedRank.val
-#eval Curve37.certifiedRank.val
-#eval Curve112.certifiedRank.val
+#reduce Curve11.certifiedRank.val
+#reduce Curve37.certifiedRank.val
+#reduce Curve112.certifiedRank.val

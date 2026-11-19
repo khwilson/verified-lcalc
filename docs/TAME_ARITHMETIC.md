@@ -1,6 +1,13 @@
 # Tame additive conductor and root numbers
 
-`EllipticCurve/TameCore.lean` implements finite conductor/sign computation for
+Workflow status (2026-11-19): legacy batch/derivative/conductor generators,
+`lmfdb-check`, generated registries and bulk certificate directories described
+below have been retired. Their command examples and cache counts are historical,
+with implementation preserved in baseline commit `fcdc4f2`. The mathematical
+proof engine remains; use [`certify_ec`](CERTIFY_EC.md) for current witness
+verification and importable theorem generation.
+
+`EllipticCurve/Tate/TameCore.lean` implements finite conductor/sign computation for
 minimal integral models that have no additive reduction at 2 or 3. Good and
 multiplicative reduction at 2 and 3 are supported. The executable imports only
 core arithmetic modules; mathlib specifications and proofs live in
@@ -70,7 +77,7 @@ regression still fails if any input is inconclusive.
 
 `AuditTame.lean` guards axiom dependencies. `TameExamples.lean` checks j=0,
 all seven potentially-good valuation classes, negative j-valuation, composite
-rejection and wild-additive rejection. `certificates/Tame.lean` executes the
+rejection and wild-additive rejection. `tests/consumers/Tame.lean` executes the
 cached exact rank-zero value for 49.a1.
 
 Remaining arithmetic work includes wild additive conductor/root formulas at

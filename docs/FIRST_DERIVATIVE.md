@@ -1,5 +1,12 @@
 # Exact rank one from a first derivative
 
+Workflow status (2026-11-19): legacy batch/derivative/conductor generators,
+`lmfdb-check`, generated registries and bulk certificate directories described
+below have been retired. Their command examples and cache counts are historical,
+with implementation preserved in baseline commit `fcdc4f2`. The mathematical
+proof engine remains; use [`certify_ec`](CERTIFY_EC.md) for current witness
+verification and importable theorem generation.
+
 The derivative backend uses the existing general modularity assumption and adds
 no numerical or exact-vanishing axiom. All interval, quadrature, Fourier-tail and
 Mellin differentiation proofs depend only on Lean/mathlib's standard axioms.
@@ -70,7 +77,7 @@ certificate production or proof construction.
 
 ```sh
 lake exe certify-derivatives
-lake env lean certificates/Derivative.lean
+lake env lean tests/consumers/Derivative.lean
 lake env lean AuditDerivative.lean
 lake exe certify-derivatives --seal-cache
 ```

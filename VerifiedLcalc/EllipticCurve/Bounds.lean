@@ -10,7 +10,7 @@ namespace VerifiedLcalc.EllipticCurve
 
 /-- Elementary counting suffices for the deliberately loose numerical tail
 majorant: there are at most p² affine equation solutions. -/
-theorem affineCount_le_square (e : Artifacts.CurveEquation) (p : Nat) :
+theorem affineCount_le_square (e : (WeierstrassCurve ℤ)) (p : Nat) :
     affineCount e p ≤ p ^ 2 := by
   unfold affineCount affinePoints
   calc
@@ -18,13 +18,13 @@ theorem affineCount_le_square (e : Artifacts.CurveEquation) (p : Nat) :
         (List.finRange p).map fun y => (x, y)).length := List.length_filter_le _ _
     _ = p ^ 2 := by simp [List.length_flatMap, pow_two]
 
-theorem frobeniusTrace_abs_le_square (e : Artifacts.CurveEquation) (p : Nat)
+theorem frobeniusTrace_abs_le_square (e : (WeierstrassCurve ℤ)) (p : Nat)
     (hp : 1 ≤ p) : |frobeniusTrace e p| ≤ (p : Int) ^ 2 := by
   have hc : (affineCount e p : Int) ≤ (p : Int) ^ 2 := by
     exact_mod_cast affineCount_le_square e p
   have hp' : (1 : Int) ≤ p := by exact_mod_cast hp
   have hpp : (p : Int) ≤ (p : Int) ^ 2 := le_self_pow₀ hp' (by decide)
-  simp only [frobeniusTrace, pointCount, Nat.cast_add, Nat.cast_one]
+  simp only [frobeniusTrace, computePointCount, Nat.cast_add, Nat.cast_one]
   apply abs_le.mpr
   constructor <;> nlinarith [Int.natCast_nonneg (affineCount e p)]
 
@@ -75,7 +75,7 @@ theorem localCoefficient_abs_le_cube_power (p : Nat) (hp : 2 ≤ p) (a q : Int)
           _ = (p : Int) ^ (3 * (k + 2)) := by
             rw [show 3 * (k + 2) = 6 + 3 * k by omega, pow_add]
 
-theorem modelFactor_bounds (e : Artifacts.CurveEquation) (p : Nat) (hp : p.Prime) :
+theorem modelFactor_bounds (e : (WeierstrassCurve ℤ)) (p : Nat) (hp : p.Prime) :
     |(modelFactor e p).trace| ≤ (p : Int) ^ 2 ∧
       |(modelFactor e p).quadratic| ≤ (p : Int) := by
   constructor
@@ -91,7 +91,7 @@ noncomputable def eulerCoefficient (factor : Nat → ModelEulerFactor) (n : Nat)
 
 /-- The executable prime table contains every prime that can divide the
 requested index. Extra primes contribute the constant coefficient one. -/
-theorem coefficientFromFactors_model_eq_euler (e : Artifacts.CurveEquation)
+theorem coefficientFromFactors_model_eq_euler (e : (WeierstrassCurve ℤ))
     (limit n : Nat) (hn : n ≠ 0) (hlimit : n ≤ limit) :
     coefficientFromFactors (modelFactors e limit) n =
       eulerCoefficient (modelFactor e) n := by
@@ -113,7 +113,7 @@ theorem coefficientFromFactors_model_eq_euler (e : Artifacts.CurveEquation)
 
 /-- Every element of the executable table agrees with the canonical infinite
 Euler-factor specification at the same index. -/
-theorem modelCoefficients_eq_euler (e : Artifacts.CurveEquation) (limit : Nat) :
+theorem modelCoefficients_eq_euler (e : (WeierstrassCurve ℤ)) (limit : Nat) :
     modelCoefficients e limit = (List.range limit).map
       (fun j => eulerCoefficient (modelFactor e) (j + 1)) := by
   unfold modelCoefficients
@@ -143,7 +143,7 @@ theorem eulerCoefficient_abs_le_cube (factor : Nat → ModelEulerFactor)
         exact_mod_cast Nat.prod_factorization_pow_eq_self hn
       rw [hprod]
 
-theorem model_eulerCoefficient_abs_le_cube (e : Artifacts.CurveEquation) (n : Nat) :
+theorem model_eulerCoefficient_abs_le_cube (e : (WeierstrassCurve ℤ)) (n : Nat) :
     |eulerCoefficient (modelFactor e) n| ≤ (n : Int) ^ 3 :=
   eulerCoefficient_abs_le_cube _ (modelFactor_bounds e) n
 

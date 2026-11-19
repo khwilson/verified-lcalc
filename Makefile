@@ -1,4 +1,4 @@
-.PHONY: check format test
+.PHONY: check format test certificates test-certificates
 
 check:
 	uv run --locked ruff check .
@@ -11,3 +11,18 @@ format:
 
 test:
 	uv run --locked pytest
+
+certificates:
+	lake -f lakefile.certificates.lean build CertifiedCurves
+
+test-certificates: certificates
+	lake -f lakefile.certificates.lean env lean tests/CertifyEC.lean
+	lake -f lakefile.certificates.lean env lean tests/CertifyECJson.lean
+	lake -f lakefile.certificates.lean build VerifiedLcalcTests VerifiedLcalc.Certification.Precision VerifiedLcalc.EllipticCurve.FinitePointCount
+	lake -f lakefile.certificates.lean env lean tests/CurveHypotheses.lean
+	lake -f lakefile.certificates.lean env lean tests/FinitePointCount.lean
+	lake -f lakefile.certificates.lean env lean tests/consumers/CertifiedECConsumer.lean
+
+.PHONY: test-lean
+test-lean:
+	uv run --locked python scripts/check_lean.py

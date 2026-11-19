@@ -72,7 +72,7 @@ def decode (j : Json) : Except String EllipticWitness := do
   keys subject ["ainvs", "conductor"]
   let a ← field subject "ainvs" >>= (array · 5)
   unless a.size == 5 do throw "Expected five Weierstrass coefficients"
-  let equation : Artifacts.CurveEquation := ⟨← decimal a[0]!, ← decimal a[1]!, ← decimal a[2]!, ← decimal a[3]!, ← decimal a[4]!⟩
+  let equation : (WeierstrassCurve ℤ) := ⟨← decimal a[0]!, ← decimal a[1]!, ← decimal a[2]!, ← decimal a[3]!, ← decimal a[4]!⟩
   let conductor ← field subject "conductor" >>= natural
   unless 0 < conductor && conductor ≤ 10000 do throw "Conductor outside supported profile"
   let p ← field j "parameters"

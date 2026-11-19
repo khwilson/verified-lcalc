@@ -1,0 +1,6 @@
+import VerifiedLcalcTests.Fixtures.AssumedCurve11Central
+
+#check VerifiedLcalcTests.Fixtures.AssumedCurve11Central.analytic_rank_zero
+#print axioms VerifiedLcalcTests.Fixtures.AssumedCurve11Central.analytic_rank_zero
+
+#eval VerifiedLcalcTests.Fixtures.AssumedCurve11Central.certifiedRank.val

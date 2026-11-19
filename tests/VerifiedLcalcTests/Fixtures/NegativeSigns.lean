@@ -1,0 +1,3067 @@
+module
+
+public import VerifiedLcalc.Certification.TameNegativeSign
+public import VerifiedLcalc.Certification.WildCertification
+
+@[expose] public section
+open VerifiedLcalc.Certification
+open VerifiedLcalc
+namespace VerifiedLcalcTests.Fixtures.NegativeSigns
+open EllipticCurve Modularity
+set_option maxRecDepth 100000
+set_option maxHeartbeats 10000000
+
+namespace C101_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 1, a₄ := -1, a₆ := -1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C101_a1
+
+namespace C102_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -2, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C102_a1
+
+namespace C102_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := 8, a₆ := 10 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C102_a2
+
+namespace C106_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -7, a₆ := 5 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C106_a1
+
+namespace C112_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -40, a₆ := 84 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 7] }
+def wildData : WildData := { atTwo := some { r := 0,              s := 1,              t := 0,              starT := 1,              cubicRoot := 1,              quadraticRoot := 0,              chain := [0, 0],              kodaira := -7 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C112_a1
+
+namespace C112_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 1, cubicRoot := 1, quadraticRoot := 0, chain := [0], kodaira := -6 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C112_a2
+
+namespace C117_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -626, a₆ := 6180 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 13] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 1,                t := 0,                starT := 1,                cubicRoot := 2,                quadraticRoot := 0,                chain := [0, 0, 1],                kodaira := -8 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C117_a1
+
+namespace C117_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -176, a₆ := -768 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 13, 13, 13, 13] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 1,                t := 0,                starT := 1,                cubicRoot := 1,                quadraticRoot := 0,                chain := [],                kodaira := -5 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C117_a2
+
+namespace C117_a3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -41, a₆ := 96 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 3, 13, 13] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 1,                t := 0,                starT := 1,                cubicRoot := 1,                quadraticRoot := 0,                chain := [2],                kodaira := -6 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C117_a3
+
+namespace C117_a4
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := 4, a₆ := 6 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 13] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 1,                t := 0,                starT := 1,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := -5 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C117_a4
+
+namespace C118_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := 1, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C118_a1
+
+namespace C121_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -887, a₆ := -10143 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [11, 11, 11, 11, 11, 11, 11, 11, 11] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C121_b1
+
+namespace C121_b2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -7, a₆ := 10 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [11, 11, 11] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C121_b2
+
+namespace C122_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := 2, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C122_a1
+
+namespace C123_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 1, a₄ := -10, a₆ := 10 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C123_a1
+
+namespace C123_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 1, a₄ := 20, a₆ := -890 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C123_a2
+
+namespace C123_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := 1, a₆ := -1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C123_b1
+
+namespace C124_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -2, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 31] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C124_a1
+
+namespace C124_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 18, a₆ := -11 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 31, 31, 31] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C124_a2
+
+namespace C128_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -9, a₆ := 7 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 0, starT := 0, cubicRoot := 1, quadraticRoot := 0, chain := [1], kodaira := -6 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C128_a1
+
+namespace C128_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 1, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 0, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 3 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C128_a2
+
+namespace C129_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -19, a₆ := 39 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C129_a1
+
+namespace C130_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := -208, a₆ := -1122 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C130_a1
+
+namespace C130_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := -33, a₆ := 68 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C130_a2
+
+namespace C130_a3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := -13, a₆ := 156 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C130_a3
+
+namespace C130_a4
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := 112, a₆ := -4194 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C130_a4
+
+namespace C131_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := 1, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C131_a1
+
+namespace C135_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -3, a₆ := 4 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 5, 5] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 1,                s := 0,                t := 1,                starT := 0,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := 4 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C135_a1
+
+namespace C136_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -4, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 17] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 0, cubicRoot := 1, quadraticRoot := 0, chain := [], kodaira := -5 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C136_a1
+
+namespace C136_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 16, a₆ := 16 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 17, 17] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 0, cubicRoot := 0, quadraticRoot := 1, chain := [], kodaira := -3 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C136_a2
+
+namespace C138_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -31, a₆ := 55 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C138_a1
+
+namespace C138_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -1, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C138_a2
+
+namespace C141_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 1, a₄ := -12, a₆ := 2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C141_a1
+
+namespace C141_d1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -1, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C141_d1
+
+namespace C142_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -1, a₆ := -1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C142_a1
+
+namespace C142_d1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -12, a₆ := 15 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C142_d1
+
+namespace C143_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -1, a₆ := -2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C143_a1
+
+namespace C145_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -3, a₆ := 2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C145_a1
+
+namespace C145_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := 2, a₆ := 6 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C145_a2
+
+namespace C148_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -5, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 37] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 0, starT := 1, cubicRoot := 1, quadraticRoot := 0, chain := [], kodaira := -4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C148_a1
+
+namespace C152_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -1, a₆ := 3 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 19] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 0, starT := 1, cubicRoot := 1, quadraticRoot := 0, chain := [], kodaira := -5 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C152_a1
+
+namespace C153_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -3, a₆ := 2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 17] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 0,                s := 0,                t := 1,                starT := 0,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := 3 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C153_a1
+
+namespace C153_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -534, a₆ := 4752 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 17, 17, 17] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 0,                t := 1,                starT := 1,                cubicRoot := 1,                quadraticRoot := 0,                chain := [],                kodaira := -5 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C153_b1
+
+namespace C153_b2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := 6, a₆ := 27 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 3, 3, 17] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 0,                t := 1,                starT := 1,                cubicRoot := 1,                quadraticRoot := 0,                chain := [1, 0],                kodaira := -7 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C153_b2
+
+namespace C154_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -469, a₆ := 4029 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C154_a1
+
+namespace C154_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -29, a₆ := 69 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C154_a2
+
+namespace C155_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -840, a₆ := -9114 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C155_a1
+
+namespace C155_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := 10, a₆ := 6 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C155_a2
+
+namespace C155_c1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -1, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C155_c1
+
+namespace C156_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -20, a₆ := -24 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 3, 13, 13] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 0, cubicRoot := 1, quadraticRoot := 0, chain := [], kodaira := -4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C156_a1
+
+namespace C156_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -5, a₆ := 6 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 3, 3, 13] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C156_a2
+
+namespace C158_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -3, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C158_a1
+
+namespace C158_c1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -9, a₆ := 9 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C158_c1
+
+namespace C160_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -6, a₆ := 4 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 5] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 3 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C160_a1
+
+namespace C160_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -1, a₆ := 15 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5, 5] }
+def wildData : WildData := { atTwo := some { r := 1,              s := 0,              t := 0,              starT := 0,              cubicRoot := 1,              quadraticRoot := 0,              chain := [1, 1],              kodaira := -7 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C160_a2
+
+namespace C162_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -6, a₆ := 8 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 3, 3, 3, 3, 3, 3] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 1,                s := 1,                t := 1,                starT := 0,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := 4 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C162_a1
+
+namespace C162_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := 39, a₆ := -19 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 1,                s := 1,                t := 1,                starT := 1,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := -4 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C162_a2
+
+namespace C163_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -2, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C163_a1
+
+namespace C166_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -6, a₆ := 4 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C166_a1
+
+namespace C170_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := -8, a₆ := 6 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C170_b1
+
+namespace C170_b2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := 12, a₆ := 38 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C170_b2
+
+namespace C171_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -6924, a₆ := 221760 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 19] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 0,                t := 1,                starT := 1,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := -1 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C171_b1
+
+namespace C171_b2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -84, a₆ := 315 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 19, 19, 19] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 0,                t := 1,                starT := 1,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := -1 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C171_b2
+
+namespace C171_b3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := 6, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 19] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 0,                t := 1,                starT := 1,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := -1 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C171_b3
+
+namespace C172_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -13, a₆ := 15 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 43] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 0, starT := 1, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := -4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C172_a1
+
+namespace C172_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 67, a₆ := 79 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 43, 43, 43] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 0, starT := 1, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := -4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C172_a2
+
+namespace C175_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -148, a₆ := 748 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [5, 5, 5, 7, 7, 7, 7, 7] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C175_a1
+
+namespace C175_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := 2, a₆ := -2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [5, 5, 5, 7] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C175_a2
+
+namespace C175_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -3283, a₆ := -74657 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 7] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C175_b1
+
+namespace C175_b2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -33, a₆ := 93 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [5, 5, 5, 5, 5, 5, 5, 7] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C175_b2
+
+namespace C175_b3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := 217, a₆ := -282 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [5, 5, 5, 5, 5, 5, 5, 5, 5, 7, 7, 7] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C175_b3
+
+namespace C176_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -77, a₆ := 289 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 11, 11, 11] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 0, starT := 1, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := -1 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C176_a1
+
+namespace C176_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := 3, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 11] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 0, starT := 1, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := -1 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C176_a2
+
+namespace C184_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := 0, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 23] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 3 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C184_a1
+
+namespace C184_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -4, a₆ := 5 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 23] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 3 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C184_b1
+
+namespace C185_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 1, a₄ := -156, a₆ := 700 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C185_a1
+
+namespace C185_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -5, a₆ := 6 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C185_b1
+
+namespace C185_c1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := -4, a₆ := -3 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C185_c1
+
+namespace C185_c2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := 1, a₆ := -9 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C185_c2
+
+namespace C189_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -3, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 7] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 0,                t := 1,                starT := 0,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := 4 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C189_a1
+
+namespace C189_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -3834, a₆ := -91375 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 7] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 0,                s := 0,                t := 1,                starT := 1,                cubicRoot := 1,                quadraticRoot := 1,                chain := [],                kodaira := -2 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C189_b1
+
+namespace C189_b2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -54, a₆ := -88 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 3, 3, 7, 7, 7] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 0,                s := 0,                t := 1,                starT := 1,                cubicRoot := 1,                quadraticRoot := 0,                chain := [],                kodaira := -4 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C189_b2
+
+namespace C189_b3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -24, a₆ := 45 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 7] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 0,                t := 1,                starT := 0,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := 2 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C189_b3
+
+namespace C190_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := 2, a₆ := 2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C190_a1
+
+namespace C190_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -48, a₆ := 147 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C190_b1
+
+namespace C192_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -129, a₆ := 609 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3] }
+def wildData : WildData := { atTwo := some { r := 1,              s := 0,              t := 0,              starT := 0,              cubicRoot := 0,              quadraticRoot := 0,              chain := [0, 1, 1, 0],              kodaira := -9 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C192_a1
+
+namespace C192_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -9, a₆ := 9 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 0, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [0], kodaira := -6 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C192_a2
+
+namespace C192_a3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -4, a₆ := -2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 3] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 2 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C192_a3
+
+namespace C192_a4
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := 31, a₆ := 33 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3] }
+def wildData : WildData := { atTwo := some { r := 1,              s := 0,              t := 0,              starT := 0,              cubicRoot := 0,              quadraticRoot := 0,              chain := [0, 0, 1, 0],              kodaira := -9 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C192_a4
+
+namespace C196_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -142, a₆ := 701 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 7, 7] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C196_a1
+
+namespace C196_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -2, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 7, 7] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C196_a2
+
+namespace C197_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -5, a₆ := 4 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C197_a1
+
+namespace C198_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -3168, a₆ := 69430 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 3, 3, 3, 3, 3, 3, 3, 11] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 1,                t := 2,                starT := 2,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := -5 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C198_a1
+
+namespace C198_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -198, a₆ := 1120 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 11, 11] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 1,                t := 2,                starT := 2,                cubicRoot := 0,                quadraticRoot := 0,                chain := [2],                kodaira := -6 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C198_a2
+
+namespace C198_a3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -108, a₆ := 2074 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 11, 11, 11, 11] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 1,                t := 2,                starT := 2,                cubicRoot := 1,                quadraticRoot := 0,                chain := [0, 0, 1],                kodaira := -8 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C198_a3
+
+namespace C198_a4
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -18, a₆ := 4 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 11] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 1,                t := 2,                starT := 2,                cubicRoot := 2,                quadraticRoot := 0,                chain := [],                kodaira := -5 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C198_a4
+
+namespace C200_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -28, a₆ := 48 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 5, 5, 5] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 0, cubicRoot := 1, quadraticRoot := 0, chain := [], kodaira := -5 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C200_b1
+
+namespace C200_b2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -3, a₆ := -2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 5, 5, 5] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 3 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C200_b2
+
+namespace C201_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := 2, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C201_a1
+
+namespace C201_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -1, a₆ := 2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C201_b1
+
+namespace C201_c1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -794, a₆ := 8289 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C201_c1
+
+namespace C203_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 1, a₄ := 0, a₆ := -2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C203_b1
+
+namespace C205_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -232, a₆ := -1286 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C205_a1
+
+namespace C205_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -27, a₆ := 26 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C205_a2
+
+namespace C205_a3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -22, a₆ := 44 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C205_a3
+
+namespace C205_a4
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := 98, a₆ := 126 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C205_a4
+
+namespace C207_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -140, a₆ := 668 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 23, 23] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 0,                s := 1,                t := 1,                starT := 1,                cubicRoot := 2,                quadraticRoot := 0,                chain := [],                kodaira := -5 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C207_a1
+
+namespace C207_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -5, a₆ := 20 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 3, 23] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 0,                s := 1,                t := 1,                starT := 1,                cubicRoot := 2,                quadraticRoot := 0,                chain := [0],                kodaira := -6 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C207_a2
+
+namespace C208_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -16, a₆ := 32 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 13] }
+def wildData : WildData := { atTwo := some { r := 0,              s := 1,              t := 0,              starT := 0,              cubicRoot := 0,              quadraticRoot := 0,              chain := [0, 1],              kodaira := -7 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C208_b1
+
+namespace C209_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 1, a₄ := -27, a₆ := 55 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C209_a1
+
+namespace C209_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 1, a₄ := 193, a₆ := -308 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C209_a2
+
+namespace C210_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -373, a₆ := 2623 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C210_a1
+
+namespace C210_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -23, a₆ := 33 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C210_a2
+
+namespace C210_a3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -3, a₆ := -3 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C210_a3
+
+namespace C210_a4
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := 7, a₆ := 147 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C210_a4
+
+namespace C212_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -4, a₆ := 8 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 53] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 0, cubicRoot := 1, quadraticRoot := 0, chain := [], kodaira := -4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C212_a1
+
+namespace C214_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := 1, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C214_a1
+
+namespace C214_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := -193, a₆ := 1012 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C214_b1
+
+namespace C214_c1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -12, a₆ := 16 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C214_c1
+
+namespace C215_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -8, a₆ := -12 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C215_a1
+
+namespace C216_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 0, a₄ := -12, a₆ := 20 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3] }
+def wildData : WildData := { atTwo := some { r := 0, s := 0, t := 0, starT := 1, cubicRoot := 1, quadraticRoot := 0, chain := [], kodaira := -5 },   atThree := some { r := 1,                s := 0,                t := 0,                starT := 0,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := 4 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C216_a1
+
+namespace C218_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -2, a₆ := 4 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C218_a1
+
+namespace C218_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := 18, a₆ := -104 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C218_a2
+
+namespace C219_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -6, a₆ := 8 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C219_a1
+
+namespace C219_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 1, a₄ := -27, a₆ := -85 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C219_b1
+
+namespace C219_b2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 1, a₄ := 3, a₆ := 2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C219_b2
+
+namespace C219_c1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -1297, a₆ := -18530 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C219_c1
+
+namespace C219_c2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -82, a₆ := -305 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C219_c2
+
+namespace C220_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -7100, a₆ := -232652 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 5, 5, 11, 11, 11] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 1, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := -4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C220_a1
+
+namespace C220_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -445, a₆ := -3720 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 5, 11, 11, 11, 11, 11, 11] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C220_a2
+
+namespace C220_a3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -100, a₆ := -252 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 5, 5, 5, 5, 5, 5, 11] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 1, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := -4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C220_a3
+
+namespace C220_a4
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -45, a₆ := 100 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 5, 5, 5, 11, 11] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C220_a4
+
+namespace C224_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -8, a₆ := -8 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 7] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := -1 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C224_a1
+
+namespace C224_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 2, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 7] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 3 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C224_a2
+
+namespace C225_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -75, a₆ := 256 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 5, 5, 5, 5] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 1,                s := 0,                t := 1,                starT := 1,                cubicRoot := 1,                quadraticRoot := 0,                chain := [],                kodaira := -5 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C225_a1
+
+namespace C225_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := 375, a₆ := -12344 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 5, 5, 5, 5, 5, 5, 5] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 1,                s := 0,                t := 1,                starT := 1,                cubicRoot := 0,                quadraticRoot := 0,                chain := [1, 2, 1, 0],                kodaira := -9 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C225_a2
+
+namespace C225_c1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := 0, a₆ := -34 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 5] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 0,                s := 0,                t := 1,                starT := 1,                cubicRoot := 2,                quadraticRoot := 1,                chain := [],                kodaira := -3 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C225_c1
+
+namespace C225_c2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := 0, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 5, 5] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 1,                s := 0,                t := 1,                starT := 0,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := 3 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C225_c2
+
+namespace C226_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -45, a₆ := -119 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C226_a1
+
+namespace C226_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -5, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C226_a2
+
+namespace C228_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := 3, a₆ := 9 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 19] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 0, starT := 1, cubicRoot := 1, quadraticRoot := 0, chain := [], kodaira := -4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C228_a1
+
+namespace C229_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -2, a₆ := -1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C229_a1
+
+namespace C232_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := 8, a₆ := -4 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 29] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 1, cubicRoot := 1, quadraticRoot := 0, chain := [], kodaira := -3 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C232_a1
+
+namespace C234_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -63, a₆ := 209 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 3, 3, 3, 13, 13] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 1,                s := 1,                t := 1,                starT := 0,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := 3 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C234_a1
+
+namespace C234_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -3, a₆ := 5 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 3, 3, 3, 13] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 1,                s := 1,                t := 1,                starT := 0,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := 3 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C234_a2
+
+namespace C235_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 1, a₄ := -5, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C235_b1
+
+namespace C236_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -1, a₆ := 2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 59] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C236_a1
+
+namespace C238_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -8, a₆ := 6 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C238_a1
+
+namespace C238_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := 2, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C238_a2
+
+namespace C238_c1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -700, a₆ := 7056 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C238_c1
+
+namespace C238_c2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -60, a₆ := 16 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C238_c2
+
+namespace C240_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -216, a₆ := 1296 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 5] }
+def wildData : WildData := { atTwo := some { r := 0,              s := 1,              t := 0,              starT := 0,              cubicRoot := 0,              quadraticRoot := 0,              chain := [1, 0],              kodaira := -7 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C240_a1
+
+namespace C240_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -136, a₆ := -560 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 5, 5, 5, 5] }
+def wildData : WildData := { atTwo := some { r := 0,              s := 1,              t := 0,              starT := 0,              cubicRoot := 0,              quadraticRoot := 0,              chain := [1, 0],              kodaira := -7 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C240_a2
+
+namespace C240_a3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -16, a₆ := 16 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 5, 5] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [1], kodaira := -6 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C240_a3
+
+namespace C240_a4
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := 4, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 3, 5] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := -1 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C240_a4
+
+namespace C242_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -52, a₆ := 144 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 11, 11] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C242_b1
+
+namespace C242_b2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := 3, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 11, 11] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C242_b2
+
+namespace C243_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := 0, a₆ := -1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 0,                s := 0,                t := 1,                starT := 0,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := 2 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C243_a1
+
+namespace C243_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := 0, a₆ := 20 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 0,                s := 0,                t := 1,                starT := 1,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := -4 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C243_a2
+
+namespace C244_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 0, a₄ := 1, a₆ := 6 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 61] }
+def wildData : WildData := { atTwo := some { r := 1, s := 1, t := 0, starT := 0, cubicRoot := 1, quadraticRoot := 0, chain := [], kodaira := -4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C244_a1
+
+namespace C245_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -7, a₆ := 12 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [5, 5, 5, 7, 7, 7] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C245_a1
+
+namespace C245_c1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -6435, a₆ := 210006 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [5, 5, 5, 5, 5, 5, 5, 5, 5, 7, 7, 7, 7, 7, 7, 7] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C245_c1
+
+namespace C245_c2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -65, a₆ := -204 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [5, 7, 7, 7, 7, 7, 7, 7] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C245_c2
+
+namespace C245_c3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := 425, a₆ := 433 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [5, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C245_c3
+
+namespace C246_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -66, a₆ := 180 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C246_a1
+
+namespace C246_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -26, a₆ := 444 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C246_a2
+
+namespace C248_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 31] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 3 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C248_a1
+
+namespace C248_c1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 0, a₄ := 1, a₆ := -1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 31] }
+def wildData : WildData := { atTwo := some { r := 1, s := 1, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 3 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C248_c1
+
+namespace C249_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 1, a₄ := -55, a₆ := 134 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C249_a1
+
+namespace C249_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := 2, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C249_b1
+
+namespace C252_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 0, a₄ := -327, a₆ := 2270 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 7] }
+def wildData : WildData := { atTwo := some { r := 1, s := 1, t := 0, starT := 0, cubicRoot := 1, quadraticRoot := 0, chain := [], kodaira := -4 },   atThree := some { r := 1,                s := 0,                t := 0,                starT := 0,                cubicRoot := 0,                quadraticRoot := 0,                chain := [0],                kodaira := -6 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C252_a1
+
+namespace C252_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 0, a₄ := -12, a₆ := 65 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 7, 7] }
+def wildData : WildData := { atTwo := some { r := 0, s := 0, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 4 },   atThree := some { r := 1,                s := 0,                t := 0,                starT := 0,                cubicRoot := 2,                quadraticRoot := 0,                chain := [],                kodaira := -5 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C252_a2
+
+namespace C254_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -5, a₆ := -3 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C254_a1
+
+namespace C254_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -24432, a₆ := -1471934 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C254_b1
+
+namespace C254_b2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -302, a₆ := -2036 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C254_b2
+
+namespace C254_b3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -22, a₆ := 36 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C254_b3
+
+namespace C256_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -3, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 0, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 3 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C256_a2
+
+namespace C256_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 0, a₄ := -2, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2] }
+def wildData : WildData := { atTwo := some { r := 0, s := 0, t := 0, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 3 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C256_b1
+
+namespace C258_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := 3, a₆ := -3 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C258_b1
+
+namespace C258_c1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := -15, a₆ := 22 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C258_c1
+
+namespace C262_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -2, a₆ := 2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C262_a1
+
+namespace C262_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := 1, a₆ := 25 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C262_b1
+
+namespace C265_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -138, a₆ := 656 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C265_a1
+
+namespace C265_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -133, a₆ := 702 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C265_a2
+
+namespace C269_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -2, a₆ := -1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C269_a1
+
+namespace C272_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -48, a₆ := -140 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 17, 17] }
+def wildData : WildData := { atTwo := some { r := 0,              s := 1,              t := 0,              starT := 1,              cubicRoot := 1,              quadraticRoot := 0,              chain := [1, 1],              kodaira := -7 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C272_a1
+
+namespace C272_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := -8, a₆ := 4 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 17] }
+def wildData : WildData := { atTwo := some { r := 0, s := 1, t := 0, starT := 1, cubicRoot := 1, quadraticRoot := 0, chain := [1], kodaira := -6 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C272_a2
+
+namespace C273_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -26, a₆ := 68 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C273_a1
+
+namespace C274_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -2846, a₆ := 59156 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C274_a1
+
+namespace C274_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -2, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C274_b1
+
+namespace C274_b2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := 8, a₆ := -6 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C274_b2
+
+namespace C274_c1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -7, a₆ := 9 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C274_c1
+
+namespace C275_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -1480, a₆ := 22272 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 11] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C275_a1
+
+namespace C275_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -730, a₆ := -7228 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [5, 5, 5, 5, 5, 5, 5, 11, 11, 11, 11] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C275_a2
+
+namespace C275_a3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -105, a₆ := 272 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [5, 5, 5, 5, 5, 5, 5, 5, 11, 11] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C275_a3
+
+namespace C275_a4
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := 20, a₆ := 22 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [5, 5, 5, 5, 5, 5, 5, 11] }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem tame : tameAtWild equation = true := by decide +kernel
+theorem sign_negative : tameSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_tame_negative equation nonsingular witness witness_valid tame sign_negative
+end C275_a4
+
+namespace C277_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := 0, a₆ := -1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C277_a1
+
+namespace C278_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -1, a₆ := 9 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C278_b1
+
+namespace C280_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 0, a₄ := -412, a₆ := 3316 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 5, 5, 5, 5, 5, 7, 7, 7] }
+def wildData : WildData := { atTwo := some { r := 0, s := 0, t := 0, starT := 1, cubicRoot := 1, quadraticRoot := 0, chain := [], kodaira := -5 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C280_a1
+
+namespace C280_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 0, a₄ := -1, a₆ := 5 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 5, 7] }
+def wildData : WildData := { atTwo := some { r := 1, s := 0, t := 0, starT := 1, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := -5 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C280_b1
+
+namespace C282_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 1, a₄ := -255, a₆ := 1461 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C282_a1
+
+namespace C282_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 1, a₄ := -15, a₆ := 21 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C282_a2
+
+namespace C285_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -76, a₆ := -19 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C285_a1
+
+namespace C285_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := 19, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C285_a2
+
+namespace C285_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := -93, a₆ := -378 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C285_b1
+
+namespace C285_b2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 0, a₄ := 2, a₆ := -17 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C285_b2
+
+namespace C37_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -1, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C37_a1
+
+namespace C43_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 1, a₄ := 0, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C43_a1
+
+namespace C5077_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -7, a₆ := 6 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C5077_a1
+
+namespace C53_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := 0, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C53_a1
+
+namespace C57_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -2, a₆ := 2 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C57_a1
+
+namespace C58_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 0, a₄ := -1, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C58_a1
+
+namespace C61_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -2, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C61_a1
+
+namespace C65_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := -1, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C65_a1
+
+namespace C65_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 0, a₄ := 4, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C65_a2
+
+namespace C77_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := 2, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C77_a1
+
+namespace C79_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 1, a₄ := -2, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C79_a1
+
+namespace C82_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := -12, a₆ := -16 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C82_a1
+
+namespace C82_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 0, a₃ := 1, a₄ := -2, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C82_a2
+
+namespace C83_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 1, a₄ := 1, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C83_a1
+
+namespace C88_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 0, a₄ := -4, a₆ := 4 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 2, 2, 2, 2, 11] }
+def wildData : WildData := { atTwo := some { r := 0, s := 0, t := 0, starT := 1, cubicRoot := 1, quadraticRoot := 0, chain := [], kodaira := -5 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C88_a1
+
+namespace C89_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := 1, a₃ := 1, a₄ := -1, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C89_a1
+
+namespace C91_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := 1, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C91_a1
+
+namespace C91_b1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 1, a₄ := -117, a₆ := -1245 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C91_b1
+
+namespace C91_b2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 1, a₄ := -7, a₆ := 5 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C91_b2
+
+namespace C91_b3
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 1, a₃ := 1, a₄ := 13, a₆ := 42 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+theorem semistable : SemistableModel equation := by decide +kernel
+theorem sign_negative : semistableSignFast equation = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_semistable_negative equation nonsingular semistable sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_semistable_negative equation nonsingular semistable sign_negative
+end C91_b3
+
+namespace C92_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 0, a₂ := 0, a₃ := 0, a₄ := -1, a₆ := 1 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [2, 2, 2, 2, 23] }
+def wildData : WildData := { atTwo := some { r := 1, s := 1, t := 1, starT := 0, cubicRoot := 0, quadraticRoot := 0, chain := [], kodaira := 4 },   atThree := none }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C92_a1
+
+namespace C99_a1
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -17, a₆ := 30 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 11, 11] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 1,                t := 0,                starT := 0,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := 3 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C99_a1
+
+namespace C99_a2
+def equation : (WeierstrassCurve ℤ) := { a₁ := 1, a₂ := -1, a₃ := 1, a₄ := -2, a₆ := 0 }
+theorem nonsingular : equation.Δ ≠ 0 := by decide +kernel
+def witness : MinimalityWitness := { primes := [3, 3, 3, 11] }
+def wildData : WildData := { atTwo := none,   atThree := some { r := 2,                s := 1,                t := 0,                starT := 0,                cubicRoot := 0,                quadraticRoot := 0,                chain := [],                kodaira := 3 } }
+theorem witness_valid : witness.Valid equation := by decide +kernel
+theorem wild_valid : wildData.Valid equation := by decide +kernel
+theorem sign_negative : wildSignFast equation wildData = -1 := by decide +kernel
+theorem central_vanishing : (modularWitness equation nonsingular).formL 1 = 0 :=
+  central_zero_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+theorem analytic_rank_at_least_one :
+    1 ≤ analyticOrderAt (modularWitness equation nonsingular).formL (1 : ℂ) :=
+  rank_lower_bound_of_wild_negative equation nonsingular witness witness_valid wildData wild_valid sign_negative
+end C99_a2
+
+def certificateCount : Nat := 229
+end VerifiedLcalcTests.Fixtures.NegativeSigns

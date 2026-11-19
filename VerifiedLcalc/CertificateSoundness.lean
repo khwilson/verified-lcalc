@@ -15,7 +15,7 @@ def Subject.Denotes (subject : Subject) (f : ℂ → ℂ) : Prop :=
   | .ellipticCurve _ _ => False
 
 /-- Data checks cannot invent the missing elliptic-curve mathematics. -/
-theorem ellipticCurve_not_denotes (e : CurveEquation) (n : Normalization) (f : ℂ → ℂ) :
+theorem ellipticCurve_not_denotes (e : (WeierstrassCurve ℤ)) (n : Normalization) (f : ℂ → ℂ) :
     ¬ (Subject.ellipticCurve e n).Denotes f := by
   simp [Subject.Denotes]
 

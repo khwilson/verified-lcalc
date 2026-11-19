@@ -1,0 +1,5 @@
+import VerifiedLcalcTests.Fixtures.AssumedCurve37
+
+#check VerifiedLcalcTests.Fixtures.AssumedCurve37.central_vanishing
+#check VerifiedLcalcTests.Fixtures.AssumedCurve37.analytic_rank_at_least_one
+#print axioms VerifiedLcalcTests.Fixtures.AssumedCurve37.analytic_rank_at_least_one

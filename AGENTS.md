@@ -1,37 +1,54 @@
 # verified-lcalc development
 
-- Keep the entire mathematical implementation in Lean.
-- Each computational routine needs its own correctness theorem against a mathematical specification.
-- Do not introduce sorry, unapproved custom axioms, unsafe arithmetic, native_decide certificates, or numerical zero tolerances masquerading as exact equalities.
-- Preserve the explicit distinction between unresolved computations, external reference matches, and proved analytic ranks.
-- Keep executable imports small (Std/Init/core). Do not import analytic mathlib modules into runtime entry points merely to carry erased proofs.
-- Pull targeted mathlib cache artifacts before building missing dependencies. Use a writable MATHLIB_CACHE_DIR. Avoid concurrent Lake builds of shared dependencies.
-- Run lake build, replay VerifiedLcalc/Certificates/Cubic.lean, check the compiled-theorem consumer certificates/Cubic.lean, and audit Audit.lean after mathematical changes.
-- Keep finite payload validation separate from analytic certification. AnalyticEvidence must prove the subject interpretation, analyticity, and true derivative enclosures; metadata or LMFDB matches cannot replace it.
-- LMFDB strict regression must fail for inconclusive curves. --inventory only validates the fixture and reports coverage.
-- Never derive a claimed analytic certificate by reading expected ranks from the regression fixture.
+- Keep the mathematical implementation in Lean. Python may download data and
+  orchestrate builds, benchmarks and tests; it does not certify mathematics.
+- Computational routines need correctness theorems against mathematical
+  specifications. Reuse Mathlib and TauCeti definitions and proved APIs.
+- No sorry, unapproved custom axioms, unsafe arithmetic, native_decide
+  certificates, or numerical tolerances presented as exact equalities.
+- Use Mathlib's `WeierstrassCurve ℤ`, base change, invariants and decidable
+  primality directly. Do not restore a duplicate curve-equation type.
+- Fetch targeted Mathlib cache artifacts before compiling missing dependencies.
+  Use a writable MATHLIB_CACHE_DIR and one Lake build owner at a time.
 
-- User-authorized exception (2026-11-17; clarified 2026-11-18): the single temporary axiom `VerifiedLcalc.Assumptions.ellipticModularity` may assume general modularity for every nonsingular elliptic curve over Q, including additive reduction, with the usual arithmetic-conductor and root-number compatibility. Do not restrict the available modularity theorem to the semistable case required for FLT. The existing statement already quantifies over all nonsingular equations; the currently implemented finite conductor/sign formulas are semistable arithmetic specializations. Keep the axiom opt-in and dependent results conditional. Computed conductor/root-number inputs still require arithmetic correctness evidence; this does not authorize trusting arbitrary inputs or LMFDB metadata, numerical-correctness axioms, BSD, exact vanishing, or expected ranks. No further permission is needed merely to use general modularity for additive curves.
+## Assumptions and proof boundaries
 
-- After arithmetic-engine changes, also run `lake env lean AuditArithmetic.lean` to guard the axiom-free local-model and coefficient-identification proofs.
-- After reduction-engine changes, also run `lake exe additive-witnesses --check`, `lake env lean AuditAdditive.lean`, and `lake env lean certificates/Additive.lean`. Additive arithmetic must remain independent of the modularity axiom; conductor/sign compatibility is still a separate obligation.
-- Expanded regression uses `Lmfdb.allCases` (1100 inputs), while `Lmfdb.cases` preserves the original 100. Run `AuditExtended.lean` after bad-prime, fixture, or invariant-minimality changes. Keep `semistableSign_eq_fast` axiom-free. Reference analytic ranks must never enter arithmetic hints or certificate construction.
-- Expanded arithmetic replay is `lake exe additive-witnesses --expanded --check`; criterion failures must remain inconclusive. Audit it with `AuditExpandedAdditive.lean`. Negative-sign certificates (`negative-certificates --check`, `certificates/NegativeSigns.lean`) prove only rank lower bounds and must not populate the exact-rank backend as rank-one results.
-- After changing general-realization interfaces, build `VerifiedLcalc.Certificates.GeneralModularityExamples` and run `AuditGeneralModularity.lean`. Realization independence and supplied-realization numerical certification must have only standard Lean/mathlib axioms; canonical-witness results may additionally depend on the single authorized general modularity axiom.
+- User-authorized exception (2026-11-17, clarified 2026-11-18): the sole temporary
+  axiom `VerifiedLcalc.Assumptions.ellipticModularity` covers every nonsingular
+  elliptic curve over Q, including additive reduction, with coefficient/Fricke
+  matching and the documented semistable, tame and wild arithmetic conductor
+  and root-number compatibility. Geometric Tate/Ogg and Halberstadt/local
+  epsilon-factor compatibility remain part of that assumption. This does not
+  authorize BSD, exact vanishing, numerical-correctness axioms, arbitrary input
+  compatibility, or modularity over arbitrary number fields.
+- Keep one assumption family per file: `Assumptions/Modularity.lean` and
+  `Assumptions/Precision.lean`. The latter supplies explicit hypothesis records,
+  not a blanket gap axiom. Mathematical proofs belong in `EllipticCurve/Modularity/`
+  and `Certification/`, not in the assumption files.
+- Higher-rank upgrades require actual derivative enclosures, a specified nonzero
+  gap strictly larger than the cutoff, and next nonvanishing for exact rank.
+  Evaluators for derivatives two and higher are still missing.
+- Arithmetic-only results and reference-data matches must not become analytic
+  ranks. Never use expected LMFDB ranks to construct witnesses.
+- Local reduction work lives under `EllipticCurve/Tate/`; distinguish proved
+  transcript arithmetic from assumed geometric compatibility. Keep the GPL
+  attribution/license with the wild root-number table implementation.
 
-- Tame additive arithmetic (p >= 5) is in TameCore/TameArithmetic. Its formula-correctness proofs remain independent of modularity. The single authorized axiom now has type GeneralEllipticModularity, explicitly including tameLevel_eq/tameSign_eq for globally minimal models with no additive reduction at 2 or 3. Document changes to its content, not merely its axiom name. Wild additive cases must remain unresolved until supported. Run AuditTame.lean and certificates/Tame.lean after changing this route.
+## Certificate workflow and validation
 
-- Wild additive support is in WildTateCore/WildRootCore/WildArithmetic. Tate transcripts, polynomial congruences, characters and valuations are checked independently of modularity. The authorized general-modularity package now explicitly includes wildLevel_eq/wildSign_eq under proved global minimality and validated transcripts; geometric Tate/Ogg/Halberstadt compatibility remains assumed, and this strengthened content must be documented. Run wild-witnesses --check, AuditWild.lean, and certificates/Wild.lean after changes. Arithmetic-only classification does not certify the 48 unresolved minimal models. Keep the PARI-derived root table attribution and GPL-2.0-or-later license with the implementation.
-
-- The Python registry/volunteer application was retired in favor of `certify_ec`.
-  Its source is preserved in baseline commit `fcdc4f2`; do not restore it as part
-  of local certificate work. Keep download/benchmark Python tooling separate.
-- The command implementation is `VerifiedLcalc/Tactic/CertifyEC.lean`; supplied
-  data types and JSON decoding live in `VerifiedLcalc/Certificate/`. Commands must
-  not search by default, use native verification axioms, or leave partial
-  declarations after rejection. Audit finite and analytic proof dependencies.
-- Build command examples with `lake -f lakefile.certificates.lean build CertifiedCurves`.
-  This configuration tracks JSON inputs explicitly. Run `tests/CertifyEC.lean`,
-  `tests/CertifyECJson.lean`, and the import-only
-  `certificates/CertifiedECConsumer.lean` with the same Lake configuration.
-  Coordinate a single build owner when multiple agents share these dependencies.
+- `certify_ec` accepts supplied Lean or exact JSON witnesses and verifies only.
+  No search by default, native verification axiom, or leaked declarations after
+  rejection. Audit finite and analytic theorem dependencies separately.
+- `make certificates` builds the JSON-tracked example library.
+  `make test-certificates` checks the command, JSON, conditional precision,
+  finite cardinalities and compiled proof reuse.
+- After mathematical changes, run `make test-lean`: it builds production and
+  test libraries, replays cubic source/import tests, and runs arithmetic,
+  numerical, general-modularity and axiom audits. Run `make check test` for the
+  Python tooling. Do not run concurrent builds against shared dependencies.
+- Fixed curve proofs and consumers live under `tests/VerifiedLcalcTests/` and
+  `tests/consumers/`. Production modules must not import `VerifiedLcalcTests`.
+- The registry/volunteer service, generated proof corpora, cached-key tables,
+  legacy source installers and batch generators are retired. Baseline commit
+  `fcdc4f2` preserves them. Do not recreate checked-in bulk proof blobs or
+  advertise historical reports as an installed proof cache.

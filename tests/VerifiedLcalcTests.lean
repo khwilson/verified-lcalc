@@ -1,0 +1,21 @@
+module
+
+public import VerifiedLcalcTests.Fixtures.AssumedCurve11
+public import VerifiedLcalcTests.Fixtures.AssumedCurve11Central
+public import VerifiedLcalcTests.Fixtures.AssumedCurve37
+public import VerifiedLcalcTests.Fixtures.Cubic
+public import VerifiedLcalcTests.Fixtures.Curve11Arithmetic
+public import VerifiedLcalcTests.Fixtures.Curve11Central
+public import VerifiedLcalcTests.Fixtures.GeneralModularityExamples
+public import VerifiedLcalcTests.Fixtures.NegativeSigns
+public import VerifiedLcalcTests.Fixtures.NumericalQuartic
+public import VerifiedLcalcTests.Arithmetic.ArithmeticExamples
+public import VerifiedLcalcTests.Arithmetic.BadPrimeExamples
+public import VerifiedLcalcTests.Arithmetic.CentralExamples
+public import VerifiedLcalcTests.Arithmetic.Examples
+public import VerifiedLcalcTests.Arithmetic.LmfdbSupplementProofs
+public import VerifiedLcalcTests.Arithmetic.Monomial
+public import VerifiedLcalcTests.Arithmetic.Numerics
+public import VerifiedLcalcTests.Arithmetic.ReductionExamples
+public import VerifiedLcalcTests.Arithmetic.TameExamples
+public import VerifiedLcalcTests.Arithmetic.WildExamples

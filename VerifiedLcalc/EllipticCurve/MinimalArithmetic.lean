@@ -9,13 +9,13 @@ open NumberField IsDedekindDomain
 
 /-- Any locally minimal input equation gives the actual Euler polynomial,
 including additive reduction and residue characteristics two and three. -/
-theorem minimal_localPolynomial (e : Artifacts.CurveEquation)
-    (hn : discriminant e ≠ 0)
+theorem minimal_localPolynomial (e : (WeierstrassCurve ℤ))
+    (hn : e.Δ ≠ 0)
     (p : ℕ) [Fact p.Prime]
     (hmin : WeierstrassCurve.IsMinimal ((rationalPlace p).adicCompletionIntegers ℚ)
-      ((weierstrass e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
+      ((WeierstrassCurve.baseChange e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
         ((rationalPlace p).adicCompletion ℚ))) :
-    ((weierstrass e ℚ).baseChange ((rationalPlace p).adicCompletion ℚ)).localPolynomial
+    ((WeierstrassCurve.baseChange e ℚ).baseChange ((rationalPlace p).adicCompletion ℚ)).localPolynomial
       ((rationalPlace p).adicCompletionIntegers ℚ) =
       1 - Polynomial.C (modelFactor e p).trace * Polynomial.X +
         Polynomial.C (modelFactor e p).quadratic * Polynomial.X ^ 2 := by
@@ -23,18 +23,21 @@ theorem minimal_localPolynomial (e : Artifacts.CurveEquation)
   let v := rationalPlace p
   let K := v.adicCompletion ℚ
   let R := v.adicCompletionIntegers ℚ
-  let W := weierstrass e R
+  let W := WeierstrassCurve.baseChange e R
   let U := W.baseChange K
   let k := completionResidueEquiv p
-  have hU : U = (weierstrass e ℚ).baseChange K := by
-    simp only [U, W, WeierstrassCurve.baseChange, weierstrass_map]
+  have hU : U = (WeierstrassCurve.baseChange e ℚ).baseChange K := by
+    ext <;> simp [U, W, WeierstrassCurve.baseChange]
   let : WeierstrassCurve.IsMinimal R U := hmin
   let : U.IsElliptic := by
     refine ⟨isUnit_iff_ne_zero.mpr ?_⟩
-    rw [show U = weierstrass e K by simp only [U, W, WeierstrassCurve.baseChange, weierstrass_map],
-      weierstrass_discriminant]
+    have hUK : U = WeierstrassCurve.baseChange e K := by
+      ext <;> simp [U, W, WeierstrassCurve.baseChange]
+    rw [hUK, WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ]
+    rw [show algebraMap ℤ K = Int.castRingHom K from Subsingleton.elim _ _]
+    change (e.Δ : K) ≠ 0
     exact_mod_cast hn
-  have hinput : (W.map (IsLocalRing.residue R)).map k.toRingHom = weierstrass e (ZMod p) := by
+  have hinput : (W.map (IsLocalRing.residue R)).map k.toRingHom = WeierstrassCurve.baseChange e (ZMod p) := by
     simp only [W, weierstrass_map]
   have ht : (W.map (IsLocalRing.residue R)).frobeniusTrace = frobeniusTrace e p := by
     rw [frobeniusTrace_eq_tauceti, ← hinput, frobeniusTrace_map_equiv]
@@ -62,14 +65,14 @@ theorem minimal_localPolynomial (e : Artifacts.CurveEquation)
   exact h
 
 /-- Full prime-power identification, proved for every locally minimal model. -/
-theorem minimal_primePower (e : Artifacts.CurveEquation)
-    (hn : discriminant e ≠ 0)
+theorem minimal_primePower (e : (WeierstrassCurve ℤ))
+    (hn : e.Δ ≠ 0)
     (hmin : ∀ (p : ℕ) [Fact p.Prime],
       WeierstrassCurve.IsMinimal ((rationalPlace p).adicCompletionIntegers ℚ)
-        ((weierstrass e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
+        ((WeierstrassCurve.baseChange e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
           ((rationalPlace p).adicCompletion ℚ)))
     (p : ℕ) (hp : p.Prime) (j : ℕ) :
-    (weierstrass e ℚ).LFunction (p ^ j) =
+    (WeierstrassCurve.baseChange e ℚ).LFunction (p ^ j) =
       localCoefficient (modelFactor e p).trace (modelFactor e p).quadratic j := by
   let : Fact p.Prime := ⟨hp⟩
   rw [LFunction_apply_prime_pow, localPowerSeries_eq_localSeries _ _ _
@@ -78,14 +81,14 @@ theorem minimal_primePower (e : Artifacts.CurveEquation)
 
 /-- The executable coefficient table is the actual curve coefficient prefix,
 with no trace-size restriction or modularity assumption. -/
-theorem minimal_prefix (e : Artifacts.CurveEquation)
-    (hn : discriminant e ≠ 0)
+theorem minimal_prefix (e : (WeierstrassCurve ℤ))
+    (hn : e.Δ ≠ 0)
     (hmin : ∀ (p : ℕ) [Fact p.Prime],
       WeierstrassCurve.IsMinimal ((rationalPlace p).adicCompletionIntegers ℚ)
-        ((weierstrass e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
+        ((WeierstrassCurve.baseChange e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
           ((rationalPlace p).adicCompletion ℚ))) (limit : ℕ) :
     modelCoefficients e limit = (List.range limit).map
-      (fun j => (weierstrass e ℚ).LFunction (j + 1)) :=
+      (fun j => (WeierstrassCurve.baseChange e ℚ).LFunction (j + 1)) :=
   modelCoefficients_eq_curve e (minimal_primePower e hn hmin) limit
 
 end VerifiedLcalc.EllipticCurve

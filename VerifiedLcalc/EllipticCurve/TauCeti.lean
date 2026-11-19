@@ -11,14 +11,14 @@ namespace VerifiedLcalc.EllipticCurve
 
 /-- Our enumerator agrees with TauCeti's projective-model count, including at
 singular reduction. -/
-theorem pointCount_eq_tauceti (e : Artifacts.CurveEquation) (p : ℕ) [Fact p.Prime] :
-    pointCount e p = (weierstrass e (ZMod p)).pointCount := by
-  rw [pointCount_correct, WeierstrassCurve.pointCount_def]
+theorem computePointCount_eq_pointCount (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime] :
+    computePointCount e p = (WeierstrassCurve.baseChange e (ZMod p)).pointCount := by
+  rw [computePointCount_correct, WeierstrassCurve.pointCount_def]
   rfl
 
-theorem frobeniusTrace_eq_tauceti (e : Artifacts.CurveEquation) (p : ℕ) [Fact p.Prime] :
-    frobeniusTrace e p = (weierstrass e (ZMod p)).frobeniusTrace := by
-  rw [frobeniusTrace, pointCount_eq_tauceti, WeierstrassCurve.frobeniusTrace_def]
+theorem frobeniusTrace_eq_tauceti (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime] :
+    frobeniusTrace e p = (WeierstrassCurve.baseChange e (ZMod p)).frobeniusTrace := by
+  rw [frobeniusTrace, computePointCount_eq_pointCount, WeierstrassCurve.frobeniusTrace_def]
   simp [Nat.card_eq_fintype_card]
 
 /-- Transport the projective equation count through an actual residue-field
@@ -45,10 +45,10 @@ variable {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
 
 /-- The arithmetic bridge requires an identification with the reduction of a
 minimal local model. No arbitrary input model is silently declared minimal. -/
-theorem localPolynomial_eq_modelFactor (e : Artifacts.CurveEquation) (p : ℕ)
+theorem localPolynomial_eq_modelFactor (e : (WeierstrassCurve ℤ)) (p : ℕ)
     [Fact p.Prime] (W : WeierstrassCurve K)
     (k : IsLocalRing.ResidueField R ≃+* ZMod p)
-    (hmodel : ((W.minimal R).reduction R).map k.toRingHom = weierstrass e (ZMod p)) :
+    (hmodel : ((W.minimal R).reduction R).map k.toRingHom = WeierstrassCurve.baseChange e (ZMod p)) :
     W.localPolynomial R =
       1 - Polynomial.C (modelFactor e p).trace * Polynomial.X +
         Polynomial.C (modelFactor e p).quadratic * Polynomial.X ^ 2 := by
@@ -93,10 +93,10 @@ theorem localPowerSeries_eq_localSeries (W : WeierstrassCurve K) (a q : ℤ)
   · rw [hp]
     exact localSeries_inverse a q
 
-theorem localCoefficient_eq_localPowerSeries (e : Artifacts.CurveEquation) (p : ℕ)
+theorem localCoefficient_eq_localPowerSeries (e : (WeierstrassCurve ℤ)) (p : ℕ)
     [Fact p.Prime] (W : WeierstrassCurve K)
     (k : IsLocalRing.ResidueField R ≃+* ZMod p)
-    (hmodel : ((W.minimal R).reduction R).map k.toRingHom = weierstrass e (ZMod p)) (n : ℕ) :
+    (hmodel : ((W.minimal R).reduction R).map k.toRingHom = WeierstrassCurve.baseChange e (ZMod p)) (n : ℕ) :
     localCoefficient (modelFactor e p).trace (modelFactor e p).quadratic n =
       PowerSeries.coeff n (W.localPowerSeries R) := by
   rw [localPowerSeries_eq_localSeries W _ _ (localPolynomial_eq_modelFactor e p W k hmodel)]
@@ -104,10 +104,10 @@ theorem localCoefficient_eq_localPowerSeries (e : Artifacts.CurveEquation) (p : 
 
 /-- The local formal Dirichlet factor at p^n is the executable recurrence
 coefficient, once a minimal-reduction identification is supplied. -/
-theorem localEulerFactor_apply_pow_eq (e : Artifacts.CurveEquation) (p : ℕ)
+theorem localEulerFactor_apply_pow_eq (e : (WeierstrassCurve ℤ)) (p : ℕ)
     [Fact p.Prime] (W : WeierstrassCurve K)
     (k : IsLocalRing.ResidueField R ≃+* ZMod p)
-    (hmodel : ((W.minimal R).reduction R).map k.toRingHom = weierstrass e (ZMod p)) (n : ℕ) :
+    (hmodel : ((W.minimal R).reduction R).map k.toRingHom = WeierstrassCurve.baseChange e (ZMod p)) (n : ℕ) :
     W.localEulerFactor R (p ^ n) =
       localCoefficient (modelFactor e p).trace (modelFactor e p).quadratic n := by
   have hc : Nat.card (IsLocalRing.ResidueField R) = p := by
@@ -121,15 +121,15 @@ end Local
 
 /-- TauCeti's global multiplicativity reduces the entire coefficient bridge to
 prime-power coefficients. The latter remain genuine arithmetic proof inputs. -/
-theorem curveCoefficient_eq_euler (e : Artifacts.CurveEquation)
+theorem curveCoefficient_eq_euler (e : (WeierstrassCurve ℤ))
     (hl : ∀ p : ℕ, p.Prime → ∀ k : ℕ,
-      (weierstrass e ℚ).LFunction (p ^ k) =
+      (WeierstrassCurve.baseChange e ℚ).LFunction (p ^ k) =
         localCoefficient (modelFactor e p).trace (modelFactor e p).quadratic k) (n : ℕ) :
-    (weierstrass e ℚ).LFunction n = eulerCoefficient (modelFactor e) n := by
+    (WeierstrassCurve.baseChange e ℚ).LFunction n = eulerCoefficient (modelFactor e) n := by
   by_cases hn : n = 0
   · simp [hn, eulerCoefficient]
   rw [ArithmeticFunction.IsMultiplicative.multiplicative_factorization _
-    (weierstrass e ℚ).isMultiplicative_LFunction hn, eulerCoefficient, ite_eq_right hn]
+    (WeierstrassCurve.baseChange e ℚ).isMultiplicative_LFunction hn, eulerCoefficient, ite_eq_right hn]
   unfold Finsupp.prod
   apply Finset.prod_congr rfl
   intro p hp
@@ -137,22 +137,22 @@ theorem curveCoefficient_eq_euler (e : Artifacts.CurveEquation)
 
 /-- Actual-curve coefficient bounds follow from the proved arithmetic bridge;
 no bound is included in the modularity axiom. -/
-theorem curveCoefficient_abs_le_cube (e : Artifacts.CurveEquation)
+theorem curveCoefficient_abs_le_cube (e : (WeierstrassCurve ℤ))
     (hl : ∀ p : ℕ, p.Prime → ∀ k : ℕ,
-      (weierstrass e ℚ).LFunction (p ^ k) =
+      (WeierstrassCurve.baseChange e ℚ).LFunction (p ^ k) =
         localCoefficient (modelFactor e p).trace (modelFactor e p).quadratic k) (n : ℕ) :
-    |(weierstrass e ℚ).LFunction n| ≤ (n : ℤ) ^ 3 := by
+    |(WeierstrassCurve.baseChange e ℚ).LFunction n| ≤ (n : ℤ) ^ 3 := by
   rw [curveCoefficient_eq_euler e hl n]
   exact model_eulerCoefficient_abs_le_cube e n
 
 /-- Prefix equality uses actual coefficients and does not inspect reference
 ranks or a supplied conductor. -/
-theorem modelCoefficients_eq_curve (e : Artifacts.CurveEquation)
+theorem modelCoefficients_eq_curve (e : (WeierstrassCurve ℤ))
     (hl : ∀ p : ℕ, p.Prime → ∀ k : ℕ,
-      (weierstrass e ℚ).LFunction (p ^ k) =
+      (WeierstrassCurve.baseChange e ℚ).LFunction (p ^ k) =
         localCoefficient (modelFactor e p).trace (modelFactor e p).quadratic k) (limit : ℕ) :
     modelCoefficients e limit = (List.range limit).map
-      (fun j => (weierstrass e ℚ).LFunction (j + 1)) := by
+      (fun j => (WeierstrassCurve.baseChange e ℚ).LFunction (j + 1)) := by
   rw [modelCoefficients_eq_euler]
   apply List.map_congr_left
   intro j _

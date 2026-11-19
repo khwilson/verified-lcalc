@@ -1,5 +1,12 @@
 # Elliptic-curve backend status
 
+Workflow status (2026-11-19): legacy batch/derivative/conductor generators,
+`lmfdb-check`, generated registries and bulk certificate directories described
+below have been retired. Their command examples and cache counts are historical,
+with implementation preserved in baseline commit `fcdc4f2`. The mathematical
+proof engine remains; use [`certify_ec`](CERTIFY_EC.md) for current witness
+verification and importable theorem generation.
+
 The backend now performs exact good-prime arithmetic, model Euler coefficient
 prefixes, and central exponential-expression interval evaluation. It is not yet
 a backend for analytic ranks. The [central evaluator](CENTRAL_EVALUATOR.md)
@@ -10,7 +17,7 @@ elliptic interpretation obligations.
 lake build
 lake exe ec-coefficients --curve 11.a2
 lake exe ec-coefficients --summary
-lake env lean VerifiedLcalc/Certificates/Curve11Arithmetic.lean
+lake env lean tests/VerifiedLcalcTests/Fixtures/Curve11Arithmetic.lean
 ```
 
 ## Implemented and proved

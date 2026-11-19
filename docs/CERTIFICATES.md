@@ -77,9 +77,9 @@ and measured generation/checking costs remain part of the first real case.
 Generate the demo as a proper importable Lean module:
 
 ```sh
-lake exe verified-lcalc VerifiedLcalc/Certificates/Cubic.lean
-lake build VerifiedLcalc.Certificates.Cubic
-lake env lean certificates/Cubic.lean
+lake exe verified-lcalc tests/VerifiedLcalcTests/Fixtures/Cubic.lean
+lake build VerifiedLcalcTests.Fixtures.Cubic
+lake env lean tests/consumers/Cubic.lean
 ```
 
 The generated source contains the finite payload, a theorem that its small check
@@ -94,21 +94,21 @@ source; this is not a stable canonical interchange encoding or cache hash.
 The compiled theorem is available as:
 
 ```lean
-import VerifiedLcalc.Certificates.Cubic
-#check VerifiedLcalc.Certificates.Cubic.certified_analytic_order
+import VerifiedLcalcTests.Fixtures.Cubic
+#check VerifiedLcalcTests.Fixtures.Cubic.certified_analytic_order
 ```
 
 Lake caches the generated module's `.olean` artifacts in `.lake/build/lib/lean`.
 On an unchanged build, importing the theorem reuses them without checking its
 source again. Regenerating identical text does not rewrite the file. Changes to
 its imported definitions, evidence proofs, or mathematical dependencies cause
-Lake to invalidate dependent builds. `certificates/Cubic.lean` is an import-only
+Lake to invalidate dependent builds. `tests/consumers/Cubic.lean` is an import-only
 consumer, demonstrating this reuse rather than repeating the numerical check.
 
 For a fresh source verification, run:
 
 ```sh
-lake env lean VerifiedLcalc/Certificates/Cubic.lean
+lake env lean tests/VerifiedLcalcTests/Fixtures/Cubic.lean
 ```
 
 This checks the saved witness and analytic evidence again, not the expensive
@@ -143,13 +143,13 @@ See [precision policy and replay instructions](NUMERICAL_RANK.md).
 
 ## First conditional elliptic rank certificate
 
-`VerifiedLcalc/Certificates/AssumedCurve11Central.lean` pairs the saved
+`tests/VerifiedLcalcTests/Fixtures/AssumedCurve11Central.lean` pairs the saved
 53-bit/eight-term payload with a proved actual coefficient prefix, the actual
 L-function's global tail bound, and the modularity-dependent continuation.
 `analytic_rank_zero` has no remaining proof parameters. Its executable
 `certifiedRank` carries the exact analytic-order theorem in its type; evaluating
 `certifiedRank.val` returns 0 after proof erasure. The import-only consumer is
-`certificates/AssumedCurve11Central.lean`; it prints both the axiom dependencies
+`tests/consumers/AssumedCurve11Central.lean`; it prints both the axiom dependencies
 and the rank. Replaying the source checks the full proof instead of importing
 its previously compiled theorem.
 

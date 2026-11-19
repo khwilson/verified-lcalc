@@ -7,7 +7,8 @@ namespace VerifiedLcalc.EllipticCurve
 open NumberField IsDedekindDomain
 
 /-- The actual residue field of a rational-number-field prime, as a prime
-field of its proved norm. The isomorphism is built from ideal quotients. -/
+field of its proved norm. This adapter transports `𝓞 ℚ` to `ℤ` and applies
+Mathlib’s `Int.quotientSpanNatEquivZMod`; it does not reprove that quotient result. -/
 noncomputable def idealQuotientEquivZMod (v : HeightOneSpectrum (𝓞 ℚ)) :
     (𝓞 ℚ ⧸ v.asIdeal) ≃+* ZMod v.asIdeal.absNorm := by
   let vi := RationalPrimes.integerPlace v

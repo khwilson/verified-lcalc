@@ -1,0 +1,6 @@
+import VerifiedLcalcTests.Fixtures.GeneralModularityExamples
+
+#check VerifiedLcalcTests.Fixtures.GeneralModularityExamples.additive_modularity
+#check VerifiedLcalcTests.Fixtures.GeneralModularityExamples.curve37_via_general_interface
+
+#eval VerifiedLcalcTests.Fixtures.GeneralModularityExamples.certifiedLowerBound.val

@@ -5,8 +5,8 @@ witnesses, then declares ordinary definitions and theorems. It never invokes
 witness search, a numerical producer, Python, a web service, or LMFDB. The
 mathematical algorithms remain the existing proof-backed Lean implementation.
 
-The old Python registry, browser volunteer application, and service dependencies
-are removed. Git baseline `fcdc4f2` preserves their source. Existing ignored
+The old Python registry, browser volunteer application, service dependencies,
+and generated batch certificate corpora/installers are removed. Git baseline `fcdc4f2` preserves their source. Existing ignored
 local state and database volumes were not deleted; stop any old API/worker
 processes yourself. The remaining Python scripts only download/benchmark data.
 
@@ -53,18 +53,20 @@ certify_ec AnotherCurve from
 
 Here `result`, `minimality`, and `localData` stand for supplied definitions or
 literal structures, not search instructions. See `CertifiedCurves/Direct.lean`
-for a complete literal example with no JSON input. Direct expressions may use
+for a complete literal example with no JSON input. Direct expressions must be closed supplied data and may use
 existing transparent definitions. The command reduces the outer witness
 constructor and verifies all resulting data. It does not automatically fill in
 missing coefficients, precision, transcripts, or bounds.
 
 ## Import checked theorems
 
-Build the examples and their compiled certificates from the project root:
+Build the examples and their compiled certificates from the project root.
+`make certificates` builds them; `make test-certificates` also runs the command
+regressions and the import-only consumer. The equivalent individual commands are:
 
 ```sh
 lake -f lakefile.certificates.lean build CertifiedCurves
-lake -f lakefile.certificates.lean env lean certificates/CertifiedECConsumer.lean
+lake -f lakefile.certificates.lean env lean tests/consumers/CertifiedECConsumer.lean
 lake -f lakefile.certificates.lean env lean tests/CertifyEC.lean
 ```
 
@@ -80,7 +82,7 @@ After compiling, another file simply imports the module:
 ```lean
 import CertifiedCurves.Json
 
-open VerifiedLcalc VerifiedLcalc.Assumptions
+open VerifiedLcalc VerifiedLcalc.Modularity
 
 theorem rank_of_curve37 :
     analyticOrderAt (modularWitness Curve37.curve Curve37.nonsingular).formL
@@ -136,3 +138,20 @@ The existing full default Lake build, cubic source replay, cubic import-only
 consumer and `Audit.lean` pass. Ruff, formatting and ty pass; the remaining eight
 Python snapshot/plumbing tests pass. This does not certify every LMFDB entry or
 remove the documented modularity assumptions.
+
+## Explicit higher-rank hypotheses
+
+The current command proves exact rank zero or one using nonvanishing; those
+results are not rounded rank observations. For higher-order smallness data, use
+`Assumptions.CurvePrecisionClaim` and its indexed `Hypotheses` proposition in
+`VerifiedLcalc/Assumptions/Precision.lean`. These record the exact equation,
+precision policy, derivative prefix and assumed nonzero gap. Their conditional
+lower-bound/rank theorems retain the separation assumption as an argument.
+Actual higher derivative enclosures are still required and are not supplied by
+the assumption record. See [NUMERICAL_RANK.md](NUMERICAL_RANK.md) and the opt-in
+[explicit assumptions](../VerifiedLcalc/Assumptions/README.md).
+
+The reusable-theorem extraction plan is in [TAUCETI_ROADMAP.md](TAUCETI_ROADMAP.md),
+with separate arithmetic and analytic roadmaps. Certificate metadata and
+metaprogramming stay in this project; mathematical replacements should be
+upstreamed independently, with their own proof and axiom audits.

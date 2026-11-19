@@ -61,7 +61,7 @@ theorem centralPayload_sound {r : CentralResult} {value : ℝ}
   · change (0 : ℝ) ∈ Set.Icc ((0 : Rat) : ℝ) ((0 : Rat) : ℝ)
     norm_num
 
-theorem evaluateCentral_sound {equation : Artifacts.CurveEquation} {conductor : Nat}
+theorem evaluateCentral_sound {equation : (WeierstrassCurve ℤ)} {conductor : Nat}
     {rootNumber : Int} {limit : Nat} {policy : PrecisionPolicy} {r : CentralResult}
     {value : ℝ}
     (h : evaluateCentral equation conductor rootNumber limit policy = some r)

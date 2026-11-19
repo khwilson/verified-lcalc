@@ -1,6 +1,0 @@
-import VerifiedLcalc.Certificates.Curve11Central
-
-#check VerifiedLcalc.Certificates.Central_11_a2_M8_P53_plus.payload_correct
-#check VerifiedLcalc.Certificates.Central_11_a2_M8_P53_plus.encloses
-#print axioms VerifiedLcalc.Certificates.Central_11_a2_M8_P53_plus.payload_correct
-#print axioms VerifiedLcalc.Certificates.Central_11_a2_M8_P53_plus.encloses

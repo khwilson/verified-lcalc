@@ -2,19 +2,13 @@ module
 
 public import VerifiedLcalc.Scan
 public import VerifiedLcalc.Precision
+public import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
 
 @[expose] public section
 
-namespace VerifiedLcalc.Artifacts
+deriving instance Repr, DecidableEq for WeierstrassCurve
 
-/-- Exact Weierstrass equation. Labels and database answers are not identities. -/
-structure CurveEquation where
-  a1 : Int
-  a2 : Int
-  a3 : Int
-  a4 : Int
-  a6 : Int
-  deriving Repr, DecidableEq
+namespace VerifiedLcalc.Artifacts
 
 inductive Normalization
   | arithmetic
@@ -24,7 +18,7 @@ inductive Normalization
 /-- A demo target and a future elliptic-curve target cannot share a certificate. -/
 inductive Subject
   | monomial (degree : Nat)
-  | ellipticCurve (equation : CurveEquation) (normalization : Normalization)
+  | ellipticCurve (equation : (WeierstrassCurve ℤ)) (normalization : Normalization)
   deriving Repr, DecidableEq
 
 /-- Exact evaluation center, determined by the subject rather than a label. -/

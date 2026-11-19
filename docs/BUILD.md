@@ -32,14 +32,24 @@ lake build
 Use a writable cache directory; the sandbox cannot write the user's default
 `~/.cache/mathlib`. Cache misses for this mathlib development revision may still
 need source compilation. Do not start concurrent builds of shared dependencies.
-The runtime imports only Std/Init and the small computation/regression core;
-it does not import the mathlib analytic proof tree and does not require compiling
-that tree into native objects.
+Integral curve inputs now use Mathlib's `WeierstrassCurve ℤ` directly, so the
+computation core imports its canonical basic-curve definition. Keep analytic
+proof imports out of standalone computation entry points where practical;
+`certify_ec` itself is an elaboration-time verification command. The old
+Std-only duplicate curve representation has been removed.
 
-`lake env lean Audit.lean` audits theorem dependencies.
-`lake build VerifiedLcalc.Certificates.Cubic` checks and caches the saved certificate
-module. `lake env lean certificates/Cubic.lean` imports its compiled theorem.
-`lake env lean VerifiedLcalc/Certificates/Cubic.lean` performs a fresh source replay.
+`make test-lean` builds the separate test library and audits theorem dependencies.
+`lake build VerifiedLcalcTests.Fixtures.Cubic` checks and caches the saved certificate
+module. `lake env lean tests/consumers/Cubic.lean` imports its compiled theorem.
+`lake env lean tests/VerifiedLcalcTests/Fixtures/Cubic.lean` performs a fresh source replay.
 Neither replay uses `native_decide`. See [the certificate contract](CERTIFICATES.md)
 for request identity, proof obligations, and the distinction between importing
 trusted compiled artifacts and checking their source again.
+
+
+For the local certificate examples use `make certificates` (or
+`lake -f lakefile.certificates.lean build CertifiedCurves`). The alternative Lake
+configuration tracks JSON input files. For a standalone checkout, update its
+`require mathlib from "../mathlib4"` to the same pinned dependency as the main
+configuration, then preserve the resolved manifest. Retired generated batch
+modules are not required or imported by this build.

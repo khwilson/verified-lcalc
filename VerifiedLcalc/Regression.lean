@@ -11,20 +11,8 @@ is s=1; unitary lcalc normalization moves this to s=1/2. -/
 structure CurveInput where
   label : String
   conductor : Nat
-  a1 : Int
-  a2 : Int
-  a3 : Int
-  a4 : Int
-  a6 : Int
+  equation : WeierstrassCurve ℤ
   deriving Repr, DecidableEq
-
-/-- Only exact coefficients are passed to arithmetic, never the expected rank. -/
-def CurveInput.equation (c : CurveInput) : Artifacts.CurveEquation :=
-  ⟨c.a1, c.a2, c.a3, c.a4, c.a6⟩
-
-theorem CurveInput.equation_correct (c : CurveInput) :
-    c.equation.a1 = c.a1 ∧ c.equation.a2 = c.a2 ∧ c.equation.a3 = c.a3 ∧
-      c.equation.a4 = c.a4 ∧ c.equation.a6 = c.a6 := ⟨rfl, rfl, rfl, rfl, rfl⟩
 
 structure Case where
   input : CurveInput

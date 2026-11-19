@@ -1,5 +1,5 @@
-import VerifiedLcalc.Assumptions.Prefix
-import VerifiedLcalc.Assumptions.CentralEvaluator
+import VerifiedLcalc.EllipticCurve.Modularity.Prefix
+import VerifiedLcalc.Certification.CentralEvaluator
 
 -- These implications accept mathematical witnesses as arguments. They must
 -- not depend on ellipticModularity, sorryAx, or native reduction axioms.
@@ -25,36 +25,36 @@ import VerifiedLcalc.Assumptions.CentralEvaluator
 #print axioms VerifiedLcalc.Numerics.hasSum_integral_exponential_series
 
 /--
-info: 'VerifiedLcalc.Assumptions.ModularRealization.imaginaryFunction_hasSum' depends on axioms: [propext,
+info: 'VerifiedLcalc.Modularity.ModularRealization.imaginaryFunction_hasSum' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 -/
 #guard_msgs in
-#print axioms VerifiedLcalc.Assumptions.ModularRealization.imaginaryFunction_hasSum
+#print axioms VerifiedLcalc.Modularity.ModularRealization.imaginaryFunction_hasSum
 
 /--
-info: 'VerifiedLcalc.Assumptions.ModularRealization.central_exponential_hasSum' depends on axioms: [propext,
+info: 'VerifiedLcalc.Modularity.ModularRealization.central_exponential_hasSum' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 -/
 #guard_msgs in
-#print axioms VerifiedLcalc.Assumptions.ModularRealization.central_exponential_hasSum
+#print axioms VerifiedLcalc.Modularity.ModularRealization.central_exponential_hasSum
 
 /--
-info: 'VerifiedLcalc.Assumptions.ModularRealization.evaluateCentral_contains' depends on axioms: [propext,
+info: 'VerifiedLcalc.Modularity.ModularRealization.evaluateCentral_contains' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 -/
 #guard_msgs in
-#print axioms VerifiedLcalc.Assumptions.ModularRealization.evaluateCentral_contains
+#print axioms VerifiedLcalc.Modularity.ModularRealization.evaluateCentral_contains
 
 /--
-info: 'VerifiedLcalc.Assumptions.ModularRealization.analyticOrder_zero_of_centralPayload' depends on axioms: [propext,
+info: 'VerifiedLcalc.Modularity.ModularRealization.analyticOrder_zero_of_centralPayload' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 -/
 #guard_msgs in
-#print axioms VerifiedLcalc.Assumptions.ModularRealization.analyticOrder_zero_of_centralPayload
+#print axioms VerifiedLcalc.Modularity.ModularRealization.analyticOrder_zero_of_centralPayload
 
 /-- info: 'VerifiedLcalc.EulerProduct.apply_prime_pow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
@@ -72,6 +72,6 @@ info: 'VerifiedLcalc.Assumptions.ModularRealization.analyticOrder_zero_of_centra
 #guard_msgs in
 #print axioms VerifiedLcalc.EllipticCurve.LFunction_abs_le_cube
 
-/-- info: 'VerifiedLcalc.Assumptions.ModularRealization.prefix_of_supported' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'VerifiedLcalc.Modularity.ModularRealization.prefix_of_supported' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Assumptions.ModularRealization.prefix_of_supported
+#print axioms VerifiedLcalc.Modularity.ModularRealization.prefix_of_supported

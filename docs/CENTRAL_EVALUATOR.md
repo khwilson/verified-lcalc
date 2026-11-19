@@ -64,10 +64,10 @@ raw coefficient Dirichlet series at s=1 as this identity.
 lake build
 lake exe ec-central 11.a2 1 32
 lake exe ec-central --all 1 32
-lake exe ec-central 11.a2 1 8 VerifiedLcalc/Certificates/Curve11Central.lean
-lake build VerifiedLcalc.Certificates.Curve11Central
-lake env lean VerifiedLcalc/Certificates/Curve11Central.lean
-lake env lean certificates/Curve11Central.lean
+lake exe ec-central 11.a2 1 8 tests/VerifiedLcalcTests/Fixtures/Curve11Central.lean
+lake build VerifiedLcalcTests.Fixtures.Curve11Central
+lake env lean tests/VerifiedLcalcTests/Fixtures/Curve11Central.lean
+lake env lean tests/consumers/Curve11Central.lean
 ```
 
 The optional output file contains a complete literal `CentralResult`, including

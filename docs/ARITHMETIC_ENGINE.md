@@ -1,5 +1,12 @@
 # Broader arithmetic proof engine
 
+Workflow status (2026-11-19): legacy batch/derivative/conductor generators,
+`lmfdb-check`, generated registries and bulk certificate directories described
+below have been retired. Their command examples and cache counts are historical,
+with implementation preserved in baseline commit `fcdc4f2`. The mathematical
+proof engine remains; use [`certify_ec`](CERTIFY_EC.md) for current witness
+verification and importable theorem generation.
+
 `EllipticCurve/SemistableArithmetic.lean` proves the complete input-model Euler
 coefficient identification for every nonsingular integral equation satisfying
 

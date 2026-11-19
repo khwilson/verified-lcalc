@@ -1,7 +1,7 @@
-import VerifiedLcalc.EllipticCurve.BadPrimeExamples
-import VerifiedLcalc.EllipticCurve.InvariantMinimality
-import VerifiedLcalc.LmfdbSupplementProofs
-import VerifiedLcalc.Assumptions.FastSign
+import VerifiedLcalcTests.Arithmetic.BadPrimeExamples
+import VerifiedLcalc.EllipticCurve.Tate.InvariantMinimality
+import VerifiedLcalcTests.Arithmetic.LmfdbSupplementProofs
+import VerifiedLcalc.EllipticCurve.Modularity.FastSign
 
 /-- info: 'VerifiedLcalc.EllipticCurve.singularTrace_correct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
@@ -19,9 +19,9 @@ import VerifiedLcalc.Assumptions.FastSign
 #guard_msgs (whitespace := lax) in
 #print axioms VerifiedLcalc.EllipticCurve.invariantMinimalAt_correct
 
-/-- info: 'VerifiedLcalc.Assumptions.semistableSign_eq_fast' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'VerifiedLcalc.Modularity.semistableSign_eq_fast' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Assumptions.semistableSign_eq_fast
+#print axioms VerifiedLcalc.Modularity.semistableSign_eq_fast
 
 /-- info: 'VerifiedLcalc.Lmfdb.has_1100_cases' does not depend on any axioms -/
 #guard_msgs (whitespace := lax) in

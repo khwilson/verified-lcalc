@@ -52,7 +52,7 @@ theorem centralBox_correct (coefficients : List Int) (rootNumber : Int)
        0, 0⟩ := rfl
 
 structure CentralResult where
-  equation : Artifacts.CurveEquation
+  equation : (WeierstrassCurve ℤ)
   conductor : Nat
   rootNumber : Int
   policy : PrecisionPolicy
@@ -68,7 +68,7 @@ structure CentralResult where
 /-- Central expression evaluator. Success is a finite numerical payload;
 the analytic theorem additionally requires the actual coefficient bound,
 conductor/root-number identification and split-Mellin formula. -/
-def evaluateCentral (equation : Artifacts.CurveEquation) (conductor : Nat)
+def evaluateCentral (equation : (WeierstrassCurve ℤ)) (conductor : Nat)
     (rootNumber : Int) (limit : Nat) (policy : PrecisionPolicy := globalPrecision) :
     Option CentralResult :=
   if 0 < conductor ∧ (rootNumber = 1 ∨ rootNumber = -1) then
@@ -120,7 +120,7 @@ def CentralPayloadCorrect (r : CentralResult) : Prop :=
     r.box = centralBox r.coefficients r.rootNumber r.alphaLo r.alphaHi
       r.policy.precisionBits r.tail
 
-theorem evaluateCentral_correct {equation : Artifacts.CurveEquation} {conductor : Nat}
+theorem evaluateCentral_correct {equation : (WeierstrassCurve ℤ)} {conductor : Nat}
     {rootNumber : Int} {limit : Nat} {policy : PrecisionPolicy} {r : CentralResult}
     (h : evaluateCentral equation conductor rootNumber limit policy = some r) :
     r.equation = equation ∧ r.conductor = conductor ∧ r.rootNumber = rootNumber ∧

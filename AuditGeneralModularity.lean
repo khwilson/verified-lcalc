@@ -1,29 +1,25 @@
-import VerifiedLcalc.Certificates.GeneralModularityExamples
+import VerifiedLcalcTests.Fixtures.GeneralModularityExamples
 
-/-- info: 'VerifiedLcalc.Assumptions.ModularRealization.formL_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'VerifiedLcalc.Modularity.ModularRealization.formL_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Assumptions.ModularRealization.formL_eq
+#print axioms VerifiedLcalc.Modularity.ModularRealization.formL_eq
 
-/-- info: 'VerifiedLcalc.Assumptions.ModularRealization.analyticOrder_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'VerifiedLcalc.Modularity.ModularRealization.analyticOrder_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Assumptions.ModularRealization.analyticOrder_eq
+#print axioms VerifiedLcalc.Modularity.ModularRealization.analyticOrder_eq
 
-/-- info: 'VerifiedLcalc.Assumptions.certifyCentralWithRealization' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'VerifiedLcalc.Certification.certifyCentralWithRealization' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Assumptions.certifyCentralWithRealization
+#print axioms VerifiedLcalc.Certification.certifyCentralWithRealization
 
-/-- info: 'VerifiedLcalc.Assumptions.certifyGeneralMinimalCentral' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity] -/
+/-- info: 'VerifiedLcalc.Certification.certifyGeneralMinimalCentral' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Assumptions.certifyGeneralMinimalCentral
+#print axioms VerifiedLcalc.Certification.certifyGeneralMinimalCentral
 
-/-- info: 'VerifiedLcalc.Certificates.GeneralModularityExamples.additive_modularity' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity] -/
+/-- info: 'VerifiedLcalcTests.Fixtures.GeneralModularityExamples.additive_modularity' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Certificates.GeneralModularityExamples.additive_modularity
+#print axioms VerifiedLcalcTests.Fixtures.GeneralModularityExamples.additive_modularity
 
-/-- info: 'VerifiedLcalc.Certificates.GeneralModularityExamples.curve11_via_general_interface' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity] -/
+/-- info: 'VerifiedLcalcTests.Fixtures.GeneralModularityExamples.curve37_via_general_interface' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Certificates.GeneralModularityExamples.curve11_via_general_interface
-
-/-- info: 'VerifiedLcalc.Certificates.GeneralModularityExamples.curve37_via_general_interface' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity] -/
-#guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.Certificates.GeneralModularityExamples.curve37_via_general_interface
+#print axioms VerifiedLcalcTests.Fixtures.GeneralModularityExamples.curve37_via_general_interface

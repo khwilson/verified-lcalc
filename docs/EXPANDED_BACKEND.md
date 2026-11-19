@@ -1,5 +1,12 @@
 # Expanded regression and remaining backend work
 
+Workflow status (2026-11-19): legacy batch/derivative/conductor generators,
+`lmfdb-check`, generated registries and bulk certificate directories described
+below have been retired. Their command examples and cache counts are historical,
+with implementation preserved in baseline commit `fcdc4f2`. The mathematical
+proof engine remains; use [`certify_ec`](CERTIFY_EC.md) for current witness
+verification and importable theorem generation.
+
 The regression fixture now has 1100 inputs: the original 100 plus 1000 different
 LMFDB-source curves. The added fixture has 765 analytic reference ranks zero and
 235 analytic reference ranks one, with conductors 42 through 285. The baseline

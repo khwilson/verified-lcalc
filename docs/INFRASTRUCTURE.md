@@ -1,3 +1,6 @@
+> Historical infrastructure audit. The dyadic-sum prototypes described below
+> have been retired; see `VerifiedLcalc/Numerics/README.md` for the current backend.
+
 # Infrastructure audit: TauCeti and David Ledvinka's intervals
 
 Inspected on 2026-11-17. This records reusable mathematical infrastructure and

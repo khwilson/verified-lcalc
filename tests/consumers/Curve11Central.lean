@@ -1,0 +1,6 @@
+import VerifiedLcalcTests.Fixtures.Curve11Central
+
+#check VerifiedLcalcTests.Fixtures.Central_11_a2_M8_P53_plus.payload_correct
+#check VerifiedLcalcTests.Fixtures.Central_11_a2_M8_P53_plus.encloses
+#print axioms VerifiedLcalcTests.Fixtures.Central_11_a2_M8_P53_plus.payload_correct
+#print axioms VerifiedLcalcTests.Fixtures.Central_11_a2_M8_P53_plus.encloses

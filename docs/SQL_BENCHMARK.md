@@ -31,7 +31,16 @@ This is coverage of selected curves, not a claim to cover every curve at every
 selected conductor. `LMFDB_HOST`, `LMFDB_PORT`, `LMFDB_DBNAME`, `LMFDB_USER`, and
 `LMFDB_PASSWORD` can configure another reachable copy.
 
-Run the benchmark in increasing conductor order:
+## Historical conductor benchmark (retired)
+
+The following conductor runner, generated proof corpus and registry were retired
+on 2026-11-19. The source is available in baseline commit `fcdc4f2`; these are not
+current setup instructions. The downloader above remains supported. New witness
+verification uses [`certify_ec`](CERTIFY_EC.md), with current measurements in
+[CERTIFY_EC_PERFORMANCE.md](CERTIFY_EC_PERFORMANCE.md). Saved reports below are
+historical evidence and do not establish current cache availability.
+
+The former benchmark ran in increasing conductor order:
 
 ```sh
 python3 scripts/benchmark_conductors.py \

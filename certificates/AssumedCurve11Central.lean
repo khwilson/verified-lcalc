@@ -1,6 +1,0 @@
-import VerifiedLcalc.Certificates.AssumedCurve11Central
-
-#check VerifiedLcalc.Certificates.AssumedCurve11Central.analytic_rank_zero
-#print axioms VerifiedLcalc.Certificates.AssumedCurve11Central.analytic_rank_zero
-
-#eval VerifiedLcalc.Certificates.AssumedCurve11Central.certifiedRank.val

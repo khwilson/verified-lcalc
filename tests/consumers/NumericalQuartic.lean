@@ -1,0 +1,6 @@
+import VerifiedLcalcTests.Fixtures.NumericalQuartic
+
+#check VerifiedLcalcTests.Fixtures.NumericalQuartic.certified_small_derivatives
+#check VerifiedLcalcTests.Fixtures.NumericalQuartic.conditional_analytic_lower_bound
+#print axioms VerifiedLcalcTests.Fixtures.NumericalQuartic.certified_small_derivatives
+#print axioms VerifiedLcalcTests.Fixtures.NumericalQuartic.conditional_analytic_lower_bound

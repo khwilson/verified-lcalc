@@ -29,7 +29,7 @@ def derivativeInfiniteTail (al : Rat) (bits cutoff : Nat) : Option Rat :=
   else none
 
 structure DerivativeResult where
-  equation : Artifacts.CurveEquation
+  equation : (WeierstrassCurve ℤ)
   conductor : Nat
   policy : PrecisionPolicy
   termLimit : Nat
@@ -50,7 +50,7 @@ def DerivativeResult.realDerivativeBounds (r : DerivativeResult) : RealInterval 
 
 /-- Enclosure of the normalized derivative integral J. The analytic bridge
 proves Re L'(1)=(4*pi/sqrt(N))*J for the negative-sign realization. -/
-def evaluateDerivative (equation : Artifacts.CurveEquation) (conductor limit steps cutoff : Nat)
+def evaluateDerivative (equation : (WeierstrassCurve ℤ)) (conductor limit steps cutoff : Nat)
     (policy : PrecisionPolicy := globalPrecision) : Option DerivativeResult := do
   if conductor = 0 ∨ steps = 0 ∨ cutoff ≤ 1 then none else do
     let a := alphaBounds conductor policy.precisionBits
@@ -72,7 +72,7 @@ def DerivativePayloadCorrect (r : DerivativeResult) : Prop :=
   r.box = ⟨r.finite.1-r.tail,r.finite.2+r.tail,0,0⟩
   deriving Decidable
 
-theorem evaluateDerivative_correct {e : Artifacts.CurveEquation} {N M steps cutoff : Nat}
+theorem evaluateDerivative_correct {e : (WeierstrassCurve ℤ)} {N M steps cutoff : Nat}
     {policy : PrecisionPolicy} {r : DerivativeResult}
     (h : evaluateDerivative e N M steps cutoff policy = some r) :
     r.equation = e ∧ r.conductor = N ∧ r.policy = policy ∧ r.termLimit = M ∧

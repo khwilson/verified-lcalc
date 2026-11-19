@@ -1,0 +1,130 @@
+{
+  "scope": "Pre-WeierstrassCurve migration; experiments reverted; OS caches were not flushed and process timings vary.",
+  "initial": {
+    "import_only": {
+      "seconds": [
+        11.603067792020738,
+        3.4082139580277726,
+        2.6497750830603763
+      ],
+      "median": 3.4082139580277726,
+      "olean_bytes": 1296
+    },
+    "11a1": {
+      "seconds": [
+        2.8683633329346776,
+        2.685122875031084,
+        2.6195863329339772
+      ],
+      "median": 2.685122875031084,
+      "olean_bytes": 28696
+    },
+    "37a1": {
+      "seconds": [
+        3.4645826669875532,
+        3.4553762080613524,
+        3.404424750013277
+      ],
+      "median": 3.4553762080613524,
+      "olean_bytes": 29776
+    },
+    "112a2": {
+      "seconds": [
+        5.204337166971527,
+        7.386955709080212,
+        4.874954791972414
+      ],
+      "median": 5.204337166971527,
+      "olean_bytes": 31496
+    },
+    "warm_lake": {
+      "seconds": 2.302432541968301
+    },
+    "consumer": {
+      "seconds": 34.41370879195165
+    }
+  },
+  "finite_conjunction": {
+    "import_only": {
+      "seconds": [
+        13.901848124922253,
+        9.667311207973398,
+        6.763208416989073
+      ],
+      "median": 9.667311207973398,
+      "olean_bytes": 1296
+    },
+    "11a1": {
+      "seconds": [
+        4.269051625044085,
+        3.4355653340462595,
+        3.0522383749485016
+      ],
+      "median": 3.4355653340462595,
+      "olean_bytes": 29224
+    },
+    "37a1": {
+      "seconds": [
+        3.73594933305867,
+        3.438247583108023,
+        4.116480833035894
+      ],
+      "median": 3.73594933305867,
+      "olean_bytes": 30312
+    },
+    "112a2": {
+      "seconds": [
+        6.8279577910434455,
+        8.189830583985895,
+        6.617897458025254
+      ],
+      "median": 6.8279577910434455,
+      "olean_bytes": 32032
+    }
+  },
+  "fixed_evaluator": {
+    "import_only": {
+      "seconds": [
+        11.172181832953356,
+        6.359734042081982,
+        2.76375012495555
+      ],
+      "median": 6.359734042081982,
+      "olean_bytes": 1296
+    },
+    "11a1": {
+      "seconds": [
+        2.5610324579756707,
+        2.8767460419330746,
+        2.763296250021085
+      ],
+      "median": 2.763296250021085,
+      "olean_bytes": 28696
+    },
+    "37a1": {
+      "seconds": [
+        3.981191457947716,
+        3.9090744169661775,
+        4.200093458057381
+      ],
+      "median": 3.981191457947716,
+      "olean_bytes": 29776
+    },
+    "112a2": {
+      "seconds": [
+        5.192077749990858,
+        5.0088723339140415,
+        4.615854416973889
+      ],
+      "median": 5.0088723339140415,
+      "olean_bytes": 31496
+    }
+  },
+  "profile_seconds": {
+    "initial_wild_command": 2.386315,
+    "initial_wild_payload_kernel": 2.258612,
+    "fixed_evaluator_wild_payload_kernel": 2.11444
+  },
+  "decision": "Neither rewrite showed a meaningful overall gain; original command restored.",
+  "consumer_warning": "Initial consumer includes #eval/#print and was not a pure cached-proof-import measurement; use final baseline.cached_proof instead."
+}
