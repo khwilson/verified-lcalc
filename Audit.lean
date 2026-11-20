@@ -47,11 +47,8 @@ import VerifiedLcalcTests.Fixtures.Curve11Arithmetic
 #print axioms VerifiedLcalc.EllipticCurve.goodReduction_correct
 #print axioms VerifiedLcalc.EllipticCurve.analysePrime_correct
 #print axioms VerifiedLcalc.EllipticCurve.analysePrime_sound
-#print axioms VerifiedLcalc.EllipticCurve.localPair_correct
-#print axioms VerifiedLcalc.EllipticCurve.localCoefficient_correct
-#print axioms VerifiedLcalc.EllipticCurve.localCoefficient_unique
-#print axioms VerifiedLcalc.EllipticCurve.localSeries_correct
-#print axioms VerifiedLcalc.EllipticCurve.localSeries_inverse
+#print axioms VerifiedLcalc.EllipticCurve.localCoefficient_recurrence
+#print axioms VerifiedLcalc.EllipticCurve.localCoefficient_eq_coeff_invOfUnit
 #print axioms VerifiedLcalcTests.Fixtures.Curve11Arithmetic.point_count_two
 #print axioms VerifiedLcalcTests.Fixtures.Curve11Arithmetic.trace_two
 #print axioms VerifiedLcalcTests.Fixtures.Curve11Arithmetic.euler_factor_two
@@ -82,18 +79,13 @@ import VerifiedLcalcTests.Fixtures.Curve11Arithmetic
 #print axioms VerifiedLcalc.Numerics.rationalExpBounds_correct
 #print axioms VerifiedLcalc.Numerics.rationalWeightedBounds_correct
 #print axioms VerifiedLcalc.Numerics.rationalExpSumBounds_correct
-#print axioms VerifiedLcalc.EllipticCurve.modelFactor_correct
-#print axioms VerifiedLcalc.EllipticCurve.modelFactors_correct
-#print axioms VerifiedLcalc.EllipticCurve.modelFactors_prime
-#print axioms VerifiedLcalc.EllipticCurve.coefficientFromFactors_correct
-#print axioms VerifiedLcalc.EllipticCurve.modelCoefficients_correct
+#print axioms VerifiedLcalc.EllipticCurve.primePowerTable_correct
+#print axioms VerifiedLcalc.EllipticCurve.primePowerTable_prime
+#print axioms VerifiedLcalc.EllipticCurve.coefficientFromPrimePowers_correct
 #print axioms VerifiedLcalc.EllipticCurve.modelCoefficients_euler
 #print axioms VerifiedLcalc.EllipticCurve.piBounds_correct
 #print axioms VerifiedLcalc.EllipticCurve.alphaBounds_correct
-#print axioms VerifiedLcalc.EllipticCurve.centralTerms_correct
-#print axioms VerifiedLcalc.EllipticCurve.centralBox_correct
 #print axioms VerifiedLcalc.EllipticCurve.centralFiniteBounds_correct
-#print axioms VerifiedLcalc.EllipticCurve.squareTailRatio_correct
 #print axioms VerifiedLcalc.EllipticCurve.squareTailBound_correct
 #print axioms VerifiedLcalc.EllipticCurve.square_geometric_majorant
 #print axioms VerifiedLcalc.EllipticCurve.central_tail_error
@@ -110,7 +102,7 @@ import VerifiedLcalcTests.Fixtures.Curve11Arithmetic
 #guard_msgs in
 #print axioms VerifiedLcalc.EllipticCurve.centralPayload_sound
 
-#print axioms VerifiedLcalc.EllipticCurve.coefficientFromFactors_model_eq_euler
+#print axioms VerifiedLcalc.EllipticCurve.coefficientFromPrimePowers_model_eq_euler
 #print axioms VerifiedLcalc.EllipticCurve.model_eulerCoefficient_abs_le_cube
 #print axioms VerifiedLcalc.Numerics.mellin_one_split
 

@@ -16,7 +16,10 @@ Weierstrass equation with nonzero discriminant it asserts the existence of a
 modular realization consisting of:
 
 - A positive level N and a genuine mathlib weight-two cusp form on Gamma_0(N).
-- Width one and normalization of its first Fourier coefficient.
+- Width one and arithmeticity follow from Mathlib's Gamma_0 API and the
+  positive level. First-coefficient normalization follows from coefficient
+  matching and the actual curve coefficient at one. These are derived facts,
+  not separate fields of the axiom.
 - Equality of **every** Fourier coefficient with mathlib's actual
   `WeierstrassCurve.LFunction` coefficient for the rational curve.
 - A sign w in {+1,-1} and the rescaled imaginary-axis Fricke identity

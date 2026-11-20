@@ -33,7 +33,7 @@ only check the finite eligibility predicate and instantiate this result. -/
 theorem ModularRealization.coefficient_of_prefixSupported {e : (WeierstrassCurve ℤ)}
     (m : ModularRealization e) (limit : ℕ) (hs : prefixSupported e limit = true)
     (n : ℕ) (hn : n ≠ 0) (hlim : n ≤ limit) :
-    (WeierstrassCurve.baseChange e ℚ).LFunction n = eulerCoefficient (modelFactor e) n := by
+    (WeierstrassCurve.baseChange e ℚ).LFunction n = eulerCoefficient (computePrimePowerCoefficient e) n := by
   rw [ArithmeticFunction.IsMultiplicative.multiplicative_factorization _
     (WeierstrassCurve.baseChange e ℚ).isMultiplicative_LFunction hn, eulerCoefficient, ite_eq_right hn]
   unfold Finsupp.prod
@@ -45,9 +45,9 @@ theorem ModularRealization.coefficient_of_prefixSupported {e : (WeierstrassCurve
   have ha := m.prime_coefficient p hprime hg
   change (WeierstrassCurve.baseChange e ℚ).LFunction (p ^ n.factorization p) = _
   by_cases hk0 : n.factorization p = 0
-  · simp [hk0, localCoefficient, localPair]
+  · simp [hk0, computePrimePowerCoefficient, localCoefficient, localPair]
   by_cases hk1 : n.factorization p = 1
-  · simp [hk1, ha, modelFactor, localCoefficient, localPair]
+  · simp [hk1, ha, computePrimePowerCoefficient, localCoefficient, localPair]
   have hk2 : 2 ≤ n.factorization p := by omega
   have hp2 : p ^ 2 ≤ limit :=
     (Nat.le_of_dvd (Nat.pos_of_ne_zero hn) ((hprime.pow_dvd_iff_le_factorization hn).mpr hk2)).trans hlim
@@ -63,7 +63,7 @@ theorem ModularRealization.coefficient_of_prefixSupported {e : (WeierstrassCurve
       rw [ha] at h
       omega
   rw [hr, hqp, ha]
-  simp [modelFactor, hg]
+  simp [computePrimePowerCoefficient, hg]
 
 theorem ModularRealization.prefix_of_supported {e : (WeierstrassCurve ℤ)}
     (m : ModularRealization e) (limit : ℕ) (hs : prefixSupported e limit = true) :

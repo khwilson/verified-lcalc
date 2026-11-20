@@ -16,27 +16,6 @@ def GloballyMinimalInput (e : (WeierstrassCurve ℤ)) : Prop :=
       ((WeierstrassCurve.baseChange e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
         ((rationalPlace p).adicCompletion ℚ))
 
-theorem isSquareMod_correct (p : ℕ) [NeZero p] (a : Int) :
-    isSquareMod p a = true ↔ IsSquare (a : ZMod p) := by
-  simp [isSquareMod, NeZero.ne p]
-
-/-- Equality to mathlib's mathematical Legendre symbol, not to a database sign. -/
-theorem legendreValue_correct (p : ℕ) [Fact p.Prime] (_hp : p ≠ 2) (a : Int) :
-    legendreValue p a = legendreSym p a := by
-  unfold legendreValue
-  by_cases hz : a % (p : Int) = 0
-  · rw [ite_eq_left hz]
-    exact ((legendreSym.eq_zero_iff p a).mpr
-      ((ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr (Int.dvd_iff_emod_eq_zero.mpr hz))).symm
-  · rw [ite_eq_right hz]
-    have hn : (a : ZMod p) ≠ 0 := by
-      simpa only [ne_eq, ZMod.intCast_zmod_eq_zero_iff_dvd, Int.dvd_iff_emod_eq_zero] using hz
-    by_cases hs : isSquareMod p a = true
-    · rw [ite_eq_left hs]
-      exact ((legendreSym.eq_one_iff p hn).mpr ((isSquareMod_correct p a).mp hs)).symm
-    · rw [ite_eq_right hs]
-      exact ((legendreSym.eq_neg_one_iff p).mpr (mt (isSquareMod_correct p a).mpr hs)).symm
-
 /-- The valuation-based mathematical condition for negative j-valuation.
 The explicit c4 nonzero guard is essential at j=0. -/
 def NegativeJValuation (e : (WeierstrassCurve ℤ)) (p : ℕ) : Prop :=
@@ -63,10 +42,9 @@ noncomputable def tameAdditiveRootSpec (e : (WeierstrassCurve ℤ)) (p : ℕ) [F
 
 theorem tameAdditiveRoot_correct (e : (WeierstrassCurve ℤ)) (p : ℕ)
     [Fact p.Prime] (hp : 3 < p) : tameAdditiveRoot e p = tameAdditiveRootSpec e p := by
-  have h2 : p ≠ 2 := by omega
   have hpot := potentiallyMultiplicative_correct e p (Fact.out : p.Prime)
-  simp only [tameAdditiveRoot, tameAdditiveRootSpec, Nat.padicValNat_def, Nat.multiplicity_eq_factorization (Fact.out : p.Prime),
-    legendreValue_correct p h2]
+  simp only [tameAdditiveRoot, dite_eq_left (Fact.out : p.Prime), tameAdditiveRootSpec,
+    Nat.padicValNat_def, Nat.multiplicity_eq_factorization (Fact.out : p.Prime)]
   by_cases h : NegativeJValuation e p
   · rw [ite_eq_left h, ite_eq_left (hpot.mpr h)]
   · rw [ite_eq_right h, ite_eq_right (mt hpot.mp h)]

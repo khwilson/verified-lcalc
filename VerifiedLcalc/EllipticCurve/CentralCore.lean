@@ -44,13 +44,6 @@ def centralBox (coefficients : List Int) (rootNumber : Int) (alphaLo alphaHi : R
     ((centralTerms coefficients rootNumber alphaLo alphaHi).map Prod.snd)
   ⟨bounds.1 - tail, bounds.2 + tail, 0, 0⟩
 
-theorem centralBox_correct (coefficients : List Int) (rootNumber : Int)
-    (alphaLo alphaHi : Rat) (prec : Nat) (tail : Rat) :
-    centralBox coefficients rootNumber alphaLo alphaHi prec tail =
-      ⟨(rationalExpSumBounds prec ((centralTerms coefficients rootNumber alphaLo alphaHi).map Prod.snd)).1 - tail,
-       (rationalExpSumBounds prec ((centralTerms coefficients rootNumber alphaLo alphaHi).map Prod.snd)).2 + tail,
-       0, 0⟩ := rfl
-
 structure CentralResult where
   equation : (WeierstrassCurve ℤ)
   conductor : Nat
@@ -83,16 +76,6 @@ def evaluateCentral (equation : (WeierstrassCurve ℤ)) (conductor : Nat)
         alpha.1, alpha.2, q, tail,
         centralBox coefficients rootNumber alpha.1 alpha.2 policy.precisionBits tail⟩
   else none
-
-theorem centralTerms_correct (coefficients : List Int) (rootNumber : Int)
-    (alphaLo alphaHi : Rat) :
-    centralTerms coefficients rootNumber alphaLo alphaHi =
-      coefficients.zipIdx.map (fun (a, j) =>
-        (j + 1, ⟨((1 + rootNumber : Int) : Rat) * (a : Rat) / (j + 1 : Nat),
-          -alphaHi * (j + 1 : Nat), -alphaLo * (j + 1 : Nat)⟩)) := rfl
-
-theorem squareTailRatio_correct (q : Rat) (limit : Nat) :
-    squareTailRatio q limit = q * (((limit + 2 : Nat) : Rat) / (limit + 1 : Nat)) ^ 2 := rfl
 
 theorem squareTailBound_correct {q : Rat} {limit : Nat} {tail : Rat}
     (h : squareTailBound q limit = some tail) :

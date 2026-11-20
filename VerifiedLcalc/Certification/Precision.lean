@@ -16,7 +16,7 @@ theorem CurvePrecisionClaim.conditional_lower_bound (claim : CurvePrecisionClaim
     (claim.derivativeCount : ℕ∞) ≤
       analyticOrderAt (modularWitness claim.equation hn).formL 1 := by
   exact NumericalRanks.lowerBound_of_small_gap
-    ((modularWitness_formL_differentiable claim.equation hn).analyticAt 1)
+    ((modularWitness claim.equation hn).formL_differentiable.analyticAt 1)
     small hypotheses.separated hypotheses.cutoff_lt_gap
 
 theorem CurvePrecisionClaim.conditional_rank (claim : CurvePrecisionClaim)
@@ -28,7 +28,7 @@ theorem CurvePrecisionClaim.conditional_rank (claim : CurvePrecisionClaim)
       (modularWitness claim.equation hn).formL 1 ≠ 0) :
     analyticOrderAt (modularWitness claim.equation hn).formL 1 = claim.derivativeCount := by
   exact NumericalRanks.rank_eq_of_small_gap
-    ((modularWitness_formL_differentiable claim.equation hn).analyticAt 1)
+    ((modularWitness claim.equation hn).formL_differentiable.analyticAt 1)
     small hypotheses.separated hypotheses.cutoff_lt_gap next_nonzero
 
 /-- Build the claim identity from the actual saved numerical evidence, not from

@@ -57,8 +57,7 @@ theorem ModularRealization.central_exponential_hasSum_of_primePowers
     {e : (WeierstrassCurve ℤ)} (m : ModularRealization e)
     (hl : ∀ p : ℕ, p.Prime → ∀ k : ℕ,
       (WeierstrassCurve.baseChange e ℚ).LFunction (p ^ k) =
-        EllipticCurve.localCoefficient (EllipticCurve.modelFactor e p).trace
-          (EllipticCurve.modelFactor e p).quadratic k) :
+        EllipticCurve.computePrimePowerCoefficient e p k) :
     HasSum (fun j : ℕ => (1 + (m.rootNumber : ℝ)) *
       ((WeierstrassCurve.baseChange e ℚ).LFunction (j + 1) : ℝ) / (j + 1 : ℕ) *
         Real.exp (-(2 * Real.pi / Real.sqrt m.level) * (j + 1 : ℕ)))

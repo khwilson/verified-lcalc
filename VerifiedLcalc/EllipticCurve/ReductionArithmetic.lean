@@ -2,6 +2,7 @@ module
 
 public import VerifiedLcalc.EllipticCurve.Tate.TwoAdicMinimality
 public import VerifiedLcalc.EllipticCurve.Tate.InvariantMinimality
+public import Mathlib.Data.List.Prime
 
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
@@ -41,17 +42,6 @@ theorem twoAdicC4MinimalAt_correct (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact 
   apply modelMinimalAt_correct e p
   simp only [modelMinimalAt, h, Bool.or_true, Bool.true_or]
 
-private theorem prime_eq_member_of_dvd_prod (p : ℕ) (hp : p.Prime)
-    (xs : List ℕ) (hx : xs.all isPrime = true) (hd : p ∣ xs.prod) : p ∈ xs := by
-  induction xs with
-  | nil => simpa using hp.not_dvd_one hd
-  | cons a xs ih =>
-    simp only [List.all_cons, Bool.and_eq_true] at hx
-    rcases hp.dvd_mul.mp hd with h | h
-    · have heq : p = a := ((Nat.dvd_prime ((isPrime_correct a).mp hx.1)).mp h).resolve_left hp.ne_one
-      exact List.mem_cons.mpr (Or.inl heq)
-    · exact List.mem_cons_of_mem a (ih hx.2 h)
-
 /-- A checked finite factorization certifies minimality at every finite place,
 including additive primes in characteristics two and three. -/
 theorem minimal_of_witness (e : (WeierstrassCurve ℤ)) (w : MinimalityWitness)
@@ -65,7 +55,8 @@ theorem minimal_of_witness (e : (WeierstrassCurve ℤ)) (w : MinimalityWitness)
       rw [List.all_eq_true]
       intro q hq
       exact Bool.and_eq_true_iff.mp ((List.all_eq_true.mp hw.1) q hq) |>.1
-    have hmem : p ∈ w.primes := prime_eq_member_of_dvd_prod p Fact.out w.primes hall
+    have hmem : p ∈ w.primes := mem_list_primes_of_dvd_prod (Nat.prime_iff.mp Fact.out)
+      (fun q hq => Nat.prime_iff.mp ((isPrime_correct q).mp ((List.all_eq_true.mp hall) q hq)))
       (by rw [hw.2]; exact Int.natCast_dvd.mp hpd)
     exact Bool.and_eq_true_iff.mp ((List.all_eq_true.mp hw.1) p hmem) |>.2
   · apply minimal_at_of_discriminant_not_dvd e p

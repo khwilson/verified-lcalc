@@ -22,7 +22,7 @@ theorem ModularRealization.mellin_first_derivative {e : (WeierstrassCurve ℤ)}
     MellinConvergent (fun t => Real.log t • m.imaginaryFunction t) 1 ∧
     HasDerivAt (mellin m.imaginaryFunction)
       (mellin (fun t => Real.log t • m.imaginaryFunction t) 1) 1 := by
-  let _ := m.arithmetic
+  letI : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
   let c : ℝ := (Real.sqrt m.level)⁻¹
   have hc : 0 < c := inv_pos.mpr (Real.sqrt_pos.mpr (by exact_mod_cast m.positiveLevel))
   let f : ℝ → ℂ := (ModularForm.weakFEPair (by decide : (0 : ℤ) < 2) m.form).f
@@ -80,7 +80,7 @@ theorem ModularRealization.formL_scaled_mellin {e : (WeierstrassCurve ℤ)}
     (m : ModularRealization e) (s : ℂ) (hs : s ≠ 0) :
     m.formL s = ((Real.sqrt m.level : ℂ)^(-s) * (2*(Complex.Gammaℂ s)⁻¹)) *
       mellin m.imaginaryFunction s := by
-  let _ := m.arithmetic
+  letI : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
   have hpos : 0 < Real.sqrt (m.level : ℝ) :=
     Real.sqrt_pos.mpr (by exact_mod_cast m.positiveLevel)
   have hscale := mellin_comp_mul_right m.imaginaryFunction s hpos

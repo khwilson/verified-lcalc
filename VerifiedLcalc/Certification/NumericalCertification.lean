@@ -25,7 +25,7 @@ theorem check_assumed_exact_sound {expected : Artifacts.Request} {artifact : Art
     (h : Artifacts.check expected artifact = true) :
     analyticOrderAt (modularWitness e.equation e.nonsingular).formL 1 = artifact.rank := by
   exact scan_analyticOrderAt
-    ((modularWitness_formL_differentiable e.equation e.nonsingular).analyticAt 1)
+    ((modularWitness e.equation e.nonsingular).formL_differentiable.analyticAt 1)
     e.enclosures ((Artifacts.check_correct _ _).mp h).2.2.2.2
 
 structure AssumedNumericalEvidence (expected : NumericalRanks.Request)
@@ -58,7 +58,7 @@ theorem check_assumed_numerical_lowerBound {expected : NumericalRanks.Request}
     (artifact.numericalLowerBound : ℕ∞) ≤
       analyticOrderAt (modularWitness e.equation e.nonsingular).formL 1 := by
   apply (natCast_le_analyticOrderAt_iff_iteratedDeriv_eq_zero
-    ((modularWitness_formL_differentiable e.equation e.nonsingular).analyticAt 1)).mpr
+    ((modularWitness e.equation e.nonsingular).formL_differentiable.analyticAt 1)).mpr
   intro k hk
   exact hv k hk (check_assumed_numerical_sound e h k hk)
 

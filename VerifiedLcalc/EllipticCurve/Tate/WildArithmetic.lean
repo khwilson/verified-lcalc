@@ -7,23 +7,6 @@ public import Mathlib.NumberTheory.LegendreSymbol.ZModChar
 namespace VerifiedLcalc.EllipticCurve
 open Artifacts
 
-/-- Every transcript translation is mathlib's genuine integral variable change. -/
-theorem translateIntegral_correct (e : (WeierstrassCurve ℤ)) (r s t : Int) :
-    translateIntegral e r s t =
-      (⟨1,r,s,t⟩ : WeierstrassCurve.VariableChange Int) • e := by
-  ext <;> simp [translateIntegral, WeierstrassCurve.baseChange,
-    WeierstrassCurve.variableChange_a₁, WeierstrassCurve.variableChange_a₂,
-    WeierstrassCurve.variableChange_a₃, WeierstrassCurve.variableChange_a₄,
-    WeierstrassCurve.variableChange_a₆]
-
-theorem translateIntegral_discriminant (e : (WeierstrassCurve ℤ)) (r s t : Int) :
-    WeierstrassCurve.Δ (translateIntegral e r s t) = e.Δ := by
-  rw [translateIntegral_correct, WeierstrassCurve.variableChange_Δ]
-  simp
-
-theorem tateDiv_correct (p k : Nat) (a : Int) :
-    TateDiv p k a ↔ (p : Int)^k ∣ a := Int.dvd_iff_emod_eq_zero.symm
-
 theorem cubicRepeated_correct (p : Nat) (a b c x : Int) :
     cubicRepeated p a b c x ↔
       ((x : ZMod p)^3 + (a : ZMod p)*x^2 + (b : ZMod p)*x + c = 0 ∧
@@ -40,21 +23,6 @@ theorem quadraticRepeated_correct (p : Nat) (a b c x : Int) :
     ← ZMod.intCast_zmod_eq_zero_iff_dvd]
   push_cast
   rfl
-
-/-- The table uses mathlib's primitive characters of conductor 4 and 8. -/
-def twoCharacterSpec (a n : Int) : Int :=
-  if a = -1 then ZMod.χ₄ n
-  else if a = 2 then ZMod.χ₈ n
-  else if a = -2 then ZMod.χ₈' n else 0
-
-theorem twoCharacter_correct (a n : Int) : twoCharacter a n = twoCharacterSpec a n := by
-  unfold twoCharacter twoCharacterSpec
-  simp only [ZMod.χ₄_int_eq_if_mod_four, ZMod.χ₈_int_eq_if_mod_eight,
-    ZMod.χ₈'_int_eq_if_mod_eight]
-  have h2 : n % 2 = (n % 8) % 2 := by omega
-  have h4 : n % 4 = (n % 8) % 4 := by omega
-  rw [h2, h4]
-  by_cases h : n % 2 = 0 <;> simp [← h2, ← h4, h]
 
 def wildValuationSpec (p : Nat) (a : Int) : Nat :=
   if a = 0 then 12 else a.natAbs.factorization p
@@ -84,15 +52,12 @@ noncomputable def wildRootSpec (e : (WeierstrassCurve ℤ)) (p : Nat) (w : TateW
   let u := wildUnitSpec p modulus c4
   let v := wildUnitSpec p modulus c6
   let d := wildUnitSpec p modulus delta
-  if p = 2 then twoRootTable twoCharacterSpec v4 v6 vd u v d w.kodaira
+  if p = 2 then twoRootTable twoCharacter v4 v6 vd u v d w.kodaira
   else threeRootTable (legendreSym 3) v4 v6 vd u v d w.kodaira
 
 theorem wildRoot_correct (e : (WeierstrassCurve ℤ)) (p : Nat) (hp : p.Prime) (w : TateWitness) :
     wildRoot e p w = wildRootSpec e p w := by
-  have hK : twoCharacter = twoCharacterSpec := funext fun a => funext (twoCharacter_correct a)
-  have h3 : legendreValue 3 = legendreSym 3 := funext (legendreValue_correct 3 (by decide))
-  simp only [wildRoot, wildRootSpec, wildValuation_correct p hp, wildUnit_correct p hp,
-    hK, h3]
+  simp only [wildRoot, wildRootSpec, wildValuation_correct p hp, wildUnit_correct p hp]
 
 /-- The actual reduction and valuation meaning of an executable Tate witness. -/
 def TateWitness.ArithmeticSpec (w : TateWitness) (e : (WeierstrassCurve ℤ)) (p : Nat) : Prop :=

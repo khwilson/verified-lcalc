@@ -166,6 +166,6 @@ theorem additive_localPolynomial (e : (WeierstrassCurve ℤ))
     cases h : goodReduction e p
     · rfl
     · exact False.elim ((goodReduction_correct e p).mp h hd)
-  simp [modelFactor, ht, hg]
+  simp [computePrimePowerCoefficient, ht, hg]
 
 end VerifiedLcalc.EllipticCurve

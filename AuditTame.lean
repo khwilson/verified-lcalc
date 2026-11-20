@@ -2,9 +2,6 @@ import VerifiedLcalc.Certification.TameCertification
 import VerifiedLcalc.Certification.TameNegativeSign
 open VerifiedLcalc.EllipticCurve VerifiedLcalc.Modularity VerifiedLcalc.Certification
 set_option pp.fullNames true
-/-- info: 'VerifiedLcalc.EllipticCurve.isSquareMod_correct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs (whitespace := lax) in
-#print axioms isSquareMod_correct
 /-- info: 'VerifiedLcalc.EllipticCurve.tameAdditiveRoot_correct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms tameAdditiveRoot_correct

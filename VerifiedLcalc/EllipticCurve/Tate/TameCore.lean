@@ -2,21 +2,10 @@ module
 
 public import VerifiedLcalc.EllipticCurve.BadPrimeCore
 public import Mathlib.Data.ZMod.Basic
-public import Mathlib.Data.Fintype.Parity
+public import Mathlib.NumberTheory.LegendreSymbol.Basic
 
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
-
-/-- Mathlib's finite square decision procedure, reflected as a Boolean.
-The zero modulus has no finite enumeration and is rejected explicitly. -/
-def isSquareMod (p : Nat) (a : Int) : Bool :=
-  if hp : p = 0 then false else
-    letI : NeZero p := ⟨hp⟩
-    decide (IsSquare (a : ZMod p))
-
-/-- Executable Legendre symbol; correctness for odd primes is in TameArithmetic. -/
-def legendreValue (p : Nat) (a : Int) : Int :=
-  if a % (p : Int) = 0 then 0 else if isSquareMod p a then 1 else -1
 
 /-- Negative j-valuation, guarding c4=0 rather than treating its valuation as zero. -/
 def potentiallyMultiplicative (e : (WeierstrassCurve ℤ)) (p : Nat) : Bool :=
@@ -24,14 +13,18 @@ def potentiallyMultiplicative (e : (WeierstrassCurve ℤ)) (p : Nat) : Bool :=
     padicValNat p (e.Δ).natAbs)
 
 /-- The tame additive root formula. Callers must establish prime p>=5 and
-minimality before interpreting this as the elliptic curve's local root number. -/
+minimality before interpreting this as the elliptic curve's local root number.
+Nonprime inputs are unsupported and return zero. -/
 def tameAdditiveRoot (e : (WeierstrassCurve ℤ)) (p : Nat) : Int :=
-  if potentiallyMultiplicative e p then legendreValue p (-1)
-  else
-    let v := padicValNat p (e.Δ).natAbs % 12
-    if v == 3 || v == 9 then legendreValue p (-2)
-    else if v == 4 || v == 8 then legendreValue p (-3)
-    else legendreValue p (-1)
+  if hp : p.Prime then
+    letI : Fact p.Prime := ⟨hp⟩
+    if potentiallyMultiplicative e p then legendreSym p (-1)
+    else
+      let v := padicValNat p (e.Δ).natAbs % 12
+      if v == 3 || v == 9 then legendreSym p (-2)
+      else if v == 4 || v == 8 then legendreSym p (-3)
+      else legendreSym p (-1)
+  else 0
 
 structure LocalConductorRoot where
   prime : Nat

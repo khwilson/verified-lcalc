@@ -16,7 +16,7 @@ theorem ModularRealization.central_mellin {e : (WeierstrassCurve ℤ)}
     (m : ModularRealization e) :
     m.formL 1 = (2 * Real.pi / Real.sqrt m.level : ℂ) *
       mellin m.imaginaryFunction 1 := by
-  let _ := m.arithmetic
+  letI : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
   have hpos : 0 < Real.sqrt (m.level : ℝ) := Real.sqrt_pos.mpr (by exact_mod_cast m.positiveLevel)
   have hscale := mellin_comp_mul_right
     (fun t : ℝ => m.form (UpperHalfPlane.ofComplex (Complex.I * t))) 1
@@ -42,7 +42,7 @@ theorem ModularRealization.central_mellin {e : (WeierstrassCurve ℤ)}
 
 theorem ModularRealization.central_mellin_convergent {e : (WeierstrassCurve ℤ)}
     (m : ModularRealization e) : MellinConvergent m.imaginaryFunction 1 := by
-  let _ := m.arithmetic
+  letI : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
   have hpos : 0 < (Real.sqrt m.level)⁻¹ := by
     apply inv_pos.mpr
     exact Real.sqrt_pos.mpr (by exact_mod_cast m.positiveLevel)

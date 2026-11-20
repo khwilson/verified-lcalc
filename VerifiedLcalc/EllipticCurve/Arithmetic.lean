@@ -65,34 +65,11 @@ def localPair (a q : Int) : Nat → Int × Int
 
 def localCoefficient (a q : Int) (k : Nat) : Int := (localPair a q k).1
 
-theorem localPair_correct (a q : Int) (k : Nat) :
-    localPair a q k = (localCoefficient a q k, localCoefficient a q (k + 1)) := by
+/-- Operational recurrence for the executable evaluator. Its mathematical
+specification is Mathlib's inverse polynomial in `Euler.lean`. -/
+theorem localCoefficient_recurrence (a q : Int) (k : Nat) :
+    localCoefficient a q (k + 2) =
+      a * localCoefficient a q (k + 1) - q * localCoefficient a q k := by
   simp [localCoefficient, localPair]
-
-/-- Specification of the coefficients of (1 - a T + q T²)⁻¹. -/
-def InverseEulerCoefficients (a q : Int) (c : Nat → Int) : Prop :=
-  c 0 = 1 ∧ c 1 = a ∧ ∀ k, c (k + 2) = a * c (k + 1) - q * c k
-
-theorem localCoefficient_correct (a q : Int) :
-    InverseEulerCoefficients a q (localCoefficient a q) := by
-  refine ⟨rfl, rfl, ?_⟩
-  intro k
-  simp [localCoefficient, localPair]
-
-/-- The recurrence characterizes the coefficients uniquely, not just a chosen
-implementation of them. -/
-theorem localCoefficient_unique (a q : Int) (c : Nat → Int)
-    (h : InverseEulerCoefficients a q c) : c = localCoefficient a q := by
-  funext k
-  induction k using Nat.strongRecOn with
-  | ind k ih =>
-    cases k with
-    | zero => exact h.1
-    | succ k =>
-      cases k with
-      | zero => exact h.2.1
-      | succ k =>
-        rw [h.2.2 k, ih (k + 1) (by omega), ih k (by omega)]
-        exact (localCoefficient_correct a q).2.2 k |>.symm
 
 end VerifiedLcalc.EllipticCurve

@@ -41,7 +41,7 @@ Target existing `TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/` files. A
 
 ## M3–M5: reduction, coefficients and explicit growth
 
-At the pinned TauCeti revision, `PointCount.lean`, `SingularPointCount.lean`, `LocalPolynomial.lean` and the `MinimalModel/` directory already supply the foundations. [Local adapters](../../VerifiedLcalc/EllipticCurve/TauCeti.lean) include `pointCount_map_equiv`, `frobeniusTrace_map_equiv`, `localPolynomial_eq_modelFactor`, and `localPowerSeries_eq_localSeries`. General field-equivalence invariance belongs upstream; integer-array encoding of an input equation does not.
+At the pinned TauCeti revision, `PointCount.lean`, `SingularPointCount.lean`, `LocalPolynomial.lean` and the `MinimalModel/` directory already supply the foundations. [Local adapters](../../VerifiedLcalc/EllipticCurve/TauCeti.lean) include `pointCount_map_equiv`, `frobeniusTrace_map_equiv`, `localPolynomial_eq_computed`, and `localPowerSeries_coeff_eq`. General field-equivalence invariance belongs upstream; integer-array encoding of an input equation does not.
 
 [GlobalCoefficients](../../VerifiedLcalc/EllipticCurve/GlobalCoefficients.lean) proves:
 

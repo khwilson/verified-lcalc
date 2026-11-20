@@ -17,8 +17,8 @@ theorem minimal_localPolynomial (e : (WeierstrassCurve ℤ))
         ((rationalPlace p).adicCompletion ℚ))) :
     ((WeierstrassCurve.baseChange e ℚ).baseChange ((rationalPlace p).adicCompletion ℚ)).localPolynomial
       ((rationalPlace p).adicCompletionIntegers ℚ) =
-      1 - Polynomial.C (modelFactor e p).trace * Polynomial.X +
-        Polynomial.C (modelFactor e p).quadratic * Polynomial.X ^ 2 := by
+      1 - Polynomial.C (computeFrobeniusTrace e p) * Polynomial.X +
+        Polynomial.C (if goodReduction e p then (p : ℤ) else 0) * Polynomial.X ^ 2 := by
   classical
   let v := rationalPlace p
   let K := v.adicCompletion ℚ
@@ -52,12 +52,12 @@ theorem minimal_localPolynomial (e : (WeierstrassCurve ℤ))
   have hc : Nat.card (IsLocalRing.ResidueField R) = p := by
     rw [completion_residue_card, rationalPlace_norm]
   have hq : (if (W.map (IsLocalRing.residue R)).Δ ≠ 0 then (p : ℤ) else 0) =
-      (modelFactor e p).quadratic := by
+      (if goodReduction e p then (p : ℤ) else 0) := by
     by_cases hgood : goodReduction e p = true
     · rw [ite_eq_left (hg.mpr hgood)]
-      simp [modelFactor, hgood]
+      simp [computePrimePowerCoefficient, hgood]
     · rw [ite_eq_right (mt hg.mp hgood)]
-      simp [modelFactor, hgood]
+      simp [computePrimePowerCoefficient, hgood]
   have h := WeierstrassCurve.localPolynomial_of_minimal_input (K := K) W
   rw [ht, hc, hq] at h
   change U.localPolynomial R = _ at h
@@ -73,11 +73,10 @@ theorem minimal_primePower (e : (WeierstrassCurve ℤ))
           ((rationalPlace p).adicCompletion ℚ)))
     (p : ℕ) (hp : p.Prime) (j : ℕ) :
     (WeierstrassCurve.baseChange e ℚ).LFunction (p ^ j) =
-      localCoefficient (modelFactor e p).trace (modelFactor e p).quadratic j := by
+      computePrimePowerCoefficient e p j := by
   let : Fact p.Prime := ⟨hp⟩
-  rw [LFunction_apply_prime_pow, localPowerSeries_eq_localSeries _ _ _
-    (minimal_localPolynomial e hn p (hmin p))]
-  exact localSeries_correct _ _ _
+  rw [LFunction_apply_prime_pow]
+  exact localPowerSeries_coeff_eq _ _ _ (minimal_localPolynomial e hn p (hmin p)) j
 
 /-- The executable coefficient table is the actual curve coefficient prefix,
 with no trace-size restriction or modularity assumption. -/

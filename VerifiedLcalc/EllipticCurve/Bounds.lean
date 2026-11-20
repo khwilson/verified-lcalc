@@ -34,7 +34,7 @@ theorem localCoefficient_abs_le_cube_power (p : Nat) (hp : 2 ≤ p) (a q : Int)
   induction k using Nat.strongRecOn with
   | ind k ih =>
     cases k with
-    | zero => simp [localCoefficient, localPair]
+    | zero => simp [computePrimePowerCoefficient, localCoefficient, localPair]
     | succ k =>
       cases k with
       | zero =>
@@ -43,7 +43,7 @@ theorem localCoefficient_abs_le_cube_power (p : Nat) (hp : 2 ≤ p) (a q : Int)
       | succ k =>
         have hprev := ih k (by omega)
         have hnext := ih (k + 1) (by omega)
-        rw [(localCoefficient_correct a q).2.2 k]
+        rw [localCoefficient_recurrence a q k]
         calc
           _ ≤ |a * localCoefficient a q (k + 1)| + |q * localCoefficient a q k| :=
             by simpa only [sub_zero, zero_sub, abs_neg] using (abs_sub_le (a * localCoefficient a q (k + 1)) (0 : Int)
@@ -62,26 +62,26 @@ theorem localCoefficient_abs_le_cube_power (p : Nat) (hp : 2 ≤ p) (a q : Int)
           _ = (p : Int) ^ (3 * (k + 2)) := by
             rw [show 3 * (k + 2) = 6 + 3 * k by omega, pow_add]
 
-theorem modelFactor_bounds (e : (WeierstrassCurve ℤ)) (p : Nat) (hp : p.Prime) :
-    |(modelFactor e p).trace| ≤ (p : Int) ^ 2 ∧
-      |(modelFactor e p).quadratic| ≤ (p : Int) := by
-  constructor
+/-- The executable prime-power evaluator inherits the elementary recurrence bound. -/
+theorem computePrimePowerCoefficient_abs_le_cube_power (e : WeierstrassCurve ℤ)
+    (p : Nat) (hp : p.Prime) (k : Nat) :
+    |computePrimePowerCoefficient e p k| ≤ (p : Int) ^ (3 * k) := by
+  apply localCoefficient_abs_le_cube_power p hp.two_le
   · exact computeFrobeniusTrace_abs_le_square e p hp.one_lt.le
-  · unfold modelFactor
-    split <;> simp
+  · split <;> simp
 
 /-- Canonical mathematical coefficient attached to a family of local factors.
 The finite executable prefix is separately related to this specification. -/
-noncomputable def eulerCoefficient (factor : Nat → ModelEulerFactor) (n : Nat) : Int :=
+noncomputable def eulerCoefficient (factor : Nat → Nat → Int) (n : Nat) : Int :=
   if n = 0 then 0 else n.factorization.prod fun p k =>
-    localCoefficient (factor p).trace (factor p).quadratic k
+    factor p k
 
 /-- The executable prime table contains every prime that can divide the
 requested index. Extra primes contribute the constant coefficient one. -/
-theorem coefficientFromFactors_model_eq_euler (e : (WeierstrassCurve ℤ))
+theorem coefficientFromPrimePowers_model_eq_euler (e : (WeierstrassCurve ℤ))
     (limit n : Nat) (hn : n ≠ 0) (hlimit : n ≤ limit) :
-    coefficientFromFactors (modelFactors e limit) n =
-      eulerCoefficient (modelFactor e) n := by
+    coefficientFromPrimePowers (primePowerTable e limit) n =
+      eulerCoefficient (computePrimePowerCoefficient e) n := by
   let primes := (List.range (limit + 1)).filter isPrime
   have hs : n.factorization.support ⊆ primes.toFinset := by
     intro p hp
@@ -90,28 +90,30 @@ theorem coefficientFromFactors_model_eq_euler (e : (WeierstrassCurve ℤ))
     have hle := (Nat.le_of_mem_primeFactors hp').trans hlimit
     simp only [List.mem_toFinset, primes, List.mem_filter, List.mem_range]
     exact ⟨by omega, (isPrime_correct p).mpr hprime⟩
-  rw [coefficientFromFactors_correct _ _ hn (modelFactors_prime e limit)]
+  rw [coefficientFromPrimePowers_correct _ _ hn (primePowerTable_prime e limit) (by
+    intro f hf
+    obtain ⟨p, _, _, rfl⟩ := (primePowerTable_correct e limit f).mp hf
+    rfl)]
   rw [eulerCoefficient, ite_eq_right hn,
     Finsupp.prod_of_support_subset _ hs _ (by
       intro p _
-      simp [localCoefficient, localPair]),
+      simp [computePrimePowerCoefficient, localCoefficient, localPair]),
     List.prod_toFinset _ (List.nodup_range.filter _)]
-  simp [modelFactors, List.map_map, Function.comp_def, modelFactor]
+  simp [primePowerTable, List.map_map, Function.comp_def, computePrimePowerCoefficient]
 
 /-- Every element of the executable table agrees with the canonical infinite
 Euler-factor specification at the same index. -/
 theorem modelCoefficients_eq_euler (e : (WeierstrassCurve ℤ)) (limit : Nat) :
     modelCoefficients e limit = (List.range limit).map
-      (fun j => eulerCoefficient (modelFactor e) (j + 1)) := by
+      (fun j => eulerCoefficient (computePrimePowerCoefficient e) (j + 1)) := by
   unfold modelCoefficients
   apply List.map_congr_left
   intro j hj
-  exact coefficientFromFactors_model_eq_euler e limit (j + 1) (by omega)
+  exact coefficientFromPrimePowers_model_eq_euler e limit (j + 1) (by omega)
     (by have := List.mem_range.mp hj; omega)
 
-theorem eulerCoefficient_abs_le_cube (factor : Nat → ModelEulerFactor)
-    (hb : ∀ p : Nat, p.Prime → |(factor p).trace| ≤ (p : Int) ^ 2 ∧
-      |(factor p).quadratic| ≤ (p : Int)) (n : Nat) :
+theorem eulerCoefficient_abs_le_cube (factor : Nat → Nat → Int)
+    (hb : ∀ p : Nat, p.Prime → ∀ k, |factor p k| ≤ (p : Int) ^ (3 * k)) (n : Nat) :
     |eulerCoefficient factor n| ≤ (n : Int) ^ 3 := by
   by_cases hn : n = 0
   · simp [eulerCoefficient, hn]
@@ -121,8 +123,7 @@ theorem eulerCoefficient_abs_le_cube (factor : Nat → ModelEulerFactor)
       apply Finset.prod_le_prod₀ (fun _ _ => abs_nonneg _)
       intro p hp
       have hprime : p.Prime := Nat.prime_of_mem_primeFactors hp
-      exact localCoefficient_abs_le_cube_power p hprime.two_le _ _
-        (hb p hprime).1 (hb p hprime).2 _
+      exact hb p hprime _
     _ = (n : Int) ^ 3 := by
       simp_rw [Nat.mul_comm 3, pow_mul]
       rw [Finset.prod_pow]
@@ -131,7 +132,7 @@ theorem eulerCoefficient_abs_le_cube (factor : Nat → ModelEulerFactor)
       rw [hprod]
 
 theorem model_eulerCoefficient_abs_le_cube (e : (WeierstrassCurve ℤ)) (n : Nat) :
-    |eulerCoefficient (modelFactor e) n| ≤ (n : Int) ^ 3 :=
-  eulerCoefficient_abs_le_cube _ (modelFactor_bounds e) n
+    |eulerCoefficient (computePrimePowerCoefficient e) n| ≤ (n : Int) ^ 3 :=
+  eulerCoefficient_abs_le_cube _ (computePrimePowerCoefficient_abs_le_cube_power e) n
 
 end VerifiedLcalc.EllipticCurve

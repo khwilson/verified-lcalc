@@ -14,13 +14,14 @@ theorem ModularRealization.imaginaryFunction_hasSum {e : (WeierstrassCurve ℤ)}
     HasSum (fun n : ℕ => ((WeierstrassCurve.baseChange e ℚ).LFunction n : ℂ) *
       (Real.exp (-(2 * Real.pi / Real.sqrt m.level) * t) : ℂ) ^ n)
       (m.imaginaryFunction t) := by
-  let _ := m.arithmetic
+  letI : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
   have hs : 0 < Real.sqrt (m.level : ℝ) :=
     Real.sqrt_pos.mpr (by exact_mod_cast m.positiveLevel)
   have him : 0 < (Complex.I * ((t : ℂ) / (Real.sqrt m.level : ℂ))).im := by
     simpa using div_pos ht hs
-  have hp : (1 : ℝ) ∈ (gamma0 m.level).strictPeriods := by
-    simpa only [m.widthOne] using (gamma0 m.level).strictWidthInfty_mem_strictPeriods
+  have hp : (1 : ℝ) ∈ (CongruenceSubgroup.Gamma0 m.level : Subgroup (GL (Fin 2) ℝ)).strictPeriods := by
+    simp only [CongruenceSubgroup.strictPeriods_Gamma0]
+    exact AddSubgroup.mem_zmultiples_iff.mpr ⟨1, by simp⟩
   have h := ModularForm.hasSum_qExpansion m.form (by norm_num : (0 : ℝ) < 1) hp
     (UpperHalfPlane.ofComplex (Complex.I * ((t : ℂ) / (Real.sqrt m.level : ℂ))))
   have hq : Function.Periodic.qParam 1

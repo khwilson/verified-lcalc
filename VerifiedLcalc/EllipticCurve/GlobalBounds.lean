@@ -6,24 +6,6 @@ public import VerifiedLcalc.EllipticCurve.GlobalCoefficients
 namespace VerifiedLcalc.EllipticCurve
 open NumberField IsDedekindDomain
 
-/-- The elementary model-count bound also applies to mathlib's chosen minimal
-reductions, without identifying them with a particular input equation. -/
-theorem trace_abs_le_square_of_card {F : Type*} [Field F] [Finite F]
-    (W : WeierstrassCurve F) (p : ℕ) (hp : 1 ≤ p) (hc : Nat.card F = p) :
-    |W.frobeniusTrace| ≤ (p : ℤ) ^ 2 := by
-  have hs : Nat.card {xy : F × F // W.toAffine.Equation xy.1 xy.2} ≤ p ^ 2 := by
-    have h := Nat.card_le_card_of_injective
-      (fun xy : {xy : F × F // W.toAffine.Equation xy.1 xy.2} => xy.1) Subtype.val_injective
-    simpa [Nat.card_prod, hc, pow_two] using h
-  have hs' : (Nat.card {xy : F × F // W.toAffine.Equation xy.1 xy.2} : ℤ) ≤ (p : ℤ) ^ 2 := by
-    exact_mod_cast hs
-  have hp' : (1 : ℤ) ≤ p := by exact_mod_cast hp
-  have hpp : (p : ℤ) ≤ (p : ℤ) ^ 2 := le_self_pow₀ hp' (by decide)
-  rw [WeierstrassCurve.frobeniusTrace_def, WeierstrassCurve.pointCount_def, hc]
-  push_cast
-  apply abs_le.mpr
-  constructor <;> nlinarith [Int.natCast_nonneg (Nat.card {xy : F × F // W.toAffine.Equation xy.1 xy.2})]
-
 section Local
 variable {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
   {K : Type*} [Field K] [Algebra R K] [IsFractionRing R K]
@@ -68,11 +50,14 @@ theorem LFunction_primePower_recurrence (W : WeierstrassCurve ℚ) (p : ℕ) [Fa
     · rw [Wv.localPolynomial_eq_of_not_hasGoodReduction R hg]
       simp [a]
   have hr (k : ℕ) : W.LFunction (p ^ k) = localCoefficient a q k := by
-    rw [LFunction_apply_prime_pow, localPowerSeries_eq_localSeries Wv a q hpoly]
-    exact localSeries_correct a q k
+    rw [LFunction_apply_prime_pow]
+    exact localPowerSeries_coeff_eq Wv a q hpoly k
   have ha : W.LFunction p = a := by simpa [localCoefficient, localPair] using hr 1
-  have hab : |a| ≤ (p : ℤ) ^ 2 :=
-    trace_abs_le_square_of_card _ p (Fact.out : p.Prime).one_lt.le hc
+  have hab : |a| ≤ (p : ℤ) ^ 2 := by
+    letI : Fintype (IsLocalRing.ResidueField R) := Fintype.ofFinite _
+    simpa only [WeierstrassCurve.frobeniusTraceFinite_eq_frobeniusTrace,
+      ← Nat.card_eq_fintype_card, hc] using
+      ((Wv.minimal R).reduction R).frobeniusTraceFinite_abs_le_square
   refine ⟨q, ?_, ?_, ?_, ?_, ?_⟩
   · dsimp [q]; split <;> simp
   · dsimp [q]; split <;> simp

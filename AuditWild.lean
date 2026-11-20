@@ -5,21 +5,12 @@ import VerifiedLcalc.Certification.WildCertification
 #guard_msgs (whitespace := lax) in
 #print axioms VerifiedLcalc.EllipticCurve.tateWitness?_sound
 
-/-- info: 'VerifiedLcalc.EllipticCurve.translateIntegral_correct' depends on axioms: [propext] -/
-#guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.EllipticCurve.translateIntegral_correct
 
-/-- info: 'VerifiedLcalc.EllipticCurve.translateIntegral_discriminant' depends on axioms: [propext, Quot.sound] -/
-#guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.EllipticCurve.translateIntegral_discriminant
 
 /-- info: 'VerifiedLcalc.EllipticCurve.cubicRepeated_correct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms VerifiedLcalc.EllipticCurve.cubicRepeated_correct
 
-/-- info: 'VerifiedLcalc.EllipticCurve.twoCharacter_correct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.EllipticCurve.twoCharacter_correct
 
 /-- info: 'VerifiedLcalc.EllipticCurve.tateWitness_valid_correct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in

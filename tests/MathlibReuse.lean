@@ -10,13 +10,12 @@ example : padicValNat 4 64 = 3 ∧ padicValNat 2 72 = 3 ∧ padicValNat 3 72 = 2
 example : padicValNat 0 72 = 0 ∧ padicValNat 1 72 = 0 ∧ padicValNat 2 0 = 0 := by
   decide +kernel
 
--- These cases exercise the finite-ring API, rather than only its prime-field case.
-example : VerifiedLcalc.EllipticCurve.isSquareMod 0 0 = false := by decide +kernel
-example : VerifiedLcalc.EllipticCurve.isSquareMod 1 27 = true := by decide +kernel
-example : VerifiedLcalc.EllipticCurve.isSquareMod 2 (-1) = true := by decide +kernel
-example : VerifiedLcalc.EllipticCurve.isSquareMod 4 1 = true ∧
-    VerifiedLcalc.EllipticCurve.isSquareMod 4 2 = false := by decide +kernel
+local instance : Fact (Nat.Prime 5) := ⟨by decide⟩
 
+-- Direct use of Mathlib's finite square predicate and Legendre symbol.
+example : IsSquare (-1 : ZMod 2) := by decide +kernel
+example : IsSquare (1 : ZMod 4) ∧ ¬ IsSquare (2 : ZMod 4) := by decide +kernel
+example : legendreSym 3 (-1) = -1 ∧ legendreSym 5 (-1) = 1 := by decide +kernel
 
 -- The shared evaluator preserves sentinel and small singular-model counts.
 private def cusp : WeierstrassCurve ℤ := ⟨0, 0, 0, 0, 0⟩

@@ -36,8 +36,8 @@ theorem semistable_localPolynomial (e : (WeierstrassCurve ℤ))
     (p : ℕ) [Fact p.Prime] :
     ((WeierstrassCurve.baseChange e ℚ).baseChange ((rationalPlace p).adicCompletion ℚ)).localPolynomial
       ((rationalPlace p).adicCompletionIntegers ℚ) =
-      1 - Polynomial.C (modelFactor e p).trace * Polynomial.X +
-        Polynomial.C (modelFactor e p).quadratic * Polynomial.X ^ 2 :=
+      1 - Polynomial.C (computeFrobeniusTrace e p) * Polynomial.X +
+        Polynomial.C (if goodReduction e p then (p : ℤ) else 0) * Polynomial.X ^ 2 :=
   minimal_localPolynomial e hn p (semistable_isMinimal e hs)
 
 /-- Full prime-power identification, proved uniformly for semistable models. -/
@@ -46,11 +46,10 @@ theorem semistable_primePower (e : (WeierstrassCurve ℤ))
     (hs : Int.gcd (e.Δ) e.c₄ = 1)
     (p : ℕ) (hp : p.Prime) (j : ℕ) :
     (WeierstrassCurve.baseChange e ℚ).LFunction (p ^ j) =
-      localCoefficient (modelFactor e p).trace (modelFactor e p).quadratic j := by
+      computePrimePowerCoefficient e p j := by
   let : Fact p.Prime := ⟨hp⟩
-  rw [LFunction_apply_prime_pow, localPowerSeries_eq_localSeries _ _ _
-    (semistable_localPolynomial e hn hs p)]
-  exact localSeries_correct _ _ _
+  rw [LFunction_apply_prime_pow]
+  exact localPowerSeries_coeff_eq _ _ _ (semistable_localPolynomial e hn hs p) j
 
 /-- The executable coefficient table is the actual curve coefficient prefix,
 with no trace-size restriction or modularity assumption. -/

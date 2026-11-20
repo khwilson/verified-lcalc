@@ -71,7 +71,7 @@ noncomputable def ModularRealization.centralSeriesEvidence {e : (WeierstrassCurv
     (he : r.equation = e) (hN : r.conductor = m.level) (hw : r.rootNumber = m.rootNumber)
     (hl : ∀ p : ℕ, p.Prime → ∀ k : ℕ,
       (WeierstrassCurve.baseChange e ℚ).LFunction (p ^ k) =
-        localCoefficient (modelFactor e p).trace (modelFactor e p).quadratic k) :
+        computePrimePowerCoefficient e p k) :
     CentralSeriesEvidence r (m.formL 1).re :=
   m.centralSeriesEvidence_of_coefficients r hr he hN hw (by
     rw [hr.2.2.1, he, modelCoefficients_eq_curve e hl])
@@ -83,7 +83,7 @@ theorem ModularRealization.evaluateCentral_contains {e : (WeierstrassCurve ℤ)}
     (hc : evaluateCentral e m.level m.rootNumber limit policy = some r)
     (hl : ∀ p : ℕ, p.Prime → ∀ k : ℕ,
       (WeierstrassCurve.baseChange e ℚ).LFunction (p ^ k) =
-        localCoefficient (modelFactor e p).trace (modelFactor e p).quadratic k) :
+        computePrimePowerCoefficient e p k) :
     r.box.Contains (Complex.ofReal (m.formL 1).re) := by
   obtain ⟨he, hN, hw, _, _, hr⟩ := evaluateCentral_correct hc
   exact centralPayload_sound hr (m.centralSeriesEvidence r hr he hN hw hl)
@@ -108,7 +108,7 @@ theorem ModularRealization.analyticOrder_zero_of_centralPayload
     (hN : r.conductor = m.level) (hw : r.rootNumber = m.rootNumber)
     (hl : ∀ p : ℕ, p.Prime → ∀ k : ℕ,
       (WeierstrassCurve.baseChange e ℚ).LFunction (p ^ k) =
-        localCoefficient (modelFactor e p).trace (modelFactor e p).quadratic k)
+        computePrimePowerCoefficient e p k)
     (hz : r.box.excludesZero = true) : analyticOrderAt m.formL (1 : ℂ) = 0 :=
   analyticOrder_zero_of_central (m.formL_differentiable.analyticAt 1) hr
     (m.centralSeriesEvidence r hr he hN hw hl) hz

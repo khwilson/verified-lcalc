@@ -1,4 +1,8 @@
-# Current interface reuse audit
+# Interface reuse audit history
+
+The latest complete per-file review and applied cleanup queue are in
+[ELLIPTIC_CURVE_FILE_AUDIT.md](ELLIPTIC_CURVE_FILE_AUDIT.md). The sections below
+record earlier findings and follow-ups; their former helper names are historical.
 
 Audit date: 2026-11-19, after cleanup commit `beff8b5c3fcd41fec9e706ba3758c288b08978fa`. This document distinguishes direct API reuse from a mathematical bridge that still needs a proof. It changes no Lean source and reports no new build results.
 
@@ -237,3 +241,25 @@ were extracted into the `WeierstrassCurve` namespace in
 deleted. Earlier source-only recommendations above record the audit that led
 to this change. These extractions do not solve the global-minimality
 localization/completion comparison or conductor/epsilon-factor obligations.
+
+
+## File-by-file cleanup follow-up
+
+The [43-file audit](ELLIPTIC_CURVE_FILE_AUDIT.md) records the latest queue and
+its application. In particular, `isSquareMod` and `legendreValue` are now gone:
+the tame additive evaluator validates primality and uses Mathlib's
+`legendreSym`, while the wild table uses Mathlib's three primitive characters.
+The unsupported nonprime tame-additive branch returns zero. The old
+all-nonzero-modulus square adapter is no longer needed by production code;
+finite square tests call `IsSquare` directly. No compiled-only shortcut is used.
+
+`ModelEulerFactor`, `localSeries`, the duplicate recurrence specification,
+handwritten integral translations, `TateDiv`, and the prime-product induction
+were removed as well. The canonical inverse polynomial and its coefficients
+now specify the executable coefficient routine directly. The application does
+not remove or expand the authorized modularity assumption.
+
+The last modularity pass also removes the `gamma0` coercion wrapper and
+redundant arithmeticity/width/normalization assumption fields. Existing Mathlib
+Gamma0 instances and width lemmas supply the first two properties; matching
+all curve coefficients forces normalization via `LFunction_apply_one`.

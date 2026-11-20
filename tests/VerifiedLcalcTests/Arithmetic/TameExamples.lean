@@ -3,6 +3,8 @@ public import VerifiedLcalc.EllipticCurve.Tate.TameArithmetic
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve.TameExamples
 set_option maxRecDepth 100000
+local instance : Fact (Nat.Prime 5) := ⟨by decide⟩
+local instance : Fact (Nat.Prime 7) := ⟨by decide⟩
 
 -- j=0 must not be classified as potentially multiplicative merely because
 -- Nat.factorization assigns zero to the zero integer.
@@ -14,8 +16,8 @@ theorem wild_two : localConductorRoot? jZero 2 = none := by decide +kernel
 theorem wild_three : localConductorRoot? jZero 3 = none := by decide +kernel
 theorem composite : localConductorRoot? jZero 9 = none := by decide +kernel
 -- Exercise both exceptional potentially-good residue classes and both signs.
-theorem symbols : legendreValue 5 (-2) = -1 ∧ legendreValue 7 (-3) = 1 ∧
-    legendreValue 7 (-1) = -1 ∧ legendreValue 7 0 = 0 := by decide +kernel
+theorem symbols : legendreSym 5 (-2) = -1 ∧ legendreSym 7 (-3) = 1 ∧
+    legendreSym 7 (-1) = -1 ∧ legendreSym 7 0 = 0 := by decide +kernel
 theorem additive_residue_classes :
     tameAdditiveRoot ⟨0, 0, 0, 7, 0⟩ 7 = -1 ∧
     tameAdditiveRoot ⟨0, 0, 0, 0, 7⟩ 7 = -1 ∧

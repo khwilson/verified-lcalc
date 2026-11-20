@@ -7,18 +7,16 @@ See LICENSES/PARI-GPL-2.0-or-later.txt and docs/WILD_ARITHMETIC.md.
 -/
 module
 public import VerifiedLcalc.EllipticCurve.Tate.WildTateCore
+public import Mathlib.NumberTheory.LegendreSymbol.ZModChar
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
 open Artifacts
 
 /-- The three primitive quadratic characters used by the 2-adic table. -/
 def twoCharacter (a n : Int) : Int :=
-  let r := n % 8
-  if r % 2 = 0 then 0
-  else if a = -1 then if r % 4 = 1 then 1 else -1
-  else if a = 2 then if r = 1 ∨ r = 7 then 1 else -1
-  else if a = -2 then if r = 1 ∨ r = 3 then 1 else -1
-  else 0
+  if a = -1 then ZMod.χ₄ n
+  else if a = 2 then ZMod.χ₈ n
+  else if a = -2 then ZMod.χ₈' n else 0
 
 /-- Finite encoding of infinite valuation, only for zero c4 or c6. -/
 def wildValuation (p : Nat) (a : Int) : Nat :=
@@ -132,7 +130,7 @@ def wildRoot (e : (WeierstrassCurve ℤ)) (p : Nat) (w : TateWitness) : Int :=
   let v := wildUnit p modulus (e.c₆)
   let d := wildUnit p modulus (e.Δ)
   if p = 2 then twoRootTable twoCharacter v4 v6 vd u v d w.kodaira
-  else threeRootTable (legendreValue 3) v4 v6 vd u v d w.kodaira
+  else threeRootTable (legendreSym 3) v4 v6 vd u v d w.kodaira
 
 structure WildData where
   atTwo : Option TateWitness

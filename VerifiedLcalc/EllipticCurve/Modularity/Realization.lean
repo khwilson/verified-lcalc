@@ -1,7 +1,7 @@
 module
 
 public import VerifiedLcalc.EllipticCurve.Correctness
-public import Mathlib.AlgebraicGeometry.EllipticCurve.LFunction
+public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.LFunction.Basic
 public import Mathlib.NumberTheory.ModularForms.LFunction
 public import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
 
@@ -10,10 +10,6 @@ public import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
 namespace VerifiedLcalc.Modularity
 
 open EllipticCurve
-
-/-- The usual Gamma_0 level as a subgroup of GL_2(R). -/
-def gamma0 (level : Nat) : Subgroup (GL (Fin 2) ℝ) :=
-  (CongruenceSubgroup.Gamma0 level).map (Matrix.SpecialLinearGroup.mapGL ℝ)
 
 /-- Coprimality of discriminant and c4 is the integral semistable-model
 criterion used by the temporary compatibility assumption. -/
@@ -37,12 +33,9 @@ supplied inputs. This package does not assume a numerical evaluation formula. -/
 structure ModularRealization (equation : (WeierstrassCurve ℤ)) where
   level : Nat
   positiveLevel : 0 < level
-  arithmetic : (gamma0 level).IsArithmetic
-  widthOne : (gamma0 level).strictWidthInfty = 1
   rootNumber : Int
   rootNumberSign : rootNumber = 1 ∨ rootNumber = -1
-  form : CuspForm (gamma0 level) 2
-  normalized : (UpperHalfPlane.qExpansion 1 form).coeff 1 = 1
+  form : CuspForm (CongruenceSubgroup.Gamma0 level : Subgroup (GL (Fin 2) ℝ)) 2
   coefficients : ∀ n : Nat, (UpperHalfPlane.qExpansion 1 form).coeff n =
     ((WeierstrassCurve.baseChange equation ℚ).LFunction n : ℂ)
   frickeImaginaryAxis : ∀ t : ℝ, 0 < t →
@@ -61,6 +54,13 @@ structure ModularRealization (equation : (WeierstrassCurve ℤ)) where
   assume an arbitrary caller-provided sign. -/
   semistableSign_eq : SemistableModel equation → rootNumber = semistableSign equation
 
+/-- Normalization follows from matching every actual curve coefficient; it is
+not a separate field of the modularity assumption. -/
+theorem ModularRealization.normalized {e : WeierstrassCurve ℤ}
+    (m : ModularRealization e) : (UpperHalfPlane.qExpansion 1 m.form).coeff 1 = 1 := by
+  rw [m.coefficients, WeierstrassCurve.LFunction_apply_one]
+  norm_num
+
 /-- Numerical compatibility is derived from the canonical mathematical trace,
 not supplied as an assumption about a particular evaluation algorithm. -/
 theorem ModularRealization.goodPrimeCoefficients_computed {e : WeierstrassCurve ℤ}
@@ -75,14 +75,14 @@ theorem ModularRealization.goodPrimeCoefficients_computed {e : WeierstrassCurve 
 coefficients match the actual curve. -/
 noncomputable def ModularRealization.formL {equation : (WeierstrassCurve ℤ)}
     (m : ModularRealization equation) : ℂ → ℂ :=
-  letI := m.arithmetic
+  letI : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
   ModularForm.L (by decide : (0 : ℤ) < 2) m.form
 
 /-- Entirety for any supplied realization is already a mathlib theorem; no
 modularity axiom is needed to prove this general implication. -/
 theorem ModularRealization.formL_differentiable {equation : (WeierstrassCurve ℤ)}
     (m : ModularRealization equation) : Differentiable ℂ m.formL := by
-  let _ := m.arithmetic
+  letI : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
   exact CuspForm.differentiable_L (by decide : (0 : ℤ) < 2) m.form
 
 
@@ -93,10 +93,10 @@ theorem ModularRealization.formL_hasSum {equation : (WeierstrassCurve ℤ)}
     (m : ModularRealization equation) (s : ℂ) (hs : 2 < s.re) :
     HasSum (fun n : Nat => ((WeierstrassCurve.baseChange equation ℚ).LFunction n : ℂ) / (n : ℂ) ^ s)
       (m.formL s) := by
-  let _ := m.arithmetic
+  letI : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
   have h := CuspForm.hasSum_L (by decide : (0 : ℤ) < 2) m.form
     (by norm_num; exact hs)
-  simpa [m.widthOne, m.coefficients, ModularRealization.formL] using h
+  simpa [m.coefficients, ModularRealization.formL] using h
 
 /-- Agreement with mathlib's named curve L-series where that series converges.
 This equality is not asserted for the raw L-series definition at the center. -/

@@ -21,9 +21,11 @@ theorem trace_two :
     (2 : Int) + 1 - Nat.card (WeierstrassCurve.baseChange curve11 (ZMod 2)).toAffine.Point = -2 :=
   (analysePrime_sound curve11 2 ⟨2, 5, -2⟩ curve11_at_two).2.2.2.symm
 
-/-- The computed prime-power coefficients invert that exact Euler factor. -/
-theorem euler_factor_two :
-    (1 - PowerSeries.C (-2 : Int) * PowerSeries.X + PowerSeries.C (2 : Int) * PowerSeries.X ^ 2) *
-      localSeries (-2) 2 = 1 := localSeries_inverse (-2) 2
+/-- The computed prime-power coefficients belong to Mathlib's inverse Euler polynomial. -/
+theorem euler_factor_two (k : ℕ) :
+    localCoefficient (-2) 2 k = PowerSeries.coeff k
+      (PowerSeries.invOfUnit
+        (1 - PowerSeries.C (-2 : Int) * PowerSeries.X + PowerSeries.C (2 : Int) * PowerSeries.X ^ 2) 1) :=
+  localCoefficient_eq_coeff_invOfUnit (-2) 2 k
 
 end VerifiedLcalcTests.Fixtures.Curve11Arithmetic

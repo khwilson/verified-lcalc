@@ -15,7 +15,7 @@ theorem curve14_bad_two : goodReduction curve14 2 = false := by decide +kernel
 theorem curve14_coefficient_four : (WeierstrassCurve.baseChange curve14 ℚ).LFunction 4 = 1 := by
   have h := semistable_primePower curve14 (by decide +kernel) (by decide +kernel)
     2 (by decide) 2
-  have hc : localCoefficient (modelFactor curve14 2).trace (modelFactor curve14 2).quadratic 2 = 1 := by
+  have hc : computePrimePowerCoefficient curve14 2 2 = 1 := by
     decide +kernel
   simpa only [show 2 ^ 2 = (4 : ℕ) by decide, hc] using h
 
@@ -26,7 +26,7 @@ theorem curve17_good_two : goodReduction curve17 2 = true := by decide +kernel
 theorem curve17_coefficient_four : (WeierstrassCurve.baseChange curve17 ℚ).LFunction 4 = -1 := by
   have h := semistable_primePower curve17 (by decide +kernel) (by decide +kernel)
     2 (by decide) 2
-  have hc : localCoefficient (modelFactor curve17 2).trace (modelFactor curve17 2).quadratic 2 = -1 := by
+  have hc : computePrimePowerCoefficient curve17 2 2 = -1 := by
     decide +kernel
   simpa only [show 2 ^ 2 = (4 : ℕ) by decide, hc] using h
 

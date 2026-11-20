@@ -11,10 +11,6 @@ import VerifiedLcalcTests.Fixtures.AssumedCurve37
 #print axioms VerifiedLcalc.Modularity.ModularRealization.formL_differentiable
 #print axioms VerifiedLcalc.Modularity.ModularRealization.formL_hasSum
 #print axioms VerifiedLcalc.Modularity.ModularRealization.formL_eq_curveLSeries
-#print axioms VerifiedLcalc.Modularity.modularWitness_normalized
-#print axioms VerifiedLcalc.Modularity.modularWitness_goodPrime
-#print axioms VerifiedLcalc.Modularity.modularWitness_formL_differentiable
-#print axioms VerifiedLcalc.Modularity.modularWitness_formL_hasSum
 #print axioms VerifiedLcalcTests.Fixtures.AssumedCurve11.continuedL_entire
 #print axioms VerifiedLcalcTests.Fixtures.AssumedCurve11.continuedL_matches_euler_series
 #print axioms VerifiedLcalcTests.Fixtures.AssumedCurve11.continuedL_agrees_with_curveLSeries
