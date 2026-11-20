@@ -10,7 +10,7 @@ public meta import VerifiedLcalc.Certificate.CurveDataJson
 This module implements the arithmetic branch of the `certify_ec` command.
 Import `VerifiedLcalc.Tactic.CertifyEC` for the public syntax and JSON dispatch.
 
-`certify_ec Name from witness` accepts a `CurveDataWitness` containing the
+`certify_ec Name from witness` accepts an `EllipticWitness` containing the
 integral equation, explicit `(prime, coefficient)` pairs and integer `(x, y)`
 pairs, with both lists optional. `from_json "file.json"` and
 `from_json_string "..."` extract the supported fields and allow unrelated
@@ -36,14 +36,12 @@ public meta section
 namespace VerifiedLcalc.CertifyECData
 open Lean Elab Command Meta
 
-deriving instance ToExpr for CurveDataWitness
-
 /-- Check supplied arithmetic data and export ordinary definitions and theorems. -/
 def certify (name : Name) (input : TSyntax `term) (announce := true) : CommandElabM Unit := do
   let name := name.eraseMacroScopes
   let base := (← getCurrNamespace) ++ name
   let w := CertifyEC.rootIdent (base ++ `witness)
-  CertifyEC.emit (← `(def $w : CurveDataWitness := $input))
+  CertifyEC.emit (← `(def $w : EllipticWitness := $input))
   let curve := CertifyEC.rootIdent (base ++ `curve)
   CertifyEC.emit (← `(def $curve : WeierstrassCurve ℤ := ($w).equation))
   let hn := CertifyEC.rootIdent (base ++ `nonsingular)
@@ -52,30 +50,30 @@ def certify (name : Name) (input : TSyntax `term) (announce := true) : CommandEl
   CertifyEC.checked (base ++ `prime_coefficients_valid) (← `(($w).primeCoefficientsValid = true))
     (← `(by decide +kernel))
   CertifyEC.checked (base ++ `ap_correct)
-    (← `(∀ (p : Nat) (a : Int), (p, a) ∈ ($w).primeCoefficients →
+    (← `(∀ (p : Nat) (a : Int), (p, a) ∈ ($w).primeCoefficients.getD [] →
       (($curve).baseChange ℚ).LFunction p = a))
-    (← `(CurveDataWitness.primeCoefficientsValid_sound $w $hn $hap))
+    (← `(EllipticWitness.primeCoefficientsValid_sound $w $hn $hap))
   let hcoords := CertifyEC.rootIdent (base ++ `integral_coordinates_valid)
   CertifyEC.checked (base ++ `integral_coordinates_valid) (← `(($w).integralCoordinatesValid = true))
     (← `(by decide +kernel))
   let hpoints := CertifyEC.rootIdent (base ++ `points_on_curve)
   CertifyEC.checked (base ++ `points_on_curve)
-    (← `(∀ (x y : Int), (x, y) ∈ ($w).integralCoordinates →
+    (← `(∀ (x y : Int), (x, y) ∈ ($w).integralCoordinates.getD [] →
       ($curve).toAffine.Equation x y))
-    (← `(CurveDataWitness.integralCoordinatesValid_sound $w $hcoords))
+    (← `(EllipticWitness.integralCoordinatesValid_sound $w $hcoords))
   let hi := CertifyEC.rootIdent (base ++ `curve_isElliptic)
   CertifyEC.emit (← `(instance $hi:ident : (($curve).baseChange ℚ).IsElliptic := ⟨by
     apply isUnit_iff_ne_zero.mpr
     simpa only [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ, eq_intCast] using
       (show (($curve).Δ : ℚ) ≠ 0 by exact_mod_cast $hn)⟩))
   let point := CertifyEC.rootIdent (base ++ `point)
-  CertifyEC.emit (← `(def $point (i : Fin ($w).integralCoordinates.length) :
+  CertifyEC.emit (← `(def $point (i : Fin (($w).integralCoordinates.getD []).length) :
       (($curve).baseChange ℚ).toAffine.Point :=
-    ($curve).pointOfIntegralSolution (($w).integralCoordinates[i]).1
-      (($w).integralCoordinates[i]).2
+    ($curve).pointOfIntegralSolution ((($w).integralCoordinates.getD [])[i]).1
+      ((($w).integralCoordinates.getD [])[i]).2
       ($hpoints _ _ (List.getElem_mem i.isLt))))
   CertifyEC.checked (base ++ `point_integral)
-    (← `(∀ i : Fin ($w).integralCoordinates.length,
+    (← `(∀ i : Fin (($w).integralCoordinates.getD []).length,
       $point i ∈ ($curve).integralPoints))
     (← `(by intro i; exact WeierstrassCurve.pointOfIntegralSolution_mem _ _ _ _))
   if announce then logInfo m!"Certified {base}.ap_correct and {base}.point_integral (arithmetic only)"

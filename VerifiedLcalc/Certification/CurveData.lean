@@ -20,52 +20,27 @@ integral equation. They make no completeness or algebraic-rank claim.
 namespace VerifiedLcalc
 open EllipticCurve
 
-/-- Supplied arithmetic data, independently of any analytic-rank witness.
-Prime indices are explicit; integral points are affine integer coordinate pairs. -/
-structure CurveDataWitness where
-  equation : WeierstrassCurve ℤ
-  primeCoefficients : List (Nat × Int) := []
-  integralCoordinates : List (Int × Int) := []
-  analyticWitness : Option EllipticWitness := none
-
-namespace CurveDataWitness
-
-/-- Existing rank-only inputs are a special case of the common optional-facts record. -/
-def ofAnalyticWitness (w : EllipticWitness) : CurveDataWitness :=
-  match w with
-  | .central r _ _ => { equation := r.equation, analyticWitness := some w }
-  | .derivative r _ _ => { equation := r.equation, analyticWitness := some w }
-
-@[simp] theorem ofAnalyticWitness_analyticWitness (w : EllipticWitness) :
-    (ofAnalyticWitness w).analyticWitness = some w := by
-  cases w <;> rfl
-
-theorem ofAnalyticWitness_equation (w : EllipticWitness) :
-    (ofAnalyticWitness w).equation =
-      match w with
-      | .central r _ _ => r.equation
-      | .derivative r _ _ => r.equation := by
-  cases w <;> rfl
+namespace EllipticWitness
 
 /-- Each supplied coefficient has a prime index, a certified locally minimal
 model, and the claimed exact trace. This is a sufficient, not complete, checker. -/
-def primeCoefficientsValid (w : CurveDataWitness) : Bool :=
-  w.primeCoefficients.all fun (p, a) =>
+def primeCoefficientsValid (w : EllipticWitness) : Bool :=
+  (w.primeCoefficients.getD []).all fun (p, a) =>
     isPrime p && modelMinimalAt w.equation p &&
       decide (computeFrobeniusTrace w.equation p = a)
 
 /-- Check precisely the supplied integer solutions, without searching for others. -/
-def integralCoordinatesValid (w : CurveDataWitness) : Bool :=
+def integralCoordinatesValid (w : EllipticWitness) : Bool :=
   -- Polynomial.evalEval is noncomputable; equation_iff supplies this executable reflection.
-  w.integralCoordinates.all fun (x, y) =>
+  (w.integralCoordinates.getD []).all fun (x, y) =>
     decide (y ^ 2 + w.equation.a₁ * x * y + w.equation.a₃ * y =
       x ^ 3 + w.equation.a₂ * x ^ 2 + w.equation.a₄ * x + w.equation.a₆)
 
 /-- A successful finite check proves every listed value is the actual prime
 coefficient of the rational curve, with local minimality handled at bad primes. -/
-theorem primeCoefficientsValid_sound (w : CurveDataWitness) (hn : w.equation.Δ ≠ 0)
+theorem primeCoefficientsValid_sound (w : EllipticWitness) (hn : w.equation.Δ ≠ 0)
     (h : w.primeCoefficientsValid = true) (p : Nat) (a : Int)
-    (ha : (p, a) ∈ w.primeCoefficients) :
+    (ha : (p, a) ∈ w.primeCoefficients.getD []) :
     (w.equation.baseChange ℚ).LFunction p = a := by
   have hc := List.all_eq_true.mp h (p, a) ha
   obtain ⟨hchecks, ht⟩ := Bool.and_eq_true_iff.mp hc
@@ -80,11 +55,11 @@ theorem primeCoefficientsValid_sound (w : CurveDataWitness) (hn : w.equation.Δ 
 
 /-- A successful coordinate check proves every supplied pair satisfies the
 existing Mathlib affine Weierstrass equation over the integers. -/
-theorem integralCoordinatesValid_sound (w : CurveDataWitness)
+theorem integralCoordinatesValid_sound (w : EllipticWitness)
     (h : w.integralCoordinatesValid = true) (x y : Int)
-    (hxy : (x, y) ∈ w.integralCoordinates) : w.equation.toAffine.Equation x y := by
+    (hxy : (x, y) ∈ w.integralCoordinates.getD []) : w.equation.toAffine.Equation x y := by
   rw [WeierstrassCurve.Affine.equation_iff]
   exact of_decide_eq_true (List.all_eq_true.mp h (x, y) hxy)
 
-end CurveDataWitness
+end EllipticWitness
 end VerifiedLcalc

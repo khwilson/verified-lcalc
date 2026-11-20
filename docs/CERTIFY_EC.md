@@ -121,8 +121,8 @@ public import VerifiedLcalc.Tactic.CertifyEC
 
 certify_ec MyData from
   { equation := ⟨0, 0, 1, -1, 0⟩,
-    primeCoefficients := [(2, -2), (37, -1)],
-    integralCoordinates := [(0, 0), (6, 14), (6, -15)] }
+    primeCoefficients := some [(2, -2), (37, -1)],
+    integralCoordinates := some [(0, 0), (6, 14), (6, -15)] }
 
 example : (MyData.curve.baseChange ℚ).LFunction 37 = -1 :=
   MyData.ap_correct 37 (-1) (by decide +kernel)
@@ -163,18 +163,31 @@ Direct Lean data uses the same optional-facts record:
 
 ```lean
 certify_ec JustCoefficients from
-  { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := [(2, -2)] }
+  { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := some [(2, -2)] }
 
 certify_ec Combined from
-  { equation := Curve37.curve, primeCoefficients := [(37, -1)],
-    integralCoordinates := [(0, 0)], analyticWitness := some
-      (VerifiedLcalc.EllipticWitness.derivative
-        Curve37.result Curve37.minimality Curve37.localData) }
+  { equation := Curve37.curve, primeCoefficients := some [(37, -1)],
+    integralCoordinates := some [(0, 0)],
+    derivativeResult := some Curve37.result,
+    minimality := some Curve37.minimality,
+    localData := some Curve37.localData }
 ```
 
-The combined example assumes `import CertifiedCurves.Json`. Both lists default
-to empty and `analyticWitness` defaults to `none`. Complete rank-witness JSON
-can carry the same arithmetic fields, or appear under `analytic_witness`.
+The combined example assumes `import CertifiedCurves.Json`. There is one
+aggregate input type, `VerifiedLcalc.EllipticWitness`: a required
+`equation : WeierstrassCurve ℤ` and optional `primeCoefficients`,
+`integralCoordinates`, `centralResult`, `derivativeResult`, `minimality`, and
+`localData`. All optional fields default to `none`. `some []` records an
+explicitly supplied empty list; it does not assert completeness. JSON omission
+or `null` represents absent arithmetic lists. Complete rank-witness JSON can
+carry the same arithmetic fields, or appear under the legacy `analytic_witness`
+key; both decode into this same flat record.
+
+`EllipticWitness.central` and `.derivative` remain convenience functions that
+populate the record. At most one numerical rank candidate can be supplied.
+Numerical payloads are checked even without arithmetic witnesses, but an
+analytic-rank theorem requires checked minimality and local data. Those two
+components are also checked independently when supplied alone.
 All inputs use one pipeline. The command verifies every supplied supported
 witness and checks that its equations agree. It reports other JSON metadata
 without emitting claims about it. In particular, a plain `rank` or
@@ -186,13 +199,12 @@ with a 512-character bound. The profile permits 256 coefficients at primes up
 to 10,000, up to 4,096 supplied coordinate pairs and 4,096 x-values, and at most
 8,192 resulting coordinate pairs. The payload cap is 2 MiB.
 
-`Name.supplied` always stores the common record. Arithmetic facts are exported
-as `ap_correct`, `points_on_curve`, `point` and `point_integral`, together with
+`Name.witness` stores the common record; `Name.supplied` is an alias. Arithmetic
+facts are exported as `ap_correct`, `points_on_curve`, `point` and `point_integral`, together with
 `prime_coefficients_valid`, `integral_coordinates_valid`, `curve_isElliptic`,
-and `nonsingular`. When rank data is present, the historical rank declarations
-are preserved and arithmetic helpers additionally live under `Name.data`.
-Arithmetic facts use only standard Lean axioms; analytic-rank facts retain the
-explicit modularity assumption.
+and `nonsingular`. Arithmetic and analytic declarations share the same
+`Name` namespace and equation. Arithmetic facts use only standard Lean axioms;
+analytic-rank facts retain the explicit modularity assumption.
 
 `CertifiedCurves.Data` contains two small examples with stored data for
 [11.a1](https://www.lmfdb.org/EllipticCurve/Q/data/11.a1) and

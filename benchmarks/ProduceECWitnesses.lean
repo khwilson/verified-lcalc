@@ -18,17 +18,20 @@ private def tateJson : Option TateWitness → Json
       ("quadraticRoot", number w.quadraticRoot), ("chain", toJson (w.chain.map number)),
       ("kodaira", number w.kodaira)]
 
-private def encodeWitness (w : EllipticWitness) : Json := Id.run do
-  let (e, N, bits, terms, steps, cutoff, cs, al, ah, tail, box, evaluator, m, d, rank) :=
-    match w with
-    | .central r m d =>
-      (r.equation, r.conductor, r.policy.precisionBits, r.termLimit, 0, 0,
+private def encodeWitness (w : EllipticWitness) : Except String Json := do
+  let some m := w.minimality | throw "Missing minimality data"
+  let some d := w.localData | throw "Missing local reduction data"
+  let (e, N, bits, terms, steps, cutoff, cs, al, ah, tail, box, evaluator, m, d, rank) ←
+    match w.centralResult, w.derivativeResult with
+    | some r, none =>
+      pure (r.equation, r.conductor, r.policy.precisionBits, r.termLimit, 0, 0,
        r.coefficients, r.alphaLo, r.alphaHi, r.tail, r.box,
        [("geometric_upper", rational r.geometricUpper)], m, d, "0")
-    | .derivative r m d =>
-      (r.equation, r.conductor, r.policy.precisionBits, r.termLimit,
+    | none, some r =>
+      pure (r.equation, r.conductor, r.policy.precisionBits, r.termLimit,
        r.stepsPerUnit, r.cutoff, r.coefficients, r.alphaLo, r.alphaHi, r.tail, r.box,
        [("finite", interval r.finite)], m, d, "1")
+    | _, _ => throw "Expected exactly one numerical rank payload"
   return Json.mkObj [
     ("schema", .str "lcalc.ec-rank.v1"),
     ("subject", Json.mkObj [
@@ -86,7 +89,7 @@ def main (args : List String) : IO UInt32 := do
     let result := propose e N
     -- Force the untrusted search before recording elapsed time.
     let encoded := match result with
-      | .ok w => Except.ok (w, encodeWitness w)
+      | .ok w => (encodeWitness w).map (fun j => (w, j))
       | .error reason => Except.error reason
     let report ← match encoded with
       | .error reason => pure (Json.mkObj [

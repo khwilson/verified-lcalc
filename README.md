@@ -48,9 +48,11 @@ set_option maxHeartbeats 10000000
 certify_ec MyCurve from_json "witness.json"
 ```
 
-For direct data use `EllipticWitness.central result minimality localData` or
-`.derivative result minimality localData`. Each `result.equation` is an ordinary
-`WeierstrassCurve ℤ`. See [CERTIFY_EC.md](docs/CERTIFY_EC.md) for complete examples,
+All inputs use one `EllipticWitness` record: a `WeierstrassCurve ℤ` equation
+and optional fact fields defaulting to `none`. For complete rank candidates,
+`EllipticWitness.central result minimality localData` and
+`.derivative result minimality localData` populate this same record.
+See [CERTIFY_EC.md](docs/CERTIFY_EC.md) for complete examples,
 all three input forms, generated declarations, rollback and the trust boundary.
 
 A consumer can simply write:

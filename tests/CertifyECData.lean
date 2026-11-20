@@ -25,8 +25,8 @@ example : Data37.point ⟨9, by decide⟩ ∈ Data37.curve.integralPoints :=
 
 -- Direct Lean data, an additive bad prime, and empty lists are supported.
 certify_ec AdditiveData from
-  { equation := ⟨0, 0, 0, -1, 0⟩, primeCoefficients := [(2, 0)],
-    integralCoordinates := [(0, 0)] }
+  { equation := ⟨0, 0, 0, -1, 0⟩, primeCoefficients := some [(2, 0)],
+    integralCoordinates := some [(0, 0)] }
 example : (AdditiveData.curve.baseChange ℚ).LFunction 2 = 0 :=
   AdditiveData.ap_correct 2 0 (by decide +kernel)
 
@@ -42,17 +42,28 @@ example : RawData.curve.toAffine.Equation 6 14 :=
   RawData.points_on_curve 6 14 (by decide +kernel)
 
 certify_ec OnlyAP from
-  { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := [(2, -2)] }
+  { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := some [(2, -2)] }
 certify_ec OnlyPoints from
-  { equation := ⟨0, 0, 1, -1, 0⟩, integralCoordinates := [(0, 0)] }
+  { equation := ⟨0, 0, 1, -1, 0⟩, integralCoordinates := some [(0, 0)] }
+example : OnlyAP.witness.integralCoordinates = none := rfl
+example : EmptyData.witness.integralCoordinates = some [] := rfl
+example : OnlyPoints.witness.primeCoefficients = none := rfl
 certify_ec Mixed from
-  { equation := Curve37.curve, primeCoefficients := [(37, -1)],
-    integralCoordinates := [(0, 0)], analyticWitness := some
-      (EllipticWitness.derivative Curve37.result Curve37.minimality Curve37.localData) }
+  { Curve37.witness with
+    primeCoefficients := some [(37, -1)]
+    integralCoordinates := some [(0, 0)] }
 example : (Mixed.curve.baseChange ℚ).LFunction 37 = -1 :=
   Mixed.ap_correct 37 (-1) (by decide +kernel)
 example : Mixed.certifiedRank.val = 1 := rfl
 example : Mixed.point ⟨0, by decide⟩ ∈ Mixed.curve.integralPoints := Mixed.point_integral _
+
+-- Optional components are checked independently, without manufacturing missing data.
+certify_ec ArithmeticOnly from
+  { equation := Curve37.curve, minimality := some Curve37.minimality,
+    localData := some Curve37.localData }
+certify_ec NumericOnly from
+  { equation := Curve37.curve, derivativeResult := some Curve37.result }
+example : NumericOnly.result.equation = NumericOnly.curve := NumericOnly.result_curve_eq
 
 -- A complete rank JSON can carry arithmetic claims and metadata in the same object.
 run_cmd do
@@ -89,38 +100,40 @@ meta def expectDataRejected (name : Name) (command : Syntax) : CommandElabM Unit
 
 run_cmd do
   expectDataRejected `WrongAP (← `(certify_ec WrongAP from
-    { Data37.witness with primeCoefficients := [(2, 999)] }))
+    { Data37.witness with primeCoefficients := some [(2, 999)] }))
   expectDataRejected `CompositeIndex (← `(certify_ec CompositeIndex from
-    { Data37.witness with primeCoefficients := [(4, 0)] }))
+    { Data37.witness with primeCoefficients := some [(4, 0)] }))
   expectDataRejected `Nonminimal (← `(certify_ec Nonminimal from
-    { equation := ⟨0, 0, 8, -16, 0⟩, primeCoefficients := [(2, 0)],
-      integralCoordinates := [] }))
+    { equation := ⟨0, 0, 8, -16, 0⟩, primeCoefficients := some [(2, 0)],
+      integralCoordinates := some [] }))
   expectDataRejected `OffCurve (← `(certify_ec OffCurve from
-    { Data37.witness with integralCoordinates := [(0, 1)] }))
+    { Data37.witness with integralCoordinates := some [(0, 1)] }))
   expectDataRejected `Singular (← `(certify_ec Singular from
-    { equation := ⟨0, 0, 0, 0, 0⟩, primeCoefficients := [], integralCoordinates := [] }))
+    { equation := ⟨0, 0, 0, 0, 0⟩, primeCoefficients := some [], integralCoordinates := some [] }))
   expectDataRejected `Malformed (← `(certify_ec Malformed from_json_string "{}"))
   expectDataRejected `BadX (← `(certify_ec BadX from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"xcoord_integral_points":[3]}"#))
   expectDataRejected `ConflictingCurve (← `(certify_ec ConflictingCurve from
-    { equation := Data11.curve, analyticWitness := some (EllipticWitness.derivative
-      Curve37.result Curve37.minimality Curve37.localData) }))
+    { equation := Data11.curve, derivativeResult := some Curve37.result }))
   expectDataRejected `MixedBadAP (← `(certify_ec MixedBadAP from
-    { Mixed.supplied with primeCoefficients := [(37, 999)] }))
+    { Mixed.supplied with primeCoefficients := some [(37, 999)] }))
+  expectDataRejected `ConflictingRanks (← `(certify_ec ConflictingRanks from
+    { Curve37.witness with centralResult := some Curve11.result }))
+
 
 certify_ec DataAfterFailure from
-  { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := [(2, -2)],
-    integralCoordinates := [(0, 0)] }
+  { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := some [(2, -2)],
+    integralCoordinates := some [(0, 0)] }
 
 run_cmd do
   elabCommand (← `(certify_ec QuotedDirect from
-    { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := [(2, -2)] }))
+    { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := some [(2, -2)] }))
 example : (QuotedDirect.curve.baseChange ℚ).LFunction 2 = -2 :=
   QuotedDirect.ap_correct 2 (-2) (by decide +kernel)
 
 run_cmd do
   CertifyEC.certify `DirectAPI (← `(
-    { equation := ⟨0, 0, 1, -1, 0⟩, integralCoordinates := [(0, 0)] }))
+    { equation := ⟨0, 0, 1, -1, 0⟩, integralCoordinates := some [(0, 0)] }))
   let input ← CertifyEC.jsonInput
     r#"{"ainvs":[0,0,1,-1,0],"ap":[[2,-2]]}"#
   CertifyEC.certifyAtomic `DecodedAPI input
@@ -130,14 +143,16 @@ example : (DecodedAPI.curve.baseChange ℚ).LFunction 2 = -2 :=
   DecodedAPI.ap_correct 2 (-2) (by decide +kernel)
 
 run_cmd do
-  for name in [`RawData, `OnlyAP, `OnlyPoints] do
+  for name in [`RawData, `OnlyAP, `OnlyPoints, `ArithmeticOnly, `NumericOnly] do
     if (← getEnv).contains (name ++ `analytic_rank) then
       throwError "A stored rank without a proof witness became a theorem"
+  if (← getEnv).contains `VerifiedLcalc.CurveDataWitness then
+    throwError "The retired aggregate witness type is still present"
 
 namespace Scoped
 certify_ec Data from
-  { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := [(2, -2)],
-    integralCoordinates := [(0, 0)] }
+  { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := some [(2, -2)],
+    integralCoordinates := some [(0, 0)] }
 end Scoped
 
 example : (Scoped.Data.curve.baseChange ℚ).LFunction 2 = -2 :=
@@ -157,6 +172,15 @@ run_cmd do
           throwError "Unexpected arithmetic-certificate axiom: {axiomName}"
 
 #eval show IO Unit from do
+  for text in [r#"{"ainvs":[0,0,1,-1,0]}"#,
+      r#"{"ainvs":[0,0,1,-1,0],"ap":null,"integral_points":null}"#] do
+    match CurveDataJson.parse text with
+    | .ok w =>
+      unless w.primeCoefficients.isNone && w.integralCoordinates.isNone &&
+          w.centralResult.isNone && w.derivativeResult.isNone &&
+          w.minimality.isNone && w.localData.isNone do
+        throw (IO.userError "Missing optional data was manufactured")
+    | .error reason => throw (IO.userError reason)
   let good ← IO.FS.readFile "data/curve-data/37a1.json"
   let malformed := [
     good.replace "\"97\"" "\"10001\"",
@@ -181,6 +205,6 @@ run_cmd do
     ("aplist", toJson ([-2, -3] : List Int))]
   match CurveDataJson.parse nested.compress with
   | .ok w =>
-    unless w.analyticWitness.isSome && w.primeCoefficients == [(2, -2), (3, -3)] do
+    unless w.derivativeResult.isSome && w.primeCoefficients == some [(2, -2), (3, -3)] do
       throw (IO.userError "Nested supported facts were dropped")
   | .error reason => throw (IO.userError reason)
