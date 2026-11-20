@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 import platform
+import re
 import resource
 import subprocess
 import sys
@@ -18,7 +19,8 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from benchmark_certify_ec import LAKE, ROOT, digest
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scripts.benchmark_certify_ec import LAKE, ROOT, digest
 
 
 def captured(args: list[str]) -> str:
@@ -77,12 +79,82 @@ def quantile(values: list[float], fraction: float) -> float | None:
     return values[round((len(values) - 1) * fraction)]
 
 
+def numerical_batches(
+    rows: list[dict[str, Any]],
+    size: int,
+    work_limit: int,
+) -> list[list[dict[str, Any]]]:
+    """Bound batches using supplied numerical parameters, never reference ranks."""
+    batches: list[list[dict[str, Any]]] = []
+    batch: list[dict[str, Any]] = []
+    work = 0
+    for row in rows:
+        parameters = row["parameters"]
+        terms = int(parameters["terms"])
+        steps = int(parameters["steps_per_unit"])
+        cutoff = int(parameters["cutoff"])
+        cost = terms * max(1, steps * (cutoff - 1))
+        if batch and (len(batch) >= size or (work_limit and work + cost > work_limit)):
+            batches.append(batch)
+            batch, work = [], 0
+        batch.append(row)
+        work += cost
+    if batch:
+        batches.append(batch)
+    return batches
+
+
+def selected_inputs(source: Path, count: int) -> list[dict[str, Any]]:
+    """Accept legacy cases or rank-free SQL inputs; expose only input fields."""
+    data = json.loads(source.read_text())
+    rows = data["inputs"] if "inputs" in data else data["cases"]
+    selected = rows[:count]
+    if len(selected) != count or len({r["label"] for r in selected}) != count:
+        raise ValueError("Not enough distinct source curves")
+    return [
+        {key: row[key] for key in ["label", "ainvs", "conductor"]} for row in selected
+    ]
+
+
+def reference_ranks(source: Path, references: Path | None) -> dict[str, int]:
+    """Read reference ranks only after mathematical validation has finished."""
+    if references is None:
+        rows = json.loads(source.read_text())["cases"]
+    else:
+        rows = json.loads(references.read_text())["references"]
+    if len({r["label"] for r in rows}) != len(rows):
+        raise ValueError("Duplicate reference labels")
+    return {r["label"]: r["analytic_rank"] for r in rows}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--source", type=Path, default=ROOT / "data/lmfdb-1000-additional.json"
     )
+    parser.add_argument(
+        "--references",
+        type=Path,
+        help="Separate rank references, required for SQL inputs",
+    )
+    parser.add_argument(
+        "--module-prefix",
+        default="",
+        help="Unique Lean module/declaration prefix for importing several datasets",
+    )
     parser.add_argument("--count", type=int, default=1000)
+    parser.add_argument(
+        "--batch-work-limit",
+        type=int,
+        default=0,
+        help="Cap terms*steps*(cutoff-1) per batch; 0 disables this cap",
+    )
+    parser.add_argument(
+        "--consumer-modules",
+        type=int,
+        default=25,
+        help="Maximum compiled batch modules per proof-import check",
+    )
     parser.add_argument("--batch-size", type=int, default=20)
     parser.add_argument("--timeout", type=int, default=900, help="Seconds per batch")
     parser.add_argument("--resume", action="store_true")
@@ -92,19 +164,34 @@ def main() -> None:
         default=ROOT / "output/certify-ec-performance/dataset-1000.json",
     )
     args = parser.parse_args()
-    if args.count < 1 or args.batch_size < 1 or args.timeout < 1:
+    if (
+        args.count < 1
+        or args.batch_size < 1
+        or args.timeout < 1
+        or args.consumer_modules < 1
+        or args.batch_work_limit < 0
+    ):
         parser.error("Count, batch size and timeout must be positive")
+    if args.module_prefix and not re.fullmatch(
+        r"[A-Za-z][A-Za-z0-9_]*", args.module_prefix
+    ):
+        parser.error("Module prefix must be an ASCII Lean identifier prefix")
     source = args.source.resolve()
-    rows = json.loads(source.read_text())["cases"][: args.count]
-    if len(rows) != args.count or len({r["label"] for r in rows}) != args.count:
-        parser.error("Not enough distinct source curves")
-    inputs = [
-        {key: row[key] for key in ["label", "ainvs", "conductor"]} for row in rows
-    ]
+    references_path = args.references.resolve() if args.references else None
+    if "inputs" in json.loads(source.read_text()) and references_path is None:
+        parser.error("SQL input snapshots require --references")
+    try:
+        inputs = selected_inputs(source, args.count)
+    except ValueError as error:
+        parser.error(str(error))
     producer = ROOT / "benchmarks/ProduceECWitnesses.lean"
     validator = ROOT / "benchmarks/ValidateEC.lean"
     identity = {
         "source_sha256": digest(source),
+        "references_sha256": digest(references_path) if references_path else None,
+        "batch_work_limit": args.batch_work_limit,
+        "module_prefix": args.module_prefix,
+        "consumer_modules": args.consumer_modules,
         "mathlib_revision": captured(
             ["git", "-C", str(ROOT.parent / "mathlib4"), "rev-parse", "HEAD"]
         ),
@@ -217,17 +304,18 @@ def main() -> None:
     template = validator.read_text()
     by_label = {r["label"]: r for r in report["curves"]}
     completed = len(report["batches"])
-    for start in range(0, len(candidates), args.batch_size):
-        batch_index = start // args.batch_size
+    batches = numerical_batches(candidates, args.batch_size, args.batch_work_limit)
+    for batch_index, batch in enumerate(batches):
         if batch_index < completed:
             continue
-        batch = candidates[start : start + args.batch_size]
-        module = f"Batch{batch_index:04d}"
+        module = f"{args.module_prefix}Batch{batch_index:04d}"
         text = (
-            template.replace("ECBenchmark", f"ECBenchmark{batch_index:04d}")
+            template.replace(
+                "ECBenchmark", f"{args.module_prefix}ECBenchmark{batch_index:04d}"
+            )
             + "\n"
             + "\n".join(
-                f"benchmark_ec Curve{r['index']:04d} {json.dumps(r['label'])} "
+                f"benchmark_ec {args.module_prefix}Curve{r['index']:04d} {json.dumps(r['label'])} "
                 f"{json.dumps(str(work / 'witnesses' / r['file']))}"
                 for r in batch
             )
@@ -262,6 +350,7 @@ def main() -> None:
                     "timeout" if measurement["status"] == "timeout" else "batch_failed"
                 )
             row["module"] = module
+            row["declaration_prefix"] = f"{args.module_prefix}Curve{row['index']:04d}"
         if events:
             raise RuntimeError("Unexpected curve in validation output")
         measurement.update({"module": module, "labels": [r["label"] for r in batch]})
@@ -275,23 +364,39 @@ def main() -> None:
         )
     checked_rows = [r for r in report["curves"] if r["status"] == "checked"]
     modules = sorted({r["module"] for r in checked_rows})
-    consumer = (
-        "\n".join(f"import {m}" for m in modules)
-        + "\n"
-        + "\n".join(
-            f"example := Curve{r['index']:04d}.analytic_rank" for r in checked_rows
+    reuse_groups = []
+    for start in range(0, len(modules), args.consumer_modules):
+        group_modules = modules[start : start + args.consumer_modules]
+        group_rows = [r for r in checked_rows if r["module"] in group_modules]
+        consumer = (
+            "module\n"
+            + "".join(f"import {m}\n" for m in group_modules)
+            + "\n"
+            + "".join(
+                f"example := {r['declaration_prefix']}.analytic_rank\n"
+                for r in group_rows
+            )
         )
-        + "\n"
-    )
-    (work / "Consumer.lean").write_text(consumer)
-    report["compiled_reuse"] = timed(
-        [lean, "Consumer.lean"], work, env, work / "Consumer.log", args.timeout
-    )
-    if report["compiled_reuse"]["returncode"] != 0:
+        name = f"{args.module_prefix}Consumer{start // args.consumer_modules:04d}"
+        (work / f"{name}.lean").write_text(consumer)
+        measurement = timed(
+            [lean, f"{name}.lean"], work, env, work / f"{name}.log", args.timeout
+        )
+        measurement.update({"modules": group_modules, "curves": len(group_rows)})
+        reuse_groups.append(measurement)
+        report["compiled_reuse_groups"] = reuse_groups
         save()
-        raise RuntimeError(f"Compiled proof reuse failed: {work / 'Consumer.log'}")
+        if measurement["returncode"] != 0:
+            raise RuntimeError(f"Compiled proof reuse failed: {work / f'{name}.log'}")
+    report["compiled_reuse"] = {
+        "returncode": 0,
+        "curves": sum(g["curves"] for g in reuse_groups),
+        "wall_seconds": sum(g["wall_seconds"] for g in reuse_groups),
+        "cpu_seconds": sum(g["cpu_seconds"] for g in reuse_groups),
+        "groups": len(reuse_groups),
+    }
     # References enter only after all mathematical checks have finished.
-    references = {r["label"]: r["analytic_rank"] for r in rows}
+    references = reference_ranks(source, references_path)
     for row in checked_rows:
         row["reference_rank"] = references[row["label"]]
         row["reference_matches"] = int(row["rank"]) == row["reference_rank"]

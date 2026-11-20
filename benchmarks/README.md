@@ -56,3 +56,36 @@ certificates. `--resume` reuses completed measurements only when input, harness,
 producer, runner, numerical implementation and configuration fingerprints agree.
 Use a different output path for a fresh timing run; resumed work is not advertised
 as a new measurement.
+
+## SQL snapshots and independent runs
+
+The rank-free SQL snapshot uses a separate reference file:
+
+```sh
+python3 scripts/benchmark_ec_dataset.py \
+  --source data/lmfdb/sql-10000/inputs.json \
+  --references data/lmfdb/sql-10000/references.json \
+  --count 10000 --batch-size 20 --batch-work-limit 4000 \
+  --consumer-modules 25 --module-prefix SQL10000 --timeout 3600 \
+  --output output/certify-ec-performance/dataset-10000.json
+```
+
+Reference-file hashes enter the run identity; reference values are read only
+after verification and compiled-proof import tests. The inputs and references
+remain separate throughout the producer/validator pipeline.
+
+The optional work cap partitions candidates by their supplied numerical settings:
+`terms * max(1, steps_per_unit * (cutoff - 1))`. It never discards an expensive
+candidate; a candidate above the cap runs alone. This bounds the amount of work
+lost if a batch fails. It does not classify mathematical truth or use reference
+ranks. Batch sizes are therefore at most 20, with smaller batches for larger
+quadratures. The timeout is per batch and any timeout is reported explicitly.
+
+Import checks use at most `--consumer-modules` batch modules per consumer, and
+every successful theorem is applied in one of those consumers. This avoids
+loading the complete 10,000-curve collection into a single process. Module and
+declaration prefixes prevent independent datasets from colliding when imported
+together; reports record the actual module and declaration names.
+
+See [the artifact/import guide](../docs/CERTIFIED_ARTIFACTS.md) for current
+imports and the proposed database/snapshot structure.
