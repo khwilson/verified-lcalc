@@ -8,16 +8,15 @@ public import VerifiedLcalc.Analytic
 @[expose] public section
 namespace VerifiedLcalc.Certification
 open Modularity EllipticCurve
-open EllipticCurve
 
-/-- Negative sign forces an exact central zero, without derivative numerics. -/
+/-- Convenience adapter from the verified semistable sign to the general
+negative-root-number vanishing theorem. -/
 theorem central_zero_of_semistable_negative (e : (WeierstrassCurve ℤ))
     (hn : e.Δ ≠ 0) (hs : SemistableModel e)
     (hw : semistableSignFast e = -1) :
-    (modularWitness e hn).formL 1 = 0 := by
-  let m := modularWitness e hn
-  apply m.central_zero_of_negative_sign
-  exact (m.semistableSign_eq hs).trans ((semistableSign_eq_fast e).trans hw)
+    (modularWitness e hn).formL 1 = 0 :=
+  (modularWitness e hn).central_zero_of_negative_sign
+    (((modularWitness e hn).semistableSign_eq hs).trans ((semistableSign_eq_fast e).trans hw))
 
 /-- This is a lower bound, not an exact rank-one assertion. -/
 theorem rank_lower_bound_of_semistable_negative (e : (WeierstrassCurve ℤ))
