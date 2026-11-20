@@ -116,7 +116,7 @@ def selected_inputs(source: Path, count: int) -> list[dict[str, Any]]:
     ]
 
 
-def reference_ranks(source: Path, references: Path | None) -> dict[str, int]:
+def reference_ranks(source: Path, references: Path | None) -> dict[str, int | None]:
     """Read reference ranks only after mathematical validation has finished."""
     if references is None:
         rows = json.loads(source.read_text())["cases"]
@@ -399,7 +399,11 @@ def main() -> None:
     references = reference_ranks(source, references_path)
     for row in checked_rows:
         row["reference_rank"] = references[row["label"]]
-        row["reference_matches"] = int(row["rank"]) == row["reference_rank"]
+        row["reference_matches"] = (
+            int(row["rank"]) == row["reference_rank"]
+            if row["reference_rank"] is not None
+            else None
+        )
     durations = [r["validation_seconds"] for r in checked_rows]
     total = sum(b["wall_seconds"] for b in report["batches"])
     report["summary"] = {
@@ -420,7 +424,10 @@ def main() -> None:
             "p95": quantile(durations, 0.95),
             "max": max(durations, default=None),
         },
-        "reference_mismatches": sum(not r["reference_matches"] for r in checked_rows),
+        "reference_mismatches": sum(
+            r["reference_matches"] is False for r in checked_rows
+        ),
+        "reference_unknown": sum(r["reference_matches"] is None for r in checked_rows),
         "compiled_olean_bytes": sum(
             (work / f"{m}.olean").stat().st_size for m in modules
         ),

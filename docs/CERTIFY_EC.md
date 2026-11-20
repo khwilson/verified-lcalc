@@ -31,6 +31,13 @@ unsupported fields are rejected. File fixtures are in `data/witnesses/`.
 Rank-zero and rank-one witnesses are supported; numerical near-zero observations
 do not become exact higher-rank claims.
 
+The JSON profile permits rational strings up to 16,384 characters, with at most
+8,192 characters per decimal component. Ordinary integer fields retain their
+512-character cap, and the complete payload retains its 2 MiB cap. These are
+data-format limits, not numerical precision assumptions; exact tail fractions
+can exceed 1,024 characters even at 32 terms and 53 bits. Every accepted witness
+still undergoes the same kernel checks.
+
 For inline JSON use:
 
 ```lean

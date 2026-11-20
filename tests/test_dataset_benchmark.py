@@ -34,9 +34,14 @@ def test_separate_references_match_labels_not_positions(tmp_path: Path) -> None:
     rows = [
         {"label": "43.a1", "analytic_rank": 1},
         {"label": "37.a1", "analytic_rank": 0},
+        {"label": "389.a1", "analytic_rank": None},
     ]
     references.write_text(json.dumps({"references": rows}))
-    assert reference_ranks(source, references) == {"37.a1": 0, "43.a1": 1}
+    assert reference_ranks(source, references) == {
+        "37.a1": 0,
+        "43.a1": 1,
+        "389.a1": None,
+    }
     references.write_text(json.dumps({"references": rows + rows}))
     with pytest.raises(ValueError):
         reference_ranks(source, references)

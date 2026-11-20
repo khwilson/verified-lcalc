@@ -18,9 +18,9 @@ def keys (j : Json) (expected : List String) : Except String Unit := do
 def field (j : Json) (key : String) : Except String Json :=
   j.getObjVal? key
 
-def decimal (j : Json) (signed := true) : Except String Int := do
+def decimal (j : Json) (signed := true) (maxLength := 512) : Except String Int := do
   let s ← j.getStr?
-  unless s.length ≤ 512 do throw "Oversized integer"
+  unless s.length ≤ maxLength do throw "Oversized integer"
   let some n := s.toInt? | throw "Expected decimal integer string"
   unless toString n == s && (signed || n ≥ 0) do throw "Expected canonical decimal integer string"
   return n
@@ -30,10 +30,13 @@ def natural (j : Json) : Except String Nat := do
 
 def rational (j : Json) : Except String Rat := do
   let s ← j.getStr?
-  unless s.length ≤ 1024 do throw "Oversized rational"
+  -- At 128 terms and 106 bits, exact geometric tails can have thousands
+  -- of decimal digits. Keep coefficient integers at 512 characters while
+  -- allowing larger rational components within the existing 2 MiB envelope.
+  unless s.length ≤ 16384 do throw "Oversized rational"
   let [n,d] := s.splitOn "/" | throw "Expected numerator/denominator"
-  let n ← decimal (.str n)
-  let d ← natural (.str d)
+  let n ← decimal (.str n) true 8192
+  let d := (← decimal (.str d) false 8192).toNat
   if d == 0 then throw "Zero denominator"
   return (n : Rat) / d
 

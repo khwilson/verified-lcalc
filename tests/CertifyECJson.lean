@@ -14,3 +14,22 @@ import VerifiedLcalc.Certificate.Json
     match VerifiedLcalc.CertificateJson.parse input with
     | .error _ => pure ()
     | .ok _ => throw (IO.userError "Malformed or unsupported JSON was accepted")
+
+-- The supported 128-term, 106-bit profile has exact fractions far larger than
+-- ordinary curve coefficients. Parse them exactly without relaxing integer caps.
+#eval show IO Unit from do
+  let n : Int := 2 ^ 2048 + 1
+  let d : Nat := 2 ^ 4096
+  let expected : Rat := (n : Rat) / d
+  match VerifiedLcalc.CertificateJson.rational (.str s!"{n}/{d}") with
+  | .ok value =>
+    unless value == expected do throw (IO.userError "Large fraction changed value")
+  | .error reason => throw (IO.userError reason)
+  let oversized := String.ofList (List.replicate 8193 '9')
+  for text in ["1/0", "1/-2", "01/2", "-0/2", oversized ++ "/1"] do
+    match VerifiedLcalc.CertificateJson.rational (.str text) with
+    | .error _ => pure ()
+    | .ok _ => throw (IO.userError "Noncanonical or oversized fraction was accepted")
+  match VerifiedLcalc.CertificateJson.decimal (.str (String.ofList (List.replicate 513 '9'))) with
+  | .error _ => pure ()
+  | .ok _ => throw (IO.userError "Ordinary coefficient integer bound was relaxed")

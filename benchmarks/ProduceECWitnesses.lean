@@ -94,15 +94,23 @@ def main (args : List String) : IO UInt32 := do
           ("reason", .str reason)])
       | .ok (w, j) => do
         -- Serializer regression only; mathematical validation is a separate process.
-        let decoded ← IO.ofExcept (CertificateJson.decode j)
-        unless decoded == w do throw (IO.userError "Witness serializer round-trip failed")
-        let file := s!"{i}.json"
-        IO.FS.writeFile (System.FilePath.mk output / file) (j.compress ++ "\n")
-        pure (Json.mkObj [
-          ("index", toJson i), ("label", .str label), ("status", .str "proposed"),
-          ("file", .str file), ("conductor", toJson N),
-          ("rank", ← IO.ofExcept (j.getObjValAs? String "rank")),
-          ("parameters", ← IO.ofExcept (j.getObjVal? "parameters"))])
+        match CertificateJson.decode j with
+        | .error reason => pure (Json.mkObj [
+            ("index", toJson i), ("label", .str label), ("status", .str "generation_error"),
+            ("reason", .str ("witness_encoding_error: " ++ reason))])
+        | .ok decoded =>
+          if decoded != w then
+            pure (Json.mkObj [
+              ("index", toJson i), ("label", .str label), ("status", .str "generation_error"),
+              ("reason", .str "witness_serializer_round_trip_mismatch")])
+          else do
+            let file := s!"{i}.json"
+            IO.FS.writeFile (System.FilePath.mk output / file) (j.compress ++ "\n")
+            pure (Json.mkObj [
+              ("index", toJson i), ("label", .str label), ("status", .str "proposed"),
+              ("file", .str file), ("conductor", toJson N),
+              ("rank", ← IO.ofExcept (j.getObjValAs? String "rank")),
+              ("parameters", ← IO.ofExcept (j.getObjVal? "parameters"))])
     let elapsed := (← IO.monoNanosNow) - start
     let report := Json.mkObj [("result", report), ("generation_ns", toJson elapsed)]
     stdout.putStrLn report.compress

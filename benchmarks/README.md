@@ -89,3 +89,7 @@ together; reports record the actual module and declaration names.
 
 See [the artifact/import guide](../docs/CERTIFIED_ARTIFACTS.md) for current
 imports and the proposed database/snapshot structure.
+
+Witness encoding failures are recorded as `generation_error` for that input;
+no candidate file or certificate is emitted for it. This lets a large campaign
+record every input instead of aborting at the first unsupported encoding.
