@@ -92,17 +92,25 @@ def certify (name : Name) (input : TSyntax `term) : CommandElabM Unit := do
   checked (base ++ `conductor_valid) (← `(wildLevelFast $curve $d = ($r).conductor)) (← `(by decide +kernel))
   let hw := mkIdent (base ++ `root_number_valid)
   let hp := mkIdent (base ++ `payload_correct)
+  -- Give identical numerical obligations identical types before decide's
+  -- per-module auxiliary-lemma cache is consulted. Curve arithmetic remains
+  -- a separate obligation for every supplied equation.
+  let finiteCheck ← `(by dsimp only [$r:term]; decide +kernel)
   if central then
     checked (base ++ `root_number_valid) (← `(wildSignFast $curve $d = ($r).rootNumber)) (← `(by decide +kernel))
     checked (base ++ `payload_correct) (← `(CentralPayloadCorrect $r)) (← `(by
       unfold CentralPayloadCorrect
-      exact ⟨by decide +kernel, by decide +kernel, by decide +kernel,
-        by decide +kernel, by decide +kernel, by decide +kernel,
+      exact ⟨$finiteCheck, $finiteCheck, $finiteCheck,
+        $finiteCheck, $finiteCheck, $finiteCheck,
         (squareTailBound ($r).geometricUpper ($r).termLimit).getD 0,
-        by decide +kernel, by decide +kernel, by decide +kernel⟩))
+        $finiteCheck, $finiteCheck, $finiteCheck⟩))
   else
     checked (base ++ `root_number_valid) (← `(wildSignFast $curve $d = -1)) (← `(by decide +kernel))
-    checked (base ++ `payload_correct) (← `(DerivativePayloadCorrect $r)) (← `(by decide +kernel))
+    checked (base ++ `payload_correct) (← `(DerivativePayloadCorrect $r)) (← `(by
+      unfold DerivativePayloadCorrect
+      exact ⟨$finiteCheck, $finiteCheck, $finiteCheck,
+        $finiteCheck, $finiteCheck, $finiteCheck,
+        $finiteCheck, $finiteCheck, $finiteCheck⟩))
   let hz := mkIdent (base ++ `excludes_zero)
   checked (base ++ `excludes_zero) (← `(($r).box.excludesZero = true)) (← `(by decide +kernel))
   let rank : TSyntax `term ← if central then `(0) else `(1)

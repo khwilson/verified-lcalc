@@ -2,6 +2,7 @@ module
 public import VerifiedLcalc.Tactic.CertifyEC
 public meta import Lean
 
+set_option Elab.async false
 set_option maxRecDepth 100000
 set_option maxHeartbeats 100000000
 

@@ -7,6 +7,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.benchmark_ec_dataset import (
+    adopt_generation,
     numerical_batches,
     reference_ranks,
     selected_inputs,
@@ -64,3 +65,78 @@ def test_work_bounded_batches_keep_every_candidate_in_order() -> None:
     assert [[r["index"] for r in batch] for batch in batches] == [[0, 1], [2], [3]]
     assert [r for batch in batches for r in batch] == rows
     assert [len(b) for b in numerical_batches(rows, 2, 0)] == [2, 2]
+
+
+def test_generation_reuse_checks_subjects_and_discards_old_proof_status(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import copy
+    import hashlib
+
+    import scripts.benchmark_ec_dataset as benchmark
+
+    monkeypatch.setattr(benchmark, "ROOT", tmp_path)
+    old = tmp_path / ".lake" / "old"
+    (old / "witnesses").mkdir(parents=True)
+    work = tmp_path / ".lake" / "new"
+    work.mkdir()
+    identity: dict[str, Any] = {
+        key: "same"
+        for key in [
+            "source_sha256",
+            "references_sha256",
+            "mathlib_revision",
+            "actual_lean_version",
+            "count",
+            "producer_sha256",
+            "toolchain",
+            "production_sha256",
+        ]
+    }
+    identity["production_sha256"] = {
+        "VerifiedLcalc/Numerics/Core.lean": "same",
+        "VerifiedLcalc/Tactic/CertifyEC.lean": "before",
+    }
+    subject = {"ainvs": ["0", "0", "1", "-1", "0"], "conductor": "37"}
+    parameters = {"terms": "24", "steps_per_unit": "1", "cutoff": "8"}
+    witness = {"subject": subject, "rank": "1", "parameters": parameters}
+    file = old / "witnesses" / "0.json"
+    file.write_text(json.dumps(witness))
+    row: dict[str, Any] = {
+        "index": 0,
+        "label": "37.a1",
+        "conductor": 37,
+        "status": "checked",
+        "file": "0.json",
+        "rank": "1",
+        "parameters": parameters,
+        "witness_sha256": hashlib.sha256(file.read_bytes()).hexdigest(),
+        "validation_seconds": 999,
+        "module": "OldBatch",
+    }
+    previous: dict[str, Any] = {
+        "identity": identity,
+        "generation_complete": True,
+        "curves": [row],
+        "work_directory": ".lake/old",
+    }
+    inputs = [{"label": "37.a1", "ainvs": [0, 0, 1, -1, 0], "conductor": 37}]
+    result = adopt_generation(previous, identity, inputs, work)
+    assert result[0]["status"] == "proposed"
+    assert "validation_seconds" not in result[0] and "module" not in result[0]
+    assert (work / "witnesses" / "0.json").read_bytes() == file.read_bytes()
+    for mutate in ["subject", "rank", "environment", "incomplete"]:
+        bad = copy.deepcopy(previous)
+        if mutate == "subject":
+            bad_inputs = [{**inputs[0], "conductor": 43}]
+        else:
+            bad_inputs = inputs
+        if mutate == "rank":
+            bad["curves"][0]["rank"] = "0"
+        elif mutate == "environment":
+            bad["identity"]["producer_sha256"] = "different"
+        elif mutate == "incomplete":
+            bad["generation_complete"] = False
+        with pytest.raises(ValueError):
+            adopt_generation(bad, identity, bad_inputs, work)

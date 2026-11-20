@@ -66,7 +66,7 @@ python3 scripts/benchmark_ec_dataset.py \
   --source data/lmfdb/sql-10000/inputs.json \
   --references data/lmfdb/sql-10000/references.json \
   --count 10000 --batch-size 20 --batch-work-limit 4000 \
-  --consumer-modules 25 --module-prefix SQL10000 --timeout 3600 \
+  --consumer-modules 25 --module-prefix SQL10000 --workers 4 --timeout 3600 \
   --output output/certify-ec-performance/dataset-10000.json
 ```
 
@@ -93,3 +93,23 @@ imports and the proposed database/snapshot structure.
 Witness encoding failures are recorded as `generation_error` for that input;
 no candidate file or certificate is emitted for it. This lets a large campaign
 record every input instead of aborting at the first unsupported encoding.
+
+`--workers` defaults to one. Larger values run independent Lean processes with
+distinct source and output files against prebuilt, read-only dependencies; the
+initial Lake build remains sequential. The report records elapsed validation
+phases separately from the sum of overlapping batch durations, and records CPU
+usage from each worker's own child process. Use phase elapsed time for throughput.
+Completed batches are checkpointed as they finish, including out-of-order results.
+
+`--generation-report PATH` can adopt candidate witnesses from a completed
+generation report. It checks the producer, mathematical sources, toolchain,
+input identities and witness hashes, then checks each witness's curve and
+conductor against the selected input. Proof-frontend changes are recorded
+separately. Adopted witnesses remain untrusted: every certificate is rebuilt,
+and no previous proof or validation status is reused. `--resume` instead resumes
+an identical campaign, with all run fingerprints unchanged.
+
+The validation template disables asynchronous elaboration inside each batch and
+normalizes individual numerical obligations before `decide +kernel`. This allows
+Lean to reuse identical auxiliary proofs within a module. Every curve still has
+its own checked arithmetic obligations and exported theorem.

@@ -8,14 +8,18 @@ intended for version control. No mathematical computation is performed in Python
 import argparse
 import hashlib
 import json
+import multiprocessing
 import os
 import platform
 import re
 import resource
+import shutil
+import signal
 import subprocess
 import sys
 import time
 from collections import Counter
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
@@ -127,6 +131,146 @@ def reference_ranks(source: Path, references: Path | None) -> dict[str, int | No
     return {r["label"]: r["analytic_rank"] for r in rows}
 
 
+def stop_worker(_signum: int, _frame: object) -> None:
+    # Raising through subprocess.run makes it kill and reap its Lean child.
+    raise SystemExit(143)
+
+
+def initialize_worker() -> None:
+    signal.signal(signal.SIGTERM, stop_worker)
+
+
+def validate_batch(job: dict[str, Any]) -> dict[str, Any]:
+    """One process owns one output module; shared dependencies are read-only."""
+    work = Path(job["work"])
+    module = job["module"]
+    prefix = job["prefix"]
+    text = job["template"].replace(
+        "ECBenchmark", f"{prefix}ECBenchmark{job['index']:04d}"
+    )
+    text += (
+        "\n"
+        + "\n".join(
+            f"benchmark_ec {prefix}Curve{r['index']:04d} {json.dumps(r['label'])} "
+            f"{json.dumps(str(work / 'witnesses' / r['file']))}"
+            for r in job["rows"]
+        )
+        + "\n"
+    )
+    (work / f"{module}.lean").write_text(text)
+    log = work / f"{module}.log"
+    measurement = timed(
+        [job["lean"], "-o", f"{module}.olean", f"{module}.lean"],
+        work,
+        job["env"],
+        log,
+        job["timeout"],
+    )
+    events = {}
+    for line in log.read_text().splitlines():
+        if line.startswith("EC_BENCH "):
+            event = json.loads(line.removeprefix("EC_BENCH "))
+            if event["label"] in events:
+                raise RuntimeError("Duplicate validation event")
+            events[event["label"]] = event
+    measurement.update(
+        {
+            "batch_index": job["index"],
+            "module": module,
+            "labels": [r["label"] for r in job["rows"]],
+        }
+    )
+    return {"measurement": measurement, "events": events}
+
+
+def adopt_generation(
+    previous: dict[str, Any],
+    identity: dict[str, Any],
+    inputs: list[dict[str, Any]],
+    work: Path,
+) -> list[dict[str, Any]]:
+    """Reuse numerical candidates only; every mathematical certificate is rebuilt."""
+    for key in [
+        "source_sha256",
+        "references_sha256",
+        "mathlib_revision",
+        "actual_lean_version",
+        "count",
+        "producer_sha256",
+        "toolchain",
+    ]:
+        if previous["identity"].get(key) != identity.get(key):
+            raise ValueError(f"Generation environment differs: {key}")
+    # Numerical candidates are untrusted and will be rechecked. A change to the
+    # proof-producing frontend does not change the producer's dependencies.
+    old_core = {
+        p: h
+        for p, h in previous["identity"]["production_sha256"].items()
+        if not p.startswith("VerifiedLcalc/Tactic/")
+    }
+    new_core = {
+        p: h
+        for p, h in identity["production_sha256"].items()
+        if not p.startswith("VerifiedLcalc/Tactic/")
+    }
+    if old_core != new_core:
+        raise ValueError("Generation mathematical or numerical core differs")
+    if not previous.get("generation_complete") or len(previous["curves"]) != len(
+        inputs
+    ):
+        raise ValueError("Previous generation is incomplete")
+    old_work = (ROOT / previous["work_directory"]).resolve()
+    if not old_work.is_relative_to((ROOT / ".lake").resolve()):
+        raise ValueError("Generation artifacts must be under this workspace's .lake")
+    target = work / "witnesses"
+    target.mkdir(exist_ok=True)
+    result = []
+    fields = [
+        "index",
+        "label",
+        "conductor",
+        "parameters",
+        "generation_seconds",
+        "rank",
+        "witness_sha256",
+        "reason",
+        "file",
+    ]
+    for index, (row, expected) in enumerate(
+        zip(previous["curves"], inputs, strict=True)
+    ):
+        if row["index"] != index or row["label"] != expected["label"]:
+            raise ValueError("Generation inputs changed order")
+        copied = {key: row[key] for key in fields if key in row}
+        copied["status"] = row["status"]
+        copied["conductor"] = expected["conductor"]
+        if "file" in row:
+            if row["file"] != f"{index}.json":
+                raise ValueError("Unexpected witness filename")
+            file = old_work / "witnesses" / row["file"]
+            if digest(file) != row["witness_sha256"]:
+                raise ValueError("Witness hash differs")
+            witness = json.loads(file.read_text())
+            if (
+                witness["rank"] != row["rank"]
+                or witness["parameters"] != row["parameters"]
+            ):
+                raise ValueError(
+                    "Witness claim or numerical parameters differ from generation metadata"
+                )
+            subject = witness["subject"]
+            if [int(x) for x in subject["ainvs"]] != expected["ainvs"] or int(
+                subject["conductor"]
+            ) != expected["conductor"]:
+                raise ValueError("Witness subject differs from input")
+            shutil.copy2(file, target / row["file"])
+            copied["status"] = "proposed"
+        elif row["status"] not in ["inconclusive", "generation_error"]:
+            raise ValueError("Generation outcome is missing its witness")
+        result.append(copied)
+    return result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -158,6 +302,12 @@ def main() -> None:
     parser.add_argument("--batch-size", type=int, default=20)
     parser.add_argument("--timeout", type=int, default=900, help="Seconds per batch")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--workers", type=int, default=1)
+    parser.add_argument(
+        "--generation-report",
+        type=Path,
+        help="Reuse compatible untrusted witnesses; recheck every proof",
+    )
     parser.add_argument(
         "--output",
         type=Path,
@@ -170,6 +320,7 @@ def main() -> None:
         or args.timeout < 1
         or args.consumer_modules < 1
         or args.batch_work_limit < 0
+        or args.workers < 1
     ):
         parser.error("Count, batch size and timeout must be positive")
     if args.module_prefix and not re.fullmatch(
@@ -192,6 +343,7 @@ def main() -> None:
         "batch_work_limit": args.batch_work_limit,
         "module_prefix": args.module_prefix,
         "consumer_modules": args.consumer_modules,
+        "workers": args.workers,
         "mathlib_revision": captured(
             ["git", "-C", str(ROOT.parent / "mathlib4"), "rev-parse", "HEAD"]
         ),
@@ -214,7 +366,7 @@ def main() -> None:
     output = args.output.resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
     report: dict[str, Any] = {
-        "schema": "verified-lcalc.dataset-benchmark.v1",
+        "schema": "verified-lcalc.dataset-benchmark.v2",
         "identity": identity,
         "git_revision": captured(["git", "rev-parse", "HEAD"]),
         "mathlib_revision": captured(
@@ -259,6 +411,28 @@ def main() -> None:
     lean = str(Path(captured(["lean", "--print-prefix"])) / "bin" / "lean")
     (work / "inputs.json").write_text(json.dumps({"inputs": inputs}) + "\n")
     generation_log = work / "generation.jsonl"
+    if not report.get("generation_complete") and args.generation_report:
+        origin_path = args.generation_report.resolve()
+        previous = json.loads(origin_path.read_text())
+        report["curves"] = adopt_generation(previous, identity, inputs, work)
+        report["generation"] = previous["generation"]
+        report["generation_reuse"] = {
+            "report_sha256": digest(origin_path),
+            "original_git_revision": previous["git_revision"],
+            "original_work_directory": previous["work_directory"],
+            "proofs_reused": False,
+            "proof_frontend_changes": {
+                p: {
+                    "previous": previous["identity"]["production_sha256"].get(p),
+                    "current": h,
+                }
+                for p, h in identity["production_sha256"].items()
+                if p.startswith("VerifiedLcalc/Tactic/")
+                and previous["identity"]["production_sha256"].get(p) != h
+            },
+        }
+        report["generation_complete"] = True
+        save()
     if not report.get("generation_complete"):
         print(
             f"Generating witnesses for {len(inputs)} rank-blind inputs...", flush=True
@@ -303,40 +477,37 @@ def main() -> None:
     )
     template = validator.read_text()
     by_label = {r["label"]: r for r in report["curves"]}
-    completed = len(report["batches"])
+    completed = {b["batch_index"] for b in report["batches"]}
     batches = numerical_batches(candidates, args.batch_size, args.batch_work_limit)
-    for batch_index, batch in enumerate(batches):
-        if batch_index < completed:
-            continue
-        module = f"{args.module_prefix}Batch{batch_index:04d}"
-        text = (
-            template.replace(
-                "ECBenchmark", f"{args.module_prefix}ECBenchmark{batch_index:04d}"
-            )
-            + "\n"
-            + "\n".join(
-                f"benchmark_ec {args.module_prefix}Curve{r['index']:04d} {json.dumps(r['label'])} "
-                f"{json.dumps(str(work / 'witnesses' / r['file']))}"
-                for r in batch
-            )
-            + "\n"
-        )
-        (work / f"{module}.lean").write_text(text)
-        log = work / f"{module}.log"
-        measurement = timed(
-            [lean, "-o", f"{module}.olean", f"{module}.lean"],
-            work,
-            env,
-            log,
-            args.timeout,
-        )
-        events = {}
-        for line in log.read_text().splitlines():
-            if line.startswith("EC_BENCH "):
-                event = json.loads(line.removeprefix("EC_BENCH "))
-                if event["label"] in events:
-                    raise RuntimeError("Duplicate validation event")
-                events[event["label"]] = event
+    jobs = [
+        {
+            "index": i,
+            "module": f"{args.module_prefix}Batch{i:04d}",
+            "prefix": args.module_prefix,
+            "rows": batch,
+            "work": str(work),
+            "env": env,
+            "lean": lean,
+            "timeout": args.timeout,
+            "template": template,
+        }
+        for i, batch in enumerate(batches)
+        if i not in completed
+    ]
+    phase_start = time.perf_counter()
+    phase_lean_start = lean_clock_now()
+    before_phase = resource.getrusage(resource.RUSAGE_CHILDREN)
+    phase: dict[str, Any] = {
+        "workers": args.workers,
+        "batch_indices": [],
+        "complete": False,
+    }
+    report.setdefault("validation_phases", []).append(phase)
+
+    def accept(result: dict[str, Any]) -> None:
+        measurement, events = result["measurement"], result["events"]
+        batch_index = measurement["batch_index"]
+        batch = batches[batch_index]
         succeeded = measurement["returncode"] == 0
         for row in batch:
             event = events.pop(row["label"], None)
@@ -349,19 +520,55 @@ def main() -> None:
                 row["status"] = (
                     "timeout" if measurement["status"] == "timeout" else "batch_failed"
                 )
-            row["module"] = module
+            row["module"] = measurement["module"]
             row["declaration_prefix"] = f"{args.module_prefix}Curve{row['index']:04d}"
         if events:
             raise RuntimeError("Unexpected curve in validation output")
-        measurement.update({"module": module, "labels": [r["label"] for r in batch]})
         report["batches"].append(measurement)
+        report["batches"].sort(key=lambda b: b["batch_index"])
+        phase["batch_indices"].append(batch_index)
+        phase["wall_seconds"] = time.perf_counter() - phase_start
+        phase["lean_clock_elapsed_seconds"] = lean_clock_now() - phase_lean_start
         save()
         checked = sum(r["status"] == "checked" for r in by_label.values())
         print(
-            f"Batch {batch_index + 1}: {measurement['wall_seconds']:.2f}s; "
+            f"Batch {batch_index + 1}/{len(batches)}: {measurement['wall_seconds']:.2f}s; "
             f"{checked}/{len(inputs)} checked",
             flush=True,
         )
+
+    try:
+        if args.workers == 1:
+            for job in jobs:
+                accept(validate_batch(job))
+        else:
+            with ProcessPoolExecutor(
+                max_workers=args.workers,
+                mp_context=multiprocessing.get_context("spawn"),
+                initializer=initialize_worker,
+            ) as pool:
+                futures = [pool.submit(validate_batch, job) for job in jobs]
+                try:
+                    for future in as_completed(futures):
+                        accept(future.result())
+                except BaseException:
+                    for future in futures:
+                        future.cancel()
+                    for worker in multiprocessing.active_children():
+                        worker.terminate()
+                    raise
+        phase["complete"] = True
+    finally:
+        phase["wall_seconds"] = time.perf_counter() - phase_start
+        phase["lean_clock_elapsed_seconds"] = lean_clock_now() - phase_lean_start
+        after_phase = resource.getrusage(resource.RUSAGE_CHILDREN)
+        phase["cpu_seconds"] = (
+            after_phase.ru_utime
+            + after_phase.ru_stime
+            - before_phase.ru_utime
+            - before_phase.ru_stime
+        )
+        save()
     checked_rows = [r for r in report["curves"] if r["status"] == "checked"]
     modules = sorted({r["module"] for r in checked_rows})
     reuse_groups = []
@@ -405,13 +612,20 @@ def main() -> None:
             else None
         )
     durations = [r["validation_seconds"] for r in checked_rows]
-    total = sum(b["wall_seconds"] for b in report["batches"])
+    total = sum(p["wall_seconds"] for p in report["validation_phases"])
     report["summary"] = {
         "outcomes": dict(Counter(r["status"] for r in report["curves"])),
         "inconclusive_reasons": dict(
             Counter(r["reason"] for r in report["curves"] if "reason" in r)
         ),
-        "validation_batch_wall_seconds": total,
+        "validation_phase_wall_seconds": total,
+        "sum_batch_wall_seconds": sum(b["wall_seconds"] for b in report["batches"]),
+        "validation_phase_cpu_seconds": sum(
+            p["cpu_seconds"] for p in report["validation_phases"]
+        ),
+        "validation_timing_complete": all(
+            p["complete"] for p in report["validation_phases"]
+        ),
         "validation_batch_cpu_seconds": sum(
             b["cpu_seconds"] for b in report["batches"]
         ),
