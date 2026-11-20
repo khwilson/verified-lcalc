@@ -6,8 +6,79 @@ public meta import VerifiedLcalc.Certificate.Json
 public meta import Lean
 public meta import Mathlib.Tactic.ToExpr
 
-/-! Verify supplied elliptic-curve witnesses and export ordinary named theorems.
-No producer, evaluator search, network call, Python service or native_decide is used. -/
+/-!
+# Certifying supplied elliptic-curve analytic-rank witnesses
+
+`certify_ec` turns supplied exact witness data into named Lean definitions and
+kernel-checked theorems for an integral `WeierstrassCurve`. It supports exact
+analytic rank zero, using a central-value enclosure excluding zero, and exact
+analytic rank one, using root number `-1` and a first-derivative enclosure
+excluding zero. The analytic conclusions are conditional on the project's
+explicit `VerifiedLcalc.Assumptions.ellipticModularity` axiom.
+
+## Input forms
+
+* `certify_ec Name from witness` accepts a Lean term of type `EllipticWitness`,
+  with constructor `EllipticWitness.central` or `EllipticWitness.derivative`.
+* `certify_ec Name from_json "curve.json"` reads exact witness JSON from a local
+  file, resolving the path relative to the Lean source file containing the command.
+* `certify_ec Name from_json_string "..."` accepts the same JSON format inline.
+
+The witness supplies the equation, claimed conductor, numerical parameters,
+coefficients, interval and tail data, minimality evidence, and local reduction
+data. JSON parsing uses `CertificateJson.parse` and its bounded exact-data profile.
+The command verifies these supplied data; it performs no witness search or network
+request. A caller using the Lean-term form controls any computation in that term.
+
+## Generated declarations
+
+With command name `Name` in namespace `Outer`, declarations live under
+`Outer.Name`. The data definitions are:
+
+* `witness : EllipticWitness`, the supplied witness;
+* `result : CentralResult` or `DerivativeResult`, its numerical result record;
+* `minimality : MinimalityWitness` and `localData : WildData`, its arithmetic data;
+* `curve : WeierstrassCurve ℤ`, the equation from `result`.
+
+Each verification step produces a separate theorem:
+
+* `witness_eq` identifies the witness with the generated component definitions;
+* `nonsingular` proves that `curve.Δ ≠ 0`;
+* `minimality_valid` and `local_data_valid` validate the supplied arithmetic data;
+* `conductor_valid` matches `wildLevelFast curve localData` to the claimed conductor;
+* `root_number_valid` checks the computed sign against the central witness's sign,
+  or against `-1` for a derivative witness;
+* `payload_correct` proves `CentralPayloadCorrect result` or
+  `DerivativePayloadCorrect result`, checking the coefficients and numerical bounds;
+* `excludes_zero` proves that the certified output interval excludes zero.
+
+The main exported theorem is `analytic_rank`, also available as
+`curve_analytic_rank`. Its type is
+
+```lean
+analyticOrderAt
+  (Modularity.modularWitness Name.curve Name.nonsingular).formL (1 : ℂ) = r
+```
+
+where `r` is `0` or `1`. `certifiedRank` packages that natural number together
+with its proof as a subtype value. The conductor/sign checks above are arithmetic
+identities; their interpretation for the curve's L-function uses the documented
+modularity assumption in the final analytic theorem.
+
+## Checking and reuse
+
+Finite checks use `decide +kernel`. Every generated theorem's axiom dependencies
+are audited: finite checks allow only `propext`, `Classical.choice`, and `Quot.sound`;
+the final analytic theorems additionally allow `ellipticModularity`. A rejected
+command rolls back all its generated declarations and reports the failure.
+
+Successful commands log the rank theorem's name and its conditional status.
+Compiling the containing Lean module produces the `.olean` containing these
+declarations. Other proofs import that module and use `Name.analytic_rank` or
+`Name.certifiedRank` directly. With Lean's `module` syntax, put the command in a
+`public section` to export the declarations. See `examples/certify_ec/` for complete
+examples and `tests/consumers/CertifiedECConsumer.lean` for compiled-proof reuse.
+-/
 
 public meta section
 namespace VerifiedLcalc.CertifyEC
