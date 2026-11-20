@@ -23,6 +23,6 @@ theorem semistableSign_eq_fast (e : (WeierstrassCurve ℤ)) :
   have hd : goodReduction e p = false := by
     have hi : (p : Int) ∣ e.Δ := Int.natCast_dvd.mpr hdiv
     simp only [goodReduction, Int.dvd_iff_emod_eq_zero.mp hi, ne_self_iff_false, decide_false]
-  rw [singularTrace_correct e p hd]
+  rw [dif_pos hprime, singularTrace_correct e p hd, computeFrobeniusTrace_correct]
 
 end VerifiedLcalc.Modularity

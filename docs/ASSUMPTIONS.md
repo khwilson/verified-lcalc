@@ -21,7 +21,9 @@ modular realization consisting of:
   `WeierstrassCurve.LFunction` coefficient for the rational curve.
 - A sign w in {+1,-1} and the rescaled imaginary-axis Fricke identity
   `g(1/t) = w*t^2*g(t)`, where `g(t)=f(i*t/sqrt(N))` and t>0.
-- Agreement at smooth primes with the input model's computed Frobenius trace.
+- Agreement at smooth primes with TauCeti's mathematical Frobenius trace of the
+  input model's reduction. Compatibility with the computable evaluator is proved
+  separately.
 - For integral models satisfying `gcd(discriminant,c4)=1`, equality of the level
   with the product of distinct primes dividing `|discriminant|`, and equality
   of the sign with `- product_{p | discriminant} (-frobeniusTrace(model,p))`.
@@ -53,21 +55,21 @@ Actual derivative enclosures remain required proof arguments. The exact checker
 still requires exact earlier vanishing; numerical smallness remains a separate
 conclusion, with a separate explicit hypothesis for any upgrade to exact rank.
 
-`Certificates/AssumedCurve11.lean` is a worked assumption-dependent certificate:
+`tests/VerifiedLcalcTests/Fixtures/AssumedCurve11.lean` is a worked assumption-dependent certificate:
 it obtains an entire continuation matching the actual Euler coefficient series
 for 11.a2, checks the realizing form's coefficient at 2 is -2, and identifies
 its level as 11 and sign as +1. `CentralIntegral.lean` derives the central
 split-Mellin integral from mathlib's Mellin representation and the Fricke field.
 This analytic implication itself uses no custom axiom.
 
-`Certificates/AssumedCurve37.lean` checks the integral model of 37.a1 satisfies
+`tests/VerifiedLcalcTests/Fixtures/AssumedCurve37.lean` checks the integral model of 37.a1 satisfies
 the semistable criterion, computes level 37 and sign -1, and deduces exact
 central vanishing and `1 ≤ analyticOrderAt continuedL 1` using the proved
 split-Mellin identity. This is a conditional lower bound; it does not claim
 exact rank one or use the fixture's expected rank. The exponential-series formula is now derived from the supplied modular
 realization with an explicit arithmetic coefficient-bound input. The interval
 connection is proved given actual prime-power compatibility. The actual global coefficient bound and Euler-product extraction are now
-proved. `Certificates/AssumedCurve11Central.lean` supplies the eight actual
+proved. `tests/VerifiedLcalcTests/Fixtures/AssumedCurve11Central.lean` supplies the eight actual
 coefficients and proves exact analytic rank zero, with no further hypotheses
 beyond the unchanged axiom. Derivative enclosures remain unfinished.
 

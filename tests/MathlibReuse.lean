@@ -16,3 +16,12 @@ example : VerifiedLcalc.EllipticCurve.isSquareMod 1 27 = true := by decide +kern
 example : VerifiedLcalc.EllipticCurve.isSquareMod 2 (-1) = true := by decide +kernel
 example : VerifiedLcalc.EllipticCurve.isSquareMod 4 1 = true ∧
     VerifiedLcalc.EllipticCurve.isSquareMod 4 2 = false := by decide +kernel
+
+
+-- The shared evaluator preserves sentinel and small singular-model counts.
+private def cusp : WeierstrassCurve ℤ := ⟨0, 0, 0, 0, 0⟩
+open VerifiedLcalc.EllipticCurve
+example : computePointCount cusp 0 = 1 ∧ computeFrobeniusTrace cusp 0 = 0 := by decide +kernel
+example : computePointCount cusp 1 = 2 ∧ computeFrobeniusTrace cusp 1 = 0 := by decide +kernel
+example : computePointCount cusp 2 = 3 ∧ computeFrobeniusTrace cusp 2 = 0 := by decide +kernel
+example : computePointCount cusp 3 = 4 ∧ computeFrobeniusTrace cusp 3 = 0 := by decide +kernel

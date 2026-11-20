@@ -1,6 +1,8 @@
 module
 
 public import VerifiedLcalc.Certificate
+public import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCount
+public import Mathlib.Data.ZMod.Basic
 public import Mathlib.Data.Nat.Prime.Defs
 
 @[expose] public section
@@ -8,38 +10,19 @@ public import Mathlib.Data.Nat.Prime.Defs
 namespace VerifiedLcalc.EllipticCurve
 open Artifacts
 
-/-- The equation's left side minus right side, over the integers. -/
-def residual (e : (WeierstrassCurve ℤ)) (x y : Int) : Int :=
-  y ^ 2 + e.a₁ * x * y + e.a₃ * y -
-    (x ^ 3 + e.a₂ * x ^ 2 + e.a₄ * x + e.a₆)
+/-- Evaluate the shared finite-ring count. Modulus zero is an unsupported
+sentinel, retaining the former empty enumeration plus infinity convention. -/
+def computePointCount (e : WeierstrassCurve ℤ) (p : Nat) : Nat :=
+  if hp : p = 0 then 1 else
+    letI : NeZero p := ⟨hp⟩
+    (e.baseChange (ZMod p)).pointCountFinite
 
-/-- Exact modular membership, including characteristics 2 and 3. -/
-def onCurve (e : (WeierstrassCurve ℤ)) (p : Nat) (xy : Fin p × Fin p) : Bool :=
-  decide (residual e xy.1.val xy.2.val % (p : Int) = 0)
-
-theorem onCurve_correct (e : (WeierstrassCurve ℤ)) (p : Nat) (xy : Fin p × Fin p) :
-    onCurve e p xy = true ↔ residual e xy.1.val xy.2.val % (p : Int) = 0 := by
-  simp [onCurve]
-
-/-- Exhaustive enumeration without duplicates. Infinity is counted separately. -/
-def affinePoints (e : (WeierstrassCurve ℤ)) (p : Nat) : List (Fin p × Fin p) :=
-  ((List.finRange p).flatMap (fun x => (List.finRange p).map (fun y => (x, y)))).filter
-    (onCurve e p)
-
-theorem affinePoints_correct (e : (WeierstrassCurve ℤ)) (p : Nat) (xy : Fin p × Fin p) :
-    xy ∈ affinePoints e p ↔ onCurve e p xy = true := by
-  rcases xy with ⟨x, y⟩
-  simp [affinePoints]
-
-def affineCount (e : (WeierstrassCurve ℤ)) (p : Nat) : Nat := (affinePoints e p).length
-
-/-- Executable enumeration of the reduced projective model, including singular
-solutions. `computePointCount_eq_pointCount` identifies it with TauCeti’s
-noncomputable `WeierstrassCurve.pointCount`. -/
-def computePointCount (e : (WeierstrassCurve ℤ)) (p : Nat) : Nat := affineCount e p + 1
-
-def frobeniusTrace (e : (WeierstrassCurve ℤ)) (p : Nat) : Int :=
-  (p : Int) + 1 - (computePointCount e p : Int)
+/-- Evaluate the shared finite-ring trace. Correctness against TauCeti's
+field-valued mathematical definition is proved for prime moduli. -/
+def computeFrobeniusTrace (e : WeierstrassCurve ℤ) (p : Nat) : Int :=
+  if hp : p = 0 then 0 else
+    letI : NeZero p := ⟨hp⟩
+    (e.baseChange (ZMod p)).frobeniusTraceFinite
 
 /-- Reflect Mathlib's decidable primality predicate into the executable API. -/
 def isPrime (p : Nat) : Bool := decide (Nat.Prime p)
@@ -59,13 +42,13 @@ structure PrimeData where
 not filled using an unproved minimal-model/reduction classification. -/
 def analysePrime (e : (WeierstrassCurve ℤ)) (p : Nat) : Option PrimeData :=
   if isPrime p && goodReduction e p then
-    some ⟨p, computePointCount e p, frobeniusTrace e p⟩
+    some ⟨p, computePointCount e p, computeFrobeniusTrace e p⟩
   else none
 
 theorem analysePrime_correct (e : (WeierstrassCurve ℤ)) (p : Nat) (d : PrimeData)
     (h : analysePrime e p = some d) :
     isPrime p = true ∧ goodReduction e p = true ∧
-      d.prime = p ∧ d.points = computePointCount e p ∧ d.trace = frobeniusTrace e p := by
+      d.prime = p ∧ d.points = computePointCount e p ∧ d.trace = computeFrobeniusTrace e p := by
   unfold analysePrime at h
   split at h <;> rename_i hc
   · cases h

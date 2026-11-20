@@ -1,27 +1,16 @@
 module
 
-public import VerifiedLcalc.EllipticCurve.TauCeti
+public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.LocalPolynomial
+public import Mathlib.RingTheory.Valuation.Integers
 public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.MinimalModel.Basic
 
 @[expose] public section
-namespace VerifiedLcalc.EllipticCurve
+namespace WeierstrassCurve
 open IsDedekindDomain.HeightOneSpectrum IsDiscreteValuationRing
 
 section Local
 variable {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
   {K : Type*} [Field K] [Algebra R K] [IsFractionRing R K]
-
-omit [IsDomain R] [IsDiscreteValuationRing R] in
-/-- Integral models are unique when their fraction-field equations agree. -/
-theorem integralModel_eq_of_baseChange (W : WeierstrassCurve R) (U : WeierstrassCurve K)
-    [WeierstrassCurve.IsIntegral R U] (h : W.baseChange K = U) : U.integralModel R = W := by
-  apply WeierstrassCurve.map_injective (IsFractionRing.injective R K)
-  exact (WeierstrassCurve.baseChange_integralModel_eq R U).trans h.symm
-
-theorem valuation_eq_one_of_unit (x : R) (hx : IsUnit x) :
-    valuation K (maximalIdeal R) (algebraMap R K x) = 1 := by
-  rw [valuation_of_algebraMap, intValuation_eq_one_iff_mem_primeCompl]
-  exact (IsLocalRing.notMem_maximalIdeal).mpr hx
 
 /-- A smooth integral equation is minimal: its discriminant already has the
 largest valuation possible for an integral equation. -/
@@ -31,7 +20,7 @@ theorem isMinimal_of_unit_discriminant (W : WeierstrassCurve R) (h : IsUnit W.Δ
   let : WeierstrassCurve.IsIntegral R U := ⟨⟨W, rfl⟩⟩
   have hΔ : valuation K (maximalIdeal R) U.Δ = 1 := by
     rw [show U.Δ = algebraMap R K W.Δ by simp [U, WeierstrassCurve.baseChange]]
-    exact valuation_eq_one_of_unit W.Δ h
+    exact Valuation.Integers.one_of_isUnit' h (fun x => valuation_le_one _ _)
   refine ⟨⟨by simpa using (inferInstance : WeierstrassCurve.IsIntegral R U), ?_⟩⟩
   intro C hC _
   simp only [one_smul, ← Subtype.coe_le_coe]
@@ -50,7 +39,7 @@ theorem isMinimal_of_unit_invariants (W : WeierstrassCurve R)
   · let : WeierstrassCurve.IsIntegral R (W.baseChange K) := ⟨⟨W, rfl⟩⟩
     apply WeierstrassCurve.isMinimal_of_valuation_c₄_eq_one R (W.baseChange K)
     rw [show (W.baseChange K).c₄ = algebraMap R K W.c₄ by simp [WeierstrassCurve.baseChange]]
-    exact valuation_eq_one_of_unit W.c₄ h
+    exact Valuation.Integers.one_of_isUnit' h (fun x => valuation_le_one _ _)
 
 /-- Two minimal equations reduce to models related by an actual invertible
 residue-field variable change. This includes singular reductions. -/
@@ -67,7 +56,9 @@ theorem reduction_eq_variableChange (W : WeierstrassCurve R)
     change C.baseChange K • U = U.minimal R
     rw [hC]
     exact hD
-  have hi := integralModel_eq_of_baseChange (C • W) (U.minimal R) hm
+  have hi : (U.minimal R).integralModel R = C • W := by
+    apply WeierstrassCurve.map_injective (IsFractionRing.injective R K)
+    exact (WeierstrassCurve.baseChange_integralModel_eq R (U.minimal R)).trans hm.symm
   refine ⟨C.map (IsLocalRing.residue R), ?_⟩
   rw [WeierstrassCurve.reduction, hi, ← WeierstrassCurve.map_variableChange]
 
@@ -100,4 +91,4 @@ theorem localPolynomial_of_minimal_input (W : WeierstrassCurve R)
     simp
 
 end Local
-end VerifiedLcalc.EllipticCurve
+end WeierstrassCurve

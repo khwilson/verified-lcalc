@@ -1,6 +1,7 @@
 module
 
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
+public import VerifiedLcalc.EllipticCurve.Modularity.FastSign
 public import VerifiedLcalc.EllipticCurve.Modularity.CentralIntegral
 public import VerifiedLcalc.Analytic
 
@@ -19,7 +20,9 @@ theorem semistable : SemistableModel equation := by decide +kernel
 
 theorem arithmetic_level : semistableLevel equation = 37 := by decide +kernel
 
-theorem arithmetic_sign : semistableSign equation = -1 := by decide +kernel
+theorem arithmetic_sign : semistableSign equation = -1 := by
+  rw [semistableSign_eq_fast]
+  decide +kernel
 
 /-- This choice, and the results about it, depend on ellipticModularity. -/
 noncomputable def realization : ModularRealization equation :=

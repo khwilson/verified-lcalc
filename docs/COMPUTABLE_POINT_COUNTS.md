@@ -21,17 +21,23 @@ equation, and uses `Fintype.card` of its solution subtype plus one. Its general
 correctness theorem is `pointCountFinite_eq_pointCount`. This addition is local;
 no upstream TauCeti source or public API has been changed.
 
+The shared evaluator now supplies the certificate backend directly. The generic
+`pointCountFinite` and `frobeniusTraceFinite` work over finite commutative rings;
+their identification with TauCeti's mathematical count and trace requires a
+field. The integer-input adapters `computePointCount` and
+`computeFrobeniusTrace` specialize these algorithms to `ZMod p`. Prime-input
+correctness is proved in `Correctness.lean`. Their shared cardinality and trace
+bounds are also proved generically. The old integer-modulo enumerator and its
+`Fin`/`ZMod` conversion have been removed. This consolidation makes no claim of
+a measured performance improvement.
+
 Both counts include singular affine solutions. Counting only Mathlib's
 nonsingular point type would give the wrong answer at bad reduction primes.
-The regression examples check singular models in characteristics two and three
-and a smooth model over `ZMod 5`, using `decide +kernel`.
-
-The existing specialized integer-modulo enumerator is now called
-`VerifiedLcalc.EllipticCurve.computePointCount`. Its existing general bridge is
-named `computePointCount_eq_pointCount`. It remains the certificate backend
-pending a performance comparison and a migration of its affine-count bounds.
-The executable TauCeti companion is an upstream candidate, not a claim that
-these two computational implementations have already been consolidated.
+Regression examples cover singular models in characteristics two and three,
+a smooth model over `ZMod 5`, and the input adapters' boundary cases, using
+`decide +kernel`. Positive composite moduli retain a finite-ring computation,
+without a field interpretation. Modulus zero uses explicit sentinel outputs
+(count one, trace zero); prime-input correctness never uses that branch.
 
 The residue-field adapter `idealQuotientEquivZMod` is a separate issue. It
 composes Mathlib's `Rat.ringOfIntegersEquiv`, `Ideal.quotientEquiv`,

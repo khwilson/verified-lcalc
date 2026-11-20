@@ -16,8 +16,8 @@ abbrev W : WeierstrassCurve ℚ := WeierstrassCurve.baseChange Examples.curve11 
 realization's good-prime compatibility and its full coefficient matching. -/
 theorem prime_coefficient (p : ℕ) (hp : p.Prime)
     (hg : goodReduction Examples.curve11 p = true) :
-    W.LFunction p = frobeniusTrace Examples.curve11 p := by
-  have h := realization.goodPrimeCoefficients p hp hg
+    W.LFunction p = computeFrobeniusTrace Examples.curve11 p := by
+  have h := realization.goodPrimeCoefficients_computed p hp hg
   rw [realization.coefficients] at h
   exact_mod_cast h
 

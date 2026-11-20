@@ -16,7 +16,7 @@ theorem unit_invariants_of_coprime (e : (WeierstrassCurve ℤ))
   have h := (Int.isCoprime_iff_gcd_eq_one.mpr hs).map (Int.castRingHom R)
   rcases h with ⟨a, b, hab⟩
   have hr : a * (WeierstrassCurve.baseChange e R).Δ + b * (WeierstrassCurve.baseChange e R).c₄ = 1 := by
-    simpa only [weierstrass_discriminant e R, weierstrass_c4 e R, Int.coe_castRingHom] using hab
+    simpa only [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ, WeierstrassCurve.map_c₄, eq_intCast, Int.coe_castRingHom] using hab
   exact (IsLocalRing.isUnit_or_isUnit_of_add_one hr).imp
     (fun h => isUnit_of_mul_isUnit_right h) (fun h => isUnit_of_mul_isUnit_right h)
 
@@ -26,7 +26,7 @@ theorem semistable_isMinimal (e : (WeierstrassCurve ℤ))
     {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
     {K : Type*} [Field K] [Algebra R K] [IsFractionRing R K] :
     WeierstrassCurve.IsMinimal R ((WeierstrassCurve.baseChange e R).baseChange K) :=
-  isMinimal_of_unit_invariants _ (unit_invariants_of_coprime e hs R)
+  WeierstrassCurve.isMinimal_of_unit_invariants _ (unit_invariants_of_coprime e hs R)
 
 /-- The supplied integer equation gives every local Euler polynomial for a
 semistable curve, including split and nonsplit multiplicative bad primes. -/

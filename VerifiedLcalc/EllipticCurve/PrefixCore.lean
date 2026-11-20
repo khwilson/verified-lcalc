@@ -10,6 +10,6 @@ need no local-factor identification. Repeated primes within it require a trace
 whose magnitude rules out all bad local factors in the actual curve. -/
 def prefixSupported (e : (WeierstrassCurve ℤ)) (limit : Nat) : Bool :=
   ((List.range (limit + 1)).filter isPrime).all fun p =>
-    goodReduction e p && decide (limit < p ^ 2 ∨ 1 < (frobeniusTrace e p).natAbs)
+    goodReduction e p && decide (limit < p ^ 2 ∨ 1 < (computeFrobeniusTrace e p).natAbs)
 
 end VerifiedLcalc.EllipticCurve

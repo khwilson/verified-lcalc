@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.EllipticCurve.LocalModel
+public import VerifiedLcalc.UpstreamCandidates.TauCeti.LocalModel
 public import VerifiedLcalc.EllipticCurve.Residue
 
 @[expose] public section
@@ -38,9 +38,9 @@ theorem minimal_localPolynomial (e : (WeierstrassCurve ℤ))
     change (e.Δ : K) ≠ 0
     exact_mod_cast hn
   have hinput : (W.map (IsLocalRing.residue R)).map k.toRingHom = WeierstrassCurve.baseChange e (ZMod p) := by
-    simp only [W, weierstrass_map]
-  have ht : (W.map (IsLocalRing.residue R)).frobeniusTrace = frobeniusTrace e p := by
-    rw [frobeniusTrace_eq_tauceti, ← hinput, WeierstrassCurve.frobeniusTrace_map_equiv]
+    ext <;> simp [W, WeierstrassCurve.baseChange]
+  have ht : (W.map (IsLocalRing.residue R)).frobeniusTrace = computeFrobeniusTrace e p := by
+    rw [computeFrobeniusTrace_correct, ← hinput, WeierstrassCurve.frobeniusTrace_map_equiv]
   have hg : (W.map (IsLocalRing.residue R)).Δ ≠ 0 ↔ goodReduction e p = true := by
     rw [goodReduction_correct, ← hinput, WeierstrassCurve.map_Δ]
     constructor
@@ -58,7 +58,7 @@ theorem minimal_localPolynomial (e : (WeierstrassCurve ℤ))
       simp [modelFactor, hgood]
     · rw [ite_eq_right (mt hg.mp hgood)]
       simp [modelFactor, hgood]
-  have h := localPolynomial_of_minimal_input (K := K) W
+  have h := WeierstrassCurve.localPolynomial_of_minimal_input (K := K) W
   rw [ht, hc, hq] at h
   change U.localPolynomial R = _ at h
   rw [hU] at h

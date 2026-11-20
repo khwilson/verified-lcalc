@@ -10,7 +10,7 @@ open EllipticCurve
 
 theorem prefixSupported_correct (e : (WeierstrassCurve ℤ)) (limit : ℕ) :
     prefixSupported e limit = true ↔ ∀ p : ℕ, p ≤ limit → p.Prime →
-      goodReduction e p = true ∧ (p ^ 2 ≤ limit → 1 < (frobeniusTrace e p).natAbs) := by
+      goodReduction e p = true ∧ (p ^ 2 ≤ limit → 1 < (computeFrobeniusTrace e p).natAbs) := by
   simp only [prefixSupported, List.all_eq_true, List.mem_filter, List.mem_range,
     Bool.and_eq_true, decide_eq_true_eq]
   constructor
@@ -23,8 +23,8 @@ theorem prefixSupported_correct (e : (WeierstrassCurve ℤ)) (limit : ℕ) :
 
 theorem ModularRealization.prime_coefficient {e : (WeierstrassCurve ℤ)}
     (m : ModularRealization e) (p : ℕ) (hp : p.Prime) (hg : goodReduction e p = true) :
-    (WeierstrassCurve.baseChange e ℚ).LFunction p = frobeniusTrace e p := by
-  have h := m.goodPrimeCoefficients p hp hg
+    (WeierstrassCurve.baseChange e ℚ).LFunction p = computeFrobeniusTrace e p := by
+  have h := m.goodPrimeCoefficients_computed p hp hg
   rw [m.coefficients] at h
   exact_mod_cast h
 
@@ -51,8 +51,8 @@ theorem ModularRealization.coefficient_of_prefixSupported {e : (WeierstrassCurve
   have hk2 : 2 ≤ n.factorization p := by omega
   have hp2 : p ^ 2 ≤ limit :=
     (Nat.le_of_dvd (Nat.pos_of_ne_zero hn) ((hprime.pow_dvd_iff_le_factorization hn).mpr hk2)).trans hlim
-  have hlarge : (1 : ℤ) < |frobeniusTrace e p| := by
-    have h : (1 : ℤ) < ((frobeniusTrace e p).natAbs : ℤ) := by exact_mod_cast hb hp2
+  have hlarge : (1 : ℤ) < |computeFrobeniusTrace e p| := by
+    have h : (1 : ℤ) < ((computeFrobeniusTrace e p).natAbs : ℤ) := by exact_mod_cast hb hp2
     simpa only [Int.natCast_natAbs] using h
   let : Fact p.Prime := ⟨hprime⟩
   obtain ⟨q, hq, _, _, hr, hbad⟩ := LFunction_primePower_recurrence (WeierstrassCurve.baseChange e ℚ) p

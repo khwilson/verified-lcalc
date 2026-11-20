@@ -80,7 +80,7 @@ def tameConductorExponent (e : (WeierstrassCurve ℤ)) (p : ℕ) : ℕ :=
 
 noncomputable def tameLocalRootSpec (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime] : Int :=
   if (WeierstrassCurve.baseChange e (ZMod p)).Δ ≠ 0 then 1
-  else if (WeierstrassCurve.baseChange e (ZMod p)).c₄ ≠ 0 then -(frobeniusTrace e p)
+  else if (WeierstrassCurve.baseChange e (ZMod p)).c₄ ≠ 0 then -(computeFrobeniusTrace e p)
   else tameAdditiveRootSpec e p
 
 /-- Mathematical conductor product, evaluated only under minimality and no

@@ -24,8 +24,8 @@ theorem modularWitness_goodPrime (equation : (WeierstrassCurve ℤ))
     (nonsingular : equation.Δ ≠ 0) (p : Nat)
     (prime : p.Prime) (good : EllipticCurve.goodReduction equation p = true) :
     (UpperHalfPlane.qExpansion 1 (modularWitness equation nonsingular).form).coeff p =
-      (EllipticCurve.frobeniusTrace equation p : ℂ) :=
-  (modularWitness equation nonsingular).goodPrimeCoefficients p prime good
+      (EllipticCurve.computeFrobeniusTrace equation p : ℂ) :=
+  (modularWitness equation nonsingular).goodPrimeCoefficients_computed p prime good
 
 /-- This theorem's axiom audit includes `ellipticModularity`. -/
 theorem modularWitness_formL_differentiable (equation : (WeierstrassCurve ℤ))

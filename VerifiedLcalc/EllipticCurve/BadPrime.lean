@@ -49,22 +49,22 @@ theorem hasNodeRoot_iff_splits (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Pr
 /-- Exact singular-model trace, including p=2 and p=3. The executable search
 uses p tangent evaluations instead of p^2 equation evaluations. -/
 theorem singularTrace_correct (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime]
-    (hd : goodReduction e p = false) : singularTrace e p = frobeniusTrace e p := by
+    (hd : goodReduction e p = false) : singularTrace e p = computeFrobeniusTrace e p := by
   have hΔ : (WeierstrassCurve.baseChange e (ZMod p)).Δ = 0 := by
     by_contra h
     have := (goodReduction_correct e p).mpr h
     simp only [hd, Bool.false_eq_true] at this
-  rw [frobeniusTrace_eq_tauceti]
+  rw [computeFrobeniusTrace_correct]
   unfold singularTrace
   by_cases hc : e.c₄ % (p : Int) = 0
   · rw [ite_eq_left hc]
     symm
     apply WeierstrassCurve.frobeniusTrace_eq_zero_of_c₄_eq_zero _ hΔ
-    rw [weierstrass_c4]
+    simp only [WeierstrassCurve.baseChange, WeierstrassCurve.map_c₄, eq_intCast]
     exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr (Int.dvd_iff_emod_eq_zero.mpr hc)
   · rw [ite_eq_right hc]
     have hc' : (WeierstrassCurve.baseChange e (ZMod p)).c₄ ≠ 0 := by
-      rw [weierstrass_c4]
+      simp only [WeierstrassCurve.baseChange, WeierstrassCurve.map_c₄, eq_intCast]
       simpa only [ne_eq, ZMod.intCast_zmod_eq_zero_iff_dvd, Int.dvd_iff_emod_eq_zero] using hc
     by_cases hs : hasNodeRoot e p = true
     · rw [ite_eq_left hs]

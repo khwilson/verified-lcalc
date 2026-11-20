@@ -17,7 +17,7 @@ structure ModelEulerFactor where
 Identifying a singular-model factor with the curve's Euler factor requires
 minimality and the reduction-classification theorems; it is not automatic. -/
 def modelFactor (e : (WeierstrassCurve ℤ)) (p : Nat) : ModelEulerFactor :=
-  ⟨p, frobeniusTrace e p, if goodReduction e p then (p : Int) else 0⟩
+  ⟨p, computeFrobeniusTrace e p, if goodReduction e p then (p : Int) else 0⟩
 
 def modelFactors (e : (WeierstrassCurve ℤ)) (limit : Nat) : List ModelEulerFactor :=
   ((List.range (limit + 1)).filter isPrime).map (modelFactor e)
@@ -35,7 +35,7 @@ def modelCoefficients (e : (WeierstrassCurve ℤ)) (limit : Nat) : List Int :=
 
 theorem modelFactor_correct (e : (WeierstrassCurve ℤ)) (p : Nat) :
     (modelFactor e p).prime = p ∧
-    (modelFactor e p).trace = frobeniusTrace e p ∧
+    (modelFactor e p).trace = computeFrobeniusTrace e p ∧
     (modelFactor e p).quadratic = if goodReduction e p then (p : Int) else 0 := by
   exact ⟨rfl, rfl, rfl⟩
 

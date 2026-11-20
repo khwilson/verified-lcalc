@@ -1,9 +1,9 @@
 import VerifiedLcalcTests.Arithmetic.ArithmeticExamples
 
 -- Broader arithmetic is independent of the opt-in modularity axiom.
-/-- info: 'VerifiedLcalc.EllipticCurve.reduction_eq_variableChange' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'WeierstrassCurve.reduction_eq_variableChange' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms VerifiedLcalc.EllipticCurve.reduction_eq_variableChange
+#print axioms WeierstrassCurve.reduction_eq_variableChange
 
 /-- info: 'VerifiedLcalc.EllipticCurve.semistable_localPolynomial' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in

@@ -25,7 +25,11 @@ noncomputable def semistableLevel (equation : (WeierstrassCurve ℤ)) : Nat :=
   ∏ p ∈ (equation.Δ).natAbs.primeFactors, p
 
 noncomputable def semistableSign (equation : (WeierstrassCurve ℤ)) : Int :=
-  -(∏ p ∈ (equation.Δ).natAbs.primeFactors, -(frobeniusTrace equation p))
+  -(∏ p ∈ (equation.Δ).natAbs.primeFactors,
+    if hp : p.Prime then
+      letI : Fact p.Prime := ⟨hp⟩;
+      -((equation.baseChange (ZMod p)).frobeniusTrace)
+    else 1)
 
 /-- A modular realization using mathlib's actual curve Euler coefficients, cusp
 forms and q-expansions. The level and Fricke sign are existential, not arbitrary
@@ -45,14 +49,27 @@ structure ModularRealization (equation : (WeierstrassCurve ℤ)) where
     form (UpperHalfPlane.ofComplex (Complex.I * ((1 / t) / Real.sqrt level))) =
       (rootNumber : ℂ) * (t : ℂ) ^ 2 *
         form (UpperHalfPlane.ofComplex (Complex.I * (t / Real.sqrt level)))
-  goodPrimeCoefficients : ∀ p : Nat, p.Prime → goodReduction equation p = true →
-    (UpperHalfPlane.qExpansion 1 form).coeff p = (frobeniusTrace equation p : ℂ)
+  goodPrimeCoefficients : ∀ (p : Nat) (hp : p.Prime),
+    letI : Fact p.Prime := ⟨hp⟩
+    (equation.baseChange (ZMod p)).Δ ≠ 0 →
+      (UpperHalfPlane.qExpansion 1 form).coeff p =
+        ((equation.baseChange (ZMod p)).frobeniusTrace : ℂ)
   /-- General semistable arithmetic-conductor compatibility, user-authorized
   as an extension of the temporary axiom on 2026-11-17. -/
   semistableLevel_eq : SemistableModel equation → level = semistableLevel equation
   /-- The real-place sign times the multiplicative local signs. This does not
   assume an arbitrary caller-provided sign. -/
   semistableSign_eq : SemistableModel equation → rootNumber = semistableSign equation
+
+/-- Numerical compatibility is derived from the canonical mathematical trace,
+not supplied as an assumption about a particular evaluation algorithm. -/
+theorem ModularRealization.goodPrimeCoefficients_computed {e : WeierstrassCurve ℤ}
+    (m : ModularRealization e) (p : ℕ) (hp : p.Prime)
+    (hg : goodReduction e p = true) :
+    (UpperHalfPlane.qExpansion 1 m.form).coeff p = (computeFrobeniusTrace e p : ℂ) := by
+  letI : Fact p.Prime := ⟨hp⟩
+  have h := m.goodPrimeCoefficients p hp ((goodReduction_correct e p).mp hg)
+  simpa only [← computeFrobeniusTrace_correct e p] using h
 
 /-- Mathlib's entire L-function of a supplied cusp-form witness. Its
 coefficients match the actual curve. -/

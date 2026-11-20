@@ -1,6 +1,7 @@
 module
 
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
+public import VerifiedLcalc.EllipticCurve.Modularity.FastSign
 public import VerifiedLcalc.EllipticCurve.Modularity.CentralIntegral
 public import VerifiedLcalcTests.Arithmetic.Examples
 
@@ -22,7 +23,9 @@ theorem semistable : SemistableModel Examples.curve11 := by decide +kernel
 
 theorem arithmetic_level : semistableLevel Examples.curve11 = 11 := by decide +kernel
 
-theorem arithmetic_sign : semistableSign Examples.curve11 = 1 := by decide +kernel
+theorem arithmetic_sign : semistableSign Examples.curve11 = 1 := by
+  rw [semistableSign_eq_fast]
+  decide +kernel
 
 theorem realization_level : realization.level = 11 :=
   (realization.semistableLevel_eq semistable).trans arithmetic_level
@@ -55,8 +58,8 @@ theorem continuedL_agrees_with_curveLSeries (s : ℂ) (hs : 2 < s.re) :
 
 theorem form_coefficient_two :
     (UpperHalfPlane.qExpansion 1 realization.form).coeff 2 = (-2 : ℂ) := by
-  have h := realization.goodPrimeCoefficients 2 (by decide) (by decide)
-  have htrace : frobeniusTrace Examples.curve11 2 = -2 := by decide
+  have h := realization.goodPrimeCoefficients_computed 2 (by decide) (by decide)
+  have htrace : computeFrobeniusTrace Examples.curve11 2 = -2 := by decide
   simpa only [htrace, Int.cast_neg, Int.cast_ofNat] using h
 
 end VerifiedLcalcTests.Fixtures.AssumedCurve11

@@ -154,6 +154,86 @@ Required bridges still include:
 
 The authorized [general modularity assumption](../VerifiedLcalc/Assumptions/Modularity.lean), through [ArithmeticRealization](../VerifiedLcalc/EllipticCurve/Modularity/ArithmeticRealization.lean), still supplies these arithmetic normalization conclusions conditionally. Extracting local minimality and point-count theorems does not remove it. None of the interface reuse above proves small derivatives are exactly zero; [precision hypotheses](../VerifiedLcalc/Assumptions/Precision.lean) remain a separate, explicitly indexed boundary.
 
+
+## Focused follow-up: `LocalModel.lean` versus the complete minimal-model API
+
+The follow-up inspected [LocalModel](../VerifiedLcalc/UpstreamCandidates/TauCeti/LocalModel.lean), Mathlib `AlgebraicGeometry/EllipticCurve/Reduction.lean`, and the **full** pinned TauCeti `AlgebraicGeometry/EllipticCurve/{IntegralModel,MinimalModel/Basic,LocalPolynomial}.lean`. The selected `MinimalModel/Basic` port omits some later declarations, but already includes the minimal-model comparison and unit-scaling lemmas used here. The following distinctions avoid either reproving existing results or deleting a necessary bridge.
+
+| Local declaration | Exact reusable ingredients | Recommendation |
+| --- | --- | --- |
+| `integralModel_eq_of_baseChange` | Mathlib `baseChange_integralModel_eq`, `map_injective`, `IsFractionRing.injective` | Already a small convenience corollary, not a replacement definition. Keep or extract as a generic Mathlib lemma; no exact named counterpart was found. Its current statement already omits unnecessary DVR assumptions. |
+| `valuation_eq_one_of_unit` | Mathlib `Valuation.Integers.one_of_isUnit'` plus `HeightOneSpectrum.valuation_le_one` | Directly shorten the local proof, or call the existing valuation lemma at its consumers. |
+| `isMinimal_of_unit_discriminant` | Mathlib `IsMinimal`/`valuation_Δ_aux` API; extracted `minimal_of_small_discriminant` | No exact named unit-discriminant criterion was found in the inspected upstream files. It can become a corollary of the stronger extracted criterion after supplying its normalized valuation/integer-ring hypotheses; otherwise the current elementary proof is legitimate. |
+| `isMinimal_of_unit_invariants` | Previous unit-Δ criterion; TauCeti `isMinimal_of_valuation_c₄_eq_one` | The c4 branch already reuses that exact TauCeti theorem. Keep this as a union-of-sufficient-criteria convenience lemma, rather than presenting it as missing c4 theory. |
+| `reduction_eq_variableChange` | TauCeti `exists_smul_eq_minimal`, `VariableChange.exists_unit_algebraMap_eq_u_of_isMinimal_smul`; Mathlib `variableChange_integral_of_u_integral` | Already uses the comparison theory. Full TauCeti `VariableChange.exists_baseChange_eq_of_smul_eq` can package the descent step but does not itself supply the final residue-model equality. |
+| `localPolynomial_of_minimal_input` | Previous reduction bridge; TauCeti `variableChange_frobeniusTrace`, `localPolynomial_eq_of_hasGoodReduction`, `localPolynomial_eq_of_not_hasGoodReduction`; Mathlib reduction/ellipticity and discriminant-map API | Retain/extract as a useful generic supplied-minimal-model theorem. No exact complete counterpart was found in the pinned sources. |
+
+The exact unit-valuation API, in `Mathlib/RingTheory/Valuation/Integers.lean`, is more general than a DVR:
+
+```lean
+-- Existing theorem; surrounding ring/algebra/valuation parameters omitted.
+Valuation.Integers.one_of_isUnit'
+  (hx : IsUnit x)
+  (H : ∀ x, v (algebraMap O R x) ≤ 1) :
+  v (algebraMap O R x) = 1
+```
+
+Accordingly the current wrapper should admit the short proof shape
+`Valuation.Integers.one_of_isUnit' hx (fun x => valuation_le_one _ _)`.
+This is a source-based proposed proof, not a claimed elaboration/build result. The stronger variants `Valuation.Integers.one_of_isUnit`, `isUnit_iff_valuation_eq_one`, and `valuation_unit` require an explicit `v.Integers O` hypothesis; use them when that hypothesis is already available. The primed theorem avoids constructing that extra record just for this implication.
+
+For comparison/descent, full TauCeti `MinimalModel/Basic.lean` supplies:
+
+- `valuation_Δ_le_of_isMinimal_smul`, `valuation_Δ_eq_of_isMinimal_smul`, and `isMinimal_of_valuation_Δ_eq_of_isMinimal_smul`.
+- `isMinimal_baseChange_smul`, `valuation_u_eq_one_of_isMinimal_smul`, and `VariableChange.exists_unit_algebraMap_eq_u_of_isMinimal_smul`.
+- Later, `valuation_Δ_minimal_smul`, `valuation_c₄_minimal_smul`, and `HasSplitMultiplicativeReduction.of_isMinimal_smul`.
+
+The full `IntegralModel.lean` adds the following descent interface (with the integrally-closed-in ambient assumptions):
+
+```lean
+-- Existing theorem; R/K ambient typeclass assumptions omitted.
+VariableChange.exists_baseChange_eq_of_smul_eq
+  [IsIntegral R W₁] [IsIntegral R W₂]
+  (D : VariableChange K) (hD : D • W₁ = W₂) (u₀ : Rˣ)
+  (hau : algebraMap R K ↑u₀ = ↑D.u) :
+  ∃ C₀ : VariableChange R, C₀.baseChange K = D
+```
+
+Its `IsIntegrallyClosedIn` scope is broader than the DVR setting. The current Mathlib `variableChange_integral_of_u_integral` already handles the DVR situation used by `LocalModel`; importing an additional large file solely to trade one descent call for another is not automatically beneficial. The actual residue-field variable change and invariance of the trace still have to be derived.
+
+Minimality does not make Mathlib's arbitrarily chosen `W.minimal R` definitionally equal to the caller's equation. The integral models are related by an invertible variable change, which may produce singular residue equations. Preserving this distinction is why `reduction_eq_variableChange` and the supplied-input local-polynomial theorem remain useful even when all comparison machinery is imported. Neither a split-multiplicative transfer theorem nor equality of discriminant valuations by itself states the full local-polynomial equality.
+
 ## Acceptance gates for the proposed replacements
 
 Apply one family at a time. Retain old-to-new equality theorems or prove total-input equivalence; preserve arithmetic axiom audits; check ordinary theorem and import-only consumers. For changes intended to improve validation, measure the `decide +kernel` path separately from compiled evaluation, including previously expensive witness inputs. The root agent is the sole build owner; this audit's static source findings do not substitute for those checks. No source imports, implementation or build configuration were changed by this document.
+
+
+## Applied follow-up: shared evaluation and smaller correctness interface
+
+The backend now uses the generic finite-ring count and trace evaluator in
+`UpstreamCandidates/TauCeti/PointCount.lean`. Prime-field correctness connects
+it to TauCeti's existing mathematical definitions. The bespoke integer-modulo
+point enumeration, `residueEquiv`, solution-subtype conversion and manual list
+counting proofs have been removed. The redundant coefficient/base-change/map
+wrappers now use Mathlib directly. Modularity's good-prime compatibility and
+semistable sign formula use the canonical mathematical Frobenius trace;
+computational compatibility is derived, rather than assumed separately.
+
+`Correctness.lean` now contains only five project-specific results:
+
+| Result | Purpose |
+| --- | --- |
+| `isPrime_correct` | Reflect the backend's Boolean prime filter. |
+| `goodReduction_correct` | Reflect its Boolean discriminant test. |
+| `computePointCount_correct` | Specialize shared finite counting to integer input and prime modulus. |
+| `computeFrobeniusTrace_correct` | Specialize shared finite trace to the canonical TauCeti trace. |
+| `analysePrime_sound` | Assemble the backend record's guarantee using the preceding bridges. |
+
+The LocalModel recommendations above have been applied: the unit-valuation
+wrapper was removed in favor of Mathlib's primed theorem, and the single-use
+integral-model equality was inlined. The four substantive remaining bridges
+were extracted into the `WeierstrassCurve` namespace in
+`UpstreamCandidates/TauCeti/LocalModel.lean`; the production adapter file was
+deleted. Earlier source-only recommendations above record the audit that led
+to this change. These extractions do not solve the global-minimality
+localization/completion comparison or conductor/epsilon-factor obligations.

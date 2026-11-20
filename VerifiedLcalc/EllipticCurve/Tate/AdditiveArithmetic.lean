@@ -116,7 +116,8 @@ invariants. It becomes a statement about the elliptic curve once minimality is p
 theorem modelReduction_additive_iff (e : (WeierstrassCurve ℤ)) (p : ℕ) :
     modelReduction e p = .additive ↔
       (WeierstrassCurve.baseChange e (ZMod p)).Δ = 0 ∧ (WeierstrassCurve.baseChange e (ZMod p)).c₄ = 0 := by
-  rw [weierstrass_discriminant, weierstrass_c4]
+  simp only [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ,
+    WeierstrassCurve.map_c₄, eq_intCast]
   simp only [ZMod.intCast_zmod_eq_zero_iff_dvd, Int.dvd_iff_emod_eq_zero]
   by_cases hd : e.Δ % (p : ℤ) = 0 <;>
     by_cases hc : e.c₄ % (p : ℤ) = 0 <;>
@@ -134,7 +135,8 @@ theorem modelReduction_good_iff (e : (WeierstrassCurve ℤ)) (p : ℕ) :
 theorem modelReduction_multiplicative_iff (e : (WeierstrassCurve ℤ)) (p : ℕ) :
     modelReduction e p = .multiplicative ↔
       (WeierstrassCurve.baseChange e (ZMod p)).Δ = 0 ∧ (WeierstrassCurve.baseChange e (ZMod p)).c₄ ≠ 0 := by
-  rw [weierstrass_discriminant, weierstrass_c4]
+  simp only [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ,
+    WeierstrassCurve.map_c₄, eq_intCast]
   simp only [ne_eq, ZMod.intCast_zmod_eq_zero_iff_dvd, Int.dvd_iff_emod_eq_zero]
   by_cases hd : e.Δ % (p : ℤ) = 0 <;>
     by_cases hc : e.c₄ % (p : ℤ) = 0 <;>
@@ -142,9 +144,9 @@ theorem modelReduction_multiplicative_iff (e : (WeierstrassCurve ℤ)) (p : ℕ)
 
 /-- Additive reduction has zero trace, including in characteristics two and three. -/
 theorem additive_trace_zero (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime]
-    (ha : modelReduction e p = .additive) : frobeniusTrace e p = 0 := by
+    (ha : modelReduction e p = .additive) : computeFrobeniusTrace e p = 0 := by
   obtain ⟨hΔ, hc⟩ := (modelReduction_additive_iff e p).mp ha
-  rw [frobeniusTrace_eq_tauceti]
+  rw [computeFrobeniusTrace_correct]
   exact WeierstrassCurve.frobeniusTrace_eq_zero_of_c₄_eq_zero _ hΔ hc
 
 /-- At an additive prime of a minimal input equation the actual local Euler

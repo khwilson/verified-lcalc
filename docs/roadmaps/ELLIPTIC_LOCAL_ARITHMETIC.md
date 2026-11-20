@@ -20,7 +20,7 @@ Target `Mathlib/NumberTheory/ArithmeticFunction/LFunction.lean` or a small adjac
 
 ## M2: DVR minimality (TauCeti, eventually Mathlib)
 
-Relevant local files: [LocalModel](../../VerifiedLcalc/EllipticCurve/LocalModel.lean), [AdditiveArithmetic](../../VerifiedLcalc/EllipticCurve/Tate/AdditiveArithmetic.lean), [InvariantMinimality](../../VerifiedLcalc/EllipticCurve/Tate/InvariantMinimality.lean), [TwoAdicMinimality](../../VerifiedLcalc/EllipticCurve/Tate/TwoAdicMinimality.lean).
+Relevant local files: [LocalModel](../../VerifiedLcalc/UpstreamCandidates/TauCeti/LocalModel.lean), [AdditiveArithmetic](../../VerifiedLcalc/EllipticCurve/Tate/AdditiveArithmetic.lean), [InvariantMinimality](../../VerifiedLcalc/EllipticCurve/Tate/InvariantMinimality.lean), [TwoAdicMinimality](../../VerifiedLcalc/EllipticCurve/Tate/TwoAdicMinimality.lean).
 
 The reusable scope is `WeierstrassCurve K`, a DVR `R`, fraction field `K`, and an integral-model hypothesis. For example this is the existing c4 criterion:
 
@@ -105,9 +105,9 @@ For each PR: identify the original declaration and target file; compile against 
 A local upstream candidate, `WeierstrassCurve.pointCountFinite`, now enumerates
 solutions using `[Fintype F] [DecidableEq F]` and proves equality with TauCeti's
 existing `pointCount`. See [the API and migration notes](../COMPUTABLE_POINT_COUNTS.md).
-Retain the arbitrary-field specification. Benchmark the generic finite-field
-implementation against the integer-modulo enumerator before replacing the
-certificate backend, and transport its affine-count bounds through the equality.
+The certificate backend now uses the shared finite-ring evaluator and its
+generic bounds directly. Retain the arbitrary-field mathematical specification
+and measure kernel performance independently of the correctness proofs.
 
 ## Existing global-minimality API and completion bridge
 

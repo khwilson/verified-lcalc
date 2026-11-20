@@ -41,20 +41,12 @@ import VerifiedLcalcTests.Fixtures.Curve11Arithmetic
 #print axioms VerifiedLcalcTests.Fixtures.Cubic.certified_analytic_order
 
 
-#print axioms VerifiedLcalc.EllipticCurve.weierstrass_correct
-#print axioms VerifiedLcalc.EllipticCurve.residual_correct
-#print axioms VerifiedLcalc.EllipticCurve.onCurve_correct
-#print axioms VerifiedLcalc.EllipticCurve.onCurve_equation
-#print axioms VerifiedLcalc.EllipticCurve.affinePoints_correct
-#print axioms VerifiedLcalc.EllipticCurve.affinePoints_nodup
-#print axioms VerifiedLcalc.EllipticCurve.affineCount_correct
 #print axioms VerifiedLcalc.EllipticCurve.computePointCount_correct
-#print axioms VerifiedLcalc.EllipticCurve.frobeniusTrace_correct
+#print axioms VerifiedLcalc.EllipticCurve.computeFrobeniusTrace_correct
 #print axioms VerifiedLcalc.EllipticCurve.isPrime_correct
 #print axioms VerifiedLcalc.EllipticCurve.goodReduction_correct
 #print axioms VerifiedLcalc.EllipticCurve.analysePrime_correct
 #print axioms VerifiedLcalc.EllipticCurve.analysePrime_sound
-#print axioms VerifiedLcalc.EllipticCurve.computePointCount_eq_card_point
 #print axioms VerifiedLcalc.EllipticCurve.localPair_correct
 #print axioms VerifiedLcalc.EllipticCurve.localCoefficient_correct
 #print axioms VerifiedLcalc.EllipticCurve.localCoefficient_unique

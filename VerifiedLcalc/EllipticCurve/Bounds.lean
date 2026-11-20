@@ -8,25 +8,12 @@ public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
 namespace VerifiedLcalc.EllipticCurve
 
-/-- Elementary counting suffices for the deliberately loose numerical tail
-majorant: there are at most p² affine equation solutions. -/
-theorem affineCount_le_square (e : (WeierstrassCurve ℤ)) (p : Nat) :
-    affineCount e p ≤ p ^ 2 := by
-  unfold affineCount affinePoints
-  calc
-    _ ≤ ((List.finRange p).flatMap fun x =>
-        (List.finRange p).map fun y => (x, y)).length := List.length_filter_le _ _
-    _ = p ^ 2 := by simp [List.length_flatMap, pow_two]
-
-theorem frobeniusTrace_abs_le_square (e : (WeierstrassCurve ℤ)) (p : Nat)
-    (hp : 1 ≤ p) : |frobeniusTrace e p| ≤ (p : Int) ^ 2 := by
-  have hc : (affineCount e p : Int) ≤ (p : Int) ^ 2 := by
-    exact_mod_cast affineCount_le_square e p
-  have hp' : (1 : Int) ≤ p := by exact_mod_cast hp
-  have hpp : (p : Int) ≤ (p : Int) ^ 2 := le_self_pow₀ hp' (by decide)
-  simp only [frobeniusTrace, computePointCount, Nat.cast_add, Nat.cast_one]
-  apply abs_le.mpr
-  constructor <;> nlinarith [Int.natCast_nonneg (affineCount e p)]
+/-- Inherit the shared evaluator's elementary bound for the tail majorant. -/
+theorem computeFrobeniusTrace_abs_le_square (e : WeierstrassCurve ℤ) (p : Nat)
+    (hp : 1 ≤ p) : |computeFrobeniusTrace e p| ≤ (p : Int) ^ 2 := by
+  letI : NeZero p := ⟨by omega⟩
+  simpa only [computeFrobeniusTrace, dif_neg (NeZero.ne p), ZMod.card] using
+    (e.baseChange (ZMod p)).frobeniusTraceFinite_abs_le_square
 
 /-- A safe weak prime-power coefficient bound. It uses elementary trace bounds
 and the recurrence, not the Weil conjectures or a modularity assumption. -/
@@ -79,7 +66,7 @@ theorem modelFactor_bounds (e : (WeierstrassCurve ℤ)) (p : Nat) (hp : p.Prime)
     |(modelFactor e p).trace| ≤ (p : Int) ^ 2 ∧
       |(modelFactor e p).quadratic| ≤ (p : Int) := by
   constructor
-  · exact frobeniusTrace_abs_le_square e p hp.one_lt.le
+  · exact computeFrobeniusTrace_abs_le_square e p hp.one_lt.le
   · unfold modelFactor
     split <;> simp
 

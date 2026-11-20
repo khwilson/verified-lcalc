@@ -49,9 +49,9 @@ added to the projective-model count.
 
 Target: TauCeti `PointCount.lean`. Acceptance: replace the pinned-port import
 with the upstream import, check characteristic-two/three singular examples,
-and compare kernel evaluation with the integer-modulo enumerator before
-replacing that implementation. The general equality proof is not a performance
-measurement.
+and retain the finite-ring cardinality/trace bounds. The backend now uses this
+shared evaluator, replacing its integer-modulo enumerator. Benchmark kernel
+evaluation separately; the equality proof is not a performance measurement.
 
 ## TC-04 — reuse existing global minimality; prove the completion bridge
 
@@ -112,10 +112,28 @@ of auxiliary choices. This needs epsilon-factor infrastructure, not just TC-06.
 Preserve the GPL provenance of the existing wild tables; review licensing before
 moving their implementation into an Apache project.
 
+## TC-08 — supplied minimal-model bridges
+
+Status: proved source in
+[`LocalModel.lean`](../VerifiedLcalc/UpstreamCandidates/TauCeti/LocalModel.lean).
+
+Four generic bridges remain: `isMinimal_of_unit_discriminant`,
+`isMinimal_of_unit_invariants`, `reduction_eq_variableChange`, and
+`localPolynomial_of_minimal_input`. They reuse the existing comparison,
+unit-c4 minimality, variable-change descent and trace-invariance APIs. No exact
+complete counterparts were found at the audited pin. The old unit-valuation
+wrapper was replaced by Mathlib's `Valuation.Integers.one_of_isUnit'`; the
+single-use integral-model equality helper was inlined using existing map APIs.
+
+Target: TauCeti minimal-model/local-polynomial files. Acceptance: preserve the
+ambient ring and minimality hypotheses, audit standard axioms, and test supplied
+minimal models including singular reductions. These results do not prove the
+localization/completion bridge in TC-04.
+
 ## Submission and validation
 
-The first three entries have compiled source rather than proposed axioms. The
-remaining entries are proof obligations. Run `make test-lean` and
+TC-01, TC-02, TC-03 and TC-08 have compiled source rather than proposed axioms.
+TC-04 through TC-07 remain proof obligations. Run `make test-lean` and
 `tests/UpstreamCandidates.lean` against the agreed pin, inspect axiom dependencies,
 then replace local imports with the accepted upstream APIs. Modular realizations,
 checked derivative enclosures and certification remain separate from these local

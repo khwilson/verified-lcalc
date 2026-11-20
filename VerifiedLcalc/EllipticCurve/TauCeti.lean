@@ -11,18 +11,6 @@ public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.LFu
 namespace VerifiedLcalc.EllipticCurve
 open WeierstrassCurve
 
-/-- Our enumerator agrees with TauCeti's projective-model count, including at
-singular reduction. -/
-theorem computePointCount_eq_pointCount (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime] :
-    computePointCount e p = (WeierstrassCurve.baseChange e (ZMod p)).pointCount := by
-  rw [computePointCount_correct, WeierstrassCurve.pointCount_def]
-  rfl
-
-theorem frobeniusTrace_eq_tauceti (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime] :
-    frobeniusTrace e p = (WeierstrassCurve.baseChange e (ZMod p)).frobeniusTrace := by
-  rw [frobeniusTrace, computePointCount_eq_pointCount, WeierstrassCurve.frobeniusTrace_def]
-  simp [Nat.card_eq_fintype_card]
-
 section Local
 variable {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
   {K : Type*} [Field K] [Algebra R K] [IsFractionRing R K]
@@ -37,8 +25,8 @@ theorem localPolynomial_eq_modelFactor (e : (WeierstrassCurve ℤ)) (p : ℕ)
     W.localPolynomial R =
       1 - Polynomial.C (modelFactor e p).trace * Polynomial.X +
         Polynomial.C (modelFactor e p).quadratic * Polynomial.X ^ 2 := by
-  have ht : ((W.minimal R).reduction R).frobeniusTrace = frobeniusTrace e p := by
-    rw [frobeniusTrace_eq_tauceti, ← hmodel, WeierstrassCurve.frobeniusTrace_map_equiv]
+  have ht : ((W.minimal R).reduction R).frobeniusTrace = computeFrobeniusTrace e p := by
+    rw [computeFrobeniusTrace_correct, ← hmodel, WeierstrassCurve.frobeniusTrace_map_equiv]
   have hc : Nat.card (IsLocalRing.ResidueField R) = p := by
     rw [Nat.card_congr k.toEquiv]
     simp [Nat.card_eq_fintype_card]
