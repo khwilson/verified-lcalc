@@ -19,7 +19,12 @@ syntax (name := benchmarkEC) "benchmark_ec " ident str str : command
   let start ← IO.monoNanosNow
   let result ← try
     elabCommand (← `(certify_ec $name from_json $file))
-    if (← get).messages.hasErrors then throwError "Certificate command logged an error"
+    if (← get).messages.hasErrors then
+      let mut details : List String := []
+      for message in (← get).messages.reportedPlusUnreported.toList do
+        if message.severity == .error then
+          details := details ++ [← message.toString]
+      throwError "Certificate command logged an error: {String.intercalate "\n" details}"
     pure ("checked", "")
   catch error =>
     let message ← error.toMessageData.toString
@@ -34,3 +39,6 @@ syntax (name := benchmarkEC) "benchmark_ec " ident str str : command
   stdout.flush
 
 end ECBenchmark
+end
+
+@[expose] public section

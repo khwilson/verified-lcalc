@@ -81,10 +81,11 @@ has been installed. See [NUMERICAL_RANK.md](docs/NUMERICAL_RANK.md) and
 
 The [Tau Ceti roadmap](docs/TAUCETI_ROADMAP.md) separates reusable upstream theory
 from project-specific certificate machinery. The
-[performance report](docs/CERTIFY_EC_PERFORMANCE.md) records current kernel
-validation timings, batched throughput, and historical experiments. The current three-curve benchmark averages 2.73
-seconds per curve including shared imports; isolated commands take 0.22–1.83
-seconds after imports.
+[performance report](docs/CERTIFY_EC_PERFORMANCE.md) records kernel validation
+timings and historical experiments. A [1,000-curve run](docs/CERTIFY_EC_DATASET_BENCHMARK.md)
+produced 952 certificates in 915 seconds of active validation time, averaging
+0.96 seconds per successful certificate in batches of 20. The other 48 inputs
+hit insufficient minimality criteria.
 
 ## Development and historical data
 

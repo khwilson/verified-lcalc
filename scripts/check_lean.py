@@ -61,6 +61,7 @@ def main() -> None:
         run(["lake", "build", *audit_modules])
     for source in (
         "tests/CertifyEC.lean",
+        "tests/CertifyECSerialization.lean",
         "tests/CertifyECJson.lean",
         "tests/CurveHypotheses.lean",
         "tests/FinitePointCount.lean",

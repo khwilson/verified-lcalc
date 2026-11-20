@@ -25,13 +25,19 @@ The runner launches the pinned Lean binary with a library path resolved once
 through Lake. Each batch starts a new Lean process and writes a new `.olean`;
 its wall and CPU measurements include import, checking, and serialization.
 Individual command timings exclude process imports and output serialization.
+On macOS they use a different clock from Python’s active-elapsed timer: Lean’s
+clock includes system suspension. The runner now records a matching outer clock
+as well. Use active batch time and CPU time for computation-throughput claims;
+do not treat suspend-affected command outliers as slow mathematical checks.
 A final separate Lean process imports all successful batch modules and applies
 every exported analytic-rank theorem. Reference ranks enter only afterward for
 a separate comparison. Analytic theorems retain the existing modularity axiom.
 
 Generation time, individual validation times, batch wall/CPU times, quantiles,
 conductor summaries, failed/inconclusive outcomes, fingerprints and import-reuse
-results are saved in the report. Generated JSON witnesses, Lean sources, logs
+results are saved in the report. Conductor summaries add individual command
+times; startup for a batch spanning several conductors is not assigned to one
+conductor. Generated JSON witnesses, Lean sources, logs
 and compiled artifacts stay in the ignored `.lake/ec-dataset-<fingerprint>/`
 directory. The report includes that path for inspection. These artifacts are
 rebuildable local experiment output, not a distributed proof cache.

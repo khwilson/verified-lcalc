@@ -17,6 +17,7 @@ certificates:
 
 test-certificates: certificates
 	lake -f lakefile.certificates.lean env lean tests/CertifyEC.lean
+	lake -f lakefile.certificates.lean env lean tests/CertifyECSerialization.lean
 	lake -f lakefile.certificates.lean env lean tests/CertifyECJson.lean
 	lake -f lakefile.certificates.lean build VerifiedLcalcTests VerifiedLcalc.Certification.Precision VerifiedLcalc.UpstreamCandidates.TauCeti.PointCount
 	lake -f lakefile.certificates.lean env lean tests/CurveHypotheses.lean

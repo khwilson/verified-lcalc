@@ -23,10 +23,20 @@ deriving instance ToExpr for CentralResult
 deriving instance ToExpr for DerivativeResult
 deriving instance ToExpr for EllipticWitness
 
-/-- Reify supplied data using Lean syntax, with no source-string interpolation. -/
-def literalSyntax (e : Expr) : CommandElabM (TSyntax `term) :=
-  liftTermElabM <| withOptions (fun o => o.setBool `pp.fullNames true) <|
+/-- Display omissions must never become holes in generated witness data. -/
+partial def hasDisplayOmission (stx : Syntax) : Bool :=
+  (stx.isAtom && stx.getAtomVal == "⋯") || stx.getArgs.any hasDisplayOmission
+
+/-- Reify supplied data using Lean syntax, independently of display truncation
+settings. The budget supports the bounded JSON profile; exhaustion is an error. -/
+def literalSyntax (e : Expr) : CommandElabM (TSyntax `term) := do
+  let stx ← liftTermElabM <| withOptions (fun o =>
+      o.setBool `pp.fullNames true |>.setBool `pp.deepTerms true
+        |>.setBool `pp.proofs true |>.set `pp.maxSteps (1000000 : Nat)) <|
     Lean.PrettyPrinter.delab e
+  if hasDisplayOmission stx.raw then
+    throwError "certify_ec cannot serialize this witness without a display omission"
+  return stx
 
 /-- Stop on elaboration errors instead of continuing with recovered sorry terms. -/
 def emit (command : Syntax) : CommandElabM Unit := do

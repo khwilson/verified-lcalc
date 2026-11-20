@@ -12,6 +12,7 @@ import os
 import platform
 import resource
 import subprocess
+import sys
 import time
 from collections import Counter
 from pathlib import Path
@@ -24,10 +25,20 @@ def captured(args: list[str]) -> str:
     return subprocess.check_output(args, cwd=ROOT, text=True).strip()
 
 
+def lean_clock_now() -> float:
+    # Apple's libc++ steady_clock uses CLOCK_MONOTONIC_RAW, unlike Python's
+    # mach_absolute_time-based perf_counter. Record both instead of conflating
+    # system suspension with computation time.
+    if sys.platform == "darwin":
+        return time.clock_gettime(time.CLOCK_MONOTONIC_RAW)
+    return time.perf_counter()
+
+
 def timed(
     args: list[str], cwd: Path, env: dict[str, str], log: Path, timeout: int
 ) -> dict[str, Any]:
     before = resource.getrusage(resource.RUSAGE_CHILDREN)
+    start_lean_clock = lean_clock_now()
     start = time.perf_counter()
     status = "finished"
     with log.open("w") as stream:
@@ -45,11 +56,13 @@ def timed(
         except subprocess.TimeoutExpired:
             code, status = None, "timeout"
     elapsed = time.perf_counter() - start
+    lean_elapsed = lean_clock_now() - start_lean_clock
     after = resource.getrusage(resource.RUSAGE_CHILDREN)
     return {
         "status": status,
         "returncode": code,
         "wall_seconds": elapsed,
+        "lean_clock_elapsed_seconds": lean_elapsed,
         "cpu_seconds": after.ru_utime
         + after.ru_stime
         - before.ru_utime
@@ -92,6 +105,10 @@ def main() -> None:
     validator = ROOT / "benchmarks/ValidateEC.lean"
     identity = {
         "source_sha256": digest(source),
+        "mathlib_revision": captured(
+            ["git", "-C", str(ROOT.parent / "mathlib4"), "rev-parse", "HEAD"]
+        ),
+        "actual_lean_version": captured(["lean", "--version"]),
         "count": args.count,
         "batch_size": args.batch_size,
         "timeout": args.timeout,
@@ -119,6 +136,12 @@ def main() -> None:
         "platform": platform.platform(),
         "work_directory": str(work.relative_to(ROOT)),
         "selection": "First count source rows, without rank filtering",
+        "timing_clocks": {
+            "batch_wall_seconds": time.get_clock_info("perf_counter").implementation,
+            "command_seconds": "Lean std::chrono::steady_clock; includes suspend on macOS",
+            "lean_clock_elapsed_seconds": "CLOCK_MONOTONIC_RAW on macOS; perf_counter otherwise",
+            "note": "Batch wall_seconds excludes system suspension on macOS; command timings do not",
+        },
         "curves": [],
         "batches": [],
         "complete": False,

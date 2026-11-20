@@ -24,3 +24,7 @@ dependencies for the localization and global-minimality witness proofs.
 characteristic-two/composite fallbacks and standard-only axiom dependencies.
 `IntervalMultiplication.lean` exhaustively compares sign-based interval products
 with the four-corner formula on a small endpoint grid.
+
+`CertifyECSerialization.lean` covers the 64-coefficient 245.a1 regression, a
+128-coefficient data round-trip, hostile pretty-printing limits, ordinary
+mathematical use of the resulting theorem and standard-only numerical axioms.

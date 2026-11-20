@@ -1,5 +1,10 @@
 # Certificate checking performance
 
+The [1,000-curve benchmark](CERTIFY_EC_DATASET_BENCHMARK.md) subsequently produced
+952 certificates in 915 seconds of active validation time, including a retry
+after a serialization fix. The remaining 48 inputs hit insufficient minimality
+criteria. That report separates batch throughput, setup, import reuse and clocks.
+
 ## Current implementation (2026-11-20)
 
 Validation remains `decide +kernel`, with the same axiom audits and supplied

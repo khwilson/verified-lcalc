@@ -1,0 +1,375 @@
+{
+  "schema": "verified-lcalc.dataset-benchmark-follow-up.v1",
+  "initial_report": "dataset-1000.json",
+  "curve": "245.a1",
+  "witness_sha256": "35663d270a95cfb24abff47dcb11f49364dae6f1bc4012a263fc16bc742ee913",
+  "fix": "Preserve deep terms and reject display omissions in witness serialization",
+  "command_source_sha256": "14460d3b2217200cd8e6568eb4af329b8be3f61b7fad5ef8a598cdf99d7a762a",
+  "validation": {
+    "status": "finished",
+    "returncode": 0,
+    "wall_seconds": 18.692068292060867,
+    "lean_clock_elapsed_seconds": 18.692093041958287,
+    "cpu_seconds": 10.206262000000002
+  },
+  "compiled_reuse": {
+    "status": "finished",
+    "returncode": 0,
+    "wall_seconds": 5.421712249983102,
+    "lean_clock_elapsed_seconds": 5.421725624939427,
+    "cpu_seconds": 6.262079000000001
+  },
+  "certified_rank": 1,
+  "reference_rank": 1,
+  "reference_matches": true,
+  "total_checked_after_retry": 952,
+  "remaining_inconclusive": 48,
+  "initial_plus_retry_validation_active_seconds": 914.7246530831326,
+  "initial_plus_retry_validation_cpu_seconds": 694.4771850000002,
+  "retry_olean_sha256": "de73e43a06e4ba23d45f14e093f0f41a2c4d51a135fea3bc86eff28488b22ffe",
+  "minimality_diagnostics": [
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "112.c5"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "112.c4"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "112.c6"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "112.c3"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "112.c2"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "112.c1"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "128.b2"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "128.d2"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        3
+      ],
+      "label": "162.c4"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        3
+      ],
+      "label": "162.c1"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        3
+      ],
+      "label": "162.d1"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "176.b3"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "176.b2"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "176.b1"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "208.a3"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "208.a2"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "208.a1"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "208.d2"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "208.d1"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.b8"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.b6"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.b7"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.b4"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.b5"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.b3"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.b2"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.b1"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.d7"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.d6"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.d4"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.d5"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.d2"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.d8"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.d1"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "240.d3"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        3
+      ],
+      "label": "243.b1"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "256.a1"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "256.b2"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "256.c1"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "256.d1"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "272.b3"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "272.b2"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "272.b1"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "272.b4"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "272.d4"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "272.d3"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "272.d2"
+    },
+    {
+      "factorization_matches": true,
+      "failed_primes": [
+        2
+      ],
+      "label": "272.d1"
+    }
+  ],
+  "minimality_diagnostic_method": "48 exact minimalityWitness? = none statements checked using decide +kernel, then Lean runtime decomposition of failing sufficient criteria",
+  "minimality_audit_source_sha256": "599a7ffced65e5bc31cb9f164d54d8bec5fe5212bfb70d1f44d8efb038cca0e1",
+  "data_identity_audit": {
+    "witnesses_checked": 952,
+    "all_equations_conductors_labels_and_witness_hashes_match": true,
+    "original_harness_commit_matches_recorded_fingerprints": "306289f"
+  }
+}
