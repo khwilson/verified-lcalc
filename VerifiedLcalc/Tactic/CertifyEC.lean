@@ -2,6 +2,7 @@ module
 
 public import VerifiedLcalc.Certification.DerivativeCertification
 public import VerifiedLcalc.Tactic.CertifyECData
+public import VerifiedLcalc.Tactic.CertifyECPoints
 public meta import Lean
 
 /-!

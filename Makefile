@@ -20,6 +20,7 @@ test-certificates: certificates
 	lake -f lakefile.certificates.lean env lean tests/CertifyECSerialization.lean
 	lake -f lakefile.certificates.lean env lean tests/CertifyECJson.lean
 	lake -f lakefile.certificates.lean env lean tests/CertifyECData.lean
+	lake -f lakefile.certificates.lean env lean tests/CertifyECPoints.lean
 	lake -f lakefile.certificates.lean build VerifiedLcalcTests VerifiedLcalc.Certification.Precision VerifiedLcalc.UpstreamCandidates.TauCeti.PointCount
 	lake -f lakefile.certificates.lean env lean tests/CurveHypotheses.lean
 	lake -f lakefile.certificates.lean env lean tests/FinitePointCount.lean
@@ -30,6 +31,7 @@ test-certificates: certificates
 	lake -f lakefile.certificates.lean env lean tests/OddPointCount.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/CertifiedECConsumer.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/CertifiedECDataConsumer.lean
+	lake -f lakefile.certificates.lean env lean tests/consumers/CertifiedECPointsConsumer.lean
 
 .PHONY: test-lean
 test-lean:

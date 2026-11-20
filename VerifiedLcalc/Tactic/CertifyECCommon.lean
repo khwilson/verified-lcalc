@@ -43,7 +43,10 @@ def literalSyntax (e : Expr) : CommandElabM (TSyntax `term) := do
 
 /-- Stop on elaboration errors instead of continuing with recovered sorry terms. -/
 def emit (command : Syntax) : CommandElabM Unit := do
-  elabCommand command
+  -- Certificates are audited immediately. Finish generated proof elaboration
+  -- before inspecting errors or dependencies, including caller-supplied tactics.
+  withScope (fun scope => { scope with opts := scope.opts.setBool `Elab.async false }) do
+    elabCommand command
   if (← get).messages.hasErrors then
     throwError "certify_ec stopped: a generated declaration failed to check"
 

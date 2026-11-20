@@ -7,6 +7,17 @@ are checked against this project's Lean 4.36.0-rc2 / mathlib
 
 Source repository: https://github.com/TauCetiProject/TauCeti
 
+The Nagell–Lutz discriminant dependency chain is selected from the clean local
+checkout at `d01c9825761c7e6168457c383458afa8668196a7`. It proves the exact
+long-model torsion obstruction used by `EllipticCurve/InfiniteOrder.lean`.
+Adaptations for the pinned Mathlib reuse its existing elliptic-sequence
+zero/negation/extensionality and complement-product proofs, qualify the root
+`normEDS` against a new namespace alias, distinguish the general-ring
+complement evaluation from Mathlib's integer specialization, and normalize
+polynomial constants in two universal-curve proofs. No mathematical assumption
+is added. Original source hashes, ported hashes, and file-level adaptations
+are recorded in `PROVENANCE.json`.
+
 - The local-polynomial dependency chain and completion residue-field proof come from the clean local checkout at
   d01c9825761c7e6168457c383458afa8668196a7.
 - The multiplicativity excerpt in LFunction/Basic.lean comes from

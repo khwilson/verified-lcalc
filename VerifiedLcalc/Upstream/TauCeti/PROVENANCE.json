@@ -122,6 +122,392 @@
       "ported_sha256": "7cdb871bebdfc764341abaf1c8dd365eefa8ff608ac6dab35d30f67b9f18451a",
       "excerpt": "Declarations through neg_mem_integralPoints_iff only. Replace imports for omitted later results with Mathlib.Affine.Point; retain theorem namespaces and proof bodies.",
       "source_git_blob": "17ed640a6656bedeb89b72aeadd46d0ebda8b313"
+    },
+    {
+      "source": "TauCeti/Algebra/Squarefree.lean",
+      "sha256": "912274fa266adda4d44987b1a17ec7a03b5e56a8bcc945aa901638d2f6f65e3a",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/Algebra/Squarefree.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "912274fa266adda4d44987b1a17ec7a03b5e56a8bcc945aa901638d2f6f65e3a",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Point/Basic.lean",
+      "sha256": "14f5ff0ea8f9c52a485903615d1b21bd0b47883d1d2e1391b8f704ddb850d669",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Point/Basic.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "14f5ff0ea8f9c52a485903615d1b21bd0b47883d1d2e1391b8f704ddb850d669",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Eval.lean",
+      "sha256": "88a2c046ff908f7167db5777383d87057ae7b2d57b28b85f82f5efeba04af45b",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Eval.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "88a2c046ff908f7167db5777383d87057ae7b2d57b28b85f82f5efeba04af45b",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Eval.lean",
+      "sha256": "529f4c205dd090099b38fb7640c625cd8c774073a2ff3690f988402f16583edf",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Eval.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "20c111dce1409bba9df92960a66bbb4a91ea2ac9a10c59289374bdc62dd93b9b",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Integral.lean",
+      "sha256": "8325b386ef5445a7b8e09f15c9273ae5d8cc31eb7163dadebaf43b381b46e380",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Integral.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "8325b386ef5445a7b8e09f15c9273ae5d8cc31eb7163dadebaf43b381b46e380",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/Weierstrass.lean",
+      "sha256": "e1d33bfc435a887c6eac55fe2dc73afe19749358f4e9dfdcc00905eb0009f6e7",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/Weierstrass.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "e1d33bfc435a887c6eac55fe2dc73afe19749358f4e9dfdcc00905eb0009f6e7",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Cusp.lean",
+      "sha256": "0194526072098d58d44d34f2cc93dc24e0156aa634f79c67c6fa99fadf752693",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Cusp.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "aa5d2c24f15f951227f3bd1c50c80d1c9ce48fe05a524ad816013d5da0a22438",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/Invariant/Basic.lean",
+      "sha256": "b79a36d6669dc6faa186bf891daaafa1df96945c931c5026e1015082ab55dfba",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/Invariant/Basic.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "b79a36d6669dc6faa186bf891daaafa1df96945c931c5026e1015082ab55dfba",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Invariant.lean",
+      "sha256": "28e81a3b532b63bfe214c69f2117bc1656b4e1a008b8ce342ee4c47b85cc792f",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Invariant.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "a9222bf6827b7137f44389a27c3595b98517c8b3696d8af187240d9cca5a51b2",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/Recurrence.lean",
+      "sha256": "0109214d3f415a1fd9745baa52b6cff1d437cf4c930a6d1a2d1ffb11aeda925f",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/Recurrence.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "0109214d3f415a1fd9745baa52b6cff1d437cf4c930a6d1a2d1ffb11aeda925f",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/Transfer.lean",
+      "sha256": "fdf186abe0afbd7687973ac5902f8950103ac9e5026718fe33a11900d306b075",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/Transfer.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "fdf186abe0afbd7687973ac5902f8950103ac9e5026718fe33a11900d306b075",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/SignEquivariance.lean",
+      "sha256": "a3c62f0dfb6e5512e3e68a1b80b0c5fadf64cca9affcc11b2c391507df5c7033",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/SignEquivariance.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "a3c62f0dfb6e5512e3e68a1b80b0c5fadf64cca9affcc11b2c391507df5c7033",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/Descent.lean",
+      "sha256": "4706d3cdab241ce303a1d3fb27edafa8b764ce744b1ed8e662a096b75716e5cb",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/Descent.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "53eb65a376177bdb86dbbc5851ce8528f3910695cbf63f5d2b83b32fc4662a84",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port.",
+        "Qualify root normEDS to avoid a newer Mathlib namespace alias."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/Universal.lean",
+      "sha256": "ff3580d6872e040ffde859e6f0fed8667df4953b76c98f98e8f137cb703ba8cd",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/Universal.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "0a9cdc3e6d04b32b30e15e42aeac2f58c7973ae8f8f849c49b48de0568f51a44",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port.",
+        "Qualify root normEDS to avoid a newer Mathlib namespace alias."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/Elementary.lean",
+      "sha256": "8694dff834bb0de0a79fc28746951774c1e90795182032c70674bd3cd07ebec0",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/Elementary.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "848133c70024262193c749db70e0010fa579d66074186eb803250d98a8ecb153",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port.",
+        "Use an import shim: all declarations in this source are already proved by the pinned Mathlib."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/Ext.lean",
+      "sha256": "cad6dfd4ae859edb20191dca3247ebb55c691f53070ec11b41170bd84835cf04",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/Ext.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "133ef7033391fe54a16b050e5e4b57edb4ba5326aacd6c30451ce67100fa4a9e",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port.",
+        "Use an import shim: all declarations in this source are already proved by the pinned Mathlib."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/NormEDS.lean",
+      "sha256": "d63d9bca90baaede2d76f8aee43e86c21a0794ccbe0980be5ed235e0d7cd171a",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/NormEDS.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "bd8fb94683ed19e5237feeb571147fbb3c7e32b79cfc50178e2212cd7ae9347e",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port.",
+        "Qualify root normEDS to avoid a newer Mathlib namespace alias.",
+        "Rename the general-ring complement evaluation to distinguish Mathlib's integer specialization.",
+        "Remove the extra blank line at end of file."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/NormEDS.lean",
+      "sha256": "69ed0ceb2876f43da93c252517eec71bb0f35a9d09d615172b037bbe4cce0d69",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/NormEDS.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "a413be6a55799cda5fc0020c745f2582443e5989793ed601725b8a24451ab4d9",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port.",
+        "Qualify root normEDS to avoid a newer Mathlib namespace alias."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/Universal.lean",
+      "sha256": "1cf9168ce45d6ec584bb8d8aa39b74403c15163a74b67a72b8b20c6bbf6802ee",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/Universal.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "ce167a4c9ca9f7ad89a31316535b064a273cadebf44f8ee2f3d8dddbb050dbf4",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port.",
+        "Normalize AddMonoidAlgebra.single polynomial constants in two universal-curve proofs."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/ComplAux.lean",
+      "sha256": "c4e99fc00e986e0c39773489481146350debffb1323ed14cc1c409bd1e2a8362",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/ComplAux.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "f3833d6b395d67f7d476d0f2463c92d69b8b999fc7557f67ec0b0f1576746b03",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port.",
+        "Qualify root normEDS to avoid a newer Mathlib namespace alias."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/Complement.lean",
+      "sha256": "d8e877ad5466fcac2848c95ea28aa11c2ad5a76126ea4903064dd90c02505e9b",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/Complement.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "c917b38c741c750f98663b2e26381b571ebef79057a08dd87da9acee179f56ad",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port.",
+        "Qualify root normEDS to avoid a newer Mathlib namespace alias.",
+        "Omit the duplicate complement-product derivation and use Mathlib.normEDS_mul_complEDS, with named parameters."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/Invariant/NormEDS.lean",
+      "sha256": "9a63df87f587448a908a155f1b48815633bb5e6fee5612ab7eb2632f450ee335",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/Invariant/NormEDS.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "5268b01b5ae45b4bf64d0bbb201ed14096281a611c8c4ac8298d74b497a2b92a",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port.",
+        "Qualify root normEDS to avoid a newer Mathlib namespace alias."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/Six.lean",
+      "sha256": "78977995720d17843dc92ab4c29a52b2a4c4f5640c0a0c3f802a470f9b71efec",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/Six.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "cba7b6a35875ee1e0c0e1385fed8fe8142ccaa2e389a9dfa6a11a8fb5a786b84",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port.",
+        "Qualify root normEDS to avoid a newer Mathlib namespace alias."
+      ]
+    },
+    {
+      "source": "TauCeti/NumberTheory/EllipticDivisibilitySequence/ReducedInvariant.lean",
+      "sha256": "dce647d7ced22c4fa465e52eb77f0201a33a8a52576c64904668745d20a457a5",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/NumberTheory/EllipticDivisibilitySequence/ReducedInvariant.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "2a8f311a24edad68e4ae35b748ab76a40cd7327790f9a7897fbcb34908bb8c66",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port.",
+        "Qualify root normEDS to avoid a newer Mathlib namespace alias."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Omega.lean",
+      "sha256": "289e5ff30b29081ecc8e4469ff4ba03a071dcb5be27e5c2706b7500082689510",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Omega.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "f62371f9a0fd59144e5b6cb65fd123c392dfbc4824c840d17684407be80f64c8",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Universal.lean",
+      "sha256": "6dd009a879e98930e99a953e923a308bd2feffd9403e8cbe201c0245e55a805d",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Universal.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "74cb45dc5fabb3e0f9676bca2269d03139e15269a606fa27c14539097ebbfdd0",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port.",
+        "Qualify root normEDS to avoid a newer Mathlib namespace alias."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/ZSMul.lean",
+      "sha256": "795f6b4296e4b7065b5b388ce03e4387d193606ca33257bf153cf481dcd27d31",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/ZSMul.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "13c3225e5cce7cdcf2bbd528af7e199d33fad0c0380b6c8450a0f2ac062bd3e9",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/Denominator.lean",
+      "sha256": "1d4c2633820da2614a9817b823ecec5b5909ad38038621cfc0470ab13b305005",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/Denominator.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "1d4c2633820da2614a9817b823ecec5b5909ad38038621cfc0470ab13b305005",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/RingTheory/Polynomial/IsIntegral.lean",
+      "sha256": "0ddb781958302cb65afdfb4ef7196342d86f2f1e0e11432913e981615885e3a1",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/RingTheory/Polynomial/IsIntegral.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "0ddb781958302cb65afdfb4ef7196342d86f2f1e0e11432913e981615885e3a1",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/Integrality.lean",
+      "sha256": "e69a02670a05a8ed4bdc8bea59f15e70e332c4954b691b506edeaa642f485e64",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/Integrality.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "2f618516034671676b0d26b0b7d6912b88226051192e4e00d1e48e4a98af3715",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Descent.lean",
+      "sha256": "c7db9125310e57288b22d4f65c4d52e1af8a60ebecf83d02953d8a7564bf2e91",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Descent.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "cfc2032a5a7bb9d0928112d41402f8610e9441828cfb95c21a7946ab4f6e76a7",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Discriminant.lean",
+      "sha256": "327e5d93641ef0597bc34865b98fe16c76642109d52fa520193c794432bfa877",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Discriminant.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "327e5d93641ef0597bc34865b98fe16c76642109d52fa520193c794432bfa877",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Torsion/Basic.lean",
+      "sha256": "d666610230c34a0c765858b5f9064fab0183c22a1b3b5f2e1f7cbafc2b91884c",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Torsion/Basic.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "d564d2f05b2b6faee8603fe115bddf910ac24c04afbf7e7f47f7563f5bfbce49",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/RingTheory/Localization/NumDen.lean",
+      "sha256": "68dc185a66eb8c40a2dcbec0c1a127f9f08f0181b069133f3c81c6e4dc60c9b9",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/RingTheory/Localization/NumDen.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "68dc185a66eb8c40a2dcbec0c1a127f9f08f0181b069133f3c81c6e4dc60c9b9",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/NagellLutz.lean",
+      "sha256": "741903b5568bb41ea29cbebe1927b32df585ff1b170055edfc612a5613b8cc01",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/NagellLutz.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "57feb2e2290db156641e9ed40729b14ceebe383710245844b159911e07010f21",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Basic.lean",
+      "sha256": "f9b9ae9bb8d7737bb267c20f431910ea4cb63be3ffe86f6b5260b49c11b2fc53",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Basic.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "f9b9ae9bb8d7737bb267c20f431910ea4cb63be3ffe86f6b5260b49c11b2fc53",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Torsion/Discriminant.lean",
+      "sha256": "b8ec1eab42f5f07924f8d532769ad4b9201d15935c0494a6249004c5e470f3b9",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/Torsion/Discriminant.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "ported_sha256": "29748a4b6b66bbb1d042ee468f56af1ce58f358d9b55adf730fef3bb9f37b269",
+      "adaptations": [
+        "Rewrite TauCeti imports to the selected local port."
+      ]
     }
   ],
   "default_revision": "d01c9825761c7e6168457c383458afa8668196a7",

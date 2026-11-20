@@ -159,6 +159,11 @@ The resulting rational points use TauCeti's `pointOfIntegralSolution` and
 assert absence of points, and a nonempty list asserts neither completeness nor
 an algebraic-rank lower bound. Integrality refers to the supplied equation.
 
+Follow-up commands can establish stronger facts about these same points:
+`certify_ec_infinite_order` checks an exact torsion obstruction, and
+`certify_ec_rank` checks an independence proof for a selected family. See
+[ALGEBRAIC_RANK.md](ALGEBRAIC_RANK.md) and `CertifiedCurves.Direct`.
+
 Direct Lean data uses the same optional-facts record:
 
 ```lean

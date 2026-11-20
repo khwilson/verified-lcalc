@@ -1,0 +1,75 @@
+import CertifiedCurves.Direct
+import Lean
+
+open Lean Elab Command VerifiedLcalc VerifiedLcalc.EllipticCurve
+
+set_option maxRecDepth 100000
+set_option maxHeartbeats 10000000
+
+-- Exact computational checks; failure of this sufficient test is inconclusive.
+example : infiniteOrderCheck DirectPoints.curve 6 14 = true := by decide +kernel
+example : infiniteOrderCheck DirectPoints.curve 0 0 = false := by decide +kernel
+
+-- A genuine size-two independence certificate for the general linear-algebra
+-- engine. The images are actual vectors, rather than unrelated numeric data.
+example : LinearIndependent ℤ (fun i : Fin 2 => Pi.single i (1 : ℚ)) := by
+  apply independent_of_separating_matrix _
+    (LinearMap.id : (Fin 2 → ℚ) →ₗ[ℤ] (Fin 2 → ℚ))
+  norm_num [Matrix.det_fin_two, Pi.single_apply]
+
+example : ¬ IsOfFinAddOrder DirectOrder.point := DirectOrder.infinite_order
+example : (1 : Cardinal) ≤ Module.rank ℤ (DirectPoints.curve.baseChange ℚ).toAffine.Point :=
+  DirectRank.algebraic_rank_lower_bound
+
+certify_ec_rank EmptyFamily for DirectPoints from [] using (by
+  exact linearIndependent_empty_type)
+
+certify_ec TorsionData from
+  { equation := ⟨0, -1, 1, -10, -20⟩
+    integralCoordinates := some [(5, 5)] }
+
+meta def expectPointRejected (name : Name) (command : Syntax) : CommandElabM Unit := do
+  let messages := (← get).messages
+  let mut failed := false
+  try
+    elabCommand command
+    failed := (← get).messages.hasErrors
+  catch _ => failed := true
+  let env ← getEnv
+  set { (← get) with messages }
+  unless failed do throwError "Invalid point certificate accepted: {name}"
+  for suffix in [`index, `index_valid, `point, `infinite_order_valid, `infinite_order,
+      `indices, `indices_valid, `point_count_eq, `points, `points_independent,
+      `algebraic_rank_lower_bound] do
+    if env.contains (name ++ suffix) then
+      throwError "Rejected point certificate leaked {name ++ suffix}"
+
+run_cmd do
+  expectPointRejected `TorsionRejected
+    (← `(certify_ec_infinite_order TorsionRejected for TorsionData at 0))
+  expectPointRejected `IndexRejected
+    (← `(certify_ec_infinite_order IndexRejected for DirectPoints at 2))
+  expectPointRejected `InsufficientTest
+    (← `(certify_ec_infinite_order InsufficientTest for DirectPoints at 0))
+  expectPointRejected `DuplicateFamily
+    (← `(certify_ec_rank DuplicateFamily for DirectPoints from [1, 1]
+      using DirectRank.points_independent))
+  expectPointRejected `FamilyIndexRejected
+    (← `(certify_ec_rank FamilyIndexRejected for DirectPoints from [2]
+      using DirectRank.points_independent))
+
+-- Rejection must not poison a later certificate or namespace resolution.
+namespace ScopedPoints
+certify_ec_infinite_order Order for DirectPoints at 1
+end ScopedPoints
+
+run_cmd do
+  for name in [``infiniteOrderCheck_sound, ``algebraic_rank_lower_bound,
+      ``algebraic_finrank_lower_bound, ``independent_singleton_of_infinite_order,
+      ``independent_of_separating_matrix, ``algebraic_rank_lower_bound_of_separating_matrix,
+      `DirectOrder.infinite_order, `DirectOrder.algebraic_rank_lower_bound,
+      `DirectRank.points_independent, `DirectRank.algebraic_rank_lower_bound,
+      `ScopedPoints.Order.infinite_order] do
+    for ax in ← liftTermElabM <| Lean.collectAxioms name do
+      unless [``propext, ``Classical.choice, ``Quot.sound].contains ax do
+        throwError "Unexpected point/rank certificate axiom: {ax}"
