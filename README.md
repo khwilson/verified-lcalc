@@ -114,7 +114,7 @@ and active numerical modules in [Numerics/README.md](VerifiedLcalc/Numerics/READ
 
 
 The [file-by-file audit and applied cleanup queue](docs/ELLIPTIC_CURVE_FILE_AUDIT.md)
-covers all 43 elliptic-curve source files. The earlier
+covers all 44 elliptic-curve source files. The earlier
 [interface audit](docs/INTERFACE_REUSE_AUDIT.md) records direct
 Mathlib/TauCeti reuse and remaining bridges. [TAUCETI_BACKLOG.md](docs/TAUCETI_BACKLOG.md)
 contains the extracted, compiled upstream candidates and separate proof obligations.

@@ -15,3 +15,7 @@ Run `make test-certificates` for command rejection, JSON, precision hypotheses,
 finite cardinalities and compiled proof reuse. Run `make test-lean` for the full
 project build, certificate tests and arithmetic/axiom audits. Python only
 orchestrates those commands; all mathematics and mathematical checks are Lean.
+
+`GlobalMinimality.lean` checks the canonical TauCeti predicate on the borderline
+2-adic model 32.a4, a prime outside its witness support, and standard-only axiom
+dependencies for the localization and global-minimality witness proofs.

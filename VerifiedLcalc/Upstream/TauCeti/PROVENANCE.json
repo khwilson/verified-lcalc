@@ -87,6 +87,32 @@
       "ported_sha256": "c0deb15fb1dd61649ebb37c4a9fac7cbded9644da438fa632c9c597652318154",
       "excerpt": "Declarations through VariableChange.exists_unit_algebraMap_eq_u_of_isMinimal_smul. Omit unused TauCeti imports and subsequent split-reduction invariance declarations; proof bodies unchanged.",
       "additional_attribution": "VerifiedLcalc/Upstream/TauCeti/NOTICE.md"
+    },
+    {
+      "source": "TauCeti/RingTheory/Localization/AtPrime.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "sha256": "0d5d6506647cc68944e39a7857a39285c42d55a37d49588b0c961db02773a1fc",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/RingTheory/Localization/AtPrime.lean",
+      "ported_sha256": "0d5d6506647cc68944e39a7857a39285c42d55a37d49588b0c961db02773a1fc"
+    },
+    {
+      "source": "TauCeti/RingTheory/DedekindDomain/LocalizationAtPrime.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "sha256": "0db844bd22d52633a1811a8a6a1627369c5e80ee66041140359c4ce7d760daf9",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/RingTheory/DedekindDomain/LocalizationAtPrime.lean",
+      "ported_sha256": "6728d39b97fa586602556365b33aca185cb6b8074e5008bbc8fbd3b1a7eb895a",
+      "excerpt": "DVR instance and valuation-integers identification only; omit descent/comparison results.",
+      "adaptations": [
+        "Replace deprecated Mathlib.RingTheory.DedekindDomain.AdicValuation import by its Valuation component."
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/GlobalMinimalModel.lean",
+      "revision": "d01c9825761c7e6168457c383458afa8668196a7",
+      "sha256": "287d0500da043abf48926870b33699a39660f02ee4441bb5e32580fbc2dceda7",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/GlobalMinimalModel.lean",
+      "ported_sha256": "9d6df09702c0e774df1bebce44312744ad1eb3aa04190bb986352633b1f3f021",
+      "excerpt": "IsGlobalMinimal, isGlobalMinimal_iff, IsGlobalMinimal.isMinimal and IsGlobalMinimal.of_forall_isMinimal only; omit subsequent declarations."
     }
   ],
   "default_revision": "d01c9825761c7e6168457c383458afa8668196a7",

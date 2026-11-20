@@ -12,8 +12,12 @@ theorem central_zero_of_tame_negative (e : (WeierstrassCurve ℤ))
     (hn : e.Δ ≠ 0) (v : MinimalityWitness) (hv : v.Valid e)
     (ht : tameAtWild e = true) (hw : tameSignFast e = -1) :
     (modularWitness e hn).formL 1 = 0 := by
+  letI : (e.baseChange ℚ).IsElliptic := ⟨by
+    apply isUnit_iff_ne_zero.mpr
+    simpa only [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ, eq_intCast] using
+      (show (e.Δ : ℚ) ≠ 0 by exact_mod_cast hn)⟩
   apply (modularWitness e hn).central_zero_of_negative_sign
-  exact ((arithmeticModularWitness e hn).tameSign_eq (minimal_of_witness e v hv) ht).trans
+  exact ((arithmeticModularWitness e hn).tameSign_eq (globalMinimal_of_witness e v hv) ht).trans
     ((tameSign_eq_fast e ht).trans hw)
 
 theorem rank_lower_bound_of_tame_negative (e : (WeierstrassCurve ℤ))

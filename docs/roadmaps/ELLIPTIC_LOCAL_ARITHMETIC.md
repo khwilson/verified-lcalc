@@ -120,18 +120,16 @@ interface includes `isGlobalMinimal_iff`, `IsGlobalMinimal.isMinimal`, and
 not be reinvented. The file additionally proves global integrality and
 integral-change-of-variable results, and points to LeanBridge provenance.
 
-The current local `GloballyMinimalInput` predicate instead quantifies over
-rational-prime completions, where Mathlib's current curve Euler factors are
-computed. It is not definitionally the localization predicate. The missing
-integration is to port the canonical API and prove the needed comparison of
-minimality under localization and completion, including integrality and
-valuation normalization. No such comparison was found in the checked local
-TauCeti elliptic-curve files. This is a bridge obligation, not a reason to
-create another axiom or claim the predicates interchangeable.
+The canonical interface is now ported, and the custom `GloballyMinimalInput`
+definition is removed. `EllipticCurve/GlobalMinimality.lean` proves the finite
+witness criteria directly in these localizations, using TauCeti's valuation
+integer-ring identification. A witness supplies canonical global minimality
+for the conductor/sign assumptions, and independently supplies completion
+minimality for Mathlib's numerical Euler-factor path.
 
-Completion minimality implies localization minimality by transporting an
-integral change of variables into the completion and comparing discriminant
-valuations. The converse additionally requires controlling changes over the
-completion; it should be proved or obtained from an existing valued-field
-base-change result before changing the evaluator's premises. Neither direction
-is claimed to have been implemented in this cleanup.
+The full localization/completion equivalence remains a useful general theorem,
+but is not required for this integration strategy. Neither direction is
+assumed by the new witness proof. Completion minimality should descend through
+integral variable changes and valuation comparison; preservation towards the
+completion additionally requires the appropriate base-change argument. This
+remaining general comparison is tracked as TC-04.

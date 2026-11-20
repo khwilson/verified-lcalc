@@ -23,3 +23,13 @@ The source copyright header credits the Tau Ceti contributors. This notice
 preserves its additional Kevin Buzzard/FLT attribution. The Apache 2.0 license
 text distributed with these ports is `LICENSES/TauCeti-Apache-2.0.txt` at the
 project root.
+
+## Global minimal models
+
+The selected `GlobalMinimalModel.lean` definition and its interface come from
+TauCeti `d01c9825761c7e6168457c383458afa8668196a7`. TauCeti attributes the
+canonical predicate to Jane Shi's Apache-2.0 LeanBridge formalization,
+`LeanBridge/ForMathlib/4-EC.lean` at `JaneShi99/LeanBridge@d84dd305`, branch
+`formalize/ec-defs` (`github.com/CBirkbeck/LeanBridge`). That provenance is
+retained in the port. Semi-global minimality and the later descent theorems
+are omitted from this selected excerpt.

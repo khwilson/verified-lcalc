@@ -27,6 +27,7 @@ the specification and integer coefficient routines as the executable evaluator.
 | E08 | Remove unused definition-unfolding correctness wrappers. | Definitions themselves and substantive existing soundness theorems. | Applied and checked. |
 | E09 | Delete the bespoke `InverseEulerCoefficients` predicate and unused uniqueness induction. | Mathlib `LinearRecurrence.IsSolution`/uniqueness exists; use the stronger canonical inverse-series specification already supplied by E02 and retain only the operational recurrence lemma. | Applied and checked. |
 | E10 | Remove the `gamma0` wrapper and redundant arithmeticity, width-one and normalization fields from `ModularRealization`. | Mathlib coercion for SL₂ subgroups, `instFiniteIndexGamma0`, arithmetic-subgroup instance, `strictWidthInfty_Gamma0`; normalization follows from coefficient matching and `LFunction_apply_one`. | Applied and checked. |
+| E11 | Delete `GloballyMinimalInput` and use TauCeti global minimality in arithmetic compatibility. | `WeierstrassCurve.IsGlobalMinimal`, localization fraction-field/DVR instances and `integers_valuation_localizationAtPrime`; replay the proved criteria over localizations. | Applied and checked. |
 
 ## Root files, inspected individually
 
@@ -47,12 +48,13 @@ the specification and integer coefficient routines as the executable evaluator.
 | `DerivativeCore.lean` | Rational quadrature, tail bounds and witness payloads are executable routines specific to certification. No matching Mathlib/TauCeti numerical derivative evaluator found. |
 | `Euler.lean` | E02. Use Mathlib's inverse of the canonical quadratic polynomial as the specification; keep only the recurrence-to-inverse coefficient proof. |
 | `EulerProduct.lean` | Mathlib `ArithmeticFunction.ofPowerSeries`, `eulerProduct`, Northcott stabilization exist and are used. TauCeti's analytic `LSeries` Euler products assume summability and do not replace formal coefficient extraction. The coprime-factor extraction glue remains. |
+| `GlobalMinimality.lean` | E11. A checked witness proves the canonical localization-based `IsGlobalMinimal` directly. Completion minimality remains separately proved for numerical coefficients; no equivalence axiom. |
 | `GlobalBounds.lean` | E03. Bad-reduction trace bound already follows from TauCeti local-polynomial classification. The chosen-minimal-model prime-power recurrence and loose global cube bound remain useful derived results. |
 | `GlobalCoefficients.lean` | Mathlib rational ring-of-integers equivalence/ideal norms and TauCeti completion-residue equivalence are reused. Rational-place specialization plus formal Euler-product extraction is extra glue; no exact counterpart found. |
 | `MinimalArithmetic.lean` | Already uses extracted generic supplied-minimal-model local-polynomial theorem. Rational completion/residue identification and executable prime-power conversion remain necessary; E01/E02 simplify their representations. |
 | `PrefixCore.lean` | A sufficient finite eligibility predicate, not a mathematical semistability or L-function definition. Keep. |
 | `RationalPrimes.lean` | Already uses `HeightOneSpectrum.equivOfRingEquiv`, `Int.prime_absNorm`, `Int.ideal_span_absNorm_eq_self`, and quotient norm invariance. Rational specialization is not an alternate prime-ideal theory. Keep. |
-| `ReductionArithmetic.lean` | E07. Existing minimality dispatch and witness factorization are project-specific. Global localization-based minimality cannot replace completion-based minimality without the unproved comparison theorem (TC-04). |
+| `ReductionArithmetic.lean` | E07. Existing minimality dispatch and witness factorization are project-specific. E11 reuses its finite witness evidence to prove canonical localization minimality separately; numeric completion minimality remains explicit. |
 | `ReductionCore.lean` | `ModelReduction` classifies a supplied cubic, including singular inputs; Mathlib geometric reduction predicates require a local field/minimal elliptic curve. Keep dispatcher/witness formats and connect through existing proofs. |
 | `Residue.lean` | Already composes `Ideal.quotientEquiv`, `Ideal.quotEquivOfEq`, `Int.quotientSpanNatEquivZMod`, and TauCeti completion-residue equivalence. O_Q quotient is not definitionally `ZMod p`; keep the adapter. |
 | `SemistableArithmetic.lean` | Already uses Mathlib Bezout/local-ring unit arguments and TauCeti minimality. Rational supplied-model specialization remains. Intrinsic TauCeti semistability is not the integral gcd criterion on possibly singular models. |
@@ -79,7 +81,7 @@ the specification and integer coefficient routines as the executable evaluator.
 | --- | --- |
 | `AdditiveArithmetic.lean` | Existing Mathlib ideal-valuation/divisibility and TauCeti minimal-model criteria are already used. Input-model Boolean reduction bridges remain; E01 updates polynomial interface. |
 | `InvariantMinimality.lean` | Uses extracted generic Mathlib/TauCeti-style minimality criteria. This integer-completion specialization is not another invariant/minimal-model definition. Retain. |
-| `TameArithmetic.lean` | E06 removes duplicate Legendre correctness proof. `GloballyMinimalInput` still needs TC-04 to use canonical localization-based `IsGlobalMinimal`. `tameAtWild` only excludes additive reduction at 2 and 3, not all primes. |
+| `TameArithmetic.lean` | E06 removes duplicate Legendre correctness proof. E11 removes `GloballyMinimalInput`; arithmetic compatibility now uses canonical localization-based `IsGlobalMinimal`. `tameAtWild` only excludes additive reduction at 2 and 3, not all primes. |
 | `TameCore.lean` | E06 removes custom Legendre and square search. Finite conductor/root dispatch has no exact intrinsic elliptic replacement at this pin; geometric interpretation stays assumed. |
 | `TwoAdicMinimality.lean` | Uses extracted generic two-adic c4 valuation criterion plus Mathlib completion valuations. Retain only this rational input adapter. |
 | `WildArithmetic.lean` | E04/E05/E06 remove translation, divisibility and character duplications. Valuation/transcript-to-mathematical formulas remain distinct from geometric Tate/Ogg/epsilon-factor correctness. |
@@ -88,7 +90,7 @@ the specification and integer coefficient routines as the executable evaluator.
 
 ## Deferred bridges, not automatic deletions
 
-TC-04 (localization/completion minimality), intrinsic conductor/epsilon factors,
+The general TC-04 localization/completion comparison, intrinsic conductor/epsilon factors,
 Gamma0-to-Gamma1 normalized Fricke compatibility, and the polynomial-separability
 meaning of transcript checks require new theorems. They are not solved by
 renaming definitions or importing a similarly named result. Follow-up source
@@ -134,7 +136,29 @@ arithmetic/analytic assumption audits, and import-only consumers.
 `make check test` passed Ruff, formatting, ty and all three Python tests.
 
 A static import scan found no missing project modules and no production import
-of the test library. Every one of the 43 elliptic source files has a row above.
+of the test library. Every one of the 44 elliptic source files has a row above.
 The only custom axiom remains `Assumptions.ellipticModularity`; no new axiom or
 proof placeholder was introduced. No performance improvement is claimed by
 these representation and API changes.
+
+## Canonical global-minimality follow-up
+
+E11 removes `GloballyMinimalInput` rather than renaming its completion-based
+body. The arithmetic modularity fields take TauCeti's actual
+`IsGlobalMinimal (𝓞 ℚ) (e.baseChange ℚ)`. A new witness theorem establishes
+that predicate directly using the upstream localization/valuation-integers
+API and the already proved discriminant, c4, c6 and special two-adic criteria.
+The original completion-minimality evidence continues to justify the numerical
+coefficient identity. Neither implication between arbitrary localization and
+completion minimality is assumed or claimed proved.
+
+The audit now covers 44 files, including `GlobalMinimality.lean`. The canonical
+predicate and localization instances are selected upstream excerpts with source
+hashes, unchanged theorem namespaces, and retained attribution. The new
+regression checks the borderline two-adic model 32.a4, an outside-support prime,
+and standard-only axiom dependencies.
+
+The E11 follow-up passed the complete Lean suite, including the new
+`tests/GlobalMinimality.lean` regression and axiom audit. Ruff, ty and Python
+tests passed as well. The generic localization/completion equivalence remains
+open; it is not a premise of the checked-witness integration.

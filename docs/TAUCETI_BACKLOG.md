@@ -53,23 +53,34 @@ and retain the finite-ring cardinality/trace bounds. The backend now uses this
 shared evaluator, replacing its integer-modulo enumerator. Benchmark kernel
 evaluation separately; the equality proof is not a performance measurement.
 
-## TC-04 — reuse existing global minimality; prove the completion bridge
+## TC-04 — canonical global minimality integrated; general comparison remains
 
-Status: canonical predicate already exists; comparison theorem is not proved
-here. Reuse TauCeti's `WeierstrassCurve.IsGlobalMinimal` and its introduction,
-elimination and `isGlobalMinimal_iff` API in `GlobalMinimalModel.lean`.
+Status: the canonical `WeierstrassCurve.IsGlobalMinimal` predicate and its
+introduction/elimination interface are now imported from the pinned TauCeti
+`GlobalMinimalModel.lean` excerpt. The project-specific `GloballyMinimalInput`
+definition is removed. Conductor/sign compatibility uses
+`IsGlobalMinimal (𝓞 ℚ) (e.baseChange ℚ)` directly, with the usual ellipticity
+instance.
 
-Required theorem: minimality over the localization of a Dedekind domain at a
-height-one prime is equivalent to minimality after base change to its adic
-completion, with the corresponding valuation integer ring. State the exact
-algebra maps, integrality and ellipticity hypotheses against the selected pin.
-The forward/reverse directions must not be assumed definitionally equal.
+`EllipticCurve/GlobalMinimality.lean` proves every checked minimality criterion
+over the localization itself, using TauCeti's fraction-field/DVR instances and
+`integers_valuation_localizationAtPrime`. Every validated witness therefore
+proves canonical global minimality at all height-one primes. The existing
+completion-minimality theorem separately supplies the numerical coefficient
+bridge. Shared finite factorization evidence is proved once. No comparison
+between the two minimality predicates is assumed.
 
-Prerequisites: TauCeti localization/fraction-field instances, normalized
-valuation comparison, transport of integral equations/changes, and the required
-completion descent or approximation argument. Acceptance: a generic theorem,
-standard-only axioms, then a proved rational specialization replacing the local
-`GloballyMinimalInput` completion predicate. No new axiom is an acceptable bridge.
+Remaining general theorem: minimality over a Dedekind-domain localization is
+equivalent to minimality after base change to its adic completion. State the
+exact algebra maps, integrality, ellipticity and valuation-normalization
+hypotheses. This comparison remains unproved here; its two directions are not
+definitionally equal. It is no longer a prerequisite for removing the duplicate
+predicate or for the checked-witness conductor/sign path.
+
+Prerequisites for the remaining theorem include transport of integral equations
+and changes, valuation comparison, and completion descent/approximation as
+needed. Acceptance: a generic proof with standard-only axioms. No new axiom is
+an acceptable comparison theorem.
 
 ## TC-05 — interpret the wild-prime support guard through existing reduction APIs
 
@@ -81,7 +92,9 @@ Required theorem: under the appropriate minimal-model identification, that
 Boolean is true exactly when the curve has good or multiplicative reduction at
 both rational primes 2 and 3. Reuse the existing local reduction definitions and
 semistability lemmas; keep the executable guard and its limited scope explicit.
-TC-04 is the integration prerequisite when switching to localization APIs.
+Canonical localization minimality is now proved for every checked witness;
+the required reduction-model/normalization comparison is still a separate
+obligation.
 
 ## TC-06 — intrinsic conductor and tame formula
 
@@ -133,7 +146,8 @@ localization/completion bridge in TC-04.
 ## Submission and validation
 
 TC-01, TC-02, TC-03 and TC-08 have compiled source rather than proposed axioms.
-TC-04 through TC-07 remain proof obligations. Run `make test-lean` and
+The general comparison portion of TC-04 and TC-05 through TC-07 remain proof
+obligations. Run `make test-lean` and
 `tests/UpstreamCandidates.lean` against the agreed pin, inspect axiom dependencies,
 then replace local imports with the accepted upstream APIs. Modular realizations,
 checked derivative enclosures and certification remain separate from these local

@@ -245,7 +245,7 @@ localization/completion comparison or conductor/epsilon-factor obligations.
 
 ## File-by-file cleanup follow-up
 
-The [43-file audit](ELLIPTIC_CURVE_FILE_AUDIT.md) records the latest queue and
+The [file-by-file audit](ELLIPTIC_CURVE_FILE_AUDIT.md) records the latest queue and
 its application. In particular, `isSquareMod` and `legendreValue` are now gone:
 the tame additive evaluator validates primality and uses Mathlib's
 `legendreSym`, while the wild table uses Mathlib's three primitive characters.
@@ -263,3 +263,15 @@ The last modularity pass also removes the `gamma0` coercion wrapper and
 redundant arithmeticity/width/normalization assumption fields. Existing Mathlib
 Gamma0 instances and width lemmas supply the first two properties; matching
 all curve coefficients forces normalization via `LFunction_apply_one`.
+
+
+## Canonical global minimality integration
+
+The earlier TC-04 adoption blocker has been bypassed with a direct witness
+proof, not an assumed comparison theorem. The canonical TauCeti global-minimal
+predicate and its localization API are now selected ports. The handwritten
+`GloballyMinimalInput` definition is gone; conductor/sign compatibility takes
+`WeierstrassCurve.IsGlobalMinimal (𝓞 ℚ)` directly. Checked finite criteria prove
+minimality over those localizations, and the existing independent completion
+proof still supplies numerical coefficient correctness. The full comparison
+between arbitrary localization and completion minimality remains unproved.

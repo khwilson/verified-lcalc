@@ -45,7 +45,16 @@ The selected MinimalModel/Basic excerpt now also supplies the minimal-model
 valuation comparison and unit-scaling lemmas. It retains declarations through
 `VariableChange.exists_unit_algebraMap_eq_u_of_isMinimal_smul`, with original
 proof bodies, and omits unused imports and subsequent declarations. This
-brings the selected source set to eleven modules/excerpts; the exact excerpt
-and hashes are recorded in PROVENANCE.json.
+is recorded together with the other selected excerpts and hashes in
+PROVENANCE.json.
 
 See NOTICE.md for the minimal-model excerpt's additional Kevin Buzzard/Imperial FLT attribution, retained from TauCeti's source provenance.
+
+The canonical global-minimality interface and the localization/fraction-field
+instances and valuation-integers identification are also selected from
+`d01c9825761c7e6168457c383458afa8668196a7`. The predicate and theorem namespaces
+are unchanged. Unused semi-global minimality and integrality-descent results
+are omitted; the deprecated adic-valuation umbrella import is narrowed to its
+valuation component. `EllipticCurve/GlobalMinimality.lean` proves the checked
+witness criteria directly in these localizations. No localization/completion
+minimality equivalence is assumed by the integration.

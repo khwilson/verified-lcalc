@@ -196,3 +196,17 @@ the existing authorized general-modularity package. Executable-to-formula
 correctness and numerical enclosures remain proved. The axiom's content is
 stronger; merely retaining its name does not imply unchanged assumptions.
 See [WILD_ARITHMETIC.md](WILD_ARITHMETIC.md) and `AuditWild.lean`.
+
+
+## Canonical global minimality in arithmetic compatibility
+
+The tame/wild conductor and sign fields now use TauCeti's
+`WeierstrassCurve.IsGlobalMinimal (𝓞 ℚ) (e.baseChange ℚ)`, with the usual
+Mathlib ellipticity instance. `GloballyMinimalInput` has been deleted.
+`globalMinimal_of_witness` proves the canonical predicate directly from the
+validated finite witness by applying the minimality criteria to localizations.
+The numerical prefix theorem independently uses `minimal_of_witness` over
+completions. No localization/completion minimality equivalence is included in
+the modularity axiom or used as an unproved bridge. The existing authorized
+standard conductor/sign compatibility is now stated over the canonical global
+minimality predicate.

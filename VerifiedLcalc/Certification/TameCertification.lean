@@ -17,11 +17,16 @@ theorem certifyTameCentralModel (r : CentralResult)
     (hw : tameSignFast r.equation = r.rootNumber)
     (hp : CentralPayloadCorrect r) (hz : r.box.excludesZero = true) :
     analyticOrderAt (modularWitness r.equation hn).formL (1 : ℂ) = 0 := by
-  have hm : GloballyMinimalInput r.equation := minimal_of_witness r.equation v hv
+  letI : (r.equation.baseChange ℚ).IsElliptic := ⟨by
+    apply isUnit_iff_ne_zero.mpr
+    simpa only [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ, eq_intCast] using
+      (show (r.equation.Δ : ℚ) ≠ 0 by exact_mod_cast hn)⟩
+  have hm := minimal_of_witness r.equation v hv
+  have hglobal := globalMinimal_of_witness r.equation v hv
   apply certifyMinimalCentralModel r hn hm
-  · exact ((arithmeticModularWitness r.equation hn).tameLevel_eq hm ht).trans
+  · exact ((arithmeticModularWitness r.equation hn).tameLevel_eq hglobal ht).trans
       ((tameLevel_eq_fast r.equation).trans hN)
-  · exact ((arithmeticModularWitness r.equation hn).tameSign_eq hm ht).trans
+  · exact ((arithmeticModularWitness r.equation hn).tameSign_eq hglobal ht).trans
       ((tameSign_eq_fast r.equation ht).trans hw)
   · exact hp
   · exact hz

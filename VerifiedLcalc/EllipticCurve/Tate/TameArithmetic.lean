@@ -9,13 +9,6 @@ public import Mathlib.NumberTheory.LegendreSymbol.Basic
 namespace VerifiedLcalc.EllipticCurve
 open NumberField IsDedekindDomain
 
-/-- Mathematical minimality condition, independent of the modularity assumption. -/
-def GloballyMinimalInput (e : (WeierstrassCurve ℤ)) : Prop :=
-  ∀ (p : ℕ) [Fact p.Prime],
-    WeierstrassCurve.IsMinimal ((rationalPlace p).adicCompletionIntegers ℚ)
-      ((WeierstrassCurve.baseChange e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
-        ((rationalPlace p).adicCompletion ℚ))
-
 /-- The valuation-based mathematical condition for negative j-valuation.
 The explicit c4 nonzero guard is essential at j=0. -/
 def NegativeJValuation (e : (WeierstrassCurve ℤ)) (p : ℕ) : Prop :=

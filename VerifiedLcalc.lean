@@ -5,5 +5,5 @@ public import VerifiedLcalc.CertificateSoundness
 public import VerifiedLcalc.NumericalRankSeparation
 public import VerifiedLcalc.Numerics.DerivativeQuadrature
 public import VerifiedLcalc.EllipticCurve.Tate.WildArithmetic
-public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
+public import VerifiedLcalc.EllipticCurve.GlobalMinimality
 public import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCount
