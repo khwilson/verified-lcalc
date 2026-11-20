@@ -9,6 +9,11 @@ ordinary named theorems. It accepts exact JSON files, inline JSON, or Lean data.
 It performs no witness search by default. Compiling a certificate produces an
 `.olean` module that other proofs can import without repeating its validation.
 
+The same command also verifies supplied prime coefficients and integral-point
+membership independently of analytic rank. It exports actual `LFunction p`
+identities, including supported bad primes, and membership in TauCeti's
+`integralPoints` set. See [the arithmetic-data interface](docs/CERTIFY_EC.md#arithmetic-data-certificates).
+
 Exact rank zero follows from proved nonvanishing of the central value. Exact
 rank one follows from sign-forced exact central vanishing and proved nonvanishing
 of the first derivative. Both use rigorous coefficient identification, Mellin

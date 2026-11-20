@@ -12,6 +12,11 @@ Source repository: https://github.com/TauCetiProject/TauCeti
 - The multiplicativity excerpt in LFunction/Basic.lean comes from
   0642eae29e0a59ef798d04de325386445906e755. Its continuation theorem and import
   were omitted; its arithmetic proof bodies are unchanged.
+- The integral-point membership excerpt in `Affine/Point/Integral.lean` comes
+  from `8794ab329bb60340fa690a2902cf995f0571721b`. It retains declarations through
+  `neg_mem_integralPoints_iff`, including the construction of rational points
+  from integer solutions and the `integralPoints` set. Later searches and
+  change-of-variables results are omitted; the retained proof bodies are unchanged.
 
 PROVENANCE.json records each original source hash, source revision, destination,
 ported hash, and adaptations. The port rewrites import paths, narrows one broad

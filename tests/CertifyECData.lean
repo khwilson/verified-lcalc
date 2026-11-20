@@ -1,0 +1,186 @@
+import CertifiedCurves.Data
+import CertifiedCurves.Json
+import Lean
+
+open Lean Elab Command VerifiedLcalc
+
+set_option maxRecDepth 100000
+set_option maxHeartbeats 10000000
+
+-- Ordinary mathematical coefficients, including split/nonsplit bad primes.
+example : (Data11.curve.baseChange ℚ).LFunction 2 = -2 :=
+  Data11.ap_correct 2 (-2) (by decide +kernel)
+example : (Data11.curve.baseChange ℚ).LFunction 11 = 1 :=
+  Data11.ap_correct 11 1 (by decide +kernel)
+example : (Data37.curve.baseChange ℚ).LFunction 37 = -1 :=
+  Data37.ap_correct 37 (-1) (by decide +kernel)
+example : (Data37.curve.baseChange ℚ).LFunction 97 = 4 :=
+  Data37.ap_correct 97 4 (by decide +kernel)
+
+-- Membership on precisely the given model, using TauCeti's point type and set.
+example : Data37.curve.toAffine.Equation 6 (-15) :=
+  Data37.points_on_curve 6 (-15) (by decide +kernel)
+example : Data37.point ⟨9, by decide⟩ ∈ Data37.curve.integralPoints :=
+  Data37.point_integral _
+
+-- Direct Lean data, an additive bad prime, and empty lists are supported.
+certify_ec AdditiveData from
+  { equation := ⟨0, 0, 0, -1, 0⟩, primeCoefficients := [(2, 0)],
+    integralCoordinates := [(0, 0)] }
+example : (AdditiveData.curve.baseChange ℚ).LFunction 2 = 0 :=
+  AdditiveData.ap_correct 2 0 (by decide +kernel)
+
+certify_ec EmptyData from_json_string
+  "{\"schema\":\"lcalc.ec-data.v1\",\"ainvs\":[\"0\",\"0\",\"1\",\"-1\",\"0\"],\"ap\":[],\"integral_points\":[]}"
+
+-- No schema, no empty sections, raw LMFDB fields and unrelated metadata.
+certify_ec RawData from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"aplist":[-2,-3,-2],"xcoord_integral_points":[-1,0,1,2,6],"lmfdb_label":"37.a1","analytic_rank":1,"unrelated":{"note":"metadata"}}"#
+example : (RawData.curve.baseChange ℚ).LFunction 3 = -3 :=
+  RawData.ap_correct 3 (-3) (by decide +kernel)
+example : RawData.curve.toAffine.Equation 6 14 :=
+  RawData.points_on_curve 6 14 (by decide +kernel)
+
+certify_ec OnlyAP from
+  { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := [(2, -2)] }
+certify_ec OnlyPoints from
+  { equation := ⟨0, 0, 1, -1, 0⟩, integralCoordinates := [(0, 0)] }
+certify_ec Mixed from
+  { equation := Curve37.curve, primeCoefficients := [(37, -1)],
+    integralCoordinates := [(0, 0)], analyticWitness := some
+      (EllipticWitness.derivative Curve37.result Curve37.minimality Curve37.localData) }
+example : (Mixed.curve.baseChange ℚ).LFunction 37 = -1 :=
+  Mixed.ap_correct 37 (-1) (by decide +kernel)
+example : Mixed.certifiedRank.val = 1 := rfl
+example : Mixed.point ⟨0, by decide⟩ ∈ Mixed.curve.integralPoints := Mixed.point_integral _
+
+-- A complete rank JSON can carry arithmetic claims and metadata in the same object.
+run_cmd do
+  let text ← IO.FS.readFile "data/witnesses/37a1.json"
+  let .ok j := Json.parse text | throwError "Could not parse fixture"
+  let .ok object := j.getObj? | throwError "Expected fixture object"
+  let combined := Json.mkObj (object.toList ++ [
+    ("ap", toJson ([[37, -1]] : List (List Int))),
+    ("integral_points", toJson ([[0, 0]] : List (List Int))),
+    ("lmfdb_label", .str "37.a1")])
+  let literal := Syntax.mkStrLit combined.compress
+  elabCommand (← `(certify_ec MixedJSON from_json_string $literal:str))
+example : MixedJSON.certifiedRank.val = 1 := rfl
+example : (MixedJSON.curve.baseChange ℚ).LFunction 37 = -1 :=
+  MixedJSON.ap_correct 37 (-1) (by decide +kernel)
+
+meta def expectDataRejected (name : Name) (command : Syntax) : CommandElabM Unit := do
+  let savedMessages := (← get).messages
+  let mut failed := false
+  try
+    elabCommand command
+    failed := (← get).messages.hasErrors
+  catch _ => failed := true
+  let env ← getEnv
+  set { (← get) with messages := savedMessages }
+  unless failed do throwError "Invalid curve data accepted: {name}"
+  for suffix in [`supplied, `witness, `curve, `nonsingular, `prime_coefficients_valid,
+      `ap_correct, `integral_coordinates_valid, `points_on_curve, `curve_isElliptic,
+      `point, `point_integral] do
+    if env.contains (name ++ suffix) then
+      throwError "Failed curve-data certification leaked {name ++ suffix}"
+    if env.contains (name ++ `data ++ suffix) then
+      throwError "Failed combined certification leaked arithmetic declarations"
+
+run_cmd do
+  expectDataRejected `WrongAP (← `(certify_ec WrongAP from
+    { Data37.witness with primeCoefficients := [(2, 999)] }))
+  expectDataRejected `CompositeIndex (← `(certify_ec CompositeIndex from
+    { Data37.witness with primeCoefficients := [(4, 0)] }))
+  expectDataRejected `Nonminimal (← `(certify_ec Nonminimal from
+    { equation := ⟨0, 0, 8, -16, 0⟩, primeCoefficients := [(2, 0)],
+      integralCoordinates := [] }))
+  expectDataRejected `OffCurve (← `(certify_ec OffCurve from
+    { Data37.witness with integralCoordinates := [(0, 1)] }))
+  expectDataRejected `Singular (← `(certify_ec Singular from
+    { equation := ⟨0, 0, 0, 0, 0⟩, primeCoefficients := [], integralCoordinates := [] }))
+  expectDataRejected `Malformed (← `(certify_ec Malformed from_json_string "{}"))
+  expectDataRejected `BadX (← `(certify_ec BadX from_json_string
+    r#"{"ainvs":[0,0,1,-1,0],"xcoord_integral_points":[3]}"#))
+  expectDataRejected `ConflictingCurve (← `(certify_ec ConflictingCurve from
+    { equation := Data11.curve, analyticWitness := some (EllipticWitness.derivative
+      Curve37.result Curve37.minimality Curve37.localData) }))
+  expectDataRejected `MixedBadAP (← `(certify_ec MixedBadAP from
+    { Mixed.supplied with primeCoefficients := [(37, 999)] }))
+
+certify_ec DataAfterFailure from
+  { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := [(2, -2)],
+    integralCoordinates := [(0, 0)] }
+
+run_cmd do
+  elabCommand (← `(certify_ec QuotedDirect from
+    { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := [(2, -2)] }))
+example : (QuotedDirect.curve.baseChange ℚ).LFunction 2 = -2 :=
+  QuotedDirect.ap_correct 2 (-2) (by decide +kernel)
+
+run_cmd do
+  CertifyEC.certify `DirectAPI (← `(
+    { equation := ⟨0, 0, 1, -1, 0⟩, integralCoordinates := [(0, 0)] }))
+  let input ← CertifyEC.jsonInput
+    r#"{"ainvs":[0,0,1,-1,0],"ap":[[2,-2]]}"#
+  CertifyEC.certifyAtomic `DecodedAPI input
+example : DirectAPI.curve.toAffine.Equation 0 0 :=
+  DirectAPI.points_on_curve 0 0 (by decide +kernel)
+example : (DecodedAPI.curve.baseChange ℚ).LFunction 2 = -2 :=
+  DecodedAPI.ap_correct 2 (-2) (by decide +kernel)
+
+run_cmd do
+  for name in [`RawData, `OnlyAP, `OnlyPoints] do
+    if (← getEnv).contains (name ++ `analytic_rank) then
+      throwError "A stored rank without a proof witness became a theorem"
+
+namespace Scoped
+certify_ec Data from
+  { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := [(2, -2)],
+    integralCoordinates := [(0, 0)] }
+end Scoped
+
+example : (Scoped.Data.curve.baseChange ℚ).LFunction 2 = -2 :=
+  Scoped.Data.ap_correct 2 (-2) (by decide +kernel)
+
+-- Every accepted theorem remains independent of the modularity axiom.
+run_cmd do
+  for name in [`Data11, `Data37, `AdditiveData, `EmptyData, `DataAfterFailure,
+      `Scoped.Data, `RawData, `OnlyAP, `OnlyPoints, `Mixed, `MixedJSON,
+      `DirectAPI, `DecodedAPI] do
+    for suffix in [`nonsingular, `prime_coefficients_valid, `ap_correct,
+        `integral_coordinates_valid, `points_on_curve, `curve_isElliptic,
+        `point, `point_integral] do
+      let axioms ← liftTermElabM <| Lean.collectAxioms (name ++ suffix)
+      for axiomName in axioms do
+        unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+          throwError "Unexpected arithmetic-certificate axiom: {axiomName}"
+
+#eval show IO Unit from do
+  let good ← IO.FS.readFile "data/curve-data/37a1.json"
+  let malformed := [
+    good.replace "\"97\"" "\"10001\"",
+    good.replace "\"97\"" "\"097\"",
+    good.replace "\"97\"" "\"97/1\"",
+    good.replace "\"97\"" "97.5"
+  ]
+  for text in malformed do
+    match CurveDataJson.parse text with
+    | .error _ => pure ()
+    | .ok _ => throw (IO.userError "Malformed curve-data JSON accepted")
+  for text in [good.replace "\"97\"" "97",
+      good.replace "\"schema\":" "\"unknown\":true,\"schema\":"] do
+    match CurveDataJson.parse text with
+    | .ok _ => pure ()
+    | .error reason => throw (IO.userError s!"Supported partial data rejected: {reason}")
+  let rankText ← IO.FS.readFile "data/witnesses/37a1.json"
+  let .ok rankJson := Json.parse rankText | throw (IO.userError "Invalid rank fixture")
+  let nested := Json.mkObj [
+    ("analytic_witness", rankJson),
+    ("subject", Json.mkObj [("label", .str "unverified metadata")]),
+    ("aplist", toJson ([-2, -3] : List Int))]
+  match CurveDataJson.parse nested.compress with
+  | .ok w =>
+    unless w.analyticWitness.isSome && w.primeCoefficients == [(2, -2), (3, -3)] do
+      throw (IO.userError "Nested supported facts were dropped")
+  | .error reason => throw (IO.userError reason)

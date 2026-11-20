@@ -1,7 +1,7 @@
 # Verify local elliptic-curve data in Lean
 
-`certify_ec` is a Lean command. It checks supplied numerical and arithmetic
-witnesses, then declares ordinary definitions and theorems. It never invokes
+`certify_ec` is a Lean command. It checks the supported facts and witnesses present in the supplied data,
+then declares ordinary definitions and theorems. It never invokes
 witness search, a numerical producer, Python, a web service, or LMFDB. The
 mathematical algorithms remain the existing proof-backed Lean implementation.
 
@@ -11,6 +11,9 @@ local state and database volumes were not deleted; stop any old API/worker
 processes yourself. The remaining Python scripts only download/benchmark data.
 
 ## Three input forms
+
+For prime coefficients and integral-point membership without an analytic-rank
+witness, see [arithmetic data certificates](#arithmetic-data-certificates) below.
 
 ```lean
 module
@@ -26,8 +29,9 @@ certify_ec MyCurve from_json "witness.json"
 A JSON path is relative to the containing Lean file. The existing exact
 `lcalc.ec-rank.v1` format is accepted: canonical decimal strings for integers,
 `"numerator/denominator"` strings for rationals, explicit coefficients, numerical
-bounds, minimality factors and local Tate transcripts. Malformed, extra or
-unsupported fields are rejected. File fixtures are in `data/witnesses/`.
+bounds, minimality factors and local Tate transcripts. Malformed supported
+fields are rejected; unrelated metadata is reported as unverified. File fixtures
+are in `data/witnesses/`.
 Rank-zero and rank-one witnesses are supported; numerical near-zero observations
 do not become exact higher-rank claims.
 
@@ -105,7 +109,99 @@ Distribute source and the exact Lean/mathlib/library environment with artifacts;
 A checksum or Git commit identifies content; it is not independent evidence of
 kernel validation. Recipients can rebuild source if they want to check it locally.
 
-## Generated declarations and trust
+## Arithmetic data certificates
+
+`certify_ec` checks supplied prime coefficients and affine integer points
+independently of the analytic-rank command:
+
+```lean
+module
+public import VerifiedLcalc.Tactic.CertifyEC
+@[expose] public section
+
+certify_ec MyData from
+  { equation := ⟨0, 0, 1, -1, 0⟩,
+    primeCoefficients := [(2, -2), (37, -1)],
+    integralCoordinates := [(0, 0), (6, 14), (6, -15)] }
+
+example : (MyData.curve.baseChange ℚ).LFunction 37 = -1 :=
+  MyData.ap_correct 37 (-1) (by decide +kernel)
+
+example : MyData.point ⟨0, by decide⟩ ∈ MyData.curve.integralPoints :=
+  MyData.point_integral _
+```
+
+The same `from_json` and `from_json_string` input forms accept partial data,
+with no schema or empty sections required:
+
+```json
+{
+  "ainvs": [0, 0, 1, -1, 0],
+  "ap": [[2, -2], [37, -1]],
+  "integral_points": [[0, 0], [6, 14], [6, -15]],
+  "lmfdb_label": "37.a1"
+}
+```
+
+Fields are checked independently. `ap` carries explicit prime/value pairs;
+LMFDB's `aplist` is also supported and is paired with the initial primes in
+increasing order. The checker proves primality, a sufficient local minimality
+condition, and equality with the existing finite-field trace. Its soundness
+theorem identifies each value with the actual curve's `LFunction p`, including
+bad primes. A failed supported check rejects the command and rolls back all
+its declarations; an unsupported local minimality case is not certified.
+
+`integral_points` contains integer `(x,y)` pairs. LMFDB's
+`xcoord_integral_points` is also supported: exact integer square roots produce
+candidate y-coordinates, and every resulting equation is checked in the kernel.
+The resulting rational points use TauCeti's `pointOfIntegralSolution` and
+`integralPoints`. These are membership certificates only. Empty lists do not
+assert absence of points, and a nonempty list asserts neither completeness nor
+an algebraic-rank lower bound. Integrality refers to the supplied equation.
+
+Direct Lean data uses the same optional-facts record:
+
+```lean
+certify_ec JustCoefficients from
+  { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := [(2, -2)] }
+
+certify_ec Combined from
+  { equation := Curve37.curve, primeCoefficients := [(37, -1)],
+    integralCoordinates := [(0, 0)], analyticWitness := some
+      (VerifiedLcalc.EllipticWitness.derivative
+        Curve37.result Curve37.minimality Curve37.localData) }
+```
+
+The combined example assumes `import CertifiedCurves.Json`. Both lists default
+to empty and `analyticWitness` defaults to `none`. Complete rank-witness JSON
+can carry the same arithmetic fields, or appear under `analytic_witness`.
+All inputs use one pipeline. The command verifies every supplied supported
+witness and checks that its equations agree. It reports other JSON metadata
+without emitting claims about it. In particular, a plain `rank` or
+`analytic_rank` value is never converted into a theorem. Complete rank witnesses
+retain their existing exact-format checks and modularity assumption.
+
+Arithmetic JSON integers may be integer literals or canonical decimal strings,
+with a 512-character bound. The profile permits 256 coefficients at primes up
+to 10,000, up to 4,096 supplied coordinate pairs and 4,096 x-values, and at most
+8,192 resulting coordinate pairs. The payload cap is 2 MiB.
+
+`Name.supplied` always stores the common record. Arithmetic facts are exported
+as `ap_correct`, `points_on_curve`, `point` and `point_integral`, together with
+`prime_coefficients_valid`, `integral_coordinates_valid`, `curve_isElliptic`,
+and `nonsingular`. When rank data is present, the historical rank declarations
+are preserved and arithmetic helpers additionally live under `Name.data`.
+Arithmetic facts use only standard Lean axioms; analytic-rank facts retain the
+explicit modularity assumption.
+
+`CertifiedCurves.Data` contains two small examples with stored data for
+[11.a1](https://www.lmfdb.org/EllipticCurve/Q/data/11.a1) and
+[37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1), with provenance in
+`data/curve-data/provenance.json`. Lake tracks that directory as an explicit
+input. Import `CertifiedCurves.Data` to reuse the checked results; see
+`tests/consumers/CertifiedECDataConsumer.lean`.
+
+## Analytic-rank declarations and trust
 
 For prefix `MyCurve` the command exports:
 

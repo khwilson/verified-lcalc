@@ -113,6 +113,15 @@
       "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/GlobalMinimalModel.lean",
       "ported_sha256": "9d6df09702c0e774df1bebce44312744ad1eb3aa04190bb986352633b1f3f021",
       "excerpt": "IsGlobalMinimal, isGlobalMinimal_iff, IsGlobalMinimal.isMinimal and IsGlobalMinimal.of_forall_isMinimal only; omit subsequent declarations."
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Point/Integral.lean",
+      "revision": "8794ab329bb60340fa690a2902cf995f0571721b",
+      "sha256": "64b987f13bbbbb351a0f7a75bf0ca7dc062ddf9401e0146467d52ec53baf7971",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Point/Integral.lean",
+      "ported_sha256": "7cdb871bebdfc764341abaf1c8dd365eefa8ff608ac6dab35d30f67b9f18451a",
+      "excerpt": "Declarations through neg_mem_integralPoints_iff only. Replace imports for omitted later results with Mathlib.Affine.Point; retain theorem namespaces and proof bodies.",
+      "source_git_blob": "17ed640a6656bedeb89b72aeadd46d0ebda8b313"
     }
   ],
   "default_revision": "d01c9825761c7e6168457c383458afa8668196a7",

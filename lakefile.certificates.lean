@@ -15,7 +15,11 @@ input_dir certificateWitnesses where
   path := "data/witnesses"
   text := true
 
+input_dir curveDataWitnesses where
+  path := "data/curve-data"
+  text := true
+
 @[default_target]
 lean_lib CertifiedCurves where
   srcDir := "examples/certify_ec"
-  extraDepTargets := #[`certificateWitnesses]
+  extraDepTargets := #[`certificateWitnesses, `curveDataWitnesses]

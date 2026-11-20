@@ -30,7 +30,7 @@ meta def expectRejected (name : Name) (command : Syntax) : CommandElabM Unit := 
   let env ← getEnv
   set { (← get) with messages := savedMessages }
   unless failed do throwError "An invalid witness was accepted: {name}"
-  for suffix in [`witness, `result, `analytic_rank, `certifiedRank] do
+  for suffix in [`supplied, `witness, `result, `analytic_rank, `certifiedRank] do
     if env.contains (name ++ suffix) then
       throwError "Failed certification leaked {name ++ suffix}"
 
@@ -54,8 +54,17 @@ run_cmd do
 certify_ec AfterFailure from EllipticWitness.central
   DirectCurve.result DirectCurve.minimality DirectCurve.localData
 
+-- Names generated inside a namespace must not repeat that namespace.
+namespace RankScoped
+certify_ec Curve from EllipticWitness.central
+  DirectCurve.result DirectCurve.minimality DirectCurve.localData
+end RankScoped
+
+example : RankScoped.Curve.certifiedRank.val = 0 := rfl
+
 run_cmd do
-  for name in [`Curve11, `Curve37, `Curve112, `DirectCurve, `AfterFailure] do
+  for name in [`Curve11, `Curve37, `Curve112, `DirectCurve, `AfterFailure,
+      `RankScoped.Curve] do
     for suffix in [`witness_eq, `nonsingular, `minimality_valid, `local_data_valid,
         `conductor_valid, `root_number_valid, `payload_correct, `excludes_zero,
         `analytic_rank, `curve_analytic_rank] do

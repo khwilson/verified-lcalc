@@ -1,0 +1,23 @@
+{
+  "retrieved": "2026-11-20",
+  "sources": [
+    {
+      "label": "11.a1",
+      "url": "https://www.lmfdb.org/EllipticCurve/Q/data/11.a1",
+      "file": "11a1.json",
+      "sha256": "20d8bc527154806a399d6277a1db4d617e0747c8612ac2bedd9268b8ac6a50a3"
+    },
+    {
+      "label": "37.a1",
+      "url": "https://www.lmfdb.org/EllipticCurve/Q/data/37.a1",
+      "file": "37a1.json",
+      "sha256": "154248aabefa399c82556d700556f55245f5f1970c52b6a2a35e49e11d17f571"
+    }
+  ],
+  "transformations": [
+    "Copy ainvs from ec_curvedata and aplist from ec_classdata; pair the 25 coefficients with the first 25 primes, 2 through 97.",
+    "For 37.a1, supply both integer y-coordinates displayed for each stored xcoord_integral_points entry; for 11.a1 the supplied list is empty.",
+    "Represent exact integers as canonical decimal strings. These are small regression fixtures, not a bulk corpus."
+  ],
+  "claims": "Every supplied coefficient and point membership is checked in Lean. No completeness, rank, external-label identity, or database-provenance theorem is asserted."
+}
