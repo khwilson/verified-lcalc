@@ -53,6 +53,16 @@ and retain the finite-ring cardinality/trace bounds. The backend now uses this
 shared evaluator, replacing its integer-modulo enumerator. Benchmark kernel
 evaluation separately; the equality proof is not a performance measurement.
 
+`PointCountOdd.lean` now provides a proved alternative for odd finite fields.
+Completing the square identifies each y-fiber with square roots of the quadratic
+discriminant; Mathlib's `quadraticChar_card_sqrts` and Euler criterion give its
+cardinality. Computation uses Mathlib's binary exponentiation explicitly, so
+kernel reduction enumerates only x and performs logarithmically many field
+multiplications for the character. The adapter retains the general finite-ring
+path for characteristic two and composite moduli. No nonsingularity assumption
+is introduced. Include the sign/zero/small-characteristic and axiom regressions
+in an upstream proposal.
+
 ## TC-04 — canonical global minimality integrated; general comparison remains
 
 Status: the canonical `WeierstrassCurve.IsGlobalMinimal` predicate and its

@@ -17,17 +17,29 @@ theorem goodReduction_correct (e : WeierstrassCurve ℤ) (p : Nat) :
     WeierstrassCurve.map_Δ, eq_intCast, ne_eq,
     ZMod.intCast_zmod_eq_zero_iff_dvd, Int.dvd_iff_emod_eq_zero]
 
+/-- The optimized adapter preserves the finite-ring count at every nonzero
+modulus, including composite moduli and characteristic two. -/
+theorem computePointCount_eq_pointCountFinite (e : WeierstrassCurve ℤ) (p : ℕ)
+    [NeZero p] : computePointCount e p = (e.baseChange (ZMod p)).pointCountFinite := by
+  simp only [computePointCount, dif_neg (NeZero.ne p)]
+  split
+  · next hodd =>
+    letI : Fact (Nat.Prime p) := ⟨hodd.1⟩
+    exact WeierstrassCurve.pointCountOddFinite_correct _
+      (by simpa only [ZMod.ringChar_zmod_n] using hodd.2)
+  · rfl
+
 /-- The Q-input adapter executes the canonical finite-field counting algorithm. -/
 theorem computePointCount_correct (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime] :
     computePointCount e p = (e.baseChange (ZMod p)).pointCount := by
-  simp only [computePointCount, dif_neg (Fact.out : p.Prime).ne_zero]
-  exact WeierstrassCurve.pointCountFinite_eq_pointCount _
+  rw [computePointCount_eq_pointCountFinite, WeierstrassCurve.pointCountFinite_eq_pointCount]
 
 /-- The Q-input trace adapter agrees with TauCeti's existing Frobenius trace. -/
 theorem computeFrobeniusTrace_correct (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime] :
     computeFrobeniusTrace e p = (e.baseChange (ZMod p)).frobeniusTrace := by
   simp only [computeFrobeniusTrace, dif_neg (Fact.out : p.Prime).ne_zero]
-  exact WeierstrassCurve.frobeniusTraceFinite_eq_frobeniusTrace _
+  rw [computePointCount_correct, WeierstrassCurve.frobeniusTrace_def]
+  simp only [Nat.card_eq_fintype_card, ZMod.card]
 
 /-- End-to-end arithmetic guarantee for every supported prime calculation. -/
 theorem analysePrime_sound (e : WeierstrassCurve ℤ) (p : Nat) (d : PrimeData)

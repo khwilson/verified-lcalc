@@ -67,6 +67,8 @@ def main() -> None:
         "tests/UpstreamCandidates.lean",
         "tests/MathlibReuse.lean",
         "tests/GlobalMinimality.lean",
+        "tests/IntervalMultiplication.lean",
+        "tests/OddPointCount.lean",
         "tests/consumers/CertifiedECConsumer.lean",
     ):
         run(["lake", "-f", "lakefile.certificates.lean", "env", "lean", source])

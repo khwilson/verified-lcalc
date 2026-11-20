@@ -81,9 +81,10 @@ has been installed. See [NUMERICAL_RANK.md](docs/NUMERICAL_RANK.md) and
 
 The [Tau Ceti roadmap](docs/TAUCETI_ROADMAP.md) separates reusable upstream theory
 from project-specific certificate machinery. The
-[performance report](docs/CERTIFY_EC_PERFORMANCE.md) records measured bottlenecks
-and rejected optimizations; its initial measurements precede the curve-type
-migration.
+[performance report](docs/CERTIFY_EC_PERFORMANCE.md) records current kernel
+validation timings, batched throughput, and historical experiments. The current three-curve benchmark averages 2.73
+seconds per curve including shared imports; isolated commands take 0.22–1.83
+seconds after imports.
 
 ## Development and historical data
 

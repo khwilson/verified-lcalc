@@ -1,0 +1,98 @@
+{
+  "schema": "verified-lcalc.certify-ec-benchmark.v2",
+  "description": "Fresh processes; existing dependency artifacts; OS caches not flushed",
+  "repetitions": 3,
+  "launcher": "direct",
+  "toolchain": "leanprover/lean4:v4.36.0-rc2",
+  "mathlib_revision": "3440367ed1804626334f13a3a534a9cbb3385a59",
+  "git_revision": "77fd5067d7ab8f6fa02836044711f6924aa19595",
+  "git_diff_sha256": "3141216ae2a0625e431f15a5ec04b24f72ce1cbffafba60dc956a6ce8c51361e",
+  "platform": "macOS-26.5.2-arm64-arm-64bit-Mach-O",
+  "command_sha256": "4eb27ea3adb6caf4e484f2fc49692e66364378fe3070be422538d2345ecc5cbe",
+  "interval_core_sha256": "325f1027ea69d8c3ff1eb0b17371b561ab0a80aa6887b34565e1288ae9c632d2",
+  "results": {
+    "import_only": {
+      "samples": [
+        {
+          "wall_seconds": 16.92329054197762,
+          "cpu_seconds": 4.9365120000000005
+        },
+        {
+          "wall_seconds": 5.70528704195749,
+          "cpu_seconds": 3.64009
+        },
+        {
+          "wall_seconds": 4.753118583932519,
+          "cpu_seconds": 3.611061000000001
+        }
+      ],
+      "median_wall_seconds": 5.70528704195749,
+      "median_cpu_seconds": 3.64009
+    },
+    "112a2": {
+      "samples": [
+        {
+          "wall_seconds": 9.819985583075322,
+          "cpu_seconds": 8.187618
+        },
+        {
+          "wall_seconds": 12.554640999995172,
+          "cpu_seconds": 8.493705000000007
+        },
+        {
+          "wall_seconds": 14.745747625012882,
+          "cpu_seconds": 8.810584999999993
+        }
+      ],
+      "median_wall_seconds": 12.554640999995172,
+      "median_cpu_seconds": 8.493705000000007
+    },
+    "batch": {
+      "samples": [
+        {
+          "wall_seconds": 15.309045708039775,
+          "cpu_seconds": 10.218744000000004
+        },
+        {
+          "wall_seconds": 17.237190834013745,
+          "cpu_seconds": 10.480035000000008
+        },
+        {
+          "wall_seconds": 17.2442588750273,
+          "cpu_seconds": 10.203119999999991
+        }
+      ],
+      "median_wall_seconds": 17.237190834013745,
+      "median_cpu_seconds": 10.218744000000004
+    },
+    "warm_lake": {
+      "samples": [
+        {
+          "wall_seconds": 7.16804870904889,
+          "cpu_seconds": 5.942077999999995
+        },
+        {
+          "wall_seconds": 4.7707648751093075,
+          "cpu_seconds": 5.532118000000011
+        },
+        {
+          "wall_seconds": 4.842138541978784,
+          "cpu_seconds": 5.505845000000001
+        }
+      ],
+      "median_wall_seconds": 4.842138541978784,
+      "median_cpu_seconds": 5.532118000000011
+    }
+  },
+  "witness_sha256": {
+    "11a1": "99bcf31911b5ab295f3dd9203effd304111d31ef49b1ebbcaadca83fa1e988ea",
+    "37a1": "75ad756d02b881e421a315029a45d33a7b4702c3346835b3b91bf30a3694ea5e",
+    "112a2": "086b479d495f05f56bf0134e552487e22e8cc123b86aa64a2a21217798a7e1c0"
+  },
+  "batch_curves": [
+    "11a1",
+    "37a1",
+    "112a2"
+  ],
+  "batch_wall_seconds_per_curve": 5.745730278004582
+}

@@ -122,6 +122,10 @@ user-authorized `VerifiedLcalc.Assumptions.ellipticModularity` package, includin
 its documented arithmetic compatibility assumptions. They remain conditional
 on that package. Successful elaboration is logged only after all checks pass.
 
+For throughput, place multiple `certify_ec` commands in one module so they share
+one checker import. See [the performance measurements](CERTIFY_EC_PERFORMANCE.md)
+for command, fresh-process and batched costs.
+
 Metaprogramming changes the interface, not the fundamental initial checking cost.
 `lake build` reuses completed compiled certificates; `lake env lean FILE.lean`
 explicitly replays the commands in that source file.

@@ -12,7 +12,8 @@ namespace VerifiedLcalc.EllipticCurve
 theorem computeFrobeniusTrace_abs_le_square (e : WeierstrassCurve ℤ) (p : Nat)
     (hp : 1 ≤ p) : |computeFrobeniusTrace e p| ≤ (p : Int) ^ 2 := by
   letI : NeZero p := ⟨by omega⟩
-  simpa only [computeFrobeniusTrace, dif_neg (NeZero.ne p), ZMod.card] using
+  simpa only [computeFrobeniusTrace, dif_neg (NeZero.ne p),
+    computePointCount_eq_pointCountFinite, WeierstrassCurve.frobeniusTraceFinite, ZMod.card] using
     (e.baseChange (ZMod p)).frobeniusTraceFinite_abs_le_square
 
 /-- A safe weak prime-power coefficient bound. It uses elementary trace bounds

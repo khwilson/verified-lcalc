@@ -1,6 +1,7 @@
 import VerifiedLcalc.UpstreamCandidates.TauCeti.Minimality
 import VerifiedLcalc.UpstreamCandidates.TauCeti.TwoAdicMinimality
 import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCount
+import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCountOdd
 import VerifiedLcalc.UpstreamCandidates.TauCeti.LocalModel
 import Lean
 
@@ -13,6 +14,8 @@ run_cmd do
       ``WeierstrassCurve.isMinimal_of_small_c6,
       ``WeierstrassCurve.integral_c4_two_adic_gap,
       ``WeierstrassCurve.isMinimal_of_two_adic_c4_six,
+      ``WeierstrassCurve.squareRootCountOdd_correct,
+      ``WeierstrassCurve.pointCountOddFinite_correct,
       ``WeierstrassCurve.pointCountFinite_def,
       ``WeierstrassCurve.one_le_pointCountFinite,
       ``WeierstrassCurve.pointCountFinite_le,

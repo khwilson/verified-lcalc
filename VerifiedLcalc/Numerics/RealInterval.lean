@@ -51,7 +51,62 @@ private theorem mul_bounds (a b c d x y : ℝ) (hx : a ≤ x ∧ x ≤ b) (hy : 
 
 theorem intervalMul_sound (i j : RealInterval) (x y : ℝ)
     (hx : i.Contains x) (hy : j.Contains y) : (intervalMul i j).Contains (x*y) := by
-  simpa [RealInterval.Contains, intervalMul] using mul_bounds _ _ _ _ _ _ hx hy
+  obtain ⟨hxl, hxh⟩ := hx
+  obtain ⟨hyl, hyh⟩ := hy
+  unfold intervalMul
+  split
+  · next hi =>
+    have hi' : (0 : ℝ) ≤ (i.1 : ℝ) := by exact_mod_cast hi
+    have hx0 : 0 ≤ x := hi'.trans hxl
+    split
+    · next hj =>
+      have hj' : (0 : ℝ) ≤ (j.1 : ℝ) := by exact_mod_cast hj
+      simpa [RealInterval.Contains] using
+        And.intro (mul_le_mul hxl hyl hj' hx0)
+          (mul_le_mul hxh hyh (hj'.trans hyl) (hx0.trans hxh))
+    · split
+      · next hj =>
+        have hj' : (j.2 : ℝ) ≤ 0 := by exact_mod_cast hj
+        constructor <;> simp only [Rat.cast_mul]
+        · exact (mul_le_mul_of_nonpos_right hxh (hyl.trans (hyh.trans hj'))).trans
+            (mul_le_mul_of_nonneg_left hyl hx0)
+        · exact (mul_le_mul_of_nonneg_left hyh hx0).trans
+            (mul_le_mul_of_nonpos_right hxl hj')
+      · have hy0 : (j.1 : ℝ) ≤ 0 := by exact_mod_cast (le_of_not_ge ‹¬ 0 ≤ j.1›)
+        have hy1 : (0 : ℝ) ≤ (j.2 : ℝ) := by exact_mod_cast (le_of_not_ge ‹¬ j.2 ≤ 0›)
+        constructor <;> simp only [Rat.cast_mul]
+        · exact (mul_le_mul_of_nonpos_right hxh hy0).trans
+            (mul_le_mul_of_nonneg_left hyl hx0)
+        · exact (mul_le_mul_of_nonneg_left hyh hx0).trans
+            (mul_le_mul_of_nonneg_right hxh hy1)
+  · split
+    · next hi =>
+      have hi' : (i.2 : ℝ) ≤ 0 := by exact_mod_cast hi
+      have hx0 : x ≤ 0 := hxh.trans hi'
+      split
+      · next hj =>
+        have hj' : (0 : ℝ) ≤ (j.1 : ℝ) := by exact_mod_cast hj
+        constructor <;> simp only [Rat.cast_mul]
+        · exact (mul_le_mul_of_nonpos_left hyh (hxl.trans hx0)).trans
+            (mul_le_mul_of_nonneg_right hxl (hj'.trans hyl))
+        · exact (mul_le_mul_of_nonpos_left hyl hx0).trans
+            (mul_le_mul_of_nonneg_right hxh hj')
+      · split
+        · next hj =>
+          have hj' : (j.2 : ℝ) ≤ 0 := by exact_mod_cast hj
+          constructor <;> simp only [Rat.cast_mul]
+          · exact (mul_le_mul_of_nonpos_left hyh hi').trans
+              (mul_le_mul_of_nonpos_right hxh (hyh.trans hj'))
+          · exact (mul_le_mul_of_nonpos_right hxl (hyh.trans hj')).trans
+              (mul_le_mul_of_nonpos_left hyl (hxl.trans hx0))
+        · have hy0 : (j.1 : ℝ) ≤ 0 := by exact_mod_cast (le_of_not_ge ‹¬ 0 ≤ j.1›)
+          have hy1 : (0 : ℝ) ≤ (j.2 : ℝ) := by exact_mod_cast (le_of_not_ge ‹¬ j.2 ≤ 0›)
+          constructor <;> simp only [Rat.cast_mul]
+          · exact (mul_le_mul_of_nonneg_right hxl hy1).trans
+              (mul_le_mul_of_nonpos_left hyh hx0)
+          · exact (mul_le_mul_of_nonpos_left hyl hx0).trans
+              (mul_le_mul_of_nonpos_right hxl hy0)
+    · simpa [RealInterval.Contains] using mul_bounds _ _ _ _ _ _ ⟨hxl, hxh⟩ ⟨hyl, hyh⟩
 
 def polynomialValue (q : ℝ) : List Int → ℝ
   | [] => 0

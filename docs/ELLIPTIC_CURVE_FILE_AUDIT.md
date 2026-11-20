@@ -33,7 +33,7 @@ the specification and integer coefficient routines as the executable evaluator.
 
 | File | Existing API checked and disposition |
 | --- | --- |
-| `Arithmetic.lean` | Uses Mathlib curves/base change, decidable primality, and shared finite-ring count/trace. `localPair` is an executable recurrence, not a second curve API; retain with correctness. E08 removes its unused reflexive pair wrapper; E09 removes the duplicate recurrence specification/uniqueness induction. |
+| `Arithmetic.lean` | Uses Mathlib curves/base change, decidable primality, and shared finite-ring counts with a proved Euler-criterion fast path at odd primes. `localPair` is an executable recurrence, not a second curve API; retain with correctness. E08 removes its unused reflexive pair wrapper; E09 removes the duplicate recurrence specification/uniqueness induction. |
 | `BadPrime.lean` | TauCeti `nodePolynomial`, singular trace trichotomy, and Mathlib quadratic splitting are already used. Keep root-search/evaluation bridges: the canonical polynomial operations are noncomputable. No full drop-in executable root search was found. |
 | `BadPrimeCore.lean` | `nodeValue` evaluates TauCeti's noncomputable node polynomial using integers; it has the semantic proof in `BadPrime`. Keep as evaluator, not as a new tangent-polynomial specification. |
 | `Bounds.lean` | Mathlib finite counting, factorization, product/power estimates already reused. E01 removes the record-based bound/interface. The loose recurrence majorant is project-specific; no exact upstream theorem found. |
@@ -43,7 +43,7 @@ the specification and integer coefficient routines as the executable evaluator.
 | `CentralTail.lean` | Already uses Mathlib geometric summation, shifted HasSum and norm bounds. The shifted-square majorant is extra quantitative glue, not a duplicate geometric-series theorem. |
 | `CoefficientCore.lean` | E01. Replace the custom Euler-factor record with ordinary cached coefficient evaluators; retain `padicValNat` and list aggregation. Do not execute the noncomputable canonical polynomial API. |
 | `Coefficients.lean` | E01. Its proof uses Mathlib `Nat.multiplicity_eq_factorization` and finite prime-factor support; retain this executable-to-mathematical bridge. |
-| `Correctness.lean` | Already reduced to five backend-specific Boolean/input adapters; canonical count and trace correctness are reused. No duplicate mathematical Weierstrass definition remains. |
+| `Correctness.lean` | Contains six backend-specific Boolean/input adapters, including the fast-count-to-canonical finite-ring bridge; canonical count and trace correctness are reused. No duplicate mathematical Weierstrass definition remains. |
 | `Derivative.lean` | Mathlib interval integrals, `HasSum`, logarithms and exponential theory are reused through numerical soundness. This payload enclosure has no corresponding upstream evaluator. Retain. |
 | `DerivativeCore.lean` | Rational quadrature, tail bounds and witness payloads are executable routines specific to certification. No matching Mathlib/TauCeti numerical derivative evaluator found. |
 | `Euler.lean` | E02. Use Mathlib's inverse of the canonical quadratic polynomial as the specification; keep only the recurrence-to-inverse coefficient proof. |

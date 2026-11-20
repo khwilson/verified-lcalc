@@ -1,7 +1,7 @@
 module
 
 public import VerifiedLcalc.Certificate
-public import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCount
+public import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCountOdd
 public import Mathlib.Data.ZMod.Basic
 public import Mathlib.Data.Nat.Prime.Defs
 
@@ -10,19 +10,21 @@ public import Mathlib.Data.Nat.Prime.Defs
 namespace VerifiedLcalc.EllipticCurve
 open Artifacts
 
-/-- Evaluate the shared finite-ring count. Modulus zero is an unsupported
-sentinel, retaining the former empty enumeration plus infinity convention. -/
+/-- Use Euler's criterion at odd primes and the shared finite-ring enumeration
+otherwise. Modulus zero retains the unsupported sentinel convention. -/
 def computePointCount (e : WeierstrassCurve ℤ) (p : Nat) : Nat :=
   if hp : p = 0 then 1 else
     letI : NeZero p := ⟨hp⟩
-    (e.baseChange (ZMod p)).pointCountFinite
+    if hodd : Nat.Prime p ∧ p ≠ 2 then
+      letI : Fact (Nat.Prime p) := ⟨hodd.1⟩
+      (e.baseChange (ZMod p)).pointCountOddFinite
+    else (e.baseChange (ZMod p)).pointCountFinite
 
 /-- Evaluate the shared finite-ring trace. Correctness against TauCeti's
 field-valued mathematical definition is proved for prime moduli. -/
 def computeFrobeniusTrace (e : WeierstrassCurve ℤ) (p : Nat) : Int :=
   if hp : p = 0 then 0 else
-    letI : NeZero p := ⟨hp⟩
-    (e.baseChange (ZMod p)).frobeniusTraceFinite
+    (p : Int) + 1 - computePointCount e p
 
 /-- Reflect Mathlib's decidable primality predicate into the executable API. -/
 def isPrime (p : Nat) : Bool := decide (Nat.Prime p)

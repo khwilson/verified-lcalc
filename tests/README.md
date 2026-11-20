@@ -19,3 +19,8 @@ orchestrates those commands; all mathematics and mathematical checks are Lean.
 `GlobalMinimality.lean` checks the canonical TauCeti predicate on the borderline
 2-adic model 32.a4, a prime outside its witness support, and standard-only axiom
 dependencies for the localization and global-minimality witness proofs.
+
+`OddPointCount.lean` checks the faster Euler-criterion count, singular models,
+characteristic-two/composite fallbacks and standard-only axiom dependencies.
+`IntervalMultiplication.lean` exhaustively compares sign-based interval products
+with the four-corner formula on a small endpoint grid.

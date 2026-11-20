@@ -1,0 +1,276 @@
+{
+  "schema": "verified-lcalc.certify-ec-benchmark.v2",
+  "description": "Fresh processes; existing dependency artifacts; OS caches not flushed",
+  "repetitions": 3,
+  "launcher": "direct",
+  "toolchain": "leanprover/lean4:v4.36.0-rc2",
+  "mathlib_revision": "3440367ed1804626334f13a3a534a9cbb3385a59",
+  "git_revision": "77fd5067d7ab8f6fa02836044711f6924aa19595",
+  "git_diff_sha256": "c8a0e346fe43e3f9e3111c34a83fbb2876ea10aa47ed2f5f18bc80b7ed517aac",
+  "platform": "macOS-26.5.2-arm64-arm-64bit-Mach-O",
+  "command_sha256": "4eb27ea3adb6caf4e484f2fc49692e66364378fe3070be422538d2345ecc5cbe",
+  "interval_core_sha256": "325f1027ea69d8c3ff1eb0b17371b561ab0a80aa6887b34565e1288ae9c632d2",
+  "source_sha256": {
+    "VerifiedLcalc/Analytic.lean": "4ffb14e4398d384903daa3a036e4a87318a82e60a8350db7d49461570b0c94ee",
+    "VerifiedLcalc/Assumptions/Modularity.lean": "66141f1e93426247f809e36bca9e2ef042ddafa20b9f55a6ea9d0529fbc6e381",
+    "VerifiedLcalc/Assumptions/Precision.lean": "e9796bb0ab435cc0a18e766fd9dce7ed9ea5b0a766dee0b0764aa2d51d3110cc",
+    "VerifiedLcalc/Certificate/EllipticWitness.lean": "d8e91f833d520b5db3b7cd24f8e3d6b5082028c4c7e8faae34a29178f452fa1b",
+    "VerifiedLcalc/Certificate/Json.lean": "6448ffc9d0f14f417b707886f751e282c8630698b503230b4baa81dd583ccdf6",
+    "VerifiedLcalc/Certificate.lean": "cd04f49b88d2076a9dc0ef3beb494496162730fc8f56cf8d5200888649c6c381",
+    "VerifiedLcalc/CertificateDemo.lean": "9f55d9d4ab7a021c8ce3287c4c5f1a9de92d350ea901fad09e9a17bc06e70ab7",
+    "VerifiedLcalc/CertificateSoundness.lean": "7a914fc7d6eaa2d4f564feea19510a1823fa26e0d06e50f0bcc788ab608fecf4",
+    "VerifiedLcalc/Certification/CentralCertification.lean": "b37ed61634c69335fc4e12044795c20a060f64ccf3adcd1c6cacafa483d5dd68",
+    "VerifiedLcalc/Certification/CentralEvaluator.lean": "737fe1b994286d8ea7a9c58a41b54184cddc4ee648a3169ea9896c4293fa86b0",
+    "VerifiedLcalc/Certification/DerivativeCertification.lean": "75ca48baf7f9a9f80285352a4a3553a4be55651fea713477cdd7b5414dcf4c04",
+    "VerifiedLcalc/Certification/DerivativeEvaluator.lean": "e5bb947d9789920c34b16d083fd421be5e2c1bba2951c10ba6d4e56886608d1c",
+    "VerifiedLcalc/Certification/GeneralCertification.lean": "55e76beec0ddfc0c1aa20560f10815cbee491ec319cd5374796cabf3c61a09f0",
+    "VerifiedLcalc/Certification/NegativeSign.lean": "2c43709288b1babfa849e2e91a685d3a6bae2077cfd2c4bf5d60dc710602ae99",
+    "VerifiedLcalc/Certification/NumericalCertification.lean": "d0acfd9e6b6f4dd4b1d2da554907977623e410d375a8606b1414c1ea1bf551d7",
+    "VerifiedLcalc/Certification/Precision.lean": "6418eeb0326aa0d3ed019b0f329051cbd2b6ece35f489c07763ece1fa5b78f7a",
+    "VerifiedLcalc/Certification/TameCertification.lean": "db9e56681c450c014da0bdb0e6c1bd447babbcaf06fa4d761d7b99c34bf3542d",
+    "VerifiedLcalc/Certification/TameNegativeSign.lean": "693c8a154b9a00280113d17bb152364fe1f769f37efca704fdade23bca22bc3d",
+    "VerifiedLcalc/Certification/WildCertification.lean": "ee8f5389a30e7f15df98d172fe2540003a4e5a8b57a81be3a89bdf494519cd87",
+    "VerifiedLcalc/Demo.lean": "1681f7377d32921d008a6ed646925e703194ad3bfc562faac3cac6fb2717283b",
+    "VerifiedLcalc/EllipticCurve/Arithmetic.lean": "3db73f92d7cff1e7af18903d21e002f02eaf0a8d125c9da989372e2d8db20d34",
+    "VerifiedLcalc/EllipticCurve/BadPrime.lean": "9183b3796492720db46cabf2ea5f696063c7832fe95634ada0289737c6e285b9",
+    "VerifiedLcalc/EllipticCurve/BadPrimeCore.lean": "789e21d3a268ca97d64d6828e34fde48034c0a3a211a34bd3a42373d09b3d68a",
+    "VerifiedLcalc/EllipticCurve/Bounds.lean": "643f4e4702e3bc505b2820bc38bd4aeeadd72017f0d88c98a7827985faaad3ff",
+    "VerifiedLcalc/EllipticCurve/Central.lean": "12e96106fe8e4b033a10a7523856123c7f33c3f726c3f99904b1ae13bc96ce40",
+    "VerifiedLcalc/EllipticCurve/CentralCore.lean": "bc4c215d79df092a96e2746acbe4b6e16400becb0a6e63d220617cd3755f901f",
+    "VerifiedLcalc/EllipticCurve/CentralFinite.lean": "c3ee07cec3b520d05b9dbca22e2f74bc55a88a97eb890272a9e0b37d8cd79519",
+    "VerifiedLcalc/EllipticCurve/CentralTail.lean": "23cd2007b29326e41d5de0b365298c4cee565d504b4dfb7c948aba3822216fab",
+    "VerifiedLcalc/EllipticCurve/CoefficientCore.lean": "6c200ed926498ee31c74999259da806da87fdebf65cb75c500c0867c4d1dbd21",
+    "VerifiedLcalc/EllipticCurve/Coefficients.lean": "0d8ee94a53823a9af33af72df7c02c99cc93897a8cc1a0ea25b166cbb095a243",
+    "VerifiedLcalc/EllipticCurve/Correctness.lean": "93c043e82a4cadc73c59d486758f1ad2574ce6d382fa2b8af831a74bf77120cf",
+    "VerifiedLcalc/EllipticCurve/Derivative.lean": "977367c0d204d651a7e95bdba4de4a90d0a27b202fbf21cae779b549ad38fe01",
+    "VerifiedLcalc/EllipticCurve/DerivativeCore.lean": "4fa15cfe6c0f168e79070b5ad136261ff9860e918c68cf87e3af8ea933cfffaf",
+    "VerifiedLcalc/EllipticCurve/Euler.lean": "1ccb23002d5c06614b22651157870c8dfc03d5cb6e9a8a3ca2ccac426e2fdeb1",
+    "VerifiedLcalc/EllipticCurve/EulerProduct.lean": "0565fb08d7c19fae5b9b4e44a0ca679afc6b5b6debf8ad81b405c31aac4ae719",
+    "VerifiedLcalc/EllipticCurve/GlobalBounds.lean": "2c36fa291aa56979b1cac68fa052a104f5e0041690fd13d2facee29b0cafd564",
+    "VerifiedLcalc/EllipticCurve/GlobalCoefficients.lean": "ee37677f3311ac6f68938d83a9f3dbae7fb2290b18bfecce897b7e6fbcd8805b",
+    "VerifiedLcalc/EllipticCurve/GlobalMinimality.lean": "080db321e6e0a8ef6330b1fcc39a830df4251b65fdf76225198c07eedc8cc4d7",
+    "VerifiedLcalc/EllipticCurve/MinimalArithmetic.lean": "2dbf39f8e8c385d679964e800c005a181014c386a333efc1038c5503c4d018c6",
+    "VerifiedLcalc/EllipticCurve/Modularity/ArithmeticRealization.lean": "d07438df96f74aae831e60db470b9323027dc13c97b2f55a994ab8f7337260d5",
+    "VerifiedLcalc/EllipticCurve/Modularity/Canonical.lean": "5e9f332e417078f43e1e2b23dde1c26412aa2ef4fb8a7e7599d9629b7781880e",
+    "VerifiedLcalc/EllipticCurve/Modularity/CentralIntegral.lean": "eeb1d8189a34d06eab73cfecd2b53a7ecf0b23fd72d306b60b77e909273d4558",
+    "VerifiedLcalc/EllipticCurve/Modularity/CentralSeries.lean": "a3b858cb4ebbbb62c39ffc7206e40303e089e4014137414cd5596602e9cb3b53",
+    "VerifiedLcalc/EllipticCurve/Modularity/FastSign.lean": "d413683137ba9347597bb31a570f93e29c5768fa0beb7b20c472bbc8dbe932ef",
+    "VerifiedLcalc/EllipticCurve/Modularity/FirstDerivative.lean": "b43cc78d551ccdad31ed0ba3cf751c23cadedaad0b43ec603bf25e0f78a62f8d",
+    "VerifiedLcalc/EllipticCurve/Modularity/Fourier.lean": "54a008f59d94ad06b4b8c606b27bef8822ef8b1a1b643f5e62d91620101e2a40",
+    "VerifiedLcalc/EllipticCurve/Modularity/Prefix.lean": "e9bddc00956cc39a9369582adc6231443ad82eebde47006c8770c122d0df76ca",
+    "VerifiedLcalc/EllipticCurve/Modularity/Realization.lean": "63972cc4c787959cd63d924a683c9072a9a2867cd840162704980bf2013ea5a3",
+    "VerifiedLcalc/EllipticCurve/Modularity/RealizationIndependence.lean": "1a81d0580c4f59e853b20f8538301eb4407de4ad79280f4eac4281ad12868655",
+    "VerifiedLcalc/EllipticCurve/PrefixCore.lean": "334024a2d445277eb812f34a4a7aab86ab8a43a2020dcd67112fbe6844d77d90",
+    "VerifiedLcalc/EllipticCurve/RationalPrimes.lean": "99dd65bb5f16946ac55e8e66022c21ed69b1c6787c8ad7bff4bde1a29d096b96",
+    "VerifiedLcalc/EllipticCurve/ReductionArithmetic.lean": "4440670e184913a54ba8b36f2c7cbd929da702af30fa921fc8b4076c0d10e81c",
+    "VerifiedLcalc/EllipticCurve/ReductionCore.lean": "de3ae9fc89d6360a2e164a2968761f29d22d5b873ed94f01a6fe777ba16311c8",
+    "VerifiedLcalc/EllipticCurve/Residue.lean": "0acc6bbdc8e6b274c3659c44524fb1478e3e1386cd44848a077db8b94579e672",
+    "VerifiedLcalc/EllipticCurve/SemistableArithmetic.lean": "351076fe520b192985fcaa128c24edd834c1dfd1d4d1f247d58ed8380076527e",
+    "VerifiedLcalc/EllipticCurve/Tate/AdditiveArithmetic.lean": "8609095fbedfe70a26785f5e1b061218ad37a4ca4d9eb0dc4883a55dd4acb7a2",
+    "VerifiedLcalc/EllipticCurve/Tate/InvariantMinimality.lean": "6125eb105ebc5b0ce64f7727ed3bc5aff49bfb5259e25dc651ca966bb9b1b4d3",
+    "VerifiedLcalc/EllipticCurve/Tate/TameArithmetic.lean": "dd7cac3be4d159d8941fd2a9d9471291a6d6442ad7adb3e555d3e48edbb6d2cb",
+    "VerifiedLcalc/EllipticCurve/Tate/TameCore.lean": "47100567a36b7f75323808f04986b7fbee760cb76cbdd9bf656fa641923966d6",
+    "VerifiedLcalc/EllipticCurve/Tate/TwoAdicMinimality.lean": "21b0dd4695f2a490456031a858cc456c8e7adc5b552deb8b1065210483e975bd",
+    "VerifiedLcalc/EllipticCurve/Tate/WildArithmetic.lean": "b0639c0a8fd8e826b0f31a0e3612e8f2be4f974ef87cc74190cc741b3752e997",
+    "VerifiedLcalc/EllipticCurve/Tate/WildRootCore.lean": "6da38044bffd7234b1bce1725d3ace980daf32071486e85ebebe779053bcb668",
+    "VerifiedLcalc/EllipticCurve/Tate/WildTateCore.lean": "d95f3d5bccf15e6787c63c037e4432f3deadeba67e5ecf46751dcea937a1a5ff",
+    "VerifiedLcalc/EllipticCurve/TauCeti.lean": "28dd6124c7967e6fe85e85050092b065034f48968453dd00ef805b4f9b7fa516",
+    "VerifiedLcalc/Lmfdb.lean": "320823fe0672d90acde41d1b2b06837fcfdfa60e85e267d872309de0958bd30e",
+    "VerifiedLcalc/LmfdbSupplement.lean": "e4ad467b4074128fc22ad4fe87a1417c76dab3dcedf729110def73b8a0c8e860",
+    "VerifiedLcalc/NumericalRank.lean": "f4c823ecf3707084c1929ffa57fbccbff112783cbc120ce8b786a9931b6d69db",
+    "VerifiedLcalc/NumericalRankSeparation.lean": "e995c98be4b79bfb5c8ed4c9d49c21fc9bb949dfb055e40b03264686025888aa",
+    "VerifiedLcalc/NumericalRankSoundness.lean": "27bdfac82669c3983a8c87b3b15aecea46f776de0695f332373b42172716be19",
+    "VerifiedLcalc/Numerics/DerivativeQuadrature.lean": "6767a225d2a0051bfc414f02a7a005bcfe50dee466ba64de80a0c68f622c1d17",
+    "VerifiedLcalc/Numerics/DerivativeTail.lean": "90502c5061a36c207cf25e2a7813ebdf22c254ef7a8af9e89e8ffa3eef594c57",
+    "VerifiedLcalc/Numerics/ExponentialIntegral.lean": "e30a2c503a7126e2a6e4a07ea5caf36a1c147645c2326afabecb378a487de996",
+    "VerifiedLcalc/Numerics/FourierInterval.lean": "c989382cc6a5555063085b83f472dd3c0b8cdd9e99c18295fa09722baca36af9",
+    "VerifiedLcalc/Numerics/MellinSplit.lean": "c45486c0f0092f1e923b3fd90ea8af4067b492a2a28f0bc9e6b4591fdac4f1c0",
+    "VerifiedLcalc/Numerics/PolynomialTail.lean": "74e741d7f4f20a9ed71a9f4f1f62c625357a52d9d8cd7e303f26472e09e419b2",
+    "VerifiedLcalc/Numerics/RationalExp.lean": "0dbbc788e008da4def0c4434d847e2e6e0cd8f12dde2d1d00812267965b1970f",
+    "VerifiedLcalc/Numerics/RationalExpCore.lean": "475caf6a0606dc0191f1acd016ecf0ff49c4f7c41b9fd27240d2161df823b8ab",
+    "VerifiedLcalc/Numerics/RealInterval.lean": "0b748cda0878b3dc970f64d8a487638c166620b487a0c9f08313dfa966457033",
+    "VerifiedLcalc/Numerics/RealIntervalCore.lean": "325f1027ea69d8c3ff1eb0b17371b561ab0a80aa6887b34565e1288ae9c632d2",
+    "VerifiedLcalc/Precision.lean": "9d75792d4cfbd1c634e8eaec32f3b2f13621535048541f64cacaba7f97467f8a",
+    "VerifiedLcalc/Regression.lean": "424479a1750d598af0bdb3c14ae2b0250e2b97522f5fa1611fddd51371b1996a",
+    "VerifiedLcalc/Scan.lean": "1908722ad4fc87315da587ff8dad1830a5364d3fadc4b60ff1e6f2f54814ddd1",
+    "VerifiedLcalc/Tactic/CertifyEC.lean": "4eb27ea3adb6caf4e484f2fc49692e66364378fe3070be422538d2345ecc5cbe",
+    "VerifiedLcalc/Upstream/LedvinkaExponential.lean": "49b282b437b451862c2417a4024025523c0fa1163cc9f91d4232b777e32e897e",
+    "VerifiedLcalc/Upstream/LedvinkaExponentialCore.lean": "4900b74138a884f2fe73f069c1f901cbd446c20e5e17dd4579b3a6e97550c7d3",
+    "VerifiedLcalc/Upstream/TauCeti/Algebra/Polynomial/QuadraticDiscriminant.lean": "1000f969b1f013abd9928b8c3b6bc489f3ba2dd909592fd7d1823e5a9c7676da",
+    "VerifiedLcalc/Upstream/TauCeti/Algebra/QuadraticDiscriminant.lean": "ad428db270b680aeb1888347539ad6b4cebd75378149466657ed4337d50ec8a7",
+    "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Formula/VariableChange.lean": "4cdd0fec094f8033cf5c6c01ca510bf7e5c8f2da7756fcb53cde9b91c7b9554f",
+    "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Singular.lean": "837db63645d10d5630928b33711910ff8ee84cee6a72f106d70b5d0ec9d15261",
+    "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/GlobalMinimalModel.lean": "9d6df09702c0e774df1bebce44312744ad1eb3aa04190bb986352633b1f3f021",
+    "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/LFunction/Basic.lean": "2537119f49e6d4040cb9ec2205cd4ee26e1259e224bae502a2986e19147e7e35",
+    "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/LocalPolynomial.lean": "657d36f6ce85c709572e349243d8f79dfb7dccdb3702ee9d7d717bbdb4f46e54",
+    "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/Basic.lean": "c0deb15fb1dd61649ebb37c4a9fac7cbded9644da438fa632c9c597652318154",
+    "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/NodePolynomial.lean": "45bd308c0d12279b497160196c8f15247a504b63cc7ab6ae7476519972bb469e",
+    "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/PointCount.lean": "14315b6c4206ebcfb6df12fe47387d89ad4343b3d6ef28b1d7c6908154f64877",
+    "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/SingularPointCount.lean": "dc3338b14f3f76af8dd869d5908eedee8eb096a84f88df5f3137c28112f89855",
+    "VerifiedLcalc/Upstream/TauCeti/RingTheory/DedekindDomain/AdicValuation/Completion.lean": "f8ba5683303456e66c8f5ccb3e5876d1ae9a29ea9aef711fa557130fca7a8204",
+    "VerifiedLcalc/Upstream/TauCeti/RingTheory/DedekindDomain/LocalizationAtPrime.lean": "6728d39b97fa586602556365b33aca185cb6b8074e5008bbc8fbd3b1a7eb895a",
+    "VerifiedLcalc/Upstream/TauCeti/RingTheory/Localization/AtPrime.lean": "0d5d6506647cc68944e39a7857a39285c42d55a37d49588b0c961db02773a1fc",
+    "VerifiedLcalc/UpstreamCandidates/TauCeti/LocalModel.lean": "5cb3d64a8761ea58c98d9fa75cac047f471d24f04f2939e98cc04b34bcf41df3",
+    "VerifiedLcalc/UpstreamCandidates/TauCeti/Minimality.lean": "13e3e3a97d62a00c3af08f58432d9e5b647b97e0b36a4196a625ef83d6e2da93",
+    "VerifiedLcalc/UpstreamCandidates/TauCeti/PointCount.lean": "83e284d67ed8d6a2011b06e9f3c5791d716de9392a6d84feac3dd4b282b50349",
+    "VerifiedLcalc/UpstreamCandidates/TauCeti/PointCountOdd.lean": "6f22538100eb77204777095b12fc0110c9280102297ee029a45deee211b68a31",
+    "VerifiedLcalc/UpstreamCandidates/TauCeti/TwoAdicMinimality.lean": "43a04e4d7a4d830daadb4e7e51b2831f5210e5dde124338b2bf816560babe804"
+  },
+  "results": {
+    "bare": {
+      "samples": [
+        {
+          "wall_seconds": 0.3270804579369724,
+          "cpu_seconds": 0.2803979999999999
+        },
+        {
+          "wall_seconds": 0.2871321670245379,
+          "cpu_seconds": 0.25721599999999967
+        },
+        {
+          "wall_seconds": 0.38438449997920543,
+          "cpu_seconds": 0.26657300000000017
+        }
+      ],
+      "median_wall_seconds": 0.3270804579369724,
+      "median_cpu_seconds": 0.26657300000000017
+    },
+    "import_only": {
+      "samples": [
+        {
+          "wall_seconds": 12.531096667051315,
+          "cpu_seconds": 3.965115
+        },
+        {
+          "wall_seconds": 3.964533207938075,
+          "cpu_seconds": 3.0614329999999983
+        },
+        {
+          "wall_seconds": 3.2167668340262026,
+          "cpu_seconds": 2.8536409999999997
+        }
+      ],
+      "median_wall_seconds": 3.964533207938075,
+      "median_cpu_seconds": 3.0614329999999983
+    },
+    "cached_proof": {
+      "samples": [
+        {
+          "wall_seconds": 3.0768581250449643,
+          "cpu_seconds": 2.769012000000002
+        },
+        {
+          "wall_seconds": 2.991126292035915,
+          "cpu_seconds": 2.8010449999999967
+        },
+        {
+          "wall_seconds": 3.3489702079677954,
+          "cpu_seconds": 2.921016
+        }
+      ],
+      "median_wall_seconds": 3.0768581250449643,
+      "median_cpu_seconds": 2.8010449999999967
+    },
+    "11a1": {
+      "samples": [
+        {
+          "wall_seconds": 3.9363617920316756,
+          "cpu_seconds": 3.29749
+        },
+        {
+          "wall_seconds": 4.633075000019744,
+          "cpu_seconds": 3.3713590000000018
+        },
+        {
+          "wall_seconds": 4.354512499994598,
+          "cpu_seconds": 3.269551
+        }
+      ],
+      "median_wall_seconds": 4.354512499994598,
+      "median_cpu_seconds": 3.29749
+    },
+    "37a1": {
+      "samples": [
+        {
+          "wall_seconds": 4.1046460419893265,
+          "cpu_seconds": 3.763500999999998
+        },
+        {
+          "wall_seconds": 3.90450416598469,
+          "cpu_seconds": 3.589166999999996
+        },
+        {
+          "wall_seconds": 4.795951124979183,
+          "cpu_seconds": 4.015605000000004
+        }
+      ],
+      "median_wall_seconds": 4.1046460419893265,
+      "median_cpu_seconds": 3.763500999999998
+    },
+    "112a2": {
+      "samples": [
+        {
+          "wall_seconds": 5.563041249988601,
+          "cpu_seconds": 4.717547
+        },
+        {
+          "wall_seconds": 5.104479999979958,
+          "cpu_seconds": 4.612088999999994
+        },
+        {
+          "wall_seconds": 5.446398542029783,
+          "cpu_seconds": 4.760845999999997
+        }
+      ],
+      "median_wall_seconds": 5.446398542029783,
+      "median_cpu_seconds": 4.717547
+    },
+    "batch": {
+      "samples": [
+        {
+          "wall_seconds": 6.9521285420050845,
+          "cpu_seconds": 6.037502999999994
+        },
+        {
+          "wall_seconds": 8.518588959006593,
+          "cpu_seconds": 6.308049000000011
+        },
+        {
+          "wall_seconds": 8.174643417005427,
+          "cpu_seconds": 6.386460000000007
+        }
+      ],
+      "median_wall_seconds": 8.174643417005427,
+      "median_cpu_seconds": 6.308049000000011
+    },
+    "warm_lake": {
+      "samples": [
+        {
+          "wall_seconds": 7.593881791923195,
+          "cpu_seconds": 6.236899000000001
+        },
+        {
+          "wall_seconds": 5.062176582985558,
+          "cpu_seconds": 5.739132000000012
+        },
+        {
+          "wall_seconds": 5.267774291918613,
+          "cpu_seconds": 5.849530999999992
+        }
+      ],
+      "median_wall_seconds": 5.267774291918613,
+      "median_cpu_seconds": 5.849530999999992
+    }
+  },
+  "witness_sha256": {
+    "11a1": "99bcf31911b5ab295f3dd9203effd304111d31ef49b1ebbcaadca83fa1e988ea",
+    "37a1": "75ad756d02b881e421a315029a45d33a7b4702c3346835b3b91bf30a3694ea5e",
+    "112a2": "086b479d495f05f56bf0134e552487e22e8cc123b86aa64a2a21217798a7e1c0"
+  },
+  "batch_curves": [
+    "11a1",
+    "37a1",
+    "112a2"
+  ],
+  "batch_wall_seconds_per_curve": 2.724881139001809
+}

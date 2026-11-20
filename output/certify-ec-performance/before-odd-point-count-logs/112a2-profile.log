@@ -1,0 +1,500 @@
+[Elab.async] [0.037555] ✅️ Lean.Elab.Command.runLintersAsync
+  [Elab.lint] [0.037530] ✅️ running linters
+    [Elab.lint] [0.011236] ✅️ running linter: _private.Mathlib.Tactic.Linter.UpstreamableDecl.0.Mathlib.Linter.DoubleImports.upstreamableDeclLinter
+[Elab.async] [0.040360] ✅️ Lean.Elab.Command.runLintersAsync
+  [Elab.lint] [0.040349] ✅️ running linters
+    [Elab.lint] [0.011436] ✅️ running linter: _private.Mathlib.Tactic.Linter.Lint.0.Mathlib.Linter.DupNamespaceLinter.dupNamespace
+[Elab.command] [0.050499] ✅️ def witness : EllipticWitness✝ :=
+      VerifiedLcalc.EllipticWitness.derivative
+        { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+          policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+          coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+          alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+          alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+          finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+          tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+          box :=
+            {
+              reLo :=
+                8240382741953613776881793888472799714613955175971 / 98845440996495476255402218703161382146021749948416,
+              reHi :=
+                70921978138287095637870473566621599434376616555351 / 49422720498247738127701109351580691073010874974208,
+              imLo := 0, imHi := 0 } }
+        { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7] }
+        { atTwo := Option.some { r := 0, s := 1, t := 0, starT := 1, cubicRoot := 1, chain := [0], kodaira := -6 },
+          atThree := Option.none }
+  [Elab.definition.value] [0.047263] ✅️ Bench.witness
+    [Elab.step] [0.047113] ✅️ expected type: VerifiedLcalc.EllipticWitness, term
+        VerifiedLcalc.EllipticWitness.derivative
+          { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+            policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+            coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+            alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+            alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+            finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+            tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+            box :=
+              {
+                reLo :=
+                  8240382741953613776881793888472799714613955175971 /
+                    98845440996495476255402218703161382146021749948416,
+                reHi :=
+                  70921978138287095637870473566621599434376616555351 /
+                    49422720498247738127701109351580691073010874974208,
+                imLo := 0, imHi := 0 } }
+          { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7] }
+          { atTwo := Option.some { r := 0, s := 1, t := 0, starT := 1, cubicRoot := 1, chain := [0], kodaira := -6 },
+            atThree := Option.none }
+      [Elab.app.args] [0.047016] ✅️ elabAppArgs (3 args)
+            VerifiedLcalc.EllipticWitness.derivative
+        [Elab.step] [0.040022] ✅️ expected type: VerifiedLcalc.EllipticCurve.DerivativeResult, term
+            { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+              policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+              coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+              alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+              alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+              finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+              tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+              box :=
+                {
+                  reLo :=
+                    8240382741953613776881793888472799714613955175971 /
+                      98845440996495476255402218703161382146021749948416,
+                  reHi :=
+                    70921978138287095637870473566621599434376616555351 /
+                      49422720498247738127701109351580691073010874974208,
+                  imLo := 0, imHi := 0 } }
+          [Elab.structInst] [0.038633] ✅️ structure instance elaboration for `VerifiedLcalc.EllipticCurve.DerivativeResult`:
+                { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+                  policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+                  coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+                  alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+                  alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+                  finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+                  tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+                  box :=
+                    {
+                      reLo :=
+                        8240382741953613776881793888472799714613955175971 /
+                          98845440996495476255402218703161382146021749948416,
+                      reHi :=
+                        70921978138287095637870473566621599434376616555351 /
+                          49422720498247738127701109351580691073010874974208,
+                      imLo := 0, imHi := 0 } }
+            [Elab.structInst] [0.018857] ✅️ elaborating field `coefficients` : List ℤ
+              [Elab.step] [0.018805] ✅️ expected type: List ℤ, term
+                  [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0]
+                [Elab.step] [0.018745] ✅️ expected type: List ℤ, term
+                    List.cons✝ 1
+                      (List.cons✝ 0
+                        (List.cons✝ (-2)
+                          (List.cons✝ 0
+                            (List.cons✝ (-4)
+                              (List.cons✝ 0
+                                (List.cons✝ (-1)
+                                  (List.cons✝ 0
+                                    (List.cons✝ 1
+                                      (List.cons✝ 0
+                                        (List.cons✝ 0
+                                          (List.cons✝ 0
+                                            (List.cons✝ 0
+                                              (List.cons✝ 0
+                                                (List.cons✝ 8
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ (-2)
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 2
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 2
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ (-8)
+                                                                  (List.cons✝ 0 List.nil✝)))))))))))))))))))))))
+                  [Elab.app.args] [0.018634] ✅️ elabAppArgs (2 args) `@List.cons`
+                    [Elab.step] [0.016085] ✅️ expected type: List ℤ, term
+                        List.cons✝ 0
+                          (List.cons✝ (-2)
+                            (List.cons✝ 0
+                              (List.cons✝ (-4)
+                                (List.cons✝ 0
+                                  (List.cons✝ (-1)
+                                    (List.cons✝ 0
+                                      (List.cons✝ 1
+                                        (List.cons✝ 0
+                                          (List.cons✝ 0
+                                            (List.cons✝ 0
+                                              (List.cons✝ 0
+                                                (List.cons✝ 0
+                                                  (List.cons✝ 8
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ (-2)
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ 2
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ 2
+                                                                (List.cons✝ 0
+                                                                  (List.cons✝ (-8)
+                                                                    (List.cons✝ 0 List.nil✝))))))))))))))))))))))
+                      [Elab.app.args] [0.016026] ✅️ elabAppArgs (2 args) `@List.cons`
+                        [Elab.step] [0.015842] ✅️ expected type: List ℤ, term
+                            List.cons✝ (-2)
+                              (List.cons✝ 0
+                                (List.cons✝ (-4)
+                                  (List.cons✝ 0
+                                    (List.cons✝ (-1)
+                                      (List.cons✝ 0
+                                        (List.cons✝ 1
+                                          (List.cons✝ 0
+                                            (List.cons✝ 0
+                                              (List.cons✝ 0
+                                                (List.cons✝ 0
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ 8
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ (-2)
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 2
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ 2
+                                                                  (List.cons✝ 0
+                                                                    (List.cons✝ (-8)
+                                                                      (List.cons✝ 0 List.nil✝)))))))))))))))))))))
+                          [Elab.app.args] [0.015780] ✅️ elabAppArgs (2 args) `@List.cons`
+[Elab.command] [0.050990] ✅️ def Bench.witness : EllipticWitness✝ :=
+      VerifiedLcalc.EllipticWitness.derivative
+        { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+          policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+          coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+          alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+          alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+          finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+          tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+          box :=
+            {
+              reLo :=
+                8240382741953613776881793888472799714613955175971 / 98845440996495476255402218703161382146021749948416,
+              reHi :=
+                70921978138287095637870473566621599434376616555351 / 49422720498247738127701109351580691073010874974208,
+              imLo := 0, imHi := 0 } }
+        { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7] }
+        { atTwo := Option.some { r := 0, s := 1, t := 0, starT := 1, cubicRoot := 1, chain := [0], kodaira := -6 },
+          atThree := Option.none }
+[Elab.command] [0.025931] ✅️ def result : DerivativeResult✝ :=
+      { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+        policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+        coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+        alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+        alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+        finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+        tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+        box :=
+          {
+            reLo :=
+              8240382741953613776881793888472799714613955175971 / 98845440996495476255402218703161382146021749948416,
+            reHi :=
+              70921978138287095637870473566621599434376616555351 / 49422720498247738127701109351580691073010874974208,
+            imLo := 0, imHi := 0 } }
+  [Elab.definition.value] [0.024750] ✅️ Bench.result
+    [Elab.step] [0.024650] ✅️ expected type: VerifiedLcalc.EllipticCurve.DerivativeResult, term
+        { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+          policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+          coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+          alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+          alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+          finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+          tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+          box :=
+            {
+              reLo :=
+                8240382741953613776881793888472799714613955175971 / 98845440996495476255402218703161382146021749948416,
+              reHi :=
+                70921978138287095637870473566621599434376616555351 / 49422720498247738127701109351580691073010874974208,
+              imLo := 0, imHi := 0 } }
+      [Elab.structInst] [0.024446] ✅️ structure instance elaboration for `VerifiedLcalc.EllipticCurve.DerivativeResult`:
+            { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+              policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+              coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+              alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+              alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+              finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+              tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+              box :=
+                {
+                  reLo :=
+                    8240382741953613776881793888472799714613955175971 /
+                      98845440996495476255402218703161382146021749948416,
+                  reHi :=
+                    70921978138287095637870473566621599434376616555351 /
+                      49422720498247738127701109351580691073010874974208,
+                  imLo := 0, imHi := 0 } }
+        [Elab.structInst] [0.010776] ✅️ elaborating field `coefficients` : List ℤ
+          [Elab.step] [0.010741] ✅️ expected type: List ℤ, term
+              [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0]
+            [Elab.step] [0.010700] ✅️ expected type: List ℤ, term
+                List.cons✝ 1
+                  (List.cons✝ 0
+                    (List.cons✝ (-2)
+                      (List.cons✝ 0
+                        (List.cons✝ (-4)
+                          (List.cons✝ 0
+                            (List.cons✝ (-1)
+                              (List.cons✝ 0
+                                (List.cons✝ 1
+                                  (List.cons✝ 0
+                                    (List.cons✝ 0
+                                      (List.cons✝ 0
+                                        (List.cons✝ 0
+                                          (List.cons✝ 0
+                                            (List.cons✝ 8
+                                              (List.cons✝ 0
+                                                (List.cons✝ (-2)
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ 2
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 2
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ (-8)
+                                                              (List.cons✝ 0 List.nil✝)))))))))))))))))))))))
+              [Elab.app.args] [0.010596] ✅️ elabAppArgs (2 args) `@List.cons`
+                [Elab.step] [0.010331] ✅️ expected type: List ℤ, term
+                    List.cons✝ 0
+                      (List.cons✝ (-2)
+                        (List.cons✝ 0
+                          (List.cons✝ (-4)
+                            (List.cons✝ 0
+                              (List.cons✝ (-1)
+                                (List.cons✝ 0
+                                  (List.cons✝ 1
+                                    (List.cons✝ 0
+                                      (List.cons✝ 0
+                                        (List.cons✝ 0
+                                          (List.cons✝ 0
+                                            (List.cons✝ 0
+                                              (List.cons✝ 8
+                                                (List.cons✝ 0
+                                                  (List.cons✝ (-2)
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ 2
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ 2
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ (-8)
+                                                                (List.cons✝ 0 List.nil✝))))))))))))))))))))))
+                  [Elab.app.args] [0.010277] ✅️ elabAppArgs (2 args) `@List.cons`
+                    [Elab.step] [0.010121] ✅️ expected type: List ℤ, term
+                        List.cons✝ (-2)
+                          (List.cons✝ 0
+                            (List.cons✝ (-4)
+                              (List.cons✝ 0
+                                (List.cons✝ (-1)
+                                  (List.cons✝ 0
+                                    (List.cons✝ 1
+                                      (List.cons✝ 0
+                                        (List.cons✝ 0
+                                          (List.cons✝ 0
+                                            (List.cons✝ 0
+                                              (List.cons✝ 0
+                                                (List.cons✝ 8
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ (-2)
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 2
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 2
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ (-8)
+                                                                  (List.cons✝ 0 List.nil✝)))))))))))))))))))))
+                      [Elab.app.args] [0.010061] ✅️ elabAppArgs (2 args) `@List.cons`
+[Elab.command] [0.026205] ✅️ def Bench.result : DerivativeResult✝ :=
+      { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+        policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+        coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+        alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+        alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+        finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+        tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+        box :=
+          {
+            reLo :=
+              8240382741953613776881793888472799714613955175971 / 98845440996495476255402218703161382146021749948416,
+            reHi :=
+              70921978138287095637870473566621599434376616555351 / 49422720498247738127701109351580691073010874974208,
+            imLo := 0, imHi := 0 } }
+[Elab.command] [0.013254] ✅️ theorem Bench.excludes_zero : (Bench.result).box.excludesZero✝ = true✝ := by
+      decide +kernel✝
+[Elab.command] [0.033079] ✅️ theorem analytic_rank :
+        analyticOrderAt✝ (Modularity.modularWitness✝ Bench.curve Bench.nonsingular).formL✝ (1 : ℂ) = 1 :=
+      Certification.certifyDerivativeModel✝ Bench.result Bench.nonsingular Bench.minimality Bench.minimality_valid
+        Bench.localData Bench.local_data_valid Bench.conductor_valid Bench.root_number_valid Bench.payload_correct
+        Bench.excludes_zero
+  [Elab.definition.header] [0.032527] ✅️ Bench.analytic_rank
+    [Elab.step] [0.032479] ✅️ expected type: Sort ?u.1, term
+        analyticOrderAt✝ (Modularity.modularWitness✝ Bench.curve Bench.nonsingular).formL✝ (1 : ℂ) = 1
+      [Elab.step] [0.032457] ✅️ expected type: Sort ?u.1, term
+          binrel% Eq✝ (analyticOrderAt✝ (Modularity.modularWitness✝ Bench.curve Bench.nonsingular).formL✝ (1 : ℂ)) 1
+        [Elab.step] [0.027745] ✅️ expected type: <not-available>, term
+            analyticOrderAt✝ (Modularity.modularWitness✝ Bench.curve Bench.nonsingular).formL✝ (1 : ℂ)
+          [Elab.app.args] [0.026888] ✅️ elabAppArgs (2 args) `@analyticOrderAt`
+            [Elab.app.finalize] [0.019476] ✅️ analyticOrderAt
+                  (VerifiedLcalc.Modularity.modularWitness curve nonsingular).formL 1 : ℕ∞
+              [Meta.synthInstance] [0.017528] ✅️ NormedSpace ℂ ℂ
+                [Meta.synthInstance.apply] [0.011362] ✅️ apply @RCLike.innerProductSpace to InnerProductSpace ℂ ℂ
+                  [Meta.synthInstance.tryResolve] [0.010947] ✅️ InnerProductSpace ℂ ℂ ≟ InnerProductSpace ℂ ℂ
+                    [Meta.isDefEq] [0.010936] ✅️ InnerProductSpace ℂ ℂ =?= InnerProductSpace ?m.15 ?m.15
+                      [Meta.isDefEq] [0.010545] ✅️ NormedAddCommGroup.toSeminormedAddCommGroup =?= NonUnitalSeminormedRing.toSeminormedAddCommGroup
+[Elab.command] [0.033343] ✅️ theorem Bench.analytic_rank :
+        analyticOrderAt✝ (Modularity.modularWitness✝ Bench.curve Bench.nonsingular).formL✝ (1 : ℂ) = 1 :=
+      Certification.certifyDerivativeModel✝ Bench.result Bench.nonsingular Bench.minimality Bench.minimality_valid
+        Bench.localData Bench.local_data_valid Bench.conductor_valid Bench.root_number_valid Bench.payload_correct
+        Bench.excludes_zero
+Certified Bench.analytic_rank (rank 1); conditional on ellipticModularity
+[Elab.command] [6.361610] ✅️ certify_ec Bench from_json_string r#"{
+        "schema": "lcalc.ec-rank.v1",
+        "subject": {
+          "ainvs": [
+            "0",
+            "1",
+            "0",
+            "0",
+            "4"
+          ],
+          "conductor": "112"
+        },
+        "parameters": {
+          "precision_bits": "53",
+          "terms": "24",
+          "steps_per_unit": "1",
+          "cutoff": "8"
+        },
+        "rank": "1",
+        "coefficients": [
+          "1",
+          "0",
+          "-2",
+          "0",
+          "-4",
+          "0",
+          "-1",
+          "0",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "8",
+          "0",
+          "-2",
+          "0",
+          "2",
+          "0",
+          "2",
+          "0",
+          "-8",
+          "0"
+        ],
+        "arithmetic": {
+          "minimality": [
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "7"
+          ],
+          "at_two": {
+            "r": "0",
+            "s": "1",
+            "t": "0",
+            "starT": "1",
+            "cubicRoot": "1",
+            "quadraticRoot": "0",
+            "chain": [
+              "0"
+            ],
+            "kodaira": "-6"
+          },
+          "at_three": null
+        },
+        "enclosure": {
+          "real": [
+            "8240382741953613776881793888472799714613955175971/98845440996495476255402218703161382146021749948416",
+            "70921978138287095637870473566621599434376616555351/49422720498247738127701109351580691073010874974208"
+          ],
+          "imag": [
+            "0/1",
+            "0/1"
+          ]
+        },
+        "evaluator": {
+          "alpha": [
+            "1349303770452201895858762940416/2272683070874307918548583984375",
+            "5397215081808807583452231630848/9090732283497231578826904296875"
+          ],
+          "tail": "11811205609887788124074432197551727294921875/47133179186103571059895619727688494751940608",
+          "finite": [
+            "3008030843631027/9007199254740992",
+            "5334132766546087/4503599627370496"
+          ]
+        }
+      }
+      "#
+elaboration took 6.3s
+[Elab.async] [0.028128] ✅️ Lean.compileDecls
+  [Compiler] [0.027916] ✅️ compiling: [Bench.witness]
+[Elab.async] [0.012063] ✅️ Lean.compileDecls
+  [Compiler] [0.012017] ✅️ compiling: [Bench.result]
+[Elab.async] [0.046720] ✅️ elaborating proof of Bench.local_data_valid
+  [Elab.definition.value] [0.046495] ✅️ Bench.local_data_valid
+    [Elab.step] [0.046361] ✅️ decide +kernel✝
+      [Elab.step] [0.046344] ✅️ decide +kernel✝
+        [Elab.step] [0.046323] ✅️ decide +kernel✝
+          [addDecl] [0.045547] ✅️ adding declarations [_private.«.lake».«certify-ec-bench-crzbw778».«112a2-profile».0.Bench.local_data_valid._proof_1_1]
+            [Kernel] [0.045493] ✅️ typechecking declarations [_private.«.lake».«certify-ec-bench-crzbw778».«112a2-profile».0.Bench.local_data_valid._proof_1_1]
+[Elab.async] [0.013222] ✅️ elaborating proof of Bench.root_number_valid
+  [Elab.definition.value] [0.012981] ✅️ Bench.root_number_valid
+    [Elab.step] [0.012805] ✅️ decide +kernel✝
+      [Elab.step] [0.012787] ✅️ decide +kernel✝
+        [Elab.step] [0.012768] ✅️ decide +kernel✝
+          [addDecl] [0.012175] ✅️ adding declarations [_private.«.lake».«certify-ec-bench-crzbw778».«112a2-profile».0.Bench.root_number_valid._proof_1_1]
+            [Kernel] [0.012121] ✅️ typechecking declarations [_private.«.lake».«certify-ec-bench-crzbw778».«112a2-profile».0.Bench.root_number_valid._proof_1_1]
+[Elab.async] [6.014882] ✅️ elaborating proof of Bench.payload_correct
+  [Elab.definition.value] [6.009504] ✅️ Bench.payload_correct
+    [Elab.step] [6.007962] ✅️ decide +kernel✝
+      [Elab.step] [6.007941] ✅️ decide +kernel✝
+        [Elab.step] [6.007875] ✅️ decide +kernel✝
+          [addDecl] [6.004738] ✅️ adding declarations [_private.«.lake».«certify-ec-bench-crzbw778».«112a2-profile».0.Bench.payload_correct._proof_1_1]
+            [Kernel] [6.003603] ✅️ typechecking declarations [_private.«.lake».«certify-ec-bench-crzbw778».«112a2-profile».0.Bench.payload_correct._proof_1_1]
+type checking took 6s
+[Elab.async] [0.019216] ✅️ Lean.compileDecls
+  [Compiler] [0.018497] ✅️ compiling: [Bench.certifiedRank]
+[Elab.async] [0.032791] ✅️ Lean.Elab.Command.runLintersAsync
+  [Elab.lint] [0.032764] ✅️ running linters
+    [Elab.lint] [0.021071] ✅️ running linter: Mathlib.Linter.declTypeLinter
+[Elab.async] [0.012810] ✅️ Lean.Elab.Command.runLintersAsync
+  [Elab.lint] [0.012795] ✅️ running linters
+cumulative profiling times:
+	attribute application 0.157ms
+	compilation (IR) 1.51ms
+	compilation (LCNF base) 22.2ms
+	compilation (LCNF impure) 4.35ms
+	compilation (LCNF mono) 7.62ms
+	declTypeLinter 22.4ms
+	elaboration 6.31s
+	fix level params 0.39ms
+	instantiate metavars 0.434ms
+	interpretation 6.08ms
+	let-to-have transformation 0.74ms
+	linting 136ms
+	module linting 2.56ms
+	parsing 0.257ms
+	process pre-definitions 7.08ms
+	share common exprs 0.901ms
+	tactic execution 8.12ms
+	tacticAnalysis 1.41ms
+	type checking 6.09s
+	typeclass inference 68.3ms

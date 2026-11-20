@@ -130,11 +130,9 @@ theorem derivativeCellBounds_sound (a : Nat → Int) (cs : List Int)
       (∫ t in (left : ℝ)..(right : ℝ), Real.log t*f t) ∧
       (∫ t in (left : ℝ)..(right : ℝ), Real.log t*f t) ≤
         (((intervalMul (right-left,right-left) b).2 : Rat) : ℝ)
-    simp only [intervalMul, min_self, max_self, Rat.cast_min, Rat.cast_max,
+    simp only [intervalMul, if_pos (sub_nonneg.mpr hlr), ite_self,
       Rat.cast_mul, Rat.cast_sub]
     constructor
-    · apply (min_le_left _ _).trans
-      simpa only [intervalIntegral.integral_const, smul_eq_mul] using hlo
-    · apply le_trans _ (le_max_right _ _)
-      simpa only [intervalIntegral.integral_const, smul_eq_mul] using hhi
+    · simpa only [intervalIntegral.integral_const, smul_eq_mul] using hlo
+    · simpa only [intervalIntegral.integral_const, smul_eq_mul] using hhi
 end VerifiedLcalc.Numerics

@@ -24,6 +24,8 @@ test-certificates: certificates
 	lake -f lakefile.certificates.lean env lean tests/UpstreamCandidates.lean
 	lake -f lakefile.certificates.lean env lean tests/MathlibReuse.lean
 	lake -f lakefile.certificates.lean env lean tests/GlobalMinimality.lean
+	lake -f lakefile.certificates.lean env lean tests/IntervalMultiplication.lean
+	lake -f lakefile.certificates.lean env lean tests/OddPointCount.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/CertifiedECConsumer.lean
 
 .PHONY: test-lean

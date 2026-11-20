@@ -1,0 +1,879 @@
+[Elab.async] [0.092694] ✅️ Lean.Elab.Command.runLintersAsync
+  [Elab.lint] [0.092677] ✅️ running linters
+    [Elab.lint] [0.059856] ✅️ running linter: _private.Mathlib.Tactic.Linter.Header.0.Mathlib.Linter.Style.Header.headerLinter
+    [Elab.lint] [0.029830] ✅️ running linter: Mathlib.Linter.CountHeartbeats.countHeartbeatsLinter
+[Elab.async] [0.097266] ✅️ Lean.Elab.Command.runLintersAsync
+  [Elab.lint] [0.097249] ✅️ running linters
+    [Elab.lint] [0.060282] ✅️ running linter: _private.Mathlib.Tactic.Linter.Header.0.Mathlib.Linter.Style.Header.headerLinter
+    [Elab.lint] [0.027910] ✅️ running linter: _private.Mathlib.Tactic.Linter.DocString.0.Mathlib.Linter.Style.docStringLinter
+[Elab.command] [0.055189] ✅️ def witness : EllipticWitness✝ :=
+      VerifiedLcalc.EllipticWitness.derivative
+        { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+          policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+          coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+          alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+          alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+          finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+          tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+          box :=
+            {
+              reLo :=
+                8240382741953613776881793888472799714613955175971 / 98845440996495476255402218703161382146021749948416,
+              reHi :=
+                70921978138287095637870473566621599434376616555351 / 49422720498247738127701109351580691073010874974208,
+              imLo := 0, imHi := 0 } }
+        { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7] }
+        { atTwo := Option.some { r := 0, s := 1, t := 0, starT := 1, cubicRoot := 1, chain := [0], kodaira := -6 },
+          atThree := Option.none }
+  [Elab.definition.value] [0.049131] ✅️ Bench.witness
+    [Elab.step] [0.048918] ✅️ expected type: VerifiedLcalc.EllipticWitness, term
+        VerifiedLcalc.EllipticWitness.derivative
+          { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+            policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+            coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+            alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+            alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+            finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+            tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+            box :=
+              {
+                reLo :=
+                  8240382741953613776881793888472799714613955175971 /
+                    98845440996495476255402218703161382146021749948416,
+                reHi :=
+                  70921978138287095637870473566621599434376616555351 /
+                    49422720498247738127701109351580691073010874974208,
+                imLo := 0, imHi := 0 } }
+          { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7] }
+          { atTwo := Option.some { r := 0, s := 1, t := 0, starT := 1, cubicRoot := 1, chain := [0], kodaira := -6 },
+            atThree := Option.none }
+      [Elab.app.args] [0.048793] ✅️ elabAppArgs (3 args)
+            VerifiedLcalc.EllipticWitness.derivative
+        [Elab.step] [0.045369] ✅️ expected type: VerifiedLcalc.EllipticCurve.DerivativeResult, term
+            { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+              policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+              coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+              alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+              alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+              finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+              tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+              box :=
+                {
+                  reLo :=
+                    8240382741953613776881793888472799714613955175971 /
+                      98845440996495476255402218703161382146021749948416,
+                  reHi :=
+                    70921978138287095637870473566621599434376616555351 /
+                      49422720498247738127701109351580691073010874974208,
+                  imLo := 0, imHi := 0 } }
+          [Elab.structInst] [0.032557] ✅️ structure instance elaboration for `VerifiedLcalc.EllipticCurve.DerivativeResult`:
+                { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+                  policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+                  coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+                  alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+                  alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+                  finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+                  tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+                  box :=
+                    {
+                      reLo :=
+                        8240382741953613776881793888472799714613955175971 /
+                          98845440996495476255402218703161382146021749948416,
+                      reHi :=
+                        70921978138287095637870473566621599434376616555351 /
+                          49422720498247738127701109351580691073010874974208,
+                      imLo := 0, imHi := 0 } }
+            [Elab.structInst] [0.020978] ✅️ elaborating field `coefficients` : List ℤ
+              [Elab.step] [0.020943] ✅️ expected type: List ℤ, term
+                  [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0]
+                [Elab.step] [0.020863] ✅️ expected type: List ℤ, term
+                    List.cons✝ 1
+                      (List.cons✝ 0
+                        (List.cons✝ (-2)
+                          (List.cons✝ 0
+                            (List.cons✝ (-4)
+                              (List.cons✝ 0
+                                (List.cons✝ (-1)
+                                  (List.cons✝ 0
+                                    (List.cons✝ 1
+                                      (List.cons✝ 0
+                                        (List.cons✝ 0
+                                          (List.cons✝ 0
+                                            (List.cons✝ 0
+                                              (List.cons✝ 0
+                                                (List.cons✝ 8
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ (-2)
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 2
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 2
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ (-8)
+                                                                  (List.cons✝ 0 List.nil✝)))))))))))))))))))))))
+                  [Elab.app.args] [0.020778] ✅️ elabAppArgs (2 args) `@List.cons`
+                    [Elab.step] [0.020570] ✅️ expected type: List ℤ, term
+                        List.cons✝ 0
+                          (List.cons✝ (-2)
+                            (List.cons✝ 0
+                              (List.cons✝ (-4)
+                                (List.cons✝ 0
+                                  (List.cons✝ (-1)
+                                    (List.cons✝ 0
+                                      (List.cons✝ 1
+                                        (List.cons✝ 0
+                                          (List.cons✝ 0
+                                            (List.cons✝ 0
+                                              (List.cons✝ 0
+                                                (List.cons✝ 0
+                                                  (List.cons✝ 8
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ (-2)
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ 2
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ 2
+                                                                (List.cons✝ 0
+                                                                  (List.cons✝ (-8)
+                                                                    (List.cons✝ 0 List.nil✝))))))))))))))))))))))
+                      [Elab.app.args] [0.020514] ✅️ elabAppArgs (2 args) `@List.cons`
+                        [Elab.step] [0.020322] ✅️ expected type: List ℤ, term
+                            List.cons✝ (-2)
+                              (List.cons✝ 0
+                                (List.cons✝ (-4)
+                                  (List.cons✝ 0
+                                    (List.cons✝ (-1)
+                                      (List.cons✝ 0
+                                        (List.cons✝ 1
+                                          (List.cons✝ 0
+                                            (List.cons✝ 0
+                                              (List.cons✝ 0
+                                                (List.cons✝ 0
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ 8
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ (-2)
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 2
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ 2
+                                                                  (List.cons✝ 0
+                                                                    (List.cons✝ (-8)
+                                                                      (List.cons✝ 0 List.nil✝)))))))))))))))))))))
+                          [Elab.app.args] [0.020271] ✅️ elabAppArgs (2 args) `@List.cons`
+                            [Elab.step] [0.019677] ✅️ expected type: List ℤ, term
+                                List.cons✝ 0
+                                  (List.cons✝ (-4)
+                                    (List.cons✝ 0
+                                      (List.cons✝ (-1)
+                                        (List.cons✝ 0
+                                          (List.cons✝ 1
+                                            (List.cons✝ 0
+                                              (List.cons✝ 0
+                                                (List.cons✝ 0
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ 8
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ (-2)
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ 2
+                                                                (List.cons✝ 0
+                                                                  (List.cons✝ 2
+                                                                    (List.cons✝ 0
+                                                                      (List.cons✝ (-8)
+                                                                        (List.cons✝ 0 List.nil✝))))))))))))))))))))
+                              [Elab.app.args] [0.019630] ✅️ elabAppArgs (2 args) `@List.cons`
+                                [Elab.step] [0.019481] ✅️ expected type: List ℤ, term
+                                    List.cons✝ (-4)
+                                      (List.cons✝ 0
+                                        (List.cons✝ (-1)
+                                          (List.cons✝ 0
+                                            (List.cons✝ 1
+                                              (List.cons✝ 0
+                                                (List.cons✝ 0
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 8
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ (-2)
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ 2
+                                                                  (List.cons✝ 0
+                                                                    (List.cons✝ 2
+                                                                      (List.cons✝ 0
+                                                                        (List.cons✝ (-8)
+                                                                          (List.cons✝ 0 List.nil✝)))))))))))))))))))
+                                  [Elab.app.args] [0.019435] ✅️ elabAppArgs (2 args) `@List.cons`
+                                    [Elab.step] [0.017470] ✅️ expected type: List ℤ, term
+                                        List.cons✝ 0
+                                          (List.cons✝ (-1)
+                                            (List.cons✝ 0
+                                              (List.cons✝ 1
+                                                (List.cons✝ 0
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ 8
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ (-2)
+                                                                (List.cons✝ 0
+                                                                  (List.cons✝ 2
+                                                                    (List.cons✝ 0
+                                                                      (List.cons✝ 2
+                                                                        (List.cons✝ 0
+                                                                          (List.cons✝ (-8)
+                                                                            (List.cons✝ 0 List.nil✝))))))))))))))))))
+                                      [Elab.app.args] [0.017428] ✅️ elabAppArgs (2 args) `@List.cons`
+                                        [Elab.step] [0.017300] ✅️ expected type: List ℤ, term
+                                            List.cons✝ (-1)
+                                              (List.cons✝ 0
+                                                (List.cons✝ 1
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 8
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ (-2)
+                                                                  (List.cons✝ 0
+                                                                    (List.cons✝ 2
+                                                                      (List.cons✝ 0
+                                                                        (List.cons✝ 2
+                                                                          (List.cons✝ 0
+                                                                            (List.cons✝ (-8)
+                                                                              (List.cons✝ 0 List.nil✝)))))))))))))))))
+                                          [Elab.app.args] [0.017262] ✅️ elabAppArgs (2 args) `@List.cons`
+                                            [Elab.step] [0.016780] ✅️ expected type: List ℤ, term
+                                                List.cons✝ 0
+                                                  (List.cons✝ 1
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ 8
+                                                                (List.cons✝ 0
+                                                                  (List.cons✝ (-2)
+                                                                    (List.cons✝ 0
+                                                                      (List.cons✝ 2
+                                                                        (List.cons✝ 0
+                                                                          (List.cons✝ 2
+                                                                            (List.cons✝ 0
+                                                                              (List.cons✝ (-8)
+                                                                                (List.cons✝ 0 List.nil✝))))))))))))))))
+                                              [Elab.app.args] [0.016739] ✅️ elabAppArgs (2 args) `@List.cons`
+                                                [Elab.step] [0.016608] ✅️ expected type: List ℤ, term
+                                                    List.cons✝ 1
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ 8
+                                                                  (List.cons✝ 0
+                                                                    (List.cons✝ (-2)
+                                                                      (List.cons✝ 0
+                                                                        (List.cons✝ 2
+                                                                          (List.cons✝ 0
+                                                                            (List.cons✝ 2
+                                                                              (List.cons✝ 0
+                                                                                (List.cons✝ (-8)
+                                                                                  (List.cons✝ 0 List.nil✝)))))))))))))))
+                                                  [Elab.app.args] [0.016570] ✅️ elabAppArgs (2 args) `@List.cons`
+                                                    [Elab.step] [0.010206] ✅️ expected type: List ℤ, term
+                                                        List.cons✝ 0
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ 0
+                                                                  (List.cons✝ 8
+                                                                    (List.cons✝ 0
+                                                                      (List.cons✝ (-2)
+                                                                        (List.cons✝ 0
+                                                                          (List.cons✝ 2
+                                                                            (List.cons✝ 0
+                                                                              (List.cons✝ 2
+                                                                                (List.cons✝ 0
+                                                                                  (List.cons✝ (-8)
+                                                                                    (List.cons✝ 0
+                                                                                      List.nil✝))))))))))))))
+                                                      [Elab.app.args] [0.010070] ✅️ elabAppArgs (2 args) `@List.cons`
+[Elab.command] [0.055656] ✅️ def Bench.witness : EllipticWitness✝ :=
+      VerifiedLcalc.EllipticWitness.derivative
+        { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+          policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+          coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+          alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+          alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+          finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+          tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+          box :=
+            {
+              reLo :=
+                8240382741953613776881793888472799714613955175971 / 98845440996495476255402218703161382146021749948416,
+              reHi :=
+                70921978138287095637870473566621599434376616555351 / 49422720498247738127701109351580691073010874974208,
+              imLo := 0, imHi := 0 } }
+        { primes := [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7] }
+        { atTwo := Option.some { r := 0, s := 1, t := 0, starT := 1, cubicRoot := 1, chain := [0], kodaira := -6 },
+          atThree := Option.none }
+[Elab.command] [0.052656] ✅️ def result : DerivativeResult✝ :=
+      { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+        policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+        coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+        alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+        alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+        finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+        tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+        box :=
+          {
+            reLo :=
+              8240382741953613776881793888472799714613955175971 / 98845440996495476255402218703161382146021749948416,
+            reHi :=
+              70921978138287095637870473566621599434376616555351 / 49422720498247738127701109351580691073010874974208,
+            imLo := 0, imHi := 0 } }
+  [Elab.definition.value] [0.051649] ✅️ Bench.result
+    [Elab.step] [0.051552] ✅️ expected type: VerifiedLcalc.EllipticCurve.DerivativeResult, term
+        { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+          policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+          coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+          alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+          alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+          finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+          tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+          box :=
+            {
+              reLo :=
+                8240382741953613776881793888472799714613955175971 / 98845440996495476255402218703161382146021749948416,
+              reHi :=
+                70921978138287095637870473566621599434376616555351 / 49422720498247738127701109351580691073010874974208,
+              imLo := 0, imHi := 0 } }
+      [Elab.structInst] [0.051404] ✅️ structure instance elaboration for `VerifiedLcalc.EllipticCurve.DerivativeResult`:
+            { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+              policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+              coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+              alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+              alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+              finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+              tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+              box :=
+                {
+                  reLo :=
+                    8240382741953613776881793888472799714613955175971 /
+                      98845440996495476255402218703161382146021749948416,
+                  reHi :=
+                    70921978138287095637870473566621599434376616555351 /
+                      49422720498247738127701109351580691073010874974208,
+                  imLo := 0, imHi := 0 } }
+        [Elab.structInst] [0.038386] ✅️ elaborating field `coefficients` : List ℤ
+          [Elab.step] [0.038357] ✅️ expected type: List ℤ, term
+              [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0]
+            [Elab.step] [0.038326] ✅️ expected type: List ℤ, term
+                List.cons✝ 1
+                  (List.cons✝ 0
+                    (List.cons✝ (-2)
+                      (List.cons✝ 0
+                        (List.cons✝ (-4)
+                          (List.cons✝ 0
+                            (List.cons✝ (-1)
+                              (List.cons✝ 0
+                                (List.cons✝ 1
+                                  (List.cons✝ 0
+                                    (List.cons✝ 0
+                                      (List.cons✝ 0
+                                        (List.cons✝ 0
+                                          (List.cons✝ 0
+                                            (List.cons✝ 8
+                                              (List.cons✝ 0
+                                                (List.cons✝ (-2)
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ 2
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 2
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ (-8)
+                                                              (List.cons✝ 0 List.nil✝)))))))))))))))))))))))
+              [Elab.app.args] [0.038274] ✅️ elabAppArgs (2 args) `@List.cons`
+                [Elab.step] [0.038137] ✅️ expected type: List ℤ, term
+                    List.cons✝ 0
+                      (List.cons✝ (-2)
+                        (List.cons✝ 0
+                          (List.cons✝ (-4)
+                            (List.cons✝ 0
+                              (List.cons✝ (-1)
+                                (List.cons✝ 0
+                                  (List.cons✝ 1
+                                    (List.cons✝ 0
+                                      (List.cons✝ 0
+                                        (List.cons✝ 0
+                                          (List.cons✝ 0
+                                            (List.cons✝ 0
+                                              (List.cons✝ 8
+                                                (List.cons✝ 0
+                                                  (List.cons✝ (-2)
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ 2
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ 2
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ (-8)
+                                                                (List.cons✝ 0 List.nil✝))))))))))))))))))))))
+                  [Elab.app.args] [0.038087] ✅️ elabAppArgs (2 args) `@List.cons`
+                    [Elab.step] [0.037954] ✅️ expected type: List ℤ, term
+                        List.cons✝ (-2)
+                          (List.cons✝ 0
+                            (List.cons✝ (-4)
+                              (List.cons✝ 0
+                                (List.cons✝ (-1)
+                                  (List.cons✝ 0
+                                    (List.cons✝ 1
+                                      (List.cons✝ 0
+                                        (List.cons✝ 0
+                                          (List.cons✝ 0
+                                            (List.cons✝ 0
+                                              (List.cons✝ 0
+                                                (List.cons✝ 8
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ (-2)
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 2
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 2
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ (-8)
+                                                                  (List.cons✝ 0 List.nil✝)))))))))))))))))))))
+                      [Elab.app.args] [0.037907] ✅️ elabAppArgs (2 args) `@List.cons`
+                        [Elab.step] [0.037507] ✅️ expected type: List ℤ, term
+                            List.cons✝ 0
+                              (List.cons✝ (-4)
+                                (List.cons✝ 0
+                                  (List.cons✝ (-1)
+                                    (List.cons✝ 0
+                                      (List.cons✝ 1
+                                        (List.cons✝ 0
+                                          (List.cons✝ 0
+                                            (List.cons✝ 0
+                                              (List.cons✝ 0
+                                                (List.cons✝ 0
+                                                  (List.cons✝ 8
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ (-2)
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ 2
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ 2
+                                                                (List.cons✝ 0
+                                                                  (List.cons✝ (-8)
+                                                                    (List.cons✝ 0 List.nil✝))))))))))))))))))))
+                          [Elab.app.args] [0.037463] ✅️ elabAppArgs (2 args) `@List.cons`
+                            [Elab.step] [0.037336] ✅️ expected type: List ℤ, term
+                                List.cons✝ (-4)
+                                  (List.cons✝ 0
+                                    (List.cons✝ (-1)
+                                      (List.cons✝ 0
+                                        (List.cons✝ 1
+                                          (List.cons✝ 0
+                                            (List.cons✝ 0
+                                              (List.cons✝ 0
+                                                (List.cons✝ 0
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ 8
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ (-2)
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 2
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ 2
+                                                                  (List.cons✝ 0
+                                                                    (List.cons✝ (-8)
+                                                                      (List.cons✝ 0 List.nil✝)))))))))))))))))))
+                              [Elab.app.args] [0.037296] ✅️ elabAppArgs (2 args) `@List.cons`
+                                [Elab.step] [0.036817] ✅️ expected type: List ℤ, term
+                                    List.cons✝ 0
+                                      (List.cons✝ (-1)
+                                        (List.cons✝ 0
+                                          (List.cons✝ 1
+                                            (List.cons✝ 0
+                                              (List.cons✝ 0
+                                                (List.cons✝ 0
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ 8
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ (-2)
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ 2
+                                                                (List.cons✝ 0
+                                                                  (List.cons✝ 2
+                                                                    (List.cons✝ 0
+                                                                      (List.cons✝ (-8)
+                                                                        (List.cons✝ 0 List.nil✝))))))))))))))))))
+                                  [Elab.app.args] [0.036772] ✅️ elabAppArgs (2 args) `@List.cons`
+                                    [Elab.step] [0.036644] ✅️ expected type: List ℤ, term
+                                        List.cons✝ (-1)
+                                          (List.cons✝ 0
+                                            (List.cons✝ 1
+                                              (List.cons✝ 0
+                                                (List.cons✝ 0
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 8
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ (-2)
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ 2
+                                                                  (List.cons✝ 0
+                                                                    (List.cons✝ 2
+                                                                      (List.cons✝ 0
+                                                                        (List.cons✝ (-8)
+                                                                          (List.cons✝ 0 List.nil✝)))))))))))))))))
+                                      [Elab.app.args] [0.036606] ✅️ elabAppArgs (2 args) `@List.cons`
+                                        [Elab.step] [0.036157] ✅️ expected type: List ℤ, term
+                                            List.cons✝ 0
+                                              (List.cons✝ 1
+                                                (List.cons✝ 0
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ 8
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ (-2)
+                                                                (List.cons✝ 0
+                                                                  (List.cons✝ 2
+                                                                    (List.cons✝ 0
+                                                                      (List.cons✝ 2
+                                                                        (List.cons✝ 0
+                                                                          (List.cons✝ (-8)
+                                                                            (List.cons✝ 0 List.nil✝))))))))))))))))
+                                          [Elab.app.args] [0.036117] ✅️ elabAppArgs (2 args) `@List.cons`
+                                            [Elab.step] [0.035994] ✅️ expected type: List ℤ, term
+                                                List.cons✝ 1
+                                                  (List.cons✝ 0
+                                                    (List.cons✝ 0
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 8
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ (-2)
+                                                                  (List.cons✝ 0
+                                                                    (List.cons✝ 2
+                                                                      (List.cons✝ 0
+                                                                        (List.cons✝ 2
+                                                                          (List.cons✝ 0
+                                                                            (List.cons✝ (-8)
+                                                                              (List.cons✝ 0 List.nil✝)))))))))))))))
+                                              [Elab.app.args] [0.035956] ✅️ elabAppArgs (2 args) `@List.cons`
+                                                [Elab.step] [0.035828] ✅️ expected type: List ℤ, term
+                                                    List.cons✝ 0
+                                                      (List.cons✝ 0
+                                                        (List.cons✝ 0
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ 8
+                                                                (List.cons✝ 0
+                                                                  (List.cons✝ (-2)
+                                                                    (List.cons✝ 0
+                                                                      (List.cons✝ 2
+                                                                        (List.cons✝ 0
+                                                                          (List.cons✝ 2
+                                                                            (List.cons✝ 0
+                                                                              (List.cons✝ (-8)
+                                                                                (List.cons✝ 0 List.nil✝))))))))))))))
+                                                  [Elab.app.args] [0.035792] ✅️ elabAppArgs (2 args) `@List.cons`
+                                                    [Elab.step] [0.035673] ✅️ expected type: List ℤ, term
+                                                        List.cons✝ 0
+                                                          (List.cons✝ 0
+                                                            (List.cons✝ 0
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ 8
+                                                                  (List.cons✝ 0
+                                                                    (List.cons✝ (-2)
+                                                                      (List.cons✝ 0
+                                                                        (List.cons✝ 2
+                                                                          (List.cons✝ 0
+                                                                            (List.cons✝ 2
+                                                                              (List.cons✝ 0
+                                                                                (List.cons✝ (-8)
+                                                                                  (List.cons✝ 0 List.nil✝)))))))))))))
+                                                      [Elab.app.args] [0.035637] ✅️ elabAppArgs (2 args) `@List.cons`
+                                                        [Elab.step] [0.035499] ✅️ expected type: List ℤ, term
+                                                            List.cons✝ 0
+                                                              (List.cons✝ 0
+                                                                (List.cons✝ 0
+                                                                  (List.cons✝ 8
+                                                                    (List.cons✝ 0
+                                                                      (List.cons✝ (-2)
+                                                                        (List.cons✝ 0
+                                                                          (List.cons✝ 2
+                                                                            (List.cons✝ 0
+                                                                              (List.cons✝ 2
+                                                                                (List.cons✝ 0
+                                                                                  (List.cons✝ (-8)
+                                                                                    (List.cons✝ 0 List.nil✝))))))))))))
+                                                          [Elab.app.args] [0.035463] ✅️ elabAppArgs (2 args) `@List.cons`
+                                                            [Elab.step] [0.035341] ✅️ expected type: List ℤ, term
+                                                                List.cons✝ 0
+                                                                  (List.cons✝ 0
+                                                                    (List.cons✝ 8
+                                                                      (List.cons✝ 0
+                                                                        (List.cons✝ (-2)
+                                                                          (List.cons✝ 0
+                                                                            (List.cons✝ 2
+                                                                              (List.cons✝ 0
+                                                                                (List.cons✝ 2
+                                                                                  (List.cons✝ 0
+                                                                                    (List.cons✝ (-8)
+                                                                                      (List.cons✝ 0 List.nil✝)))))))))))
+                                                              [Elab.app.args] [0.035305] ✅️ elabAppArgs (2 args) `@List.cons`
+                                                                [Elab.step] [0.035189] ✅️ expected type: List ℤ, term
+                                                                    List.cons✝ 0
+                                                                      (List.cons✝ 8
+                                                                        (List.cons✝ 0
+                                                                          (List.cons✝ (-2)
+                                                                            (List.cons✝ 0
+                                                                              (List.cons✝ 2
+                                                                                (List.cons✝ 0
+                                                                                  (List.cons✝ 2
+                                                                                    (List.cons✝ 0
+                                                                                      (List.cons✝ (-8)
+                                                                                        (List.cons✝ 0
+                                                                                          List.nil✝))))))))))
+                                                                  [Elab.app.args] [0.035155] ✅️ elabAppArgs (2 args) `@List.cons`
+                                                                    [Elab.step] [0.019323] ✅️ expected type: ℤ, term
+                                                                        0
+                                                                      [Meta.isDefEq] [0.019107] ✅️ ℤ =?= ?m.68
+                                                                        [Meta.isDefEq.assign] [0.019102] ✅️ ?m.68 := ℤ
+                                                                          [Meta.isDefEq.assign.checkTypes] [0.019096] ✅️ (?m.68 : Sort
+                                                                                ?u.46) := (ℤ : Type)
+                                                                            [Meta.isDefEq] [0.019078] ✅️ Sort
+                                                                                  ?u.46 =?= Type
+                                                                    [Elab.step] [0.015710] ✅️ expected type: List
+                                                                          ℤ, term
+                                                                        List.cons✝ 8
+                                                                          (List.cons✝ 0
+                                                                            (List.cons✝ (-2)
+                                                                              (List.cons✝ 0
+                                                                                (List.cons✝ 2
+                                                                                  (List.cons✝ 0
+                                                                                    (List.cons✝ 2
+                                                                                      (List.cons✝ 0
+                                                                                        (List.cons✝ (-8)
+                                                                                          (List.cons✝ 0
+                                                                                            List.nil✝)))))))))
+                                                                      [Elab.app.args] [0.015554] ✅️ elabAppArgs (2 args) `@List.cons`
+                                                                        [Elab.step] [0.015215] ✅️ expected type: List
+                                                                              ℤ, term
+                                                                            List.cons✝ 0
+                                                                              (List.cons✝ (-2)
+                                                                                (List.cons✝ 0
+                                                                                  (List.cons✝ 2
+                                                                                    (List.cons✝ 0
+                                                                                      (List.cons✝ 2
+                                                                                        (List.cons✝ 0
+                                                                                          (List.cons✝ (-8)
+                                                                                            (List.cons✝ 0
+                                                                                              List.nil✝))))))))
+                                                                          [Elab.app.args] [0.014982] ✅️ elabAppArgs (2 args) `@List.cons`
+                                                                            [Elab.step] [0.013936] ✅️ expected type: List
+                                                                                  ℤ, term
+                                                                                List.cons✝ (-2)
+                                                                                  (List.cons✝ 0
+                                                                                    (List.cons✝ 2
+                                                                                      (List.cons✝ 0
+                                                                                        (List.cons✝ 2
+                                                                                          (List.cons✝ 0
+                                                                                            (List.cons✝ (-8)
+                                                                                              (List.cons✝ 0
+                                                                                                List.nil✝)))))))
+                                                                              [Elab.app.args] [0.013779] ✅️ elabAppArgs (2 args) `@List.cons`
+                                                                                [Elab.step] [0.010072] ✅️ expected type: ℤ, term
+                                                                                    -2
+[Elab.command] [0.052902] ✅️ def Bench.result : DerivativeResult✝ :=
+      { equation := { a₁ := 0, a₂ := 1, a₃ := 0, a₄ := 0, a₆ := 4 }, conductor := 112,
+        policy := { precisionBits := 53 }, termLimit := 24, stepsPerUnit := 1, cutoff := 8,
+        coefficients := [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0, 2, 0, -8, 0],
+        alphaLo := 1349303770452201895858762940416 / 2272683070874307918548583984375,
+        alphaHi := 5397215081808807583452231630848 / 9090732283497231578826904296875,
+        finite := (3008030843631027 / 9007199254740992, 5334132766546087 / 4503599627370496),
+        tail := 11811205609887788124074432197551727294921875 / 47133179186103571059895619727688494751940608,
+        box :=
+          {
+            reLo :=
+              8240382741953613776881793888472799714613955175971 / 98845440996495476255402218703161382146021749948416,
+            reHi :=
+              70921978138287095637870473566621599434376616555351 / 49422720498247738127701109351580691073010874974208,
+            imLo := 0, imHi := 0 } }
+[Elab.command] [0.012897] ✅️ theorem analytic_rank :
+        analyticOrderAt✝ (Modularity.modularWitness✝ Bench.curve Bench.nonsingular).formL✝ (1 : ℂ) = 1 :=
+      Certification.certifyDerivativeModel✝ Bench.result Bench.nonsingular Bench.minimality Bench.minimality_valid
+        Bench.localData Bench.local_data_valid Bench.conductor_valid Bench.root_number_valid Bench.payload_correct
+        Bench.excludes_zero
+  [Elab.definition.header] [0.012458] ✅️ Bench.analytic_rank
+    [Elab.step] [0.012412] ✅️ expected type: Sort ?u.1, term
+        analyticOrderAt✝ (Modularity.modularWitness✝ Bench.curve Bench.nonsingular).formL✝ (1 : ℂ) = 1
+      [Elab.step] [0.012394] ✅️ expected type: Sort ?u.1, term
+          binrel% Eq✝ (analyticOrderAt✝ (Modularity.modularWitness✝ Bench.curve Bench.nonsingular).formL✝ (1 : ℂ)) 1
+        [Elab.step] [0.010848] ✅️ expected type: <not-available>, term
+            analyticOrderAt✝ (Modularity.modularWitness✝ Bench.curve Bench.nonsingular).formL✝ (1 : ℂ)
+          [Elab.app.args] [0.010775] ✅️ elabAppArgs (2 args) `@analyticOrderAt`
+[Elab.command] [0.013120] ✅️ theorem Bench.analytic_rank :
+        analyticOrderAt✝ (Modularity.modularWitness✝ Bench.curve Bench.nonsingular).formL✝ (1 : ℂ) = 1 :=
+      Certification.certifyDerivativeModel✝ Bench.result Bench.nonsingular Bench.minimality Bench.minimality_valid
+        Bench.localData Bench.local_data_valid Bench.conductor_valid Bench.root_number_valid Bench.payload_correct
+        Bench.excludes_zero
+Certified Bench.analytic_rank (rank 1); conditional on ellipticModularity
+[Elab.command] [1.830591] ✅️ certify_ec Bench from_json_string r#"{
+        "schema": "lcalc.ec-rank.v1",
+        "subject": {
+          "ainvs": [
+            "0",
+            "1",
+            "0",
+            "0",
+            "4"
+          ],
+          "conductor": "112"
+        },
+        "parameters": {
+          "precision_bits": "53",
+          "terms": "24",
+          "steps_per_unit": "1",
+          "cutoff": "8"
+        },
+        "rank": "1",
+        "coefficients": [
+          "1",
+          "0",
+          "-2",
+          "0",
+          "-4",
+          "0",
+          "-1",
+          "0",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "8",
+          "0",
+          "-2",
+          "0",
+          "2",
+          "0",
+          "2",
+          "0",
+          "-8",
+          "0"
+        ],
+        "arithmetic": {
+          "minimality": [
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "2",
+            "7"
+          ],
+          "at_two": {
+            "r": "0",
+            "s": "1",
+            "t": "0",
+            "starT": "1",
+            "cubicRoot": "1",
+            "quadraticRoot": "0",
+            "chain": [
+              "0"
+            ],
+            "kodaira": "-6"
+          },
+          "at_three": null
+        },
+        "enclosure": {
+          "real": [
+            "8240382741953613776881793888472799714613955175971/98845440996495476255402218703161382146021749948416",
+            "70921978138287095637870473566621599434376616555351/49422720498247738127701109351580691073010874974208"
+          ],
+          "imag": [
+            "0/1",
+            "0/1"
+          ]
+        },
+        "evaluator": {
+          "alpha": [
+            "1349303770452201895858762940416/2272683070874307918548583984375",
+            "5397215081808807583452231630848/9090732283497231578826904296875"
+          ],
+          "tail": "11811205609887788124074432197551727294921875/47133179186103571059895619727688494751940608",
+          "finite": [
+            "3008030843631027/9007199254740992",
+            "5334132766546087/4503599627370496"
+          ]
+        }
+      }
+      "#
+elaboration took 1.8s
+[Elab.async] [0.022513] ✅️ Lean.compileDecls
+  [Compiler] [0.017201] ✅️ compiling: [Bench.witness]
+[Elab.async] [0.010247] ✅️ Lean.compileDecls
+  [Compiler] [0.010192] ✅️ compiling: [Bench.result]
+[Elab.async] [0.025937] ✅️ elaborating proof of Bench.local_data_valid
+  [Elab.definition.value] [0.025604] ✅️ Bench.local_data_valid
+    [Elab.step] [0.025424] ✅️ decide +kernel✝
+      [Elab.step] [0.025394] ✅️ decide +kernel✝
+        [Elab.step] [0.025286] ✅️ decide +kernel✝
+          [addDecl] [0.024635] ✅️ adding declarations [_private.«.lake».«certify-ec-bench-er2r59fs».«112a2-profile».0.Bench.local_data_valid._proof_1_1]
+            [Kernel] [0.024558] ✅️ typechecking declarations [_private.«.lake».«certify-ec-bench-er2r59fs».«112a2-profile».0.Bench.local_data_valid._proof_1_1]
+[Elab.async] [0.012302] ✅️ elaborating proof of Bench.root_number_valid
+  [Elab.definition.value] [0.012113] ✅️ Bench.root_number_valid
+    [Elab.step] [0.012016] ✅️ decide +kernel✝
+      [Elab.step] [0.012003] ✅️ decide +kernel✝
+        [Elab.step] [0.011990] ✅️ decide +kernel✝
+          [addDecl] [0.011626] ✅️ adding declarations [_private.«.lake».«certify-ec-bench-er2r59fs».«112a2-profile».0.Bench.root_number_valid._proof_1_1]
+            [Kernel] [0.011592] ✅️ typechecking declarations [_private.«.lake».«certify-ec-bench-er2r59fs».«112a2-profile».0.Bench.root_number_valid._proof_1_1]
+[Elab.async] [1.511225] ✅️ elaborating proof of Bench.payload_correct
+  [Elab.definition.value] [1.510730] ✅️ Bench.payload_correct
+    [Elab.step] [1.510411] ✅️ decide +kernel✝
+      [Elab.step] [1.510392] ✅️ decide +kernel✝
+        [Elab.step] [1.510346] ✅️ decide +kernel✝
+          [addDecl] [1.509567] ✅️ adding declarations [_private.«.lake».«certify-ec-bench-er2r59fs».«112a2-profile».0.Bench.payload_correct._proof_1_1]
+            [Kernel] [1.509407] ✅️ typechecking declarations [_private.«.lake».«certify-ec-bench-er2r59fs».«112a2-profile».0.Bench.payload_correct._proof_1_1]
+type checking took 1.51s
+[Elab.async] [0.018427] ✅️ Lean.Elab.Command.runLintersAsync
+  [Elab.lint] [0.018406] ✅️ running linters
+[Elab.async] [0.011627] ✅️ Lean.Elab.Command.runLintersAsync
+  [Elab.lint] [0.011610] ✅️ running linters
+cumulative profiling times:
+	attribute application 0.154ms
+	compilation (IR) 1.06ms
+	compilation (LCNF base) 13.3ms
+	compilation (LCNF impure) 2.73ms
+	compilation (LCNF mono) 5.75ms
+	declTypeLinter 6.3ms
+	elaboration 1.8s
+	fix level params 0.139ms
+	instantiate metavars 0.326ms
+	interpretation 5.61ms
+	let-to-have transformation 0.203ms
+	linting 306ms
+	module linting 0.45ms
+	parsing 0.0563ms
+	process pre-definitions 3.52ms
+	share common exprs 0.555ms
+	tactic execution 4.06ms
+	tacticAnalysis 5.17ms
+	type checking 1.58s
+	typeclass inference 36.2ms

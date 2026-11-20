@@ -1,0 +1,192 @@
+[Elab.async] [0.038264] ✅️ Lean.Elab.Command.runLintersAsync
+  [Elab.lint] [0.038245] ✅️ running linters
+[Elab.async] [0.039043] ✅️ Lean.Elab.Command.runLintersAsync
+  [Elab.lint] [0.039030] ✅️ running linters
+    [Elab.lint] [0.011508] ✅️ running linter: _private.Mathlib.Tactic.Linter.DocString.0.Mathlib.Linter.Style.docStringLinter
+[Elab.command] [0.019144] ✅️ def witness : EllipticWitness✝ :=
+      VerifiedLcalc.EllipticWitness.central
+        { equation := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -10, a₆ := -20 }, conductor := 11, rootNumber := 1,
+          policy := { precisionBits := 53 }, termLimit := 1, coefficients := [1],
+          alphaLo := 5397215081808807583435051761664 / 2848959001535859775543212890625,
+          alphaHi := 337325942613050473965764476928 / 178059937595991230010986328125,
+          geometricUpper := 169336229459221 / 1125899906842624,
+          tail := 28674758607465946046101926841 / 104834424879811077321286221824,
+          box :=
+            { reLo := 366028917649787835048376743221 / 13418806384615817897124636393472,
+              reHi := 963345890145134125303004031503 / 1677350798076977237140579549184, imLo := 0, imHi := 0 } }
+        { primes := [11, 11, 11, 11, 11] } { atTwo := Option.none, atThree := Option.none }
+  [Elab.definition.value] [0.016678] ✅️ Bench.witness
+    [Elab.step] [0.016589] ✅️ expected type: VerifiedLcalc.EllipticWitness, term
+        VerifiedLcalc.EllipticWitness.central
+          { equation := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -10, a₆ := -20 }, conductor := 11, rootNumber := 1,
+            policy := { precisionBits := 53 }, termLimit := 1, coefficients := [1],
+            alphaLo := 5397215081808807583435051761664 / 2848959001535859775543212890625,
+            alphaHi := 337325942613050473965764476928 / 178059937595991230010986328125,
+            geometricUpper := 169336229459221 / 1125899906842624,
+            tail := 28674758607465946046101926841 / 104834424879811077321286221824,
+            box :=
+              { reLo := 366028917649787835048376743221 / 13418806384615817897124636393472,
+                reHi := 963345890145134125303004031503 / 1677350798076977237140579549184, imLo := 0, imHi := 0 } }
+          { primes := [11, 11, 11, 11, 11] } { atTwo := Option.none, atThree := Option.none }
+      [Elab.app.args] [0.016505] ✅️ elabAppArgs (3 args)
+            VerifiedLcalc.EllipticWitness.central
+        [Elab.step] [0.014968] ✅️ expected type: VerifiedLcalc.EllipticCurve.CentralResult, term
+            { equation := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -10, a₆ := -20 }, conductor := 11, rootNumber := 1,
+              policy := { precisionBits := 53 }, termLimit := 1, coefficients := [1],
+              alphaLo := 5397215081808807583435051761664 / 2848959001535859775543212890625,
+              alphaHi := 337325942613050473965764476928 / 178059937595991230010986328125,
+              geometricUpper := 169336229459221 / 1125899906842624,
+              tail := 28674758607465946046101926841 / 104834424879811077321286221824,
+              box :=
+                { reLo := 366028917649787835048376743221 / 13418806384615817897124636393472,
+                  reHi := 963345890145134125303004031503 / 1677350798076977237140579549184, imLo := 0, imHi := 0 } }
+          [Elab.structInst] [0.014114] ✅️ structure instance elaboration for `VerifiedLcalc.EllipticCurve.CentralResult`:
+                { equation := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -10, a₆ := -20 }, conductor := 11, rootNumber := 1,
+                  policy := { precisionBits := 53 }, termLimit := 1, coefficients := [1],
+                  alphaLo := 5397215081808807583435051761664 / 2848959001535859775543212890625,
+                  alphaHi := 337325942613050473965764476928 / 178059937595991230010986328125,
+                  geometricUpper := 169336229459221 / 1125899906842624,
+                  tail := 28674758607465946046101926841 / 104834424879811077321286221824,
+                  box :=
+                    { reLo := 366028917649787835048376743221 / 13418806384615817897124636393472,
+                      reHi := 963345890145134125303004031503 / 1677350798076977237140579549184, imLo := 0, imHi := 0 } }
+[Elab.command] [0.019659] ✅️ def Bench.witness : EllipticWitness✝ :=
+      VerifiedLcalc.EllipticWitness.central
+        { equation := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -10, a₆ := -20 }, conductor := 11, rootNumber := 1,
+          policy := { precisionBits := 53 }, termLimit := 1, coefficients := [1],
+          alphaLo := 5397215081808807583435051761664 / 2848959001535859775543212890625,
+          alphaHi := 337325942613050473965764476928 / 178059937595991230010986328125,
+          geometricUpper := 169336229459221 / 1125899906842624,
+          tail := 28674758607465946046101926841 / 104834424879811077321286221824,
+          box :=
+            { reLo := 366028917649787835048376743221 / 13418806384615817897124636393472,
+              reHi := 963345890145134125303004031503 / 1677350798076977237140579549184, imLo := 0, imHi := 0 } }
+        { primes := [11, 11, 11, 11, 11] } { atTwo := Option.none, atThree := Option.none }
+[Elab.command] [0.010195] ✅️ def result : CentralResult✝ :=
+      { equation := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -10, a₆ := -20 }, conductor := 11, rootNumber := 1,
+        policy := { precisionBits := 53 }, termLimit := 1, coefficients := [1],
+        alphaLo := 5397215081808807583435051761664 / 2848959001535859775543212890625,
+        alphaHi := 337325942613050473965764476928 / 178059937595991230010986328125,
+        geometricUpper := 169336229459221 / 1125899906842624,
+        tail := 28674758607465946046101926841 / 104834424879811077321286221824,
+        box :=
+          { reLo := 366028917649787835048376743221 / 13418806384615817897124636393472,
+            reHi := 963345890145134125303004031503 / 1677350798076977237140579549184, imLo := 0, imHi := 0 } }
+[Elab.command] [0.010418] ✅️ def Bench.result : CentralResult✝ :=
+      { equation := { a₁ := 0, a₂ := -1, a₃ := 1, a₄ := -10, a₆ := -20 }, conductor := 11, rootNumber := 1,
+        policy := { precisionBits := 53 }, termLimit := 1, coefficients := [1],
+        alphaLo := 5397215081808807583435051761664 / 2848959001535859775543212890625,
+        alphaHi := 337325942613050473965764476928 / 178059937595991230010986328125,
+        geometricUpper := 169336229459221 / 1125899906842624,
+        tail := 28674758607465946046101926841 / 104834424879811077321286221824,
+        box :=
+          { reLo := 366028917649787835048376743221 / 13418806384615817897124636393472,
+            reHi := 963345890145134125303004031503 / 1677350798076977237140579549184, imLo := 0, imHi := 0 } }
+Certified Bench.analytic_rank (rank 0); conditional on ellipticModularity
+[Elab.command] [0.215838] ✅️ certify_ec Bench from_json_string r#"{
+        "schema": "lcalc.ec-rank.v1",
+        "subject": {
+          "ainvs": [
+            "0",
+            "-1",
+            "1",
+            "-10",
+            "-20"
+          ],
+          "conductor": "11"
+        },
+        "parameters": {
+          "precision_bits": "53",
+          "terms": "1",
+          "steps_per_unit": "0",
+          "cutoff": "0"
+        },
+        "rank": "0",
+        "coefficients": [
+          "1"
+        ],
+        "arithmetic": {
+          "minimality": [
+            "11",
+            "11",
+            "11",
+            "11",
+            "11"
+          ],
+          "at_two": null,
+          "at_three": null
+        },
+        "enclosure": {
+          "real": [
+            "366028917649787835048376743221/13418806384615817897124636393472",
+            "963345890145134125303004031503/1677350798076977237140579549184"
+          ],
+          "imag": [
+            "0/1",
+            "0/1"
+          ]
+        },
+        "evaluator": {
+          "alpha": [
+            "5397215081808807583435051761664/2848959001535859775543212890625",
+            "337325942613050473965764476928/178059937595991230010986328125"
+          ],
+          "tail": "28674758607465946046101926841/104834424879811077321286221824",
+          "geometric_upper": "169336229459221/1125899906842624"
+        }
+      }
+      "#
+elaboration took 197ms
+[Elab.async] [0.011956] ✅️ elaborating proof of Bench.root_number_valid
+  [Elab.definition.value] [0.011763] ✅️ Bench.root_number_valid
+    [Elab.step] [0.011613] ✅️ decide +kernel✝
+      [Elab.step] [0.011594] ✅️ decide +kernel✝
+        [Elab.step] [0.011574] ✅️ decide +kernel✝
+          [addDecl] [0.010928] ✅️ adding declarations [_private.«.lake».«certify-ec-bench-er2r59fs».«11a1-profile».0.Bench.root_number_valid._proof_1_1]
+            [Kernel] [0.010863] ✅️ typechecking declarations [_private.«.lake».«certify-ec-bench-er2r59fs».«11a1-profile».0.Bench.root_number_valid._proof_1_1]
+[Elab.async] [0.054832] ✅️ elaborating proof of Bench.payload_correct
+  [Elab.definition.value] [0.054231] ✅️ Bench.payload_correct
+    [Elab.step] [0.054095] ✅️
+          unfold CentralPayloadCorrect✝
+          exact
+            ⟨by decide +kernel✝, by decide +kernel✝, by decide +kernel✝, by decide +kernel✝, by decide +kernel✝, by
+              decide +kernel✝, (squareTailBound✝ (Bench.result).geometricUpper✝ (Bench.result).termLimit✝).getD✝ 0, by
+              decide +kernel✝, by decide +kernel✝, by decide +kernel✝⟩
+      [Elab.step] [0.054084] ✅️
+            unfold CentralPayloadCorrect✝
+            exact
+              ⟨by decide +kernel✝, by decide +kernel✝, by decide +kernel✝, by decide +kernel✝, by decide +kernel✝, by
+                decide +kernel✝, (squareTailBound✝ (Bench.result).geometricUpper✝ (Bench.result).termLimit✝).getD✝ 0, by
+                decide +kernel✝, by decide +kernel✝, by decide +kernel✝⟩
+        [Elab.step] [0.053854] ✅️ exact
+              ⟨by decide +kernel✝, by decide +kernel✝, by decide +kernel✝, by decide +kernel✝, by decide +kernel✝, by
+                decide +kernel✝, (squareTailBound✝ (Bench.result).geometricUpper✝ (Bench.result).termLimit✝).getD✝ 0, by
+                decide +kernel✝, by decide +kernel✝, by decide +kernel✝⟩
+          [Elab.step] [0.019168] ✅️ decide +kernel✝
+            [Elab.step] [0.019155] ✅️ decide +kernel✝
+              [Elab.step] [0.019141] ✅️ decide +kernel✝
+                [addDecl] [0.018768] ✅️ adding declarations [_private.«.lake».«certify-ec-bench-er2r59fs».«11a1-profile».0.Bench.payload_correct._proof_1_9]
+                  [Kernel] [0.018719] ✅️ typechecking declarations [_private.«.lake».«certify-ec-bench-er2r59fs».«11a1-profile».0.Bench.payload_correct._proof_1_9]
+[Elab.async] [0.013165] ✅️ Lean.Elab.Command.runLintersAsync
+  [Elab.lint] [0.013135] ✅️ running linters
+cumulative profiling times:
+	attribute application 0.193ms
+	compilation (IR) 0.354ms
+	compilation (LCNF base) 6.06ms
+	compilation (LCNF impure) 1.87ms
+	compilation (LCNF mono) 3.82ms
+	declTypeLinter 13ms
+	elaboration 202ms
+	fix level params 0.136ms
+	instantiate metavars 0.229ms
+	interpretation 5.06ms
+	let-to-have transformation 0.427ms
+	linting 117ms
+	module linting 0.247ms
+	parsing 0.0431ms
+	process pre-definitions 3.62ms
+	share common exprs 0.714ms
+	tactic execution 8.59ms
+	tacticAnalysis 1.79ms
+	type checking 88.5ms
+	typeclass inference 21.7ms
