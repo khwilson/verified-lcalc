@@ -1,0 +1,14 @@
+{
+  "ainvs": [0, 0, 1, 0, -1],
+  "jinv": [0, 1],
+  "signD": -1,
+  "absD": 243,
+  "bad_primes": [3],
+  "num_bad_primes": 1,
+  "minimality": [3, 3, 3, 3, 3],
+  "discriminant": -243,
+  "xcoord_integral_points": [1, 7],
+  "conductor": 243,
+  "global_root_number": -1,
+  "local_data": {"at_two": null, "at_three": {"r": "0", "s": "0", "t": "1", "starT": "0", "cubicRoot": "0", "quadraticRoot": "0", "chain": [], "kodaira": "2"}}
+}

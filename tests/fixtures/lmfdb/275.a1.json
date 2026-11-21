@@ -1,0 +1,14 @@
+{
+  "ainvs": [1, -1, 1, -1480, 22272],
+  "jinv": [22930509321, 6875],
+  "signD": 1,
+  "absD": 107421875,
+  "bad_primes": [5, 11],
+  "num_bad_primes": 2,
+  "minimality": [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 11],
+  "discriminant": 107421875,
+  "xcoord_integral_points": [24, 25, 54, 1074],
+  "conductor": 275,
+  "global_root_number": -1,
+  "local_data": {"at_two": null, "at_three": null}
+}

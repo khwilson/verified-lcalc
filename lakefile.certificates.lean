@@ -7,8 +7,13 @@ require mathlib from "../mathlib4"
 
 lean_lib VerifiedLcalc
 
+input_dir lmfdbCIWitnesses where
+  path := "tests/fixtures/lmfdb"
+  text := true
+
 lean_lib VerifiedLcalcTests where
   srcDir := "tests"
+  extraDepTargets := #[`lmfdbCIWitnesses]
 
 -- JSON is an explicit Lake input. Editing a witness invalidates its consumers.
 input_dir certificateWitnesses where

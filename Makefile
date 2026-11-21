@@ -38,3 +38,8 @@ test-certificates: certificates
 .PHONY: test-lean
 test-lean:
 	uv run --locked python scripts/check_lean.py
+
+.PHONY: test-lmfdb-ci
+test-lmfdb-ci:
+	lake -f lakefile.certificates.lean build CertifiedCurves.Json VerifiedLcalcTests.Fixtures.LmfdbCI
+	lake -f lakefile.certificates.lean env lean tests/consumers/LmfdbCI.lean
