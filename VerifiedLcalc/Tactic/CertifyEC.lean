@@ -266,8 +266,11 @@ def certifyJson (name : Name) (text : String)
       unless skipped.isEmpty do
         logInfo m!"Unverified metadata (no claim emitted): {skipped}"
 
+/-- Check a certificate from a supplied Lean witness. -/
 syntax (name := certifyECTerm) "certify_ec " ident " from " term : command
+/-- Check a certificate from a JSON witness file. -/
 syntax (name := certifyECJson) "certify_ec " ident " from_json " str : command
+/-- Check a certificate from an inline JSON witness. -/
 syntax (name := certifyECJsonString) "certify_ec " ident " from_json_string " str : command
 
 /-- Elaborate a direct witness term. -/
@@ -292,10 +295,13 @@ def elabCertifyECJsonString : CommandElab := fun stx => do
   certifyJson name.getId text.getString
 
 -- The same optional proof clause is available for every input form.
+/-- Check a Lean witness and an explicit independence proof. -/
 syntax (name := certifyECTermIndependent)
   "certify_ec " ident " from " term " with_independence " term : command
+/-- Check a JSON file witness and an explicit independence proof. -/
 syntax (name := certifyECJsonIndependent)
   "certify_ec " ident " from_json " str " with_independence " term : command
+/-- Check an inline JSON witness and an explicit independence proof. -/
 syntax (name := certifyECJsonStringIndependent)
   "certify_ec " ident " from_json_string " str " with_independence " term : command
 
