@@ -8,7 +8,8 @@ Each JSON file copies the integral equation, rational j-invariant, discriminant 
 absolute minimal discriminant, bad primes, and integral-point x-coordinates. The discriminant is the signed absolute
 value. Multiplicities in the minimality witness come from the local discriminant
 valuations. The fixtures include prime and composite conductors, both discriminant
-signs, j-invariants 0 and 1728, and integral and nonintegral j-invariants.
+signs, and j-invariants 0 and 1728. The 197.a1 and 288.a1 cases explicitly request
+nonintegral and integral j-invariant certificates, respectively.
 
 The conductor is copied from the snapshot. The global root number is the negative product of its
 finite local root numbers. The 2-adic transcript and first eight coefficients for 112.a2 come
