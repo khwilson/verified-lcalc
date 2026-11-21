@@ -48,12 +48,12 @@ private def certifyRationalCoordinates (base field : Name) (curve witness : TSyn
     (← `(($witness).$witnessField = some $coords)) (← `(by rfl))
   let valid := CertifyEC.rootIdent (base ++ `coordinates_valid)
   CertifyEC.checked (base ++ `coordinates_valid)
-    (← `(EllipticWitness.rationalCoordinatesValid (($curve).baseChange ℚ) $coords = true))
+    (← `(EllipticWitness.affineCoordinatesValid (($curve).baseChange ℚ) $coords = true))
     (← `(by decide +kernel))
   let onCurve := CertifyEC.rootIdent (base ++ `points_on_curve)
   CertifyEC.checked (base ++ `points_on_curve)
     (← `(∀ (x y : Rat), (x, y) ∈ $coords → (($curve).baseChange ℚ).toAffine.Equation x y))
-    (← `(EllipticWitness.rationalCoordinatesValid_sound (($curve).baseChange ℚ) $coords $valid))
+    (← `(EllipticWitness.affineCoordinatesValid_sound (($curve).baseChange ℚ) $coords $valid))
   let point := CertifyEC.rootIdent (base ++ `point)
   CertifyEC.emit (← `(def $point (i : Fin ($coords).length) :
       (($curve).baseChange ℚ).toAffine.Point :=
