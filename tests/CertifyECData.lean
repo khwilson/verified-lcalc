@@ -41,6 +41,21 @@ example : (RawData.curve.baseChange ℚ).LFunction 3 = -3 :=
 example : RawData.curve.toAffine.Equation 6 14 :=
   RawData.points_on_curve 6 14 (by decide +kernel)
 
+-- Match the LMFDB exponent convention even when the third coordinate is negative.
+certify_ec RationalGenerators from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"gens":[[1,5,-2]],"torsion_generators":[]}"#
+example : RationalGenerators.generators.coordinates = [(1 / 4, -5 / 8)] := by decide +kernel
+example : (RationalGenerators.curve.baseChange ℚ).toAffine.Equation (1 / 4) (-5 / 8) :=
+  RationalGenerators.generators.points_on_curve _ _ (by decide +kernel)
+example : RationalGenerators.torsion_generators.coordinates = [] := rfl
+example : (RationalGenerators.curve.baseChange ℚ).toAffine.Point :=
+  RationalGenerators.generators.point ⟨0, by decide⟩
+
+certify_ec TorsionGeneratorCoordinates from
+  { equation := ⟨0, -1, 1, -10, -20⟩, torsionGeneratorCoordinates := some [(5, 5)] }
+example : (TorsionGeneratorCoordinates.curve.baseChange ℚ).toAffine.Equation 5 5 :=
+  TorsionGeneratorCoordinates.torsion_generators.points_on_curve _ _ (by decide +kernel)
+
 certify_ec OnlyAP from
   { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := some [(2, -2)] }
 certify_ec OnlyPoints from
@@ -92,7 +107,7 @@ meta def expectDataRejected (name : Name) (command : Syntax) : CommandElabM Unit
   unless failed do throwError "Invalid curve data accepted: {name}"
   for suffix in [`supplied, `witness, `curve, `nonsingular, `prime_coefficients_valid,
       `ap_correct, `integral_coordinates_valid, `points_on_curve, `curve_isElliptic,
-      `point, `point_integral] do
+      `point, `point_integral, `generators.point, `torsion_generators.point] do
     if env.contains (name ++ suffix) then
       throwError "Failed curve-data certification leaked {name ++ suffix}"
     if env.contains (name ++ `data ++ suffix) then
@@ -108,6 +123,12 @@ run_cmd do
       integralCoordinates := some [] }))
   expectDataRejected `OffCurve (← `(certify_ec OffCurve from
     { Data37.witness with integralCoordinates := some [(0, 1)] }))
+  expectDataRejected `InvalidWeightedPoint (← `(certify_ec InvalidWeightedPoint from_json_string
+    r#"{"ainvs":[0,0,1,-1,0],"gens":[[0,0,1]],"torsion_generators":[[1,1,1]]}"#))
+  expectDataRejected `ZeroWeightedDenominator (← `(certify_ec ZeroWeightedDenominator from_json_string
+    r#"{"ainvs":[0,0,1,-1,0],"gens":[[1,5,0]]}"#))
+  expectDataRejected `ShortWeightedPoint (← `(certify_ec ShortWeightedPoint from_json_string
+    r#"{"ainvs":[0,0,1,-1,0],"gens":[[0,0]]}"#))
   expectDataRejected `Singular (← `(certify_ec Singular from
     { equation := ⟨0, 0, 0, 0, 0⟩, primeCoefficients := some [], integralCoordinates := some [] }))
   expectDataRejected `Malformed (← `(certify_ec Malformed from_json_string "{}"))
@@ -146,6 +167,8 @@ run_cmd do
   for name in [`RawData, `OnlyAP, `OnlyPoints, `ArithmeticOnly, `NumericOnly] do
     if (← getEnv).contains (name ++ `analytic_rank) then
       throwError "A stored rank without a proof witness became a theorem"
+  if (← getEnv).contains `OnlyAP.generators.points_on_curve then
+    throwError "Missing generator data became a theorem"
   if (← getEnv).contains `VerifiedLcalc.CurveDataWitness then
     throwError "The retired aggregate witness type is still present"
 
@@ -170,6 +193,15 @@ run_cmd do
       for axiomName in axioms do
         unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
           throwError "Unexpected arithmetic-certificate axiom: {axiomName}"
+
+run_cmd do
+  for name in [`RationalGenerators.generators, `RationalGenerators.torsion_generators,
+      `TorsionGeneratorCoordinates.torsion_generators] do
+    for suffix in [`points_on_curve, `point] do
+      let axioms ← liftTermElabM <| Lean.collectAxioms (name ++ suffix)
+      for axiomName in axioms do
+        unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+          throwError "Unexpected rational-point certificate axiom: {axiomName}"
 
 #eval show IO Unit from do
   for text in [r#"{"ainvs":[0,0,1,-1,0]}"#,

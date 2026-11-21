@@ -31,7 +31,8 @@ conductor and global root number. Prerequisite-dependent claims without the
 required evidence are explicitly reported as unverified. See
 `docs/LMFDB_INVARIANTS.md` for the exact mathematical outputs and trust boundary.
 JSON can supply `ainvs`, `ap` or `aplist`, and `integral_points` or
-`xcoord_integral_points`; unrelated metadata carries no claim. The legacy rank
+`xcoord_integral_points`, as well as weighted rational triples in `gens` and
+`torsion_generators`. Unrelated metadata carries no claim. The legacy rank
 JSON layout is decoded into the same flat record. Bare stored ranks never
 become theorems. A caller controls any computation inside a supplied Lean term;
 the certifier performs no analytic-witness search or network requests.
@@ -253,7 +254,7 @@ def certifyJson (name : Name) (text : String)
       let checkedRank := (← getEnv).contains (base ++ `analytic_rank)
       let rankKeys := ["subject", "parameters", "rank", "coefficients", "arithmetic", "enclosure", "evaluator", "analytic_witness"]
       let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points", "minimality", "local_data",
-        "infinite_order_points", "independent_points", "binvs", "cinvs", "discriminant",
+        "gens", "torsion_generators", "infinite_order_points", "independent_points", "binvs", "cinvs", "discriminant",
         "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes"]
       let skipped := object.toList.filterMap fun (key, _) =>

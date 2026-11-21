@@ -30,6 +30,7 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `conductor` | `conductor` | Identification with the chosen modular realization's level; requires `minimality`, `localData`, and the existing modularity/arithmetic-compatibility axiom. |
 | `global_root_number` | `rootNumber` | Identification with that realization's global root/Fricke sign under the same conditions. This is an explicit extension key, not the local-table `root_number`. |
 | Integral coordinates / stored x-values | `integralCoordinates` | Point membership; not completeness of the integral-point set. |
+| `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
 | Point-index requests | `infiniteOrderPoints`, `independentPoints` | Infinite order and algebraic-rank lower bounds, with an explicit independence proof for a requested family. |
 | Complete numerical payload | `centralResult`, `derivativeResult` | Existing analytic-rank-zero/one certificates under the documented modularity assumption. |
 
@@ -57,7 +58,7 @@ missing theorem.
 | --- | --- |
 | `semistable`, `squarefree_disc`, `potential_good_reduction` | Connect finite arithmetic criteria to the canonical reduction predicates; use TauCeti's semistability API rather than introduce another predicate. |
 | Local `conductor_valuation`, `discriminant_valuation`, `j_denominator_valuation`, `kodaira_symbol`, `reduction_type`, `root_number`, `tamagawa_number`, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
-| `gens`, `torsion_generators`, `torsion`, `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | Normalize rational point coordinates; prove generator orders, independence, and a torsion upper bound. Membership alone does not prove subgroup order or exhaustivity. |
+| `gens`, `torsion_generators`, `torsion`, `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | Prove generator orders, independence, generation, and a torsion upper bound. Membership alone does not prove subgroup order or exhaustivity. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Lower bounds already have the explicit independence route. Exact rank needs an upper-bound/descent certificate; integral-point counts need completeness proofs. |
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |
 | `cm`, quadratic-twist fields | Actual endomorphism/twist statements and, for a minimal twist, the required minimality comparison. A j-value lookup alone is not a CM certificate. |

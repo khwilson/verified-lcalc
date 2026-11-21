@@ -13,8 +13,8 @@ public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.Aff
 Prime coefficients are checked against the existing finite-field trace evaluator,
 with a sufficient local minimality check at every supplied prime. Soundness gives
 the actual curve's `LFunction p`, including bad primes, without modularity.
-Integral-coordinate certificates establish membership only, on the supplied
-integral equation. They make no completeness or algebraic-rank claim.
+Coordinate certificates establish membership on the supplied integral equation
+or its rational base change.
 -/
 
 namespace VerifiedLcalc
@@ -58,6 +58,19 @@ existing Mathlib affine Weierstrass equation over the integers. -/
 theorem integralCoordinatesValid_sound (w : EllipticWitness)
     (h : w.integralCoordinatesValid = true) (x y : Int)
     (hxy : (x, y) ∈ w.integralCoordinates.getD []) : w.equation.toAffine.Equation x y := by
+  rw [WeierstrassCurve.Affine.equation_iff]
+  exact of_decide_eq_true (List.all_eq_true.mp h (x, y) hxy)
+
+/-- Check a finite list of rational affine coordinate pairs using the explicit equation. -/
+def rationalCoordinatesValid (W : WeierstrassCurve ℚ) (points : List (Rat × Rat)) : Bool :=
+  points.all fun (x, y) =>
+    decide (y ^ 2 + W.a₁ * x * y + W.a₃ * y =
+      x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆)
+
+/-- Valid rational pairs satisfy Mathlib's affine equation on the rational model. -/
+theorem rationalCoordinatesValid_sound (W : WeierstrassCurve ℚ) (points : List (Rat × Rat))
+    (h : rationalCoordinatesValid W points = true) (x y : Rat)
+    (hxy : (x, y) ∈ points) : W.toAffine.Equation x y := by
   rw [WeierstrassCurve.Affine.equation_iff]
   exact of_decide_eq_true (List.all_eq_true.mp h (x, y) hxy)
 

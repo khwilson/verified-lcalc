@@ -5,14 +5,15 @@ public import VerifiedLcalc.Tactic.CertifyECCommon
 public meta import VerifiedLcalc.Certificate.CurveDataJson
 
 /-!
-# Certifying stored prime coefficients and integral-point membership
+# Certifying stored prime coefficients and point membership
 
 This module implements the arithmetic branch of the `certify_ec` command.
 Import `VerifiedLcalc.Tactic.CertifyEC` for the public syntax and JSON dispatch.
 
 `certify_ec Name from witness` accepts an `EllipticWitness` containing the
 integral equation, explicit `(prime, coefficient)` pairs and integer `(x, y)`
-pairs, with both lists optional. `from_json "file.json"` and
+pairs, plus rational affine pairs for the two source generator lists. All
+lists are optional. `from_json "file.json"` and
 `from_json_string "..."` extract the supported fields and allow unrelated
 metadata. File paths are relative to the containing Lean file.
 Verification performs no witness search and needs no analytic-rank certificate.
@@ -35,6 +36,28 @@ exporting through Lean's `module` syntax.
 public meta section
 namespace VerifiedLcalc.CertifyECData
 open Lean Elab Command Meta
+
+/-- Export checked affine points for one supplied rational coordinate list. -/
+private def certifyRationalCoordinates (base field : Name) (curve witness : TSyntax `term) :
+    CommandElabM Unit := do
+  let some input ← CertifyEC.optionalInput (base.getPrefix ++ `witness) field | return
+  let coords := CertifyEC.rootIdent (base ++ `coordinates)
+  CertifyEC.emit (← `(def $coords : List (Rat × Rat) := $input))
+  let witnessField := mkIdent field
+  CertifyEC.checked (base ++ `coordinates_eq)
+    (← `(($witness).$witnessField = some $coords)) (← `(by rfl))
+  let valid := CertifyEC.rootIdent (base ++ `coordinates_valid)
+  CertifyEC.checked (base ++ `coordinates_valid)
+    (← `(EllipticWitness.rationalCoordinatesValid (($curve).baseChange ℚ) $coords = true))
+    (← `(by decide +kernel))
+  let onCurve := CertifyEC.rootIdent (base ++ `points_on_curve)
+  CertifyEC.checked (base ++ `points_on_curve)
+    (← `(∀ (x y : Rat), (x, y) ∈ $coords → (($curve).baseChange ℚ).toAffine.Equation x y))
+    (← `(EllipticWitness.rationalCoordinatesValid_sound (($curve).baseChange ℚ) $coords $valid))
+  let point := CertifyEC.rootIdent (base ++ `point)
+  CertifyEC.emit (← `(def $point (i : Fin ($coords).length) :
+      (($curve).baseChange ℚ).toAffine.Point :=
+    .mk ($onCurve (($coords)[i]).1 (($coords)[i]).2 (List.getElem_mem i.isLt))))
 
 /-- Check supplied arithmetic data and export ordinary definitions and theorems. -/
 def certify (name : Name) (input : TSyntax `term) (announce := true) : CommandElabM Unit := do
@@ -76,6 +99,8 @@ def certify (name : Name) (input : TSyntax `term) (announce := true) : CommandEl
     (← `(∀ i : Fin (($w).integralCoordinates.getD []).length,
       $point i ∈ ($curve).integralPoints))
     (← `(by intro i; exact WeierstrassCurve.pointOfIntegralSolution_mem _ _ _ _))
+  certifyRationalCoordinates (base ++ `generators) `generatorCoordinates curve w
+  certifyRationalCoordinates (base ++ `torsion_generators) `torsionGeneratorCoordinates curve w
   if announce then logInfo m!"Certified {base}.ap_correct and {base}.point_integral (arithmetic only)"
 
 /-- Decode data only; mathematical claims are checked by `certify`. -/
