@@ -1,5 +1,6 @@
 <!-- Use the canonical TauCeti area for mathematical content or "none" for
-infrastructure. Link the specific existing target or local upstream proposal. -->
+infrastructure. Cite the specific target. A local roadmap proposal records
+downstream planning. An upstream TauCeti implementation needs an accepted target. -->
 Roadmap: <area or none>
 
 ## Change
@@ -9,7 +10,8 @@ dependencies. Link source declarations for reused mathematics. -->
 
 ## Validation
 
-<!-- Give the commands run, results, and relevant acceptance and rejection cases. -->
+<!-- Give the commands run, results, and relevant acceptance and rejection cases.
+Report finite theorem dependencies separately from analytic and conditional ones. -->
 
 Quality pass:
 - Q1 Mathlib duplicates: …
