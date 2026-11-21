@@ -88,10 +88,13 @@ and `count_algorithmicConductor` for (f_p) and the global norm.
 The terminal predicate gives an algorithmic symbol and its invariance.
 Geometric identification with the special fiber and intrinsic Artin conductor
 still needs the bridge in [T2/TC-06](../TAUCETI_BACKLOG.md#tc-06--intrinsic-conductor-and-tame-formula).
-For potential good reduction prove, or reuse an exact counterpart of, the
-finite-place equivalence with integrality of j and derive the global boolean
-from the reduced rational denominator. TauCeti already provides the finite
-inertia-image criterion in `TateModule/PotentialGoodReduction`.
+For potential good reduction, specialize
+`WeierstrassCurve.hasPotentialGoodReduction_iff_isInteger_j` to each
+localization of ℤ at a prime, a DVR with fraction field ℚ. The theorem
+requires an elliptic curve over that fraction field. Prove the remaining
+finite-to-global adapter by showing that $j$ lies in every such localization exactly when
+its reduced rational denominator equals one.
+[TauCeti potential-good-reduction criterion](https://github.com/TauCetiProject/TauCeti/blob/b608709b45f23ccda55703d572b0adb1fdec30fd/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/PotentialGoodReduction.lean).
 Accept tests for both truth values, good/split/nonsplit reduction, additive
 types at 2 and 3, and a semistable curve with nonsquarefree minimal discriminant.
 
