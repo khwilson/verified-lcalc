@@ -4,11 +4,11 @@ public import VerifiedLcalc.Certification.CurveData
 public import VerifiedLcalc.Certificate.Json
 public import Mathlib.Data.Int.Sqrt
 
-@[expose] public section
-
 /-! Field-driven decoding of untrusted elliptic-curve data. Supported fields
 are decoded exactly; mathematical claims are checked separately in the kernel.
 Unknown metadata does not become a theorem. -/
+
+@[expose] public section
 namespace VerifiedLcalc.CurveDataJson
 open Lean CertificateJson
 
@@ -21,6 +21,7 @@ def integer (j : Json) : Except String Int := do
     unless (toString n).length ≤ 512 do throw "Oversized integer"
     return n
 
+/-- Look up an object field, preserving an explicit JSON null. -/
 def optional (j : Json) (key : String) : Option Json :=
   (j.getObjVal? key).toOption
 
@@ -28,6 +29,7 @@ def optional (j : Json) (key : String) : Option Json :=
 def optionalData (j : Json) (key : String) : Option Json :=
   (optional j key).bind fun value => if value == .null then none else some value
 
+/-- Read the five integral Weierstrass coefficients in order. -/
 def ainvs (j : Json) : Except String (List Int) := do
   let a ← array j 5
   unless a.size == 5 do throw "Expected five Weierstrass coefficients"
@@ -52,6 +54,7 @@ def project? (j : Json) (keys : List String) : Option Json := do
     return (key, ← optional j key)
   return Json.mkObj fields
 
+/-- Select the supported fields of a Tate transcript. -/
 def tateView? (j : Json) : Option Json :=
   if j == .null then some j else
     project? j ["r", "s", "t", "starT", "cubicRoot", "quadraticRoot", "chain", "kodaira"]
@@ -73,6 +76,7 @@ def rankView? (j : Json) : Option Json := do
     ("arithmetic", Json.mkObj [("minimality", .arr #[]), ("at_two", .null), ("at_three", .null)]),
     ("enclosure", enclosure), ("evaluator", evaluator)]
 
+/-- Decode a complete central or derivative witness when present. -/
 def numericFields (j : Json) : Except String (Option EllipticWitness) := do
   match rankView? ((optional j "analytic_witness").getD j) with
   | none => return none
@@ -123,26 +127,53 @@ def rationalValue (j : Json) : Except String Rat := do
     if value.contains '/' then rational j else return (← integer j : Int)
   | _ => return (← integer j : Int)
 
+/-- Decode a field when it is present and non-null. -/
 def optionalValue (j : Json) (key : String) (decode : Json → Except String α) :
     Except String (Option α) := do
   match optionalData j key with
   | none => return none
   | some value => return some (← decode value)
 
+/-- Read an exact integer and reject negative values. -/
 def nonnegativeInteger (j : Json) : Except String Nat := do
   let n ← integer j
   unless 0 ≤ n do throw "Expected a nonnegative integer"
   return n.toNat
 
+/-- Read the four b-invariants in order. -/
 def bValues (j : Json) : Except String (Int × Int × Int × Int) := do
   let xs ← array j 4
   unless xs.size == 4 do throw "Expected b2,b4,b6,b8"
   return (← integer xs[0]!, ← integer xs[1]!, ← integer xs[2]!, ← integer xs[3]!)
 
+/-- Read the two c-invariants in order. -/
 def cValues (j : Json) : Except String (Int × Int) := do
   let xs ← array j 2
   unless xs.size == 2 do throw "Expected c4,c6"
   return (← integer xs[0]!, ← integer xs[1]!)
+
+/-- Optional data fields that identify a top-level local reduction row. -/
+def localReductionFields : List String :=
+  ["discriminant_valuation", "j_denominator_valuation", "reduction_type"]
+
+/-- Decode the supported exact fields from one local reduction row. -/
+def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
+  let prime ← nonnegativeInteger (← j.getObjVal? "prime")
+  let discriminantValuation ← optionalValue j "discriminant_valuation" nonnegativeInteger
+  let jDenominatorValuation ← optionalValue j "j_denominator_valuation" nonnegativeInteger
+  let reductionType ← optionalValue j "reduction_type" integer
+  if let some code := reductionType then
+    unless code == 0 || code == 1 || code == -1 do throw "Unsupported local reduction type"
+  return { prime, discriminantValuation, jDenominatorValuation, reductionType }
+
+/-- Decode a local-row list and any top-level local claim. -/
+def localReductionClaims (j : Json) :
+    Except String (Option (List LocalReductionClaim)) := do
+  let rows ← optionalValue j "local_invariants" fun value => do
+    (← array value 256).toList.mapM localReductionClaim
+  if localReductionFields.any (fun key => (optionalData j key).isSome) then
+    return some ((← localReductionClaim j) :: rows.getD [])
+  return rows
 
 /-- Decode whichever supported fields are present. Integer square-root
 reconstruction supplies candidate y-coordinates for stored integral x-values;
@@ -182,8 +213,11 @@ def decode (j : Json) : Except String EllipticWitness := do
   let base := numeric.getD { equation }
   let primeData := if (optionalData j "ap").isSome || (optionalData j "aplist").isSome
     then some primeCoefficients.toList else none
-  let pointData := if (optionalData j "integral_points").isSome || (optionalData j "xcoord_integral_points").isSome
-    then some integralCoordinates.toList else none
+  let pointData :=
+    if (optionalData j "integral_points").isSome ||
+        (optionalData j "xcoord_integral_points").isSome then
+      some integralCoordinates.toList
+    else none
   let minimality ← minimalityField j
   let localData ← localDataField j
   let indices (key : String) : Except String (Option (List Nat)) := do
@@ -213,6 +247,9 @@ def decode (j : Json) : Except String EllipticWitness := do
   let badPrimes ← optionalValue j "bad_primes" fun value => do
     (← array value 256).toList.mapM nonnegativeInteger
   let numBadPrimes ← optionalValue j "num_bad_primes" nonnegativeInteger
+  let semistable ← optionalValue j "semistable" Json.getBool?
+  let squarefreeDiscriminant ← optionalValue j "squarefree_disc" Json.getBool?
+  let localInvariants ← localReductionClaims j
   return { base with
     equation
     bInvariants
@@ -226,6 +263,9 @@ def decode (j : Json) : Except String EllipticWitness := do
     dirichletCoefficients
     badPrimes
     numBadPrimes
+    semistable
+    squarefreeDiscriminant
+    localInvariants
     primeCoefficients := primeData
     integralCoordinates := pointData
     infiniteOrderPoints

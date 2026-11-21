@@ -23,6 +23,7 @@ deriving instance ToExpr for WildData
 deriving instance ToExpr for MinimalityWitness
 deriving instance ToExpr for CentralResult
 deriving instance ToExpr for DerivativeResult
+deriving instance ToExpr for LocalReductionClaim
 deriving instance ToExpr for EllipticWitness
 
 

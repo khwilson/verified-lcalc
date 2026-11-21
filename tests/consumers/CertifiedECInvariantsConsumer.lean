@@ -1,5 +1,7 @@
 import CertifiedCurves.Invariants
 
+/-! Reuse invariant certificates from a compiled certificate module. -/
+
 theorem imported_j_invariant : (Invariants37.curve.baseChange ℚ).j = 110592 / 37 :=
   Invariants37.j_invariant
 
@@ -10,6 +12,12 @@ theorem imported_coefficient_prefix :
     (List.range 8).map (fun n => (Invariants37.curve.baseChange ℚ).LFunction (n + 1)) =
       [1, -2, -3, 2, -2, 6, -1, 0] := Invariants37.dirichlet_coefficients
 
-#print axioms imported_j_invariant
-#print axioms imported_bad_prime
-#print axioms imported_coefficient_prefix
+theorem imported_semistability : WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
+    (Invariants37.curve.baseChange ℚ) := Invariants37.semistable.mpr rfl
+
+theorem imported_squarefree_discriminant : Squarefree Invariants37.curve.Δ.natAbs :=
+  Invariants37.squarefree_discriminant.mpr rfl
+
+theorem imported_local_invariants (row : VerifiedLcalc.LocalReductionClaim)
+    (h : row ∈ Invariants37.claimed_local_invariants) :
+    row.Spec Invariants37.curve := Invariants37.local_invariants row h
