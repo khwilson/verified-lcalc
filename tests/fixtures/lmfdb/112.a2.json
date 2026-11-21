@@ -1,0 +1,15 @@
+{
+  "ainvs": [0, 1, 0, 0, 4],
+  "jinv": [-4, 7],
+  "signD": -1,
+  "absD": 7168,
+  "bad_primes": [2, 7],
+  "num_bad_primes": 2,
+  "minimality": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7],
+  "discriminant": -7168,
+  "xcoord_integral_points": [-2, -1, 0, 2, 6, 16],
+  "anlist": [0, 1, 0, -2, 0, -4, 0, -1, 0],
+  "conductor": 112,
+  "global_root_number": -1,
+  "local_data": {"at_two": {"r": "0", "s": "1", "t": "0", "starT": "1", "cubicRoot": "1", "quadraticRoot": "0", "chain": ["0"], "kodaira": "-6"}, "at_three": null}
+}
