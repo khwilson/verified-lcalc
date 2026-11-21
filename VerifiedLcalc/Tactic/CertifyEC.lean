@@ -26,7 +26,7 @@ claim. `EllipticWitness.central` and
 
 All three forms, and `CertifyEC.certify` / `certifyAtomic`, use the same checker.
 Optional stored invariants include b/c values, equation discriminant and sign,
-j-invariant, minimal absolute discriminant, bad-prime set/count, anlist,
+j-invariant and its integrality, minimal absolute discriminant, bad-prime set/count, anlist,
 conductor and global root number. Prerequisite-dependent claims without the
 required evidence are explicitly reported as unverified. See
 `docs/LMFDB_INVARIANTS.md` for the exact mathematical outputs and trust boundary.
@@ -235,10 +235,12 @@ def certify (name : Name) (input : TSyntax `term)
     (independence : Option (TSyntax `term) := none) : CommandElabM Unit :=
   atomic (certifyFields name input independence)
 
+/-- Run the same atomic checker from metaprograms that supply a witness term. -/
 def certifyAtomic (name : Name) (input : TSyntax `term)
     (independence : Option (TSyntax `term) := none) : CommandElabM Unit :=
   certify name input independence
 
+/-- Decode exact JSON into a witness term for the verification command. -/
 def jsonInput (text : String) : CommandElabM (TSyntax `term) :=
   CertifyECData.jsonInput text
 
@@ -251,55 +253,74 @@ def certifyJson (name : Name) (text : String)
     if let .ok object := j.getObj? then
       let base := (← getCurrNamespace) ++ name.eraseMacroScopes
       let checkedRank := (← getEnv).contains (base ++ `analytic_rank)
-      let rankKeys := ["subject", "parameters", "rank", "coefficients", "arithmetic", "enclosure", "evaluator", "analytic_witness"]
-      let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points", "minimality", "local_data",
+      let rankKeys := ["subject", "parameters", "rank", "coefficients", "arithmetic",
+        "enclosure", "evaluator", "analytic_witness"]
+      let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points",
+        "minimality", "local_data",
         "infinite_order_points", "independent_points", "binvs", "cinvs", "discriminant",
         "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
-        "bad_primes", "num_bad_primes"]
+        "bad_primes", "num_bad_primes", "j_integral"]
       let skipped := object.toList.filterMap fun (key, _) =>
         if known.contains key || (checkedRank && rankKeys.contains key) then none else some key
       unless skipped.isEmpty do
         logInfo m!"Unverified metadata (no claim emitted): {skipped}"
 
+/-- Verify a supplied Lean witness term. -/
 syntax (name := certifyECTerm) "certify_ec " ident " from " term : command
+/-- Verify an exact JSON witness read from a local file. -/
 syntax (name := certifyECJson) "certify_ec " ident " from_json " str : command
+/-- Verify an exact witness supplied as inline JSON. -/
 syntax (name := certifyECJsonString) "certify_ec " ident " from_json_string " str : command
 
-@[command_elab certifyECTerm] def elabCertifyECTerm : CommandElab := fun stx => do
+/-- Elaborate a direct Lean witness declaration. -/
+@[command_elab certifyECTerm]
+def elabCertifyECTerm : CommandElab := fun stx => do
   let `(certify_ec $name:ident from $input:term) := stx | throwUnsupportedSyntax
   certify name.getId input
 
-@[command_elab certifyECJson] def elabCertifyECJson : CommandElab := fun stx => do
+/-- Read an exact JSON witness from a path relative to the Lean source. -/
+@[command_elab certifyECJson]
+def elabCertifyECJson : CommandElab := fun stx => do
   let `(certify_ec $name:ident from_json $file:str) := stx | throwUnsupportedSyntax
   let source := System.FilePath.mk (← read).fileName
   let path := source.parent.getD "." / file.getString
   let text ← IO.FS.readFile path
   certifyJson name.getId text
 
-@[command_elab certifyECJsonString] def elabCertifyECJsonString : CommandElab := fun stx => do
+/-- Elaborate a witness from inline exact JSON. -/
+@[command_elab certifyECJsonString]
+def elabCertifyECJsonString : CommandElab := fun stx => do
   let `(certify_ec $name:ident from_json_string $text:str) := stx | throwUnsupportedSyntax
   certifyJson name.getId text.getString
 
 -- The same optional proof clause is available for every input form.
+/-- Verify a Lean witness with an explicit point-independence proof. -/
 syntax (name := certifyECTermIndependent)
   "certify_ec " ident " from " term " with_independence " term : command
+/-- Verify a JSON file witness with an explicit point-independence proof. -/
 syntax (name := certifyECJsonIndependent)
   "certify_ec " ident " from_json " str " with_independence " term : command
+/-- Verify inline JSON with an explicit point-independence proof. -/
 syntax (name := certifyECJsonStringIndependent)
   "certify_ec " ident " from_json_string " str " with_independence " term : command
 
-@[command_elab certifyECTermIndependent] def elabCertifyECTermIndependent : CommandElab := fun stx => do
+/-- Elaborate a Lean witness with a supplied independence proof. -/
+@[command_elab certifyECTermIndependent]
+def elabCertifyECTermIndependent : CommandElab := fun stx => do
   let `(certify_ec $name:ident from $input:term with_independence $proof:term) := stx
     | throwUnsupportedSyntax
   certify name.getId input (some proof)
 
-@[command_elab certifyECJsonIndependent] def elabCertifyECJsonIndependent : CommandElab := fun stx => do
+/-- Read a JSON witness and check the supplied independence proof. -/
+@[command_elab certifyECJsonIndependent]
+def elabCertifyECJsonIndependent : CommandElab := fun stx => do
   let `(certify_ec $name:ident from_json $file:str with_independence $proof:term) := stx
     | throwUnsupportedSyntax
   let source := System.FilePath.mk (← read).fileName
   let path := source.parent.getD "." / file.getString
   certifyJson name.getId (← IO.FS.readFile path) (some proof)
 
+/-- Elaborate inline exact JSON with a supplied independence proof. -/
 @[command_elab certifyECJsonStringIndependent]
 def elabCertifyECJsonStringIndependent : CommandElab := fun stx => do
   let `(certify_ec $name:ident from_json_string $text:str with_independence $proof:term) := stx

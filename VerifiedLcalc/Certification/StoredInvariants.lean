@@ -18,6 +18,18 @@ theorem j_invariant_of_exact_formula (e : WeierstrassCurve ℤ)
   simpa only [WeierstrassCurve.baseChange, WeierstrassCurve.map_c₄,
     WeierstrassCurve.map_Δ, eq_intCast, map_intCast, div_eq_mul_inv, mul_comm] using h
 
+/-- A check on the reduced denominator certifies whether the rational j-invariant is an integer. -/
+theorem j_integral_iff_of_check (e : WeierstrassCurve ℤ) [(e.baseChange ℚ).IsElliptic]
+    (claimed : Bool) (h : (((e.c₄ : ℚ) ^ 3 / (e.Δ : ℚ)).den == 1) = claimed) :
+    IsLocalization.IsInteger ℤ (e.baseChange ℚ).j ↔ claimed = true := by
+  rw [← h, beq_iff_eq, ← j_invariant_of_exact_formula e _ rfl]
+  constructor
+  · rintro ⟨z, hz⟩
+    rw [← hz]
+    exact Rat.den_intCast z
+  · intro hj
+    exact ⟨_, Rat.intCast_num_of_den_eq_one hj⟩
+
 /-- An absD claim includes actual global minimality, not just agreement with
 the discriminant of an arbitrary supplied equation. -/
 theorem minimal_discriminant_abs_of_witness (e : WeierstrassCurve ℤ)
