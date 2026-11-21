@@ -55,11 +55,11 @@ and optional fact fields defaulting to `none`. For complete rank candidates,
 See [CERTIFY_EC.md](docs/CERTIFY_EC.md) for complete examples,
 all three input forms, generated declarations, rollback and the trust boundary.
 
-For supplied integral points, `certify_ec_infinite_order` checks an exact
-Nagell–Lutz obstruction and proves algebraic rank at least one.
-`certify_ec_rank` checks a supplied independence proof for a selected family
-and proves rank at least its size. See [ALGEBRAIC_RANK.md](docs/ALGEBRAIC_RANK.md)
-for examples and the remaining independence automation.
+`certify_ec` also checks infinite-order requests in `infiniteOrderPoints` and
+rank families in `independentPoints`. Supply a family's independence proof with
+`with_independence` on the same command. See
+[ALGEBRAIC_RANK.md](docs/ALGEBRAIC_RANK.md) for examples and the remaining
+independence automation.
 
 A consumer can simply write:
 

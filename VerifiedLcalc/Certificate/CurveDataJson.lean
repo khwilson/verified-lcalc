@@ -151,7 +151,23 @@ def decode (j : Json) : Except String EllipticWitness := do
     then some integralCoordinates.toList else none
   let minimality ← minimalityField j
   let localData ← localDataField j
-  return { base with equation, primeCoefficients := primeData, integralCoordinates := pointData, minimality, localData }
+  let indices (key : String) : Except String (Option (List Nat)) := do
+    let some value := optionalData j key | return none
+    let rows ← array value 8192
+    return some (← rows.toList.mapM fun row => do
+      let i ← integer row
+      unless 0 ≤ i && i < 8192 do throw "Point index outside supported profile"
+      return i.toNat)
+  let infiniteOrderPoints ← indices "infinite_order_points"
+  let independentPoints ← indices "independent_points"
+  return { base with
+    equation
+    primeCoefficients := primeData
+    integralCoordinates := pointData
+    infiniteOrderPoints
+    independentPoints
+    minimality
+    localData }
 
 /-- Bounded local parsing, with optional metadata and no analytic witness search. -/
 def parse (text : String) : Except String EllipticWitness := do

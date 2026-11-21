@@ -1,21 +1,31 @@
 # Infinite order and algebraic rank
 
-`certify_ec` checks membership of the supplied integer points. The follow-up
-commands check stronger facts about those same points. Import
-`VerifiedLcalc.Tactic.CertifyEC`; see `CertifiedCurves/Direct.lean` for a compiled
-example.
+`certify_ec` is the public interface for all curve facts. Its single optional-field
+witness supplies point membership data and any stronger point claims to check.
+Import `VerifiedLcalc.Tactic.CertifyEC`; see `CertifiedCurves/Direct.lean` for a
+compiled example.
 
 ```lean
 certify_ec Points37 from
   { equation := ⟨0, 0, 1, -1, 0⟩
-    integralCoordinates := some [(0, 0), (6, 14)] }
+    integralCoordinates := some [(0, 0), (6, 14)]
+    infiniteOrderPoints := some [1] }
 
-certify_ec_infinite_order Order37 for Points37 at 1
-
-example : ¬ IsOfFinAddOrder Order37.point := Order37.infinite_order
+example : ¬ IsOfFinAddOrder Points37.infiniteOrder.point0.point :=
+  Points37.infiniteOrder.point0.infinite_order
 example : (1 : Cardinal) ≤ Module.rank ℤ (Points37.curve.baseChange ℚ).toAffine.Point :=
-  Order37.algebraic_rank_lower_bound
+  Points37.algebraic_rank_lower_bound
 ```
+
+The equivalent JSON has `"infinite_order_points": [1]` beside
+`"integral_points": [[0,0],[6,14]]` and `"ainvs": [0,0,1,-1,0]`.
+`from_json`, `from_json_string`, direct Lean records, and the programmatic
+`CertifyEC.certify` / `certifyAtomic` entry points all use this same dispatch.
+`none` (JSON omission or null) requests no check; `some []` is an explicit empty
+request. Each list position `k` produces `Points37.infiniteOrder.pointk` for
+its selected coordinate index. Every index is checked, and a nonempty list
+also proves rank at least one. Individual infinite-order proofs alone do not
+prove a higher rank.
 
 Indices are zero-based natural numbers and are bounds-checked. For the selected
 integral point `(x,y)`, the checker sets `κ = 2y + a₁x + a₃` and proves
@@ -32,26 +42,44 @@ obstruction.
 
 ## Families of points
 
-For any number of points, supply a proof of their integer linear independence:
+Use `independentPoints` in the same witness and attach its independence proof
+with `with_independence`. The proof can use the infinite-order facts checked
+inside that same command:
 
 ```lean
-certify_ec_rank Rank37 for Points37 from [1] using (by
-  apply LinearIndependent.of_subsingleton' (0 : Fin 1)
-  intro a ha
-  have hp : a • Order37.point = 0 := by
-    simpa [Rank37.points, Rank37.indices, Order37.point, Order37.index] using ha
-  by_contra hn
-  exact Order37.infinite_order
-    (isOfFinAddOrder_iff_zsmul_eq_zero.mpr ⟨a, hn, hp⟩))
+certify_ec Rank37 from
+  { equation := ⟨0, 0, 1, -1, 0⟩
+    integralCoordinates := some [(0, 0), (6, 14)]
+    infiniteOrderPoints := some [1]
+    independentPoints := some [1] }
+  with_independence (by
+    apply LinearIndependent.of_subsingleton' (0 : Fin 1)
+    intro a ha
+    have hp : a • Rank37.infiniteOrder.point0.point = 0 := by
+      simpa [Rank37.algebraic.points, Rank37.algebraic.indices,
+        Rank37.infiniteOrder.point0.point, Rank37.infiniteOrder.point0.index,
+        Rank37.infinite_order_indices] using ha
+    by_contra hn
+    exact Rank37.infiniteOrder.point0.infinite_order
+      (isOfFinAddOrder_iff_zsmul_eq_zero.mpr ⟨a, hn, hp⟩))
 ```
 
-The command defines `Rank37.indices : List Nat` and
-`Rank37.points : Fin Rank37.indices.length → E(ℚ)`. The supplied proof must have
-type `LinearIndependent ℤ Rank37.points`. It exports `points_independent` and
-`algebraic_rank_lower_bound`, the latter stating
-`(Rank37.indices.length : Cardinal) ≤ Module.rank ℤ E(ℚ)`.
-The point-family type uses the concrete numeral for its size, with
-`point_count_eq` recording the kernel-checked equality to the input list's length.
+The command defines `Rank37.algebraic.indices : List Nat` and
+`Rank37.algebraic.points : Fin n → E(ℚ)`, where `n` is the selected list's length.
+The supplied proof must have type `LinearIndependent ℤ Rank37.algebraic.points`.
+It exports `Rank37.algebraic.points_independent` and the root theorem
+`Rank37.algebraic_rank_lower_bound`, stating
+`(Rank37.algebraic.indices.length : Cardinal) ≤ Module.rank ℤ E(ℚ)`.
+The kernel checks the concrete family size in `Rank37.algebraic.point_count_eq`.
+
+JSON uses `"independent_points": [1]`. The same `with_independence` clause is
+available after `from_json` and `from_json_string`. Programmatic entry points
+accept the proof syntax as their optional third argument. An independence
+request without a proof, or a proof without a requested family, is rejected.
+Infinite-order and independence requests may be supplied together in one record;
+the checked infinite-order facts are available to the independence proof, as
+shown in `CertifiedCurves.Direct`.
+
 The same interface accepts a family of any size. Duplicate or dependent points
 cannot satisfy this obligation. Knowing that each point has infinite order is
 insufficient: `P` and `2P` are dependent. Stored LMFDB generator or rank labels

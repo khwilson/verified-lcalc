@@ -178,7 +178,8 @@ run_cmd do
     | .ok w =>
       unless w.primeCoefficients.isNone && w.integralCoordinates.isNone &&
           w.centralResult.isNone && w.derivativeResult.isNone &&
-          w.minimality.isNone && w.localData.isNone do
+          w.minimality.isNone && w.localData.isNone &&
+          w.infiniteOrderPoints.isNone && w.independentPoints.isNone do
         throw (IO.userError "Missing optional data was manufactured")
     | .error reason => throw (IO.userError reason)
   let good ← IO.FS.readFile "data/curve-data/37a1.json"

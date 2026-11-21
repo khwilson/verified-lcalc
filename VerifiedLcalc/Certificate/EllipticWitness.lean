@@ -17,6 +17,10 @@ structure EllipticWitness where
   equation : WeierstrassCurve ℤ
   primeCoefficients : Option (List (Nat × Int)) := none
   integralCoordinates : Option (List (Int × Int)) := none
+  /-- Indices into the supplied integral-coordinate list. -/
+  infiniteOrderPoints : Option (List Nat) := none
+  /-- Selected indices for a rank bound; requires a supplied independence proof. -/
+  independentPoints : Option (List Nat) := none
   centralResult : Option CentralResult := none
   derivativeResult : Option DerivativeResult := none
   minimality : Option MinimalityWitness := none

@@ -6,26 +6,18 @@ public import VerifiedLcalc.Tactic.CertifyECCommon
 public meta import Lean
 
 /-!
-# Certifying infinite order and algebraic-rank lower bounds
+# Internal point-certification components for `certify_ec`
 
-These commands consume points already checked by `certify_ec`.
+The public interface is `VerifiedLcalc.Tactic.CertifyEC`. These helpers verify
+infinite order at an integral-point index and integer independence of a selected
+family. `certify_ec` dispatches to them from its single optional-field witness,
+using the same pipeline for Lean, JSON, and programmatic inputs.
 
-* `certify_ec_infinite_order Name for Curve at i` checks the Nagell–Lutz
-  discriminant obstruction at the supplied integer point of index `i`. It
-  exports `Name.point`, `Name.infinite_order`, and `Name.algebraic_rank_lower_bound`.
-  A failed obstruction is inconclusive and rejects the command atomically.
-* `certify_ec_rank Name for Curve from [i₁, …, iₙ] using proof` selects points
-  by natural-number indices and checks a proof of their ℤ-linear independence.
-  It exports `Name.points`, `Name.points_independent`, and
-  `Name.algebraic_rank_lower_bound`. Indices are bounds-checked, never reduced
-  modulo the point count. Independence is an actual proof obligation: point
-  membership, pairwise distinctness, individual infinite order, and unverified
-  LMFDB rank/generator metadata cannot replace it.
-
-The conclusion uses Mathlib's cardinal-valued `Module.rank ℤ` on the rational
-point group. No finite-generation assumption, modularity or BSD is needed.
-These commands perform no search and audit every theorem against standard
-Lean axioms. Compile their containing module for reusable `.olean` theorems.
+Every mathematical claim uses the actual rational point group and Mathlib's
+module rank. No finite-generation, modularity or BSD assumption is needed.
+A failed Nagell–Lutz obstruction is inconclusive; independence of a family
+requires an actual proof, rather than distinctness or individual infinite order.
+All generated theorems are checked and audited against standard Lean axioms.
 -/
 
 public meta section
@@ -95,20 +87,5 @@ def certifyRankLowerBound (name : Name) (curveName : Ident)
     (← `((($ix).length : Cardinal) ≤ Module.rank ℤ (($curve).baseChange ℚ).toAffine.Point))
     (← `(algebraic_rank_lower_bound $ps $hi))
   logInfo m!"Certified {base}.algebraic_rank_lower_bound from an independent point family"
-
-syntax (name := certifyECInfiniteOrder)
-  "certify_ec_infinite_order " ident " for " ident " at " term : command
-syntax (name := certifyECRank)
-  "certify_ec_rank " ident " for " ident " from " term " using " term : command
-
-@[command_elab certifyECInfiniteOrder] def elabCertifyECInfiniteOrder : CommandElab := fun stx => do
-  let `(certify_ec_infinite_order $name:ident for $curve:ident at $index:term) := stx
-    | throwUnsupportedSyntax
-  certifyInfiniteOrder name.getId curve index
-
-@[command_elab certifyECRank] def elabCertifyECRank : CommandElab := fun stx => do
-  let `(certify_ec_rank $name:ident for $curve:ident from $indices:term using $proof:term) := stx
-    | throwUnsupportedSyntax
-  certifyRankLowerBound name.getId curve indices proof
 
 end VerifiedLcalc.CertifyEC

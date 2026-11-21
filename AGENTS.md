@@ -36,6 +36,9 @@
 
 ## Certificate workflow and validation
 
+- `certify_ec` is the sole public command interface. Component-specific
+  certifiers are backend helpers; all supported input methods share the same
+  optional-field witness and verification dispatch.
 - `certify_ec` accepts supplied Lean or exact JSON witnesses and verifies only.
   No search by default, native verification axiom, or leaked declarations after
   rejection. Audit finite and analytic theorem dependencies separately.

@@ -12,7 +12,19 @@ open VerifiedLcalc VerifiedLcalc.EllipticCurve
 certify_ec DirectPoints from
   { equation := ⟨0, 0, 1, -1, 0⟩
     primeCoefficients := some [(2, -2), (37, -1)]
-    integralCoordinates := some [(0, 0), (6, 14)] }
+    integralCoordinates := some [(0, 0), (6, 14)]
+    infiniteOrderPoints := some [1]
+    independentPoints := some [1] }
+  with_independence (by
+    apply LinearIndependent.of_subsingleton' (0 : Fin 1)
+    intro a ha
+    have hp : a • DirectPoints.infiniteOrder.point0.point = 0 := by
+      simpa [DirectPoints.algebraic.points, DirectPoints.algebraic.indices,
+        DirectPoints.infiniteOrder.point0.point, DirectPoints.infiniteOrder.point0.index,
+        DirectPoints.infinite_order_indices] using ha
+    by_contra hn
+    exact DirectPoints.infiniteOrder.point0.infinite_order
+      (isOfFinAddOrder_iff_zsmul_eq_zero.mpr ⟨a, hn, hp⟩))
 
 example : (DirectPoints.curve.baseChange ℚ).LFunction 2 = -2 :=
   DirectPoints.ap_correct 2 (-2) (by decide +kernel)
@@ -20,26 +32,12 @@ example : (DirectPoints.curve.baseChange ℚ).LFunction 2 = -2 :=
 example : DirectPoints.point ⟨0, by decide⟩ ∈ DirectPoints.curve.integralPoints :=
   DirectPoints.point_integral _
 
--- The second supplied point (6,14) passes an exact Nagell–Lutz obstruction.
--- This proves infinite order and algebraic rank ≥ 1, without modularity.
-certify_ec_infinite_order DirectOrder for DirectPoints at 1
-
+-- The same command proves infinite order of (6,14) and algebraic rank ≥ 1.
 example : ¬ IsOfFinAddOrder (DirectPoints.point ⟨1, by decide⟩) :=
-  DirectOrder.infinite_order
-
--- Select a family from the supplied points and provide its independence proof.
--- The same command accepts any number of indices, with the corresponding proof.
-certify_ec_rank DirectRank for DirectPoints from [1] using (by
-  apply LinearIndependent.of_subsingleton' (0 : Fin 1)
-  intro a ha
-  have hp : a • DirectOrder.point = 0 := by
-    simpa [DirectRank.points, DirectRank.indices, DirectOrder.point, DirectOrder.index] using ha
-  by_contra hn
-  exact DirectOrder.infinite_order
-    (isOfFinAddOrder_iff_zsmul_eq_zero.mpr ⟨a, hn, hp⟩))
+  DirectPoints.infiniteOrder.point0.infinite_order
 
 example : (1 : Cardinal) ≤ Module.rank ℤ (DirectPoints.curve.baseChange ℚ).toAffine.Point :=
-  DirectRank.algebraic_rank_lower_bound
+  DirectPoints.algebraic_rank_lower_bound
 
 -- Supplied data only. No JSON file, witness search, or numerical producer.
 certify_ec DirectCurve from EllipticWitness.central

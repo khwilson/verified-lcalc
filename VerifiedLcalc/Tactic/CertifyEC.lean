@@ -11,8 +11,12 @@ public meta import Lean
 Every input method uses one `EllipticWitness` record. The integral
 `WeierstrassCurve` equation is required. Prime coefficients, integer coordinates,
 central or derivative rank payloads, minimality, and local-reduction data are
-`Option` fields defaulting to `none`. `none` is absence; `some []` is an explicit
-empty list and makes no completeness claim. `EllipticWitness.central` and
+`Option` fields defaulting to `none`. `infiniteOrderPoints` requests exact
+infinite-order checks at supplied point indices; `independentPoints` selects
+an algebraic-rank family and requires a `with_independence proof` clause.
+This clause is available for all three input forms and the programmatic API.
+`none` is absence; `some []` is an explicit empty list and makes no completeness
+claim. `EllipticWitness.central` and
 `.derivative` are convenience functions returning this same record.
 
 * `certify_ec Name from witness` accepts direct Lean records or definitions.
@@ -25,6 +29,20 @@ JSON can supply `ainvs`, `ap` or `aplist`, and `integral_points` or
 JSON layout is decoded into the same flat record. Bare stored ranks never
 become theorems. A caller controls any computation inside a supplied Lean term;
 the certifier performs no analytic-witness search or network requests.
+
+## Point and algebraic-rank output
+
+An infinite-order request produces `Name.infinite_order_indices` and
+`Name.infiniteOrder.point0`, `.point1`, …, each with an `infinite_order` theorem
+about its actual supplied point. A nonempty list also gives
+`Name.algebraic_rank_lower_bound` proving rank at least one.
+
+An independence request produces `Name.algebraic.indices`, `.points`, and
+`.points_independent`. Its supplied proof is checked against
+`LinearIndependent ℤ Name.algebraic.points`. The root
+`Name.algebraic_rank_lower_bound` then uses this family's size. These facts
+need only standard Lean axioms. A failure in any component rolls back the
+whole `certify_ec` command. No separate public point/rank command is needed.
 
 ## Output
 
@@ -145,8 +163,55 @@ def certifyAnalytic (base : Name) (central : Bool) (input : TSyntax `term) : Com
     (Modularity.modularWitness $curve $hn).formL (1 : ℂ) = n} := ⟨$rank, $rankTheorem⟩))
   logInfo m!"Certified {base}.analytic_rank; conditional on ellipticModularity"
 
+/-- Dispatch point facts from the same witness as all other curve data. -/
+def certifyPointFields (name : Name) (independence : Option (TSyntax `term)) :
+    CommandElabM Unit := do
+  let name := name.eraseMacroScopes
+  let base := (← getCurrNamespace) ++ name
+  let curve := rootIdent (base ++ `curve)
+  let witness := rootIdent (base ++ `witness)
+  let mut firstInfinite : Option Name := none
+  if let some input ← optionalInput (base ++ `witness) `infiniteOrderPoints then
+    let ix := rootIdent (base ++ `infinite_order_indices)
+    emit (← `(def $ix : List Nat := $input))
+    checked (base ++ `infinite_order_points_eq)
+      (← `(($witness).infiniteOrderPoints = some $ix)) (← `(by rfl))
+    let count ← liftTermElabM do
+      let size ← Term.elabTerm (← `(($ix).length)) (some (mkConst ``Nat))
+      let some n ← (evalNat (← whnf size)).run
+        | throwError "Expected closed infinite-order point indices"
+      return n
+    let countTerm : TSyntax `term := ⟨Syntax.mkNumLit (toString count)⟩
+    checked (base ++ `infinite_order_count_eq) (← `(($ix).length = $countTerm))
+      (← `(by decide +kernel))
+    for i in [:count] do
+      let position : TSyntax `term := ⟨Syntax.mkNumLit (toString i)⟩
+      let index ← `(($ix)[$position]'(by decide +kernel))
+      let child := name ++ `infiniteOrder ++ Name.mkSimple s!"point{i}"
+      certifyInfiniteOrder child (rootIdent base) index
+      if firstInfinite.isNone then firstInfinite := some ((← getCurrNamespace) ++ child)
+  if let some indices ← optionalInput (base ++ `witness) `independentPoints then
+    let some proof := independence
+      | throwError "independentPoints requires a with_independence proof"
+    certifyRankLowerBound (name ++ `algebraic) (rootIdent base) indices proof
+    let ix := rootIdent (base ++ `algebraic ++ `indices)
+    checked (base ++ `independent_points_eq)
+      (← `(($witness).independentPoints = some $ix)) (← `(by rfl))
+    let h := rootIdent (base ++ `algebraic ++ `algebraic_rank_lower_bound)
+    checked (base ++ `algebraic_rank_lower_bound)
+      (← `((($ix).length : Cardinal) ≤ Module.rank ℤ (($curve).baseChange ℚ).toAffine.Point))
+      (← `($h))
+  else
+    if independence.isSome then
+      throwError "with_independence requires independentPoints in the supplied witness"
+    if let some child := firstInfinite then
+      let h := rootIdent (child ++ `algebraic_rank_lower_bound)
+      checked (base ++ `algebraic_rank_lower_bound)
+        (← `((1 : Cardinal) ≤ Module.rank ℤ (($curve).baseChange ℚ).toAffine.Point)) (← `($h))
+
 /-- The single verification path for all input methods. -/
-def certifyFields (name : Name) (input : TSyntax `term) : CommandElabM Unit := do
+def certifyFields (name : Name) (input : TSyntax `term)
+    (independence : Option (TSyntax `term) := none) : CommandElabM Unit := do
   let name := name.eraseMacroScopes
   let base := (← getCurrNamespace) ++ name
   CertifyECData.certify name input false
@@ -157,31 +222,36 @@ def certifyFields (name : Name) (input : TSyntax `term) : CommandElabM Unit := d
   let derivative ← optionalInput (base ++ `witness) `derivativeResult
   if central.isSome && derivative.isSome then
     throwError "Conflicting rank candidates: supply at most one central or derivative result"
+  certifyPointFields name independence
   certifyLocalData base
   if let some result := central then certifyAnalytic base true result
   if let some result := derivative then certifyAnalytic base false result
   logInfo m!"Certified {base}.ap_correct and {base}.point_integral for the supplied lists"
 
 /-- Programmatic entry point; failed components leave no declarations behind. -/
-def certify (name : Name) (input : TSyntax `term) : CommandElabM Unit :=
-  atomic (certifyFields name input)
+def certify (name : Name) (input : TSyntax `term)
+    (independence : Option (TSyntax `term) := none) : CommandElabM Unit :=
+  atomic (certifyFields name input independence)
 
-def certifyAtomic (name : Name) (input : TSyntax `term) : CommandElabM Unit :=
-  certify name input
+def certifyAtomic (name : Name) (input : TSyntax `term)
+    (independence : Option (TSyntax `term) := none) : CommandElabM Unit :=
+  certify name input independence
 
 def jsonInput (text : String) : CommandElabM (TSyntax `term) :=
   CertifyECData.jsonInput text
 
 /-- JSON supplies the same record as direct Lean input; metadata is not a claim. -/
-def certifyJson (name : Name) (text : String) : CommandElabM Unit := atomic do
+def certifyJson (name : Name) (text : String)
+    (independence : Option (TSyntax `term) := none) : CommandElabM Unit := atomic do
   let input ← jsonInput text
-  certifyFields name input
+  certifyFields name input independence
   if let .ok j := Json.parse text then
     if let .ok object := j.getObj? then
       let base := (← getCurrNamespace) ++ name.eraseMacroScopes
       let checkedRank := (← getEnv).contains (base ++ `analytic_rank)
       let rankKeys := ["subject", "parameters", "rank", "coefficients", "arithmetic", "enclosure", "evaluator", "analytic_witness"]
-      let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points", "minimality", "local_data"]
+      let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points", "minimality", "local_data",
+        "infinite_order_points", "independent_points"]
       let skipped := object.toList.filterMap fun (key, _) =>
         if known.contains key || (checkedRank && rankKeys.contains key) then none else some key
       unless skipped.isEmpty do
@@ -205,5 +275,31 @@ syntax (name := certifyECJsonString) "certify_ec " ident " from_json_string " st
 @[command_elab certifyECJsonString] def elabCertifyECJsonString : CommandElab := fun stx => do
   let `(certify_ec $name:ident from_json_string $text:str) := stx | throwUnsupportedSyntax
   certifyJson name.getId text.getString
+
+-- The same optional proof clause is available for every input form.
+syntax (name := certifyECTermIndependent)
+  "certify_ec " ident " from " term " with_independence " term : command
+syntax (name := certifyECJsonIndependent)
+  "certify_ec " ident " from_json " str " with_independence " term : command
+syntax (name := certifyECJsonStringIndependent)
+  "certify_ec " ident " from_json_string " str " with_independence " term : command
+
+@[command_elab certifyECTermIndependent] def elabCertifyECTermIndependent : CommandElab := fun stx => do
+  let `(certify_ec $name:ident from $input:term with_independence $proof:term) := stx
+    | throwUnsupportedSyntax
+  certify name.getId input (some proof)
+
+@[command_elab certifyECJsonIndependent] def elabCertifyECJsonIndependent : CommandElab := fun stx => do
+  let `(certify_ec $name:ident from_json $file:str with_independence $proof:term) := stx
+    | throwUnsupportedSyntax
+  let source := System.FilePath.mk (← read).fileName
+  let path := source.parent.getD "." / file.getString
+  certifyJson name.getId (← IO.FS.readFile path) (some proof)
+
+@[command_elab certifyECJsonStringIndependent]
+def elabCertifyECJsonStringIndependent : CommandElab := fun stx => do
+  let `(certify_ec $name:ident from_json_string $text:str with_independence $proof:term) := stx
+    | throwUnsupportedSyntax
+  certifyJson name.getId text.getString (some proof)
 
 end VerifiedLcalc.CertifyEC

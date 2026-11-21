@@ -159,9 +159,9 @@ The resulting rational points use TauCeti's `pointOfIntegralSolution` and
 assert absence of points, and a nonempty list asserts neither completeness nor
 an algebraic-rank lower bound. Integrality refers to the supplied equation.
 
-Follow-up commands can establish stronger facts about these same points:
-`certify_ec_infinite_order` checks an exact torsion obstruction, and
-`certify_ec_rank` checks an independence proof for a selected family. See
+The same `certify_ec` command establishes stronger facts when
+`infiniteOrderPoints` or `independentPoints` is supplied in the witness.
+The latter uses a `with_independence` proof clause. See
 [ALGEBRAIC_RANK.md](ALGEBRAIC_RANK.md) and `CertifiedCurves.Direct`.
 
 Direct Lean data uses the same optional-facts record:
@@ -182,7 +182,8 @@ The combined example assumes `import CertifiedCurves.Json`. There is one
 aggregate input type, `VerifiedLcalc.EllipticWitness`: a required
 `equation : WeierstrassCurve ℤ` and optional `primeCoefficients`,
 `integralCoordinates`, `centralResult`, `derivativeResult`, `minimality`, and
-`localData`. All optional fields default to `none`. `some []` records an
+`localData`, plus point-index lists `infiniteOrderPoints` and `independentPoints`.
+All optional fields default to `none`. `some []` records an
 explicitly supplied empty list; it does not assert completeness. JSON omission
 or `null` represents absent arithmetic lists. Complete rank-witness JSON can
 carry the same arithmetic fields, or appear under the legacy `analytic_witness`
