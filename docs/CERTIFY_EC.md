@@ -111,6 +111,12 @@ kernel validation. Recipients can rebuild source if they want to check it locall
 
 ## Arithmetic data certificates
 
+Exact equation invariants and additional LMFDB fields are also optional witness
+fields in this same command. See [LMFDB_INVARIANTS.md](LMFDB_INVARIANTS.md) for
+their JSON names, generated theorems, and prerequisite evidence. In particular,
+minimal discriminant and complete bad-prime claims require checked minimality;
+conductor/global-root identification retains the documented temporary axiom.
+
 `certify_ec` checks supplied prime coefficients and affine integer points
 independently of the analytic-rank command:
 

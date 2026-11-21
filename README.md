@@ -61,6 +61,11 @@ rank families in `independentPoints`. Supply a family's independence proof with
 [ALGEBRAIC_RANK.md](docs/ALGEBRAIC_RANK.md) for examples and the remaining
 independence automation.
 
+Stored j/discriminant invariants, bad-prime sets, coefficient prefixes, and
+standalone conductor/root claims use that same interface. See
+[LMFDB_INVARIANTS.md](docs/LMFDB_INVARIANTS.md) for supported fields, evidence
+requirements, and the invariant groups still awaiting proof integration.
+
 A consumer can simply write:
 
 ```lean

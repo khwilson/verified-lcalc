@@ -74,4 +74,14 @@ def atomic (action : CommandElabM Unit) : CommandElabM Unit := do
     set { saved with messages }
     throw error
 
+/-- Inspect one optional component of the already elaborated, closed record. -/
+def optionalInput (w : Name) (field : Name) : CommandElabM (Option (TSyntax `term)) := do
+  let value ← liftTermElabM <| whnf
+    (mkApp (mkConst (``EllipticWitness ++ field)) (mkConst w))
+  match value.getAppFn.constName? with
+  | some ``Option.none => return none
+  | some ``Option.some => return some (← literalSyntax value.getAppArgs.back!)
+  | _ => throwError "Expected closed optional data for {field}"
+
+
 end VerifiedLcalc.CertifyEC

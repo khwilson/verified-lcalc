@@ -3,6 +3,7 @@ module
 public import VerifiedLcalc.Certification.DerivativeCertification
 public import VerifiedLcalc.Tactic.CertifyECData
 public import VerifiedLcalc.Tactic.CertifyECPoints
+public import VerifiedLcalc.Tactic.CertifyECInvariants
 public meta import Lean
 
 /-!
@@ -24,6 +25,11 @@ claim. `EllipticWitness.central` and
 * `certify_ec Name from_json_string "..."` accepts inline exact JSON.
 
 All three forms, and `CertifyEC.certify` / `certifyAtomic`, use the same checker.
+Optional stored invariants include b/c values, equation discriminant and sign,
+j-invariant, minimal absolute discriminant, bad-prime set/count, anlist,
+conductor and global root number. Prerequisite-dependent claims without the
+required evidence are explicitly reported as unverified. See
+`docs/LMFDB_INVARIANTS.md` for the exact mathematical outputs and trust boundary.
 JSON can supply `ainvs`, `ap` or `aplist`, and `integral_points` or
 `xcoord_integral_points`; unrelated metadata carries no claim. The legacy rank
 JSON layout is decoded into the same flat record. Bare stored ranks never
@@ -77,16 +83,7 @@ compiled consumers under `tests/consumers/`.
 
 public meta section
 namespace VerifiedLcalc.CertifyEC
-open Lean Elab Command Meta EllipticCurve
-
-/-- Inspect one optional component of the already elaborated, closed record. -/
-def optionalInput (w : Name) (field : Name) : CommandElabM (Option (TSyntax `term)) := do
-  let value ← liftTermElabM <| whnf
-    (mkApp (mkConst (``EllipticWitness ++ field)) (mkConst w))
-  match value.getAppFn.constName? with
-  | some ``Option.none => return none
-  | some ``Option.some => return some (← literalSyntax value.getAppArgs.back!)
-  | _ => throwError "Expected closed optional data for {field}"
+open Lean Elab Command Meta EllipticCurve NumberField
 
 /-- Independently check supplied arithmetic witnesses, even without rank data. -/
 def certifyLocalData (base : Name) : CommandElabM Unit := do
@@ -97,6 +94,10 @@ def certifyLocalData (base : Name) : CommandElabM Unit := do
     emit (← `(def $m : MinimalityWitness := $input))
     checked (base ++ `minimality_eq) (← `(($w).minimality = some $m)) (← `(by rfl))
     checked (base ++ `minimality_valid) (← `(($m).Valid $curve)) (← `(by decide +kernel))
+    let hm := rootIdent (base ++ `minimality_valid)
+    checked (base ++ `global_minimal)
+      (← `(WeierstrassCurve.IsGlobalMinimal (NumberField.RingOfIntegers ℚ) (($curve).baseChange ℚ)))
+      (← `(globalMinimal_of_witness $curve $m $hm))
   if let some input ← optionalInput (base ++ `witness) `localData then
     let d := rootIdent (base ++ `localData)
     emit (← `(def $d : WildData := $input))
@@ -224,6 +225,7 @@ def certifyFields (name : Name) (input : TSyntax `term)
     throwError "Conflicting rank candidates: supply at most one central or derivative result"
   certifyPointFields name independence
   certifyLocalData base
+  certifyStoredInvariants base
   if let some result := central then certifyAnalytic base true result
   if let some result := derivative then certifyAnalytic base false result
   logInfo m!"Certified {base}.ap_correct and {base}.point_integral for the supplied lists"
@@ -251,7 +253,9 @@ def certifyJson (name : Name) (text : String)
       let checkedRank := (← getEnv).contains (base ++ `analytic_rank)
       let rankKeys := ["subject", "parameters", "rank", "coefficients", "arithmetic", "enclosure", "evaluator", "analytic_witness"]
       let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points", "minimality", "local_data",
-        "infinite_order_points", "independent_points"]
+        "infinite_order_points", "independent_points", "binvs", "cinvs", "discriminant",
+        "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
+        "bad_primes", "num_bad_primes"]
       let skipped := object.toList.filterMap fun (key, _) =>
         if known.contains key || (checkedRank && rankKeys.contains key) then none else some key
       unless skipped.isEmpty do

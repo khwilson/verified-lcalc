@@ -109,6 +109,41 @@ def localDataField (j : Json) : Except String (Option EllipticCurve.WildData) :=
     CertificateJson.tate view
   return some ⟨← decode two, ← decode three⟩
 
+/-- Exact rational data: LMFDB numerator/positive-denominator pairs, fractions,
+canonical integer strings, or exact JSON integers. No decimal approximation. -/
+def rationalValue (j : Json) : Except String Rat := do
+  match j with
+  | .arr values =>
+    unless values.size == 2 do throw "Expected a rational numerator/denominator pair"
+    let n ← integer values[0]!
+    let d ← integer values[1]!
+    unless 0 < d do throw "Expected a positive rational denominator"
+    return (n : Rat) / d
+  | .str value =>
+    if value.contains '/' then rational j else return (← integer j : Int)
+  | _ => return (← integer j : Int)
+
+def optionalValue (j : Json) (key : String) (decode : Json → Except String α) :
+    Except String (Option α) := do
+  match optionalData j key with
+  | none => return none
+  | some value => return some (← decode value)
+
+def nonnegativeInteger (j : Json) : Except String Nat := do
+  let n ← integer j
+  unless 0 ≤ n do throw "Expected a nonnegative integer"
+  return n.toNat
+
+def bValues (j : Json) : Except String (Int × Int × Int × Int) := do
+  let xs ← array j 4
+  unless xs.size == 4 do throw "Expected b2,b4,b6,b8"
+  return (← integer xs[0]!, ← integer xs[1]!, ← integer xs[2]!, ← integer xs[3]!)
+
+def cValues (j : Json) : Except String (Int × Int) := do
+  let xs ← array j 2
+  unless xs.size == 2 do throw "Expected c4,c6"
+  return (← integer xs[0]!, ← integer xs[1]!)
+
 /-- Decode whichever supported fields are present. Integer square-root
 reconstruction supplies candidate y-coordinates for stored integral x-values;
 the certifier subsequently proves every resulting curve equation. -/
@@ -160,8 +195,37 @@ def decode (j : Json) : Except String EllipticWitness := do
       return i.toNat)
   let infiniteOrderPoints ← indices "infinite_order_points"
   let independentPoints ← indices "independent_points"
+  let bInvariants ← optionalValue j "binvs" bValues
+  let cInvariants ← optionalValue j "cinvs" cValues
+  let discriminant ← optionalValue j "discriminant" integer
+  let jInvariant ← optionalValue j "jinv" rationalValue
+  let discriminantSign ← optionalValue j "signD" integer
+  let minimalDiscriminantAbs ← optionalValue j "absD" nonnegativeInteger
+  let conductor ← optionalValue j "conductor" nonnegativeInteger
+  let rootNumber ← optionalValue j "global_root_number" integer
+  let dirichletCoefficients ← optionalValue j "anlist" fun value => do
+    let xs ← (← array value 256).toList.mapM integer
+    match xs with
+    | [] => return []
+    | a₀ :: rest =>
+      unless a₀ == 0 do throw "LMFDB anlist must start with a_0 = 0"
+      return rest
+  let badPrimes ← optionalValue j "bad_primes" fun value => do
+    (← array value 256).toList.mapM nonnegativeInteger
+  let numBadPrimes ← optionalValue j "num_bad_primes" nonnegativeInteger
   return { base with
     equation
+    bInvariants
+    cInvariants
+    discriminant
+    jInvariant
+    discriminantSign
+    minimalDiscriminantAbs
+    conductor
+    rootNumber
+    dirichletCoefficients
+    badPrimes
+    numBadPrimes
     primeCoefficients := primeData
     integralCoordinates := pointData
     infiniteOrderPoints

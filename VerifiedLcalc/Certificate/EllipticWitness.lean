@@ -15,6 +15,20 @@ analytic certification additionally needs checked minimality and local data.
 This record asserts no mathematical validity. -/
 structure EllipticWitness where
   equation : WeierstrassCurve ℤ
+  bInvariants : Option (Int × Int × Int × Int) := none
+  cInvariants : Option (Int × Int) := none
+  discriminant : Option Int := none
+  jInvariant : Option Rat := none
+  discriminantSign : Option Int := none
+  /-- LMFDB absD; certification needs a checked globally minimal model. -/
+  minimalDiscriminantAbs : Option Nat := none
+  /-- Identification with the modular level uses the authorized modularity axiom. -/
+  conductor : Option Nat := none
+  rootNumber : Option Int := none
+  /-- Consecutive a_n values starting at n=1; JSON anlist also carries a_0=0. -/
+  dirichletCoefficients : Option (List Int) := none
+  badPrimes : Option (List Nat) := none
+  numBadPrimes : Option Nat := none
   primeCoefficients : Option (List (Nat × Int)) := none
   integralCoordinates : Option (List (Int × Int)) := none
   /-- Indices into the supplied integral-coordinate list. -/

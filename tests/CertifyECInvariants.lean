@@ -1,0 +1,113 @@
+import CertifiedCurves.Invariants
+import Lean
+
+open Lean Elab Command VerifiedLcalc VerifiedLcalc.EllipticCurve
+
+set_option maxRecDepth 100000
+set_option maxHeartbeats 10000000
+
+-- Native LMFDB rational pairs, canonical strings, exact integer literals, and
+-- partial data all feed the same witness. Missing prerequisites emit no claim.
+certify_ec Partial37 from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"jinv":[110592,37],"signD":1,"absD":37,"bad_primes":[37],"num_bad_primes":1,"conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3]}"#
+example : (Partial37.curve.baseChange ℚ).j = 110592 / 37 := Partial37.j_invariant
+
+certify_ec JZero from_json_string
+  r#"{"ainvs":[0,0,0,0,1],"jinv":"0","signD":-1,"discriminant":-432}"#
+certify_ec J1728 from_json_string
+  r#"{"ainvs":[0,0,0,-1,0],"jinv":"1728/1","binvs":[0,-2,0,-1],"cinvs":[48,0]}"#
+
+-- A local table's root_number must never become a global-root claim.
+certify_ec LocalSignMetadata from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"prime":37,"root_number":1,"minimality":[37],"local_data":{"at_two":null,"at_three":null}}"#
+example : LocalSignMetadata.witness.rootNumber = none := rfl
+
+certify_ec JSON37 from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"jinv":["110592","37"],"binvs":[0,-2,1,-1],"cinvs":[48,-216],"absD":37,"bad_primes":[37],"num_bad_primes":1,"conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3,2,-2,6,-1,0],"minimality":[37],"local_data":{"at_two":null,"at_three":null}}"#
+example : JSON37.curve.Δ.natAbs = 37 := JSON37.minimal_discriminant_abs.2
+
+run_cmd do
+  let input ← CertifyEC.jsonInput
+    r#"{"ainvs":[0,0,1,-1,0],"jinv":[110592,37]}"#
+  CertifyEC.certifyAtomic `ProgrammaticInvariant input
+
+meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit := do
+  let messages := (← get).messages
+  let mut failed := false
+  try
+    elabCommand command
+    failed := (← get).messages.hasErrors
+  catch _ => failed := true
+  let env ← getEnv
+  set { (← get) with messages }
+  unless failed do throwError "Incorrect invariant accepted: {name}"
+  for suffix in [`witness, `curve, `nonsingular, `j_invariant, `discriminant,
+      `claimed_j_invariant, `claimed_discriminant, `global_minimal,
+      `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
+      `bad_primes, `bad_reduction_primes, `num_bad_primes] do
+    if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
+
+run_cmd do
+  invariantRejected `WrongJ (← `(certify_ec WrongJ from
+    { Invariants37.witness with jInvariant := some 0 }))
+  invariantRejected `WrongDiscriminant (← `(certify_ec WrongDiscriminant from
+    { Invariants37.witness with discriminant := some (-37) }))
+  invariantRejected `WrongB (← `(certify_ec WrongB from
+    { Invariants37.witness with bInvariants := some (0, 0, 0, 0) }))
+  invariantRejected `WrongC (← `(certify_ec WrongC from
+    { Invariants37.witness with cInvariants := some (48, 216) }))
+  invariantRejected `WrongSign (← `(certify_ec WrongSign from
+    { Invariants37.witness with discriminantSign := some 0 }))
+  invariantRejected `WrongAbsD (← `(certify_ec WrongAbsD from
+    { Invariants37.witness with minimalDiscriminantAbs := some 1 }))
+  invariantRejected `MissingBadPrime (← `(certify_ec MissingBadPrime from
+    { Invariants37.witness with badPrimes := some [] }))
+  invariantRejected `DuplicateBadPrime (← `(certify_ec DuplicateBadPrime from
+    { Invariants37.witness with badPrimes := some [37, 37] }))
+  invariantRejected `WrongBadCount (← `(certify_ec WrongBadCount from
+    { Invariants37.witness with numBadPrimes := some 2 }))
+  invariantRejected `WrongConductor (← `(certify_ec WrongConductor from
+    { Invariants37.witness with conductor := some 1 }))
+  invariantRejected `WrongRootNumber (← `(certify_ec WrongRootNumber from
+    { Invariants37.witness with rootNumber := some 1 }))
+  invariantRejected `WrongAN (← `(certify_ec WrongAN from
+    { Invariants37.witness with dirichletCoefficients := some [1, 999] }))
+  -- Scaling the equation scales its discriminant; it must not be passed off
+  -- as a globally minimal model for an absD certificate.
+  invariantRejected `NonminimalAbsD (← `(certify_ec NonminimalAbsD from
+    { equation := ⟨0, 0, 8, -16, 0⟩, minimality := some ⟨[2,2,2,2,2,2,2,2,2,2,2,2,37]⟩,
+      minimalDiscriminantAbs := some 151552 }))
+  for suffix in [`minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
+      `bad_primes, `bad_reduction_primes, `num_bad_primes] do
+    if (← getEnv).contains (`Partial37 ++ suffix) then
+      throwError "Missing arithmetic evidence generated an invariant claim"
+  if (← getEnv).contains `LocalSignMetadata.root_number then
+    throwError "Local root metadata became a global sign theorem"
+
+run_cmd do
+  let standard := [``propext, ``Classical.choice, ``Quot.sound]
+  for name in [`Invariants37, `JSON37] do
+    for rankName in [`analytic_rank, `algebraic_rank_lower_bound] do
+      if (← getEnv).contains (name ++ rankName) then
+        throwError "Stored arithmetic invariants generated an unsupported rank claim"
+    for suffix in [`b_invariants, `c_invariants, `j_invariant, `minimal_discriminant_abs,
+        `global_minimal, `dirichlet_coefficients, `bad_primes,
+        `bad_reduction_primes, `num_bad_primes] do
+      for ax in ← liftTermElabM <| Lean.collectAxioms (name ++ suffix) do
+        unless standard.contains ax do throwError "Unexpected invariant axiom: {ax}"
+    for suffix in [`conductor, `root_number] do
+      let axioms ← liftTermElabM <| Lean.collectAxioms (name ++ suffix)
+      unless axioms.contains ``VerifiedLcalc.Assumptions.ellipticModularity do
+        throwError "Conditional arithmetic boundary was not recorded"
+      for ax in axioms do
+        unless standard.contains ax || ax == ``VerifiedLcalc.Assumptions.ellipticModularity do
+          throwError "Unexpected conditional invariant axiom: {ax}"
+
+#eval show IO Unit from do
+  for j in ["[1,0]", "[1,-1]", "[1,2,3]", "0.5", "\"0.5\""] do
+    match CurveDataJson.parse ("{\"ainvs\":[0,0,1,-1,0],\"jinv\":" ++ j ++ "}") with
+    | .error _ => pure ()
+    | .ok _ => throw (IO.userError "Malformed exact rational accepted")
+  match CurveDataJson.parse r#"{"ainvs":[0,0,1,-1,0],"anlist":[1,1]}"# with
+  | .error _ => pure ()
+  | .ok _ => throw (IO.userError "Nonzero anlist origin accepted")
