@@ -77,8 +77,8 @@ def certify (name : Name) (input : TSyntax `term) (announce := true) : CommandEl
       (($curve).baseChange ℚ).LFunction p = a))
     (← `(EllipticWitness.primeCoefficientsValid_sound $w $hn $hap))
   let hcoords := CertifyEC.rootIdent (base ++ `integral_coordinates_valid)
-  CertifyEC.checked (base ++ `integral_coordinates_valid) (← `(($w).integralCoordinatesValid = true))
-    (← `(by decide +kernel))
+  CertifyEC.checked (base ++ `integral_coordinates_valid)
+    (← `(($w).integralCoordinatesValid = true)) (← `(by decide +kernel))
   let hpoints := CertifyEC.rootIdent (base ++ `points_on_curve)
   CertifyEC.checked (base ++ `points_on_curve)
     (← `(∀ (x y : Int), (x, y) ∈ ($w).integralCoordinates.getD [] →
@@ -101,7 +101,8 @@ def certify (name : Name) (input : TSyntax `term) (announce := true) : CommandEl
     (← `(by intro i; exact WeierstrassCurve.pointOfIntegralSolution_mem _ _ _ _))
   certifyRationalCoordinates (base ++ `generators) `generatorCoordinates curve w
   certifyRationalCoordinates (base ++ `torsion_generators) `torsionGeneratorCoordinates curve w
-  if announce then logInfo m!"Certified {base}.ap_correct and {base}.point_integral (arithmetic only)"
+  if announce then
+    logInfo m!"Certified {base}.ap_correct and {base}.point_integral (arithmetic only)"
 
 /-- Decode data only; mathematical claims are checked by `certify`. -/
 def jsonInput (text : String) : CommandElabM (TSyntax `term) := do

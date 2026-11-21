@@ -4,11 +4,12 @@ public import VerifiedLcalc.Certification.CurveData
 public import VerifiedLcalc.Certificate.Json
 public import Mathlib.Data.Int.Sqrt
 
-@[expose] public section
-
 /-! Field-driven decoding of untrusted elliptic-curve data. Supported fields
 are decoded exactly; mathematical claims are checked separately in the kernel.
 Unknown metadata does not become a theorem. -/
+
+@[expose] public section
+
 namespace VerifiedLcalc.CurveDataJson
 open Lean CertificateJson
 
@@ -21,6 +22,7 @@ def integer (j : Json) : Except String Int := do
     unless (toString n).length ≤ 512 do throw "Oversized integer"
     return n
 
+/-- Read an object field when present. -/
 def optional (j : Json) (key : String) : Option Json :=
   (j.getObjVal? key).toOption
 
@@ -28,6 +30,7 @@ def optional (j : Json) (key : String) : Option Json :=
 def optionalData (j : Json) (key : String) : Option Json :=
   (optional j key).bind fun value => if value == .null then none else some value
 
+/-- Decode the five integral Weierstrass coefficients. -/
 def ainvs (j : Json) : Except String (List Int) := do
   let a ← array j 5
   unless a.size == 5 do throw "Expected five Weierstrass coefficients"
@@ -52,6 +55,7 @@ def project? (j : Json) (keys : List String) : Option Json := do
     return (key, ← optional j key)
   return Json.mkObj fields
 
+/-- Select the fields needed to decode a local Tate transcript. -/
 def tateView? (j : Json) : Option Json :=
   if j == .null then some j else
     project? j ["r", "s", "t", "starT", "cubicRoot", "quadraticRoot", "chain", "kodaira"]
@@ -73,6 +77,7 @@ def rankView? (j : Json) : Option Json := do
     ("arithmetic", Json.mkObj [("minimality", .arr #[]), ("at_two", .null), ("at_three", .null)]),
     ("enclosure", enclosure), ("evaluator", evaluator)]
 
+/-- Decode a complete supported numerical payload when present. -/
 def numericFields (j : Json) : Except String (Option EllipticWitness) := do
   match rankView? ((optional j "analytic_witness").getD j) with
   | none => return none
@@ -123,22 +128,26 @@ def rationalValue (j : Json) : Except String Rat := do
     if value.contains '/' then rational j else return (← integer j : Int)
   | _ => return (← integer j : Int)
 
+/-- Decode a field when present and non-null. -/
 def optionalValue (j : Json) (key : String) (decode : Json → Except String α) :
     Except String (Option α) := do
   match optionalData j key with
   | none => return none
   | some value => return some (← decode value)
 
+/-- Decode an integer and reject negative values. -/
 def nonnegativeInteger (j : Json) : Except String Nat := do
   let n ← integer j
   unless 0 ≤ n do throw "Expected a nonnegative integer"
   return n.toNat
 
+/-- Decode the four Weierstrass b-invariants in index order. -/
 def bValues (j : Json) : Except String (Int × Int × Int × Int) := do
   let xs ← array j 4
   unless xs.size == 4 do throw "Expected b2,b4,b6,b8"
   return (← integer xs[0]!, ← integer xs[1]!, ← integer xs[2]!, ← integer xs[3]!)
 
+/-- Decode the Weierstrass c₄ and c₆ invariants. -/
 def cValues (j : Json) : Except String (Int × Int) := do
   let xs ← array j 2
   unless xs.size == 2 do throw "Expected c4,c6"
@@ -195,8 +204,9 @@ def decode (j : Json) : Except String EllipticWitness := do
   let base := numeric.getD { equation }
   let primeData := if (optionalData j "ap").isSome || (optionalData j "aplist").isSome
     then some primeCoefficients.toList else none
-  let pointData := if (optionalData j "integral_points").isSome || (optionalData j "xcoord_integral_points").isSome
-    then some integralCoordinates.toList else none
+  let hasIntegralCoordinates := (optionalData j "integral_points").isSome ||
+    (optionalData j "xcoord_integral_points").isSome
+  let pointData := if hasIntegralCoordinates then some integralCoordinates.toList else none
   let minimality ← minimalityField j
   let localData ← localDataField j
   let indices (key : String) : Except String (Option (List Nat)) := do

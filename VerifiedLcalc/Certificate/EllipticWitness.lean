@@ -3,6 +3,8 @@ module
 public import VerifiedLcalc.EllipticCurve.DerivativeCore
 public import VerifiedLcalc.EllipticCurve.Tate.WildRootCore
 
+/-! # Optional input facts for elliptic-curve certification -/
+
 @[expose] public section
 
 namespace VerifiedLcalc

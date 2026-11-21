@@ -236,10 +236,12 @@ def certify (name : Name) (input : TSyntax `term)
     (independence : Option (TSyntax `term) := none) : CommandElabM Unit :=
   atomic (certifyFields name input independence)
 
+/-- Alias for programmatic certification with rollback on failure. -/
 def certifyAtomic (name : Name) (input : TSyntax `term)
     (independence : Option (TSyntax `term) := none) : CommandElabM Unit :=
   certify name input independence
 
+/-- Decode JSON into a witness term for the shared checker. -/
 def jsonInput (text : String) : CommandElabM (TSyntax `term) :=
   CertifyECData.jsonInput text
 
@@ -252,9 +254,11 @@ def certifyJson (name : Name) (text : String)
     if let .ok object := j.getObj? then
       let base := (← getCurrNamespace) ++ name.eraseMacroScopes
       let checkedRank := (← getEnv).contains (base ++ `analytic_rank)
-      let rankKeys := ["subject", "parameters", "rank", "coefficients", "arithmetic", "enclosure", "evaluator", "analytic_witness"]
-      let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points", "minimality", "local_data",
-        "gens", "torsion_generators", "infinite_order_points", "independent_points", "binvs", "cinvs", "discriminant",
+      let rankKeys := ["subject", "parameters", "rank", "coefficients", "arithmetic",
+        "enclosure", "evaluator", "analytic_witness"]
+      let known := ["schema", "ainvs", "ap", "aplist", "integral_points",
+        "xcoord_integral_points", "minimality", "local_data", "gens", "torsion_generators",
+        "infinite_order_points", "independent_points", "binvs", "cinvs", "discriminant",
         "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes"]
       let skipped := object.toList.filterMap fun (key, _) =>
@@ -266,18 +270,24 @@ syntax (name := certifyECTerm) "certify_ec " ident " from " term : command
 syntax (name := certifyECJson) "certify_ec " ident " from_json " str : command
 syntax (name := certifyECJsonString) "certify_ec " ident " from_json_string " str : command
 
-@[command_elab certifyECTerm] def elabCertifyECTerm : CommandElab := fun stx => do
+/-- Elaborate a direct witness term. -/
+@[command_elab certifyECTerm]
+def elabCertifyECTerm : CommandElab := fun stx => do
   let `(certify_ec $name:ident from $input:term) := stx | throwUnsupportedSyntax
   certify name.getId input
 
-@[command_elab certifyECJson] def elabCertifyECJson : CommandElab := fun stx => do
+/-- Read a JSON witness from a path relative to the current Lean file. -/
+@[command_elab certifyECJson]
+def elabCertifyECJson : CommandElab := fun stx => do
   let `(certify_ec $name:ident from_json $file:str) := stx | throwUnsupportedSyntax
   let source := System.FilePath.mk (← read).fileName
   let path := source.parent.getD "." / file.getString
   let text ← IO.FS.readFile path
   certifyJson name.getId text
 
-@[command_elab certifyECJsonString] def elabCertifyECJsonString : CommandElab := fun stx => do
+/-- Elaborate an inline JSON witness. -/
+@[command_elab certifyECJsonString]
+def elabCertifyECJsonString : CommandElab := fun stx => do
   let `(certify_ec $name:ident from_json_string $text:str) := stx | throwUnsupportedSyntax
   certifyJson name.getId text.getString
 
@@ -289,18 +299,23 @@ syntax (name := certifyECJsonIndependent)
 syntax (name := certifyECJsonStringIndependent)
   "certify_ec " ident " from_json_string " str " with_independence " term : command
 
-@[command_elab certifyECTermIndependent] def elabCertifyECTermIndependent : CommandElab := fun stx => do
+/-- Elaborate a direct witness and an independence proof. -/
+@[command_elab certifyECTermIndependent]
+def elabCertifyECTermIndependent : CommandElab := fun stx => do
   let `(certify_ec $name:ident from $input:term with_independence $proof:term) := stx
     | throwUnsupportedSyntax
   certify name.getId input (some proof)
 
-@[command_elab certifyECJsonIndependent] def elabCertifyECJsonIndependent : CommandElab := fun stx => do
+/-- Elaborate a JSON file witness and an independence proof. -/
+@[command_elab certifyECJsonIndependent]
+def elabCertifyECJsonIndependent : CommandElab := fun stx => do
   let `(certify_ec $name:ident from_json $file:str with_independence $proof:term) := stx
     | throwUnsupportedSyntax
   let source := System.FilePath.mk (← read).fileName
   let path := source.parent.getD "." / file.getString
   certifyJson name.getId (← IO.FS.readFile path) (some proof)
 
+/-- Elaborate an inline JSON witness and an independence proof. -/
 @[command_elab certifyECJsonStringIndependent]
 def elabCertifyECJsonStringIndependent : CommandElab := fun stx => do
   let `(certify_ec $name:ident from_json_string $text:str with_independence $proof:term) := stx

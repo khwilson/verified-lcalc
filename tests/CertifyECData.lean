@@ -2,10 +2,11 @@ import CertifiedCurves.Data
 import CertifiedCurves.Json
 import Lean
 
+/-! # Verification and rollback tests for stored elliptic-curve data -/
+
 open Lean Elab Command VerifiedLcalc
 
 set_option maxRecDepth 100000
-set_option maxHeartbeats 10000000
 
 -- Ordinary mathematical coefficients, including split/nonsplit bad primes.
 example : (Data11.curve.baseChange ℚ).LFunction 2 = -2 :=
@@ -31,11 +32,13 @@ example : (AdditiveData.curve.baseChange ℚ).LFunction 2 = 0 :=
   AdditiveData.ap_correct 2 0 (by decide +kernel)
 
 certify_ec EmptyData from_json_string
-  "{\"schema\":\"lcalc.ec-data.v1\",\"ainvs\":[\"0\",\"0\",\"1\",\"-1\",\"0\"],\"ap\":[],\"integral_points\":[]}"
+  r#"{"schema":"lcalc.ec-data.v1","ainvs":["0","0","1","-1","0"],
+      "ap":[],"integral_points":[]}"#
 
 -- No schema, no empty sections, raw LMFDB fields and unrelated metadata.
 certify_ec RawData from_json_string
-  r#"{"ainvs":[0,0,1,-1,0],"aplist":[-2,-3,-2],"xcoord_integral_points":[-1,0,1,2,6],"lmfdb_label":"37.a1","analytic_rank":1,"unrelated":{"note":"metadata"}}"#
+  r#"{"ainvs":[0,0,1,-1,0],"aplist":[-2,-3,-2],"xcoord_integral_points":[-1,0,1,2,6],
+      "lmfdb_label":"37.a1","analytic_rank":1,"unrelated":{"note":"metadata"}}"#
 example : (RawData.curve.baseChange ℚ).LFunction 3 = -3 :=
   RawData.ap_correct 3 (-3) (by decide +kernel)
 example : RawData.curve.toAffine.Equation 6 14 :=
@@ -95,6 +98,7 @@ example : MixedJSON.certifiedRank.val = 1 := rfl
 example : (MixedJSON.curve.baseChange ℚ).LFunction 37 = -1 :=
   MixedJSON.ap_correct 37 (-1) (by decide +kernel)
 
+/-- Assert that failed arithmetic verification leaves no generated declarations. -/
 meta def expectDataRejected (name : Name) (command : Syntax) : CommandElabM Unit := do
   let savedMessages := (← get).messages
   let mut failed := false
@@ -125,7 +129,7 @@ run_cmd do
     { Data37.witness with integralCoordinates := some [(0, 1)] }))
   expectDataRejected `InvalidWeightedPoint (← `(certify_ec InvalidWeightedPoint from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"gens":[[0,0,1]],"torsion_generators":[[1,1,1]]}"#))
-  expectDataRejected `ZeroWeightedDenominator (← `(certify_ec ZeroWeightedDenominator from_json_string
+  expectDataRejected `ZeroWeight (← `(certify_ec ZeroWeight from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"gens":[[1,5,0]]}"#))
   expectDataRejected `ShortWeightedPoint (← `(certify_ec ShortWeightedPoint from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"gens":[[0,0]]}"#))
