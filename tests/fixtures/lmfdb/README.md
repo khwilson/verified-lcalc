@@ -17,3 +17,7 @@ and 288.a1 were computed with Lean's `wildData?` before being supplied to the ve
 The Lean consumer checks the finite theorems and checks the modularity dependency
 on conductor and root-number theorems. The matrix inputs contain no rank data. Its consumer also reuses the separate, already
 checked analytic-rank-one witness for 112.a2 on the same integral equation.
+
+The 112.a2 fixture also includes the point triples from the
+[LMFDB Mordell–Weil generators table](https://www.lmfdb.org/EllipticCurve/Q/112/a/2#Mordell-Weil_generators).
+The consumer checks membership in the rational curve for points from both lists.
