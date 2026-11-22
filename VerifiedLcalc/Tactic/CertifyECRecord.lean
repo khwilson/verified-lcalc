@@ -142,6 +142,8 @@ private def torsionFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   else `(none)
   let twoFactor ← if (← getEnv).contains (base ++ `torsion_structure_equiv) then
     `(some ⟨$(rootIdent (base ++ `torsion_structure_second_order)),
+      $(rootIdent (base ++ `torsion_structure_second_order_positive)),
+      $(rootIdent (base ++ `torsion_structure_first_factor_dvd_second)),
       $(rootIdent (base ++ `torsion_structure_first_generator)),
       $(rootIdent (base ++ `torsion_structure_second_generator)),
       $(rootIdent (base ++ `torsion_structure_equiv)),

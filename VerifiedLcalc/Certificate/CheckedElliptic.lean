@@ -185,6 +185,10 @@ structure CyclicTorsionFacts (curve : WeierstrassCurve ℤ) where
 structure TwoFactorTorsionFacts (curve : WeierstrassCurve ℤ) where
   /-- The order of the second supplied generator; the first factor has order two. -/
   secondOrder : ℕ
+  /-- The second generator has positive exact order, so this is not a sentinel case. -/
+  secondOrder_pos : 0 < secondOrder
+  /-- The second invariant factor is divisible by the first factor. -/
+  first_factor_dvd_second : 2 ∣ secondOrder
   /-- The order-two rational point in the supplied invariant-factor ordering. -/
   firstGenerator : (curve.baseChange ℚ).toAffine.Point
   /-- The rational point whose order is `secondOrder`. -/

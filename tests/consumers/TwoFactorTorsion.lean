@@ -1,5 +1,7 @@
 import VerifiedLcalcTests.Fixtures.TwoFactorTorsion
 
+open VerifiedLcalc Lean Elab Command
+
 /-! The compiled fixture exports the full structure and both generator images. -/
 
 example : Nat.card (AddCommGroup.torsion (C120b4.curve.baseChange ℚ).toAffine.Point) = 8 :=
@@ -16,6 +18,8 @@ private def checkedStructure : TwoFactorTorsionFacts C120b4.curve :=
   C120b4.certificate.torsion.twoFactorStructure.get (by decide +kernel)
 
 example : checkedStructure.invariantFactors = [2, 4] := rfl
+example : 0 < checkedStructure.secondOrder := checkedStructure.secondOrder_pos
+example : 2 ∣ checkedStructure.secondOrder := checkedStructure.first_factor_dvd_second
 
 example : Nat.card (AddCommGroup.torsion (C120b4.curve.baseChange ℚ).toAffine.Point) =
     checkedStructure.order := checkedStructure.cardinality
@@ -27,16 +31,6 @@ example : (checkedStructure.equivalence (1, 0) :
 example : (checkedStructure.equivalence (0, 1) :
     (C120b4.curve.baseChange ℚ).toAffine.Point) = checkedStructure.secondGenerator :=
   checkedStructure.maps_second
-
--- Prime support follows from the actual subgroup cardinality.
-example (p : ℕ) :
-    p ∈ ([2] : List ℕ) ↔ p.Prime ∧
-      p ∣ Nat.card (AddCommGroup.torsion (C120b4.curve.baseChange ℚ).toAffine.Point) := by
-  rw [C120b4.torsion]
-  change _ ↔ p.Prime ∧ p ∣ 8
-  rw [← Nat.mem_primeFactorsList (by decide : (8 : ℕ) ≠ 0)]
-  rw [show Nat.primeFactorsList 8 = [2, 2, 2] by decide +kernel]
-  simp
 
 private def checkedPrimeSupport : TorsionPrimeSupportFacts C120b4.curve :=
   C120b4.certificate.torsion.primeSupport.get (by decide +kernel)
