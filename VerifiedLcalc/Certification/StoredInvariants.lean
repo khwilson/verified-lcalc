@@ -123,6 +123,15 @@ theorem conductor_of_arithmetic_witness (e : WeierstrassCurve ℤ) (hn : e.Δ �
   exact ((arithmeticModularWitness e hn).wildLevel_eq
     (globalMinimal_of_witness e m hm) d hd).trans ((wildLevel_eq_fast e d).trans h)
 
+/-- A checked prime exponent of a natural number is its Mathlib factorization multiplicity. -/
+theorem factorization_of_prime_exponent_check (p N exponent : Nat)
+    (h : (isPrime p && padicValNat p N == exponent) = true) :
+    p.Prime ∧ N.factorization p = exponent := by
+  obtain ⟨hp, he⟩ := Bool.and_eq_true_iff.mp h
+  have hp' := (isPrime_correct p).mp hp
+  exact ⟨hp', by
+    simpa only [beq_iff_eq, Nat.padicValNat_def, Nat.multiplicity_eq_factorization hp'] using he⟩
+
 /-- Standalone Fricke/root-number identification under the authorized
 arithmetic compatibility assumption. -/
 theorem root_number_of_arithmetic_witness (e : WeierstrassCurve ℤ) (hn : e.Δ ≠ 0)
@@ -138,7 +147,8 @@ namespace VerifiedLcalc
 open EllipticCurve NumberField WeierstrassCurve
 
 /-- Finite checks use the actual integral equation and the reduced rational
-formula for j. A reduction code is meaningful only at a bad prime. -/
+formula for j. A reduction code is meaningful only at a bad prime.
+The conductor exponent is checked separately against the checked modular level. -/
 def LocalReductionClaim.check (row : LocalReductionClaim) (e : WeierstrassCurve ℤ) : Bool :=
   isPrime row.prime &&
     row.discriminantValuation.all (fun n => padicValNat row.prime e.Δ.natAbs == n) &&

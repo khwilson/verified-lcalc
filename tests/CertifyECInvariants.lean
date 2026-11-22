@@ -11,9 +11,25 @@ certify_ec Partial37 from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"jinv":[110592,37],"signD":1,"absD":37,
       "bad_primes":[37],"num_bad_primes":1,"semistable":true,"squarefree_disc":true,
       "local_invariants":[{"prime":37,"discriminant_valuation":1,
-        "j_denominator_valuation":1,"reduction_type":-1}],
+        "j_denominator_valuation":1,"reduction_type":-1,"conductor_valuation":1}],
       "conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3]}"#
 example : (Partial37.curve.baseChange ℚ).j = 110592 / 37 := Partial37.j_invariant
+
+certify_ec TrivialTorsion from
+  { equation := ⟨0, 0, 1, -1, 0⟩, torsionBound := some ⟨3, 5, 1⟩ }
+
+example : Nat.card (AddCommGroup.torsion (TrivialTorsion.curve.baseChange ℚ).toAffine.Point) = 1 :=
+  TrivialTorsion.torsion
+
+certify_ec BoundedTorsion from_json_string
+  r#"{"ainvs":[0,1,0,0,4],"torsion":2,
+      "torsion_bound":{"first_prime":3,"second_prime":5,"bound":2}}"#
+
+example : Nat.card (AddCommGroup.torsion (BoundedTorsion.curve.baseChange ℚ).toAffine.Point) ∣ 2 :=
+  BoundedTorsion.torsion_bound.1
+
+certify_ec UncheckedTorsion from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"torsion":11}"#
 
 certify_ec JZero from_json_string
   r#"{"ainvs":[0,0,0,0,1],"jinv":"0","signD":-1,"discriminant":-432}"#
@@ -51,13 +67,27 @@ certify_ec JSON37 from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"jinv":["110592","37"],"binvs":[0,-2,1,-1],"cinvs":[48,-216],
       "absD":37,"bad_primes":[37],"num_bad_primes":1,"semistable":true,"squarefree_disc":true,
       "local_invariants":[{"prime":37,"discriminant_valuation":1,
-        "j_denominator_valuation":1,"reduction_type":-1}],
+        "j_denominator_valuation":1,"reduction_type":-1,"conductor_valuation":1}],
       "conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3,2,-2,6,-1,0],
       "minimality":[37],"local_data":{"at_two":null,"at_three":null}}"#
 example : JSON37.curve.Δ.natAbs = 37 := JSON37.minimal_discriminant_abs.2
 
 example : WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
     (JSON37.curve.baseChange ℚ) := JSON37.semistable.mpr rfl
+
+example : (Modularity.modularWitness JSON37.curve JSON37.nonsingular).level.factorization 37 = 1 :=
+  (JSON37.conductor_valuation (37, 1) (by decide +kernel)).2
+
+certify_ec DirectConductorValuations from
+  { Invariants37.witness with
+    localInvariants := some
+      [{ prime := 37, conductorValuation := some 1 },
+       { prime := 2, conductorValuation := some 0 }] }
+
+example :
+    (Modularity.modularWitness DirectConductorValuations.curve
+      DirectConductorValuations.nonsingular).level.factorization 2 = 0 :=
+  (DirectConductorValuations.conductor_valuation (2, 0) (by decide +kernel)).2
 
 certify_ec AdditiveLocal from_json_string
   r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],"semistable":false,
@@ -69,12 +99,13 @@ example : ¬ WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
   have := AdditiveLocal.semistable.mp h
   contradiction
 
-certify_ec TrivialTorsion from
-  { equation := ⟨0, 0, 1, -1, 0⟩, torsion := some 1, torsionStructure := some [],
+certify_ec TrivialCyclicStructure from
+  { equation := ⟨0, 0, 1, -1, 0⟩, torsionStructure := some [],
     torsionBound := some ⟨3, 5, 1⟩ }
-example :
-    Nat.card (AddCommGroup.torsion (TrivialTorsion.curve.baseChange ℚ).toAffine.Point) = 1 :=
-  TrivialTorsion.torsion
+example : Nonempty (ZMod 1 ≃+ AddCommGroup.torsion
+    (TrivialCyclicStructure.curve.baseChange ℚ).toAffine.Point) := by
+  obtain ⟨equiv, -⟩ := TrivialCyclicStructure.torsion_structure.2
+  exact ⟨equiv⟩
 
 certify_ec AssertedTorsionOnly from_json_string
   r#"{"ainvs":[0,1,0,0,4],"torsion":2,"torsion_structure":[2]}"#
@@ -114,16 +145,28 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
   for suffix in [`witness, `curve, `nonsingular, `j_invariant, `discriminant,
       `claimed_j_invariant, `claimed_j_integral, `j_integral, `j_integral_input_eq,
       `j_integral_value_valid, `claimed_discriminant, `global_minimal,
+      `torsion, `torsion_bound, `claimed_torsion, `claimed_torsion_bound,
+      `torsion_input_eq, `torsion_bound_input_eq, `torsion_bound_value_valid,
+      `torsion_claim_consistent,
       `claimed_potential_good_reduction, `potential_good_reduction,
       `potential_good_reduction_input_eq, `potential_good_reduction_value_valid,
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
       `semistable, `squarefree_discriminant, `local_invariants, `claimed_semistable,
-      `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_torsion,
-      `claimed_torsion_structure, `torsion_bound, `torsion, `torsion_structure] do
+      `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_conductor_valuations,
+      `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation,
+      `claimed_torsion_structure, `torsion_structure] do
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `WrongTorsion (← `(certify_ec WrongTorsion from
+    { TrivialTorsion.witness with torsion := some 2 }))
+  invariantRejected `InconsistentTorsion (← `(certify_ec InconsistentTorsion from
+    { BoundedTorsion.witness with torsion := some 3 }))
+  invariantRejected `WrongTorsionBound (← `(certify_ec WrongTorsionBound from
+    { TrivialTorsion.witness with torsionBound := some ⟨3, 5, 2⟩ }))
+  invariantRejected `TorsionAtBadPrime (← `(certify_ec TorsionAtBadPrime from
+    { TrivialTorsion.witness with torsionBound := some ⟨3, 37, 1⟩ }))
   invariantRejected `WrongJ (← `(certify_ec WrongJ from
     { Invariants37.witness with jInvariant := some 0 }))
   invariantRejected `WrongIntegralJ (← `(certify_ec WrongIntegralJ from_json_string
@@ -138,7 +181,7 @@ run_cmd do
     { equation := ⟨1, -1, -1, 0, 0⟩, torsionGeneratorCoordinates := some [(0, 0)],
       torsionGeneratorOrders := some [4], torsion := some 4, torsionStructure := some [2, 2],
       torsionBound := some ⟨3, 5, 4⟩ }))
-  invariantRejected `WrongTorsionBound (← `(certify_ec WrongTorsionBound from
+  invariantRejected `TorsionAtTwo (← `(certify_ec TorsionAtTwo from
     { TrivialTorsion.witness with torsionBound := some ⟨2, 5, 1⟩ }))
   invariantRejected `WrongDiscriminant (← `(certify_ec WrongDiscriminant from
     { Invariants37.witness with discriminant := some (-37) }))
@@ -172,8 +215,14 @@ run_cmd do
   invariantRejected `CompositeLocalPrime (← `(certify_ec CompositeLocalPrime from
     { Invariants37.witness with localInvariants := some [
         { prime := 4, discriminantValuation := some 0 }] }))
+  invariantRejected `BadConductorValuation (← `(certify_ec BadConductorValuation from
+    { DirectConductorValuations.witness with
+      localInvariants := some [{ prime := 37, conductorValuation := some 50000 }] }))
+  invariantRejected `CompositeConductorPrime (← `(certify_ec CompositeConductorPrime from
+    { DirectConductorValuations.witness with
+      localInvariants := some [{ prime := 4, conductorValuation := some 0 }] }))
   invariantRejected `WrongConductor (← `(certify_ec WrongConductor from
-    { Invariants37.witness with conductor := some 1 }))
+    { DirectConductorValuations.witness with conductor := some 1 }))
   invariantRejected `WrongRootNumber (← `(certify_ec WrongRootNumber from
     { Invariants37.witness with rootNumber := some 1 }))
   invariantRejected `WrongAN (← `(certify_ec WrongAN from
@@ -185,9 +234,12 @@ run_cmd do
       minimalDiscriminantAbs := some 151552 }))
   for suffix in [`minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
-      `semistable, `squarefree_discriminant, `local_invariants] do
+      `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation] do
     if (← getEnv).contains (`Partial37 ++ suffix) then
       throwError "Missing arithmetic evidence generated an invariant claim"
+  for name in [`BoundedTorsion, `UncheckedTorsion] do
+    if (← getEnv).contains (name ++ `torsion) then
+      throwError "Unproved torsion order generated a theorem"
   if (← getEnv).contains `NoPotentialGood.j_integral then
     throwError "An omitted j_integral claim generated a theorem"
   if (← getEnv).contains `IntegralJ.potential_good_reduction then
@@ -201,7 +253,8 @@ run_cmd do
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
-  for theoremName in [`IntegralJ.j_integral, `NonintegralJ.j_integral,
+  for theoremName in [`TrivialTorsion.torsion, `BoundedTorsion.torsion_bound,
+      `IntegralJ.j_integral, `NonintegralJ.j_integral,
       `PotentialGood.potential_good_reduction, `NoPotentialGood.potential_good_reduction] do
     for ax in ← liftTermElabM <| Lean.collectAxioms theoremName do
       unless standard.contains ax do throwError "Unexpected j-invariant check axiom: {ax}"
@@ -225,6 +278,15 @@ run_cmd do
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
+  for name in [`JSON37, `DirectConductorValuations] do
+    let axioms ← liftTermElabM <| Lean.collectAxioms (name ++ `conductor_valuation)
+    let modularity := ``VerifiedLcalc.Assumptions.ellipticModularity
+    unless axioms.contains modularity do throwError "Conductor exponent lost its assumption"
+    for ax in axioms do
+      unless standard.contains ax || ax == modularity do
+        throwError "Unexpected conductor exponent axiom: {ax}"
+  if (← getEnv).contains `SplitLocal.conductor_valuation then
+    throwError "A row without a conductor exponent generated an exponent theorem"
   let additiveFields := [`semistable, `squarefree_discriminant, `local_invariants]
   for (name, fields) in [(`AdditiveLocal, additiveFields), (`SplitLocal, [`local_invariants])] do
     for field in fields do
@@ -239,6 +301,17 @@ run_cmd do
   match CurveDataJson.parse r#"{"ainvs":[0,0,1,-1,0],"j_integral":"false"}"# with
   | .error _ => pure ()
   | .ok _ => throwError "Non-boolean j_integral accepted"
+  for v in ["-1", "1.5", "true"] do
+    let raw := "{\"ainvs\":[0,0,1,-1,0],\"prime\":37,\"conductor_valuation\":" ++ v ++ "}"
+    match CurveDataJson.parse raw with
+    | .error _ => pure ()
+    | .ok _ => throwError "Malformed conductor exponent accepted"
+  let row := r#"{"prime":37,"conductor_valuation":1}"#
+  let oversized := String.intercalate "," (List.replicate 257 row)
+  let raw := "{\"ainvs\":[0,0,1,-1,0],\"local_invariants\":[" ++ oversized ++ "]}"
+  match CurveDataJson.parse raw with
+  | .error _ => pure ()
+  | .ok _ => throwError "Oversized conductor valuation row list accepted"
   match CurveDataJson.parse r#"{"ainvs":[0,0,1,-1,0],"potential_good_reduction":0}"# with
   | .error _ => pure ()
   | .ok _ => throwError "Non-boolean potential_good_reduction accepted"

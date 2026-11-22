@@ -11,7 +11,8 @@ valuations. The fixtures include prime and composite conductors, both discrimina
 signs, and j-invariants 0 and 1728. The 197.a1 and 288.a1 cases explicitly request
 nonintegral and integral j-invariant certificates, respectively.
 
-The conductor is copied from the snapshot. The global root number is the negative product of its
+The conductor is copied from the snapshot. For 112.a2 the local row also requests the
+conductor exponent 4 stored at the prime 2. The global root number is the negative product of its
 finite local root numbers. The 2-adic transcript and first eight coefficients for 112.a2 come
 from [the existing witness](../../../data/witnesses/112a2.json). The wild transcripts for 243.a1
 and 288.a1 were computed with Lean's `wildData?` before being supplied to the verifier.

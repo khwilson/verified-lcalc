@@ -106,6 +106,11 @@ example :
       (1 : ℂ) = 1 :=
   Curve112.analytic_rank
 
+example :
+    (Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level.factorization 2 =
+      4 :=
+  (LMFDB.C112a2.conductor_valuation (2, 4) (by decide +kernel)).2
+
 example : addOrderOf (LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩) = 2 :=
   LMFDB.C112a2.torsion_generators.exact_order _
 
@@ -139,6 +144,8 @@ run_cmd do
   check `LMFDB.C112a2 `dirichlet_coefficients false
   check `LMFDB.C197a1 `j_integral false
   check `LMFDB.C288a1 `j_integral false
+  check `LMFDB.C112a2 `conductor_valuation_value_valid false
+  check `LMFDB.C112a2 `conductor_valuation true
   check `LMFDB.C197a1 `potential_good_reduction false
   check `LMFDB.C288a1 `potential_good_reduction false
   check `Curve112 `analytic_rank true

@@ -20,10 +20,22 @@ structure LocalReductionClaim where
   prime : Nat
   /-- Exponent of this prime in the absolute minimal discriminant. -/
   discriminantValuation : Option Nat := none
+  /-- Exponent of this prime in the checked modular conductor. -/
+  conductorValuation : Option Nat := none
   /-- Exponent of this prime in the reduced denominator of the rational j-invariant. -/
   jDenominatorValuation : Option Nat := none
   /-- Signed Frobenius trace code for bad reduction. -/
   reductionType : Option Int := none
+  deriving Repr, DecidableEq
+
+/-- Two proposed odd primes of good reduction and the gcd of their point counts. -/
+structure TorsionBoundWitness where
+  /-- First proposed prime of good reduction. -/
+  firstPrime : Nat
+  /-- Second proposed prime of good reduction. -/
+  secondPrime : Nat
+  /-- Claimed positive gcd of the two reduced point counts. -/
+  bound : Nat
   deriving Repr, DecidableEq
 
 /-- The single input record for elliptic-curve certification. `none` means that
@@ -66,6 +78,10 @@ structure EllipticWitness where
   squarefreeDiscriminant : Option Bool := none
   /-- Local reduction claims at the supplied primes. -/
   localInvariants : Option (List LocalReductionClaim) := none
+  /-- Reduction evidence bounding the order of the full rational torsion subgroup. -/
+  torsionBound : Option TorsionBoundWitness := none
+  /-- Claimed exact order of the full rational torsion subgroup. -/
+  torsion : Option Nat := none
   /-- Claims for individual prime-indexed L-function coefficients. -/
   primeCoefficients : Option (List (Nat × Int)) := none
   /-- Claimed integral point coordinates on the supplied equation. -/
@@ -93,6 +109,12 @@ structure EllipticWitness where
   deriving Repr, DecidableEq
 
 namespace EllipticWitness
+
+/-- The requested conductor exponents, keyed by their rational primes. -/
+def conductorValuations (w : EllipticWitness) : Option (List (Nat × Nat)) :=
+  let claims := (w.localInvariants.getD []).filterMap fun row =>
+    row.conductorValuation.map fun exponent => (row.prime, exponent)
+  if claims.isEmpty then none else some claims
 
 /-- Convenience constructor for a complete rank-zero candidate. -/
 def central (r : CentralResult) (m : MinimalityWitness) (d : WildData) : EllipticWitness :=

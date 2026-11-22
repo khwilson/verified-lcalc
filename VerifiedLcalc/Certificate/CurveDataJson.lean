@@ -165,17 +165,18 @@ def weightedCoordinates (j : Json) : Except String (List (Rat × Rat)) := do
 
 /-- Optional data fields that identify a top-level local reduction row. -/
 def localReductionFields : List String :=
-  ["discriminant_valuation", "j_denominator_valuation", "reduction_type"]
+  ["discriminant_valuation", "j_denominator_valuation", "reduction_type", "conductor_valuation"]
 
 /-- Decode the supported exact fields from one local reduction row. -/
 def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
   let prime ← nonnegativeInteger (← j.getObjVal? "prime")
   let discriminantValuation ← optionalValue j "discriminant_valuation" nonnegativeInteger
+  let conductorValuation ← optionalValue j "conductor_valuation" nonnegativeInteger
   let jDenominatorValuation ← optionalValue j "j_denominator_valuation" nonnegativeInteger
   let reductionType ← optionalValue j "reduction_type" integer
   if let some code := reductionType then
     unless code == 0 || code == 1 || code == -1 do throw "Unsupported local reduction type"
-  return { prime, discriminantValuation, jDenominatorValuation, reductionType }
+  return { prime, discriminantValuation, conductorValuation, jDenominatorValuation, reductionType }
 
 /-- Decode a local-row list and any top-level local claim. -/
 def localReductionClaims (j : Json) :
@@ -269,6 +270,14 @@ def decode (j : Json) : Except String EllipticWitness := do
   let semistable ← optionalValue j "semistable" Json.getBool?
   let squarefreeDiscriminant ← optionalValue j "squarefree_disc" Json.getBool?
   let localInvariants ← localReductionClaims j
+  let torsion ← optionalValue j "torsion" nonnegativeInteger
+  let torsionBound ← optionalValue j "torsion_bound" fun value => do
+    let firstPrime ← nonnegativeInteger (← value.getObjVal? "first_prime")
+    let secondPrime ← nonnegativeInteger (← value.getObjVal? "second_prime")
+    unless firstPrime ≤ 10000 && secondPrime ≤ 10000 do
+      throw "Torsion-bound prime outside supported profile"
+    let bound ← nonnegativeInteger (← value.getObjVal? "bound")
+    return ({ firstPrime, secondPrime, bound } : TorsionBoundWitness)
   return { base with
     equation
     bInvariants
@@ -287,6 +296,8 @@ def decode (j : Json) : Except String EllipticWitness := do
     semistable
     squarefreeDiscriminant
     localInvariants
+    torsionBound
+    torsion
     primeCoefficients := primeData
     integralCoordinates := pointData
     generatorCoordinates

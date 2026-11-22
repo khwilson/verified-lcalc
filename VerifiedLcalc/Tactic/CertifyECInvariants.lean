@@ -1,6 +1,7 @@
 module
 
 public import VerifiedLcalc.Certification.StoredInvariants
+public import VerifiedLcalc.EllipticCurve.TorsionBound
 public import VerifiedLcalc.EllipticCurve.TorsionStructure
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public meta import Lean
@@ -64,6 +65,59 @@ private def certifyReductionInvariants (base : Name) (curve m hm : Ident)
             (List.all_eq_true.mp $hv row hrow)))
     else
       logInfo m!"Unverified {base} local_invariants: supply minimality evidence"
+
+private def certifyConductorValuations (base : Name) (curve hn : Ident)
+    (checkedConductor : Option Ident) : CommandElabM Unit := do
+  let some claims ← bindStored base `conductorValuations `conductor_valuations
+      (← `(List (Nat × Nat))) | return
+  let some n := checkedConductor |
+    logInfo m!"Unverified {base} conductor_valuation: supply a checked conductor"
+  let hv := rootIdent (base ++ `conductor_valuation_value_valid)
+  let hN := rootIdent (base ++ `conductor)
+  checked (base ++ `conductor_valuation_value_valid)
+    (← `(($claims).all (fun row => isPrime row.1 && padicValNat row.1 $n == row.2) = true))
+    (← `(by decide +kernel))
+  checked (base ++ `conductor_valuation)
+    (← `(∀ row ∈ $claims, row.1.Prime ∧
+      (Modularity.modularWitness $curve $hn).level.factorization row.1 = row.2))
+    (← `(by
+      intro row hrow
+      rw [$hN:term]
+      exact Certification.factorization_of_prime_exponent_check _ _ _
+        (List.all_eq_true.mp $hv row hrow))) true
+
+private def certifyTorsionInvariants (base : Name) (curve : Ident) : CommandElabM Unit := do
+  let evidence ← bindStored base `torsionBound `torsion_bound (← `(TorsionBoundWitness))
+  let claim ← bindStored base `torsion `torsion (← `(Nat))
+  let some evidence := evidence |
+    if claim.isSome then logInfo m!"Unverified {base} torsion: supply torsion_bound evidence"
+    return
+  let hcheck := rootIdent (base ++ `torsion_bound_value_valid)
+  checked (base ++ `torsion_bound_value_valid)
+    (← `(checkTorsionBound $curve ($evidence).firstPrime ($evidence).secondPrime
+      ($evidence).bound = true)) (← `(by decide +kernel))
+  let htorsion ← `(Nat.card (AddCommGroup.torsion (($curve).baseChange ℚ).toAffine.Point))
+  let hbound := rootIdent (base ++ `torsion_bound)
+  checked (base ++ `torsion_bound)
+    (← `($htorsion ∣ ($evidence).bound ∧ 0 < ($evidence).bound))
+    (← `(checkTorsionBound_correct $curve _ _ _ $hcheck))
+  if let some value := claim then
+    checked (base ++ `torsion_claim_consistent)
+      (← `(0 < $value ∧ $value ∣ ($evidence).bound)) (← `(by decide +kernel))
+  let bound := mkApp (mkConst ``TorsionBoundWitness.bound)
+    (mkConst (base ++ `claimed_torsion_bound))
+  let some n ← (liftTermElabM do (evalNat (← whnf bound)).run)
+    | throwError "Expected a closed rational torsion bound"
+  if n == 1 then
+    let value ← match claim with
+      | some value => `($value:ident)
+      | none => `(1)
+    checked (base ++ `torsion)
+      (← `($htorsion = $value))
+      (← `(by
+        have h₁ : ($evidence).bound = 1 := by decide +kernel
+        have hdiv : $htorsion ∣ 1 := h₁ ▸ ($hbound).1
+        exact (Nat.dvd_one.mp hdiv).trans (by decide +kernel)))
 
 /-- Recover cyclic torsion when the verified divisor matches an exact point order. -/
 private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Unit := do
@@ -130,6 +184,8 @@ private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Un
 def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
   let hn := rootIdent (base ++ `nonsingular)
+  certifyTorsionInvariants base curve
+  certifyCyclicTorsion base curve
   if let some b ← bindStored base `bInvariants `b_invariants (← `(Int × Int × Int × Int)) then
     checked (base ++ `b_invariants)
       (← `((($curve).b₂, ($curve).b₄, ($curve).b₆, ($curve).b₈) = $b))
@@ -224,16 +280,18 @@ def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
         (← `(Certification.coefficients_of_minimal_witness $curve $hn $m $hm $values $hv))
     else
       logInfo m!"Unverified {base} anlist: supply minimality evidence"
-  if let some n ← bindStored base `conductor `conductor (← `(Nat)) then
-    if hasMinimality && hasLocalData then
-      let hv := rootIdent (base ++ `conductor_claim_valid)
-      checked (base ++ `conductor_claim_valid) (← `(wildLevelFast $curve $d = $n))
-        (← `(by decide +kernel))
-      checked (base ++ `conductor)
-        (← `((Modularity.modularWitness $curve $hn).level = $n))
-        (← `(Certification.conductor_of_arithmetic_witness $curve $hn $m $hm $d $hd $n $hv)) true
-    else
-      logInfo m!"Unverified {base} conductor: supply minimality and localData evidence"
+  let conductor ← bindStored base `conductor `conductor (← `(Nat))
+  let checkedConductor := if hasMinimality && hasLocalData then conductor else none
+  if let some n := checkedConductor then
+    let hv := rootIdent (base ++ `conductor_claim_valid)
+    checked (base ++ `conductor_claim_valid) (← `(wildLevelFast $curve $d = $n))
+      (← `(by decide +kernel))
+    checked (base ++ `conductor)
+      (← `((Modularity.modularWitness $curve $hn).level = $n))
+      (← `(Certification.conductor_of_arithmetic_witness $curve $hn $m $hm $d $hd $n $hv)) true
+  else if conductor.isSome then
+    logInfo m!"Unverified {base} conductor: supply minimality and localData evidence"
+  certifyConductorValuations base curve hn checkedConductor
   if let some w ← bindStored base `rootNumber `root_number (← `(Int)) then
     if hasMinimality && hasLocalData then
       let hv := rootIdent (base ++ `root_number_claim_valid)
