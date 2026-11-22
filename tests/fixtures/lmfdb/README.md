@@ -31,3 +31,8 @@ The fixture also requests exact additive order 2 for the supplied torsion point.
 The counts at the supplied good primes 3 and 5 verify a divisor of 2, which
 proves the stored order and cyclic structure.
 The consumer checks membership in the rational curve for points from both lists.
+
+The 112.a2 fixture copies the published abc-quality decimal from the
+[LMFDB curve page](https://www.lmfdb.org/EllipticCurve/Q/112/a/2#invariants).
+Its separate error witness supplies a factorization of the reduced abc product
+and asks Lean to prove an absolute error bound of `10⁻¹⁵`.

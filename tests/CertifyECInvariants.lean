@@ -16,6 +16,21 @@ certify_ec Partial37 from_json_string
       "conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3]}"#
 example : (Partial37.curve.baseChange ℚ).j = 110592 / 37 := Partial37.j_invariant
 
+certify_ec DirectAbcQuality from
+  { equation := ⟨0, 1, 0, 0, 4⟩,
+    abcQuality := some {
+      reported := 1
+      error := 1 / 10
+      factors := [2, 2, 2, 2, 3, 3, 3, 5, 5, 7, 11, 11] } }
+example :
+    |(DirectAbcQuality.curve.baseChange ℚ).abcQuality DirectAbcQuality.abc_quality_defined -
+      1| ≤ (1 / 10 : ℝ) := by
+  convert DirectAbcQuality.abc_quality using 1 <;> norm_num [DirectAbcQuality.claimed_abc_quality]
+
+certify_ec RawAbcMetadata from_json_string
+  r#"{"ainvs":[0,1,0,0,4],"abc_quality":1.0348177494302118}"#
+example : RawAbcMetadata.witness.abcQuality = none := rfl
+
 certify_ec TrivialTorsion from
   { equation := ⟨0, 0, 1, -1, 0⟩, torsionBound := some ⟨3, 5, 1⟩ }
 
@@ -220,6 +235,8 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `proofs, `discriminant_witness, `checked_facts, `certificate,
       `claimed_j_invariant, `claimed_j_integral, `j_integral, `j_integral_input_eq,
       `j_integral_value_valid, `claimed_discriminant, `global_minimal,
+      `claimed_abc_quality, `abc_quality_input_eq, `abc_quality_valid, `abc_quality_defined,
+      `abc_quality,
       `torsion, `torsion_bound, `claimed_torsion, `claimed_torsion_bound,
       `torsion_input_eq, `torsion_bound_input_eq, `torsion_bound_value_valid,
       `torsion_claim_consistent,
@@ -257,6 +274,22 @@ run_cmd do
         localInvariants := some [{ prime := 11, kodairaSymbol := some (-5) }] }))
   invariantRejected `WrongMultiplicativeIndex (← `(certify_ec WrongMultiplicativeIndex from
     { SplitLocal.witness with localInvariants := some [{ prime := 11, kodairaSymbol := some 5 }] }))
+  invariantRejected `WrongAbcDecimal (← `(certify_ec WrongAbcDecimal from_json_string
+    r#"{"ainvs":[0,1,0,0,4],"abc_quality":1.05,
+        "abc_quality_evidence":{"error":[1,1000000],"factors":[2,2,2,2,3,3,3,5,5,7,11,11]}}"#))
+  invariantRejected `MissingAbcDecimal (← `(certify_ec MissingAbcDecimal from_json_string
+    r#"{"ainvs":[0,1,0,0,4],"abc_quality_evidence":{"error":1,"factors":[]}}"#))
+  invariantRejected `WrongAbcFactors (← `(certify_ec WrongAbcFactors from
+    { DirectAbcQuality.witness with
+      abcQuality := some { DirectAbcQuality.claimed_abc_quality with
+        factors := [2, 2, 2, 2, 3, 3, 3, 5, 5, 7, 121] } }))
+  invariantRejected `NegativeAbcError (← `(certify_ec NegativeAbcError from
+    { DirectAbcQuality.witness with
+      abcQuality := some { DirectAbcQuality.claimed_abc_quality with error := -1 } }))
+  invariantRejected `UndefinedAbcZero (← `(certify_ec UndefinedAbcZero from
+    { JZero.witness with abcQuality := some DirectAbcQuality.claimed_abc_quality }))
+  invariantRejected `UndefinedAbc1728 (← `(certify_ec UndefinedAbc1728 from
+    { J1728.witness with abcQuality := some DirectAbcQuality.claimed_abc_quality }))
   invariantRejected `ConflictingBProof (← `(certify_ec ConflictingBProof from
     { equation := Invariants37.curve, bInvariants := some (0, 0, 0, 0) }
     with_proofs Invariants37.checked_facts))
@@ -454,7 +487,7 @@ run_cmd do
 -- an input prerequisite, rather than a direct certified conclusion.
 run_cmd do
   let equation := #[`equation, `bInvariants, `cInvariants, `discriminant]
-  let rational := #[`discriminantSign, `jInvariant, `jIntegral]
+  let rational := #[`discriminantSign, `jInvariant, `jIntegral, `abcQuality]
   let algebraic := #[`integralCoordinates, `integralFiberRoots, `generatorCoordinates,
     `torsionGeneratorCoordinates,
     `infiniteOrderPoints, `independentPoints]
@@ -474,6 +507,7 @@ run_cmd do
   cover ``EllipticWitness (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion)
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
     `jDenominatorValuation, `reductionType, `kodairaSymbol]
+  cover ``AbcQualityClaim #[`reported, `error, `factors]
   cover ``TorsionBoundWitness #[`firstPrime, `secondPrime, `bound]
 
 example : EmptyProofs.certificate.equationFacts.discriminant.isNone = true := rfl
@@ -496,3 +530,5 @@ example : ((KodairaAdditive.certificate.arithmetic.minimalModel.get
 example : LooseTorsionBound.certificate.torsion.cyclicStructure.isNone = true := rfl
 example : TrivialCyclicStructure.certificate.torsion.cyclicStructure.map
     CyclicTorsionFacts.factors = some [] := rfl
+
+example : RawAbcMetadata.certificate.rational.abcQuality.isNone = true := rfl

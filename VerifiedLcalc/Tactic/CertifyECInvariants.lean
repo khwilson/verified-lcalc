@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certification.StoredInvariants
+public import VerifiedLcalc.Certification.AbcQuality
 public import VerifiedLcalc.EllipticCurve.TorsionBound
 public import VerifiedLcalc.EllipticCurve.TorsionStructure
 public import VerifiedLcalc.Tactic.CertifyECCommon
@@ -101,6 +101,21 @@ private def certifyConductorValuations (base : Name) (curve hn : Ident)
       rw [$hN:term]
       exact Certification.factorization_of_prime_exponent_check _ _ _
         (List.all_eq_true.mp $hv row hrow))) true
+
+/-- Certify the requested error on the actual abc quality of the curve. -/
+private def certifyAbcQuality (base : Name) (curve : Ident) : CommandElabM Unit := do
+  let some claim ← bindStored base `abcQuality `abc_quality (← `(AbcQualityClaim)) | return
+  let valid := rootIdent (base ++ `abc_quality_valid)
+  checked (base ++ `abc_quality_valid)
+    (← `(Certification.abcQualityValid $curve $claim = true)) (← `(by decide +kernel))
+  let defined := rootIdent (base ++ `abc_quality_defined)
+  checked (base ++ `abc_quality_defined)
+    (← `((($curve).baseChange ℚ).j ≠ 0 ∧ (($curve).baseChange ℚ).j ≠ 1728))
+    (← `(Certification.abc_quality_defined_of_check $curve $claim $valid))
+  checked (base ++ `abc_quality)
+    (← `(|(($curve).baseChange ℚ).abcQuality $defined - (($claim).reported : ℝ)| ≤
+      (($claim).error : ℝ)))
+    (← `(Certification.abc_quality_of_check $curve $claim $valid $defined))
 
 private def certifyTorsionInvariants (base : Name) (curve : Ident) : CommandElabM Unit := do
   let evidence ← bindStored base `torsionBound `torsion_bound (← `(TorsionBoundWitness))
@@ -273,6 +288,7 @@ def certifyStoredInvariants (base : Name)
     (proofs : Option (TSyntax `term) := none) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
   let hn := rootIdent (base ++ `nonsingular)
+  certifyAbcQuality base curve
   certifyTorsionInvariants base curve
   certifyCyclicTorsion base curve
   certifyProofFacts base curve proofs
