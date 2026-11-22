@@ -42,6 +42,10 @@ structure EllipticWitness where
   discriminant : Option Int := none
   /-- Claimed exact rational j-invariant. -/
   jInvariant : Option Rat := none
+  /-- Whether the rational j-invariant belongs to the image of ℤ. -/
+  jIntegral : Option Bool := none
+  /-- Whether the curve has potential good reduction at every rational prime. -/
+  potentialGoodReduction : Option Bool := none
   /-- Claimed sign of the discriminant. -/
   discriminantSign : Option Int := none
   /-- LMFDB absD; certification needs a checked globally minimal model. -/

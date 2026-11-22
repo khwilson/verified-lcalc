@@ -85,6 +85,22 @@ def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
       (← `((($curve).c₄ : Rat) ^ 3 / (($curve).Δ : Rat) = $j)) (← `(by decide +kernel))
     checked (base ++ `j_invariant) (← `((($curve).baseChange ℚ).j = $j))
       (← `(Certification.j_invariant_of_exact_formula $curve $j $hv))
+  if let some integral ← bindStored base `jIntegral `j_integral (← `(Bool)) then
+    let hv := rootIdent (base ++ `j_integral_value_valid)
+    checked (base ++ `j_integral_value_valid)
+      (← `(Certification.jDenominatorIsOne $curve = $integral))
+      (← `(by decide +kernel))
+    checked (base ++ `j_integral)
+      (← `(IsLocalization.IsInteger ℤ (($curve).baseChange ℚ).j ↔ $integral = true))
+      (← `(Certification.j_integral_iff_of_check $curve $integral $hv))
+  if let some claim ← bindStored base `potentialGoodReduction `potential_good_reduction
+      (← `(Bool)) then
+    let hv := rootIdent (base ++ `potential_good_reduction_value_valid)
+    checked (base ++ `potential_good_reduction_value_valid)
+      (← `(Certification.jDenominatorIsOne $curve = $claim)) (← `(by decide +kernel))
+    checked (base ++ `potential_good_reduction)
+      (← `(HasEverywherePotentialGoodReduction (($curve).baseChange ℚ) ↔ $claim = true))
+      (← `(Certification.potential_good_reduction_iff_of_check $curve $claim $hv))
   let hasMinimality := (← optionalInput (base ++ `witness) `minimality).isSome
   let hasLocalData := (← optionalInput (base ++ `witness) `localData).isSome
   let m := rootIdent (base ++ `minimality)
