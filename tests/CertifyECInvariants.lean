@@ -26,8 +26,8 @@ certify_ec NonintegralJ from_json_string
 example : ¬ IsLocalization.IsInteger ℤ (NonintegralJ.curve.baseChange ℚ).j :=
   fun h => Bool.false_ne_true (NonintegralJ.j_integral.mp h)
 
-certify_ec PotentialGood from { equation := ⟨0, 0, 0, 0, 1⟩,
-  potentialGoodReduction := some true }
+certify_ec PotentialGood from
+  { equation := ⟨0, 0, 0, 0, 1⟩, potentialGoodReduction := some true }
 example : EllipticCurve.HasEverywherePotentialGoodReduction (PotentialGood.curve.baseChange ℚ) :=
   PotentialGood.potential_good_reduction.mpr rfl
 
