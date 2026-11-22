@@ -90,9 +90,18 @@ private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Un
     return
   let trivial ← liftTermElabM <| Meta.isDefEq (mkConst nName) (mkNatLit 1)
   let pointOrder := base ++ `torsion_generators.exact_order
-  unless trivial || (← getEnv).contains pointOrder do
-    logInfo m!"Unverified {base} cyclic torsion: supply an exact order for the first torsion point"
-    return
+  unless trivial do
+    unless (← getEnv).contains pointOrder do
+      logInfo m!"Unverified {base} cyclic torsion: supply an exact order for the first torsion point"
+      return
+    let orders := rootIdent (base ++ `torsion_generators.orders)
+    let hasGeneratorOrder ← liftTermElabM do
+      let observed ← Lean.Elab.Term.elabTerm (← `(($orders).head?)) none
+      let expected ← Lean.Elab.Term.elabTerm (← `(some $n)) none
+      Meta.isDefEq observed expected
+    unless hasGeneratorOrder do
+      logInfo m!"Unverified {base} cyclic torsion: first point order must match the claimed order"
+      return
   if let some factors := factors then
     checked (base ++ `torsion_structure_claim_valid)
       (← `($factors = if $n = 1 then [] else [$n])) (← `(by decide +kernel))
