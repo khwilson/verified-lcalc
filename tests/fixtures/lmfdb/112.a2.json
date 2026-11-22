@@ -1,6 +1,11 @@
 {
   "ainvs": [0, 1, 0, 0, 4],
   "jinv": [-4, 7],
+  "abc_quality": 1.0348177494302118,
+  "abc_quality_evidence": {
+    "error": [1, 1000000000000000],
+    "factors": [2, 2, 2, 2, 3, 3, 3, 5, 5, 7, 11, 11]
+  },
   "signD": -1,
   "absD": 7168,
   "bad_primes": [2, 7],

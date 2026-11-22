@@ -131,6 +131,9 @@ count, and an exact cardinality when determined.
 The `torsion.cyclicStructure` projection gives the checked factors, order,
 and rational generator together with a generator-preserving equivalence.
 
+The `rational.abcQuality` projection holds the exact reported value and error,
+the validated factorization, and the certified bound on the actual quality.
+
 For example, the following reads an invariant from a compiled certificate
 using its exact proof. The default handles a missing value using the equation.
 
