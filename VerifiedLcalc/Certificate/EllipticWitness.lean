@@ -20,6 +20,8 @@ structure LocalReductionClaim where
   prime : Nat
   /-- Exponent of this prime in the absolute minimal discriminant. -/
   discriminantValuation : Option Nat := none
+  /-- Exponent of this prime in the checked modular conductor. -/
+  conductorValuation : Option Nat := none
   /-- Exponent of this prime in the reduced denominator of the rational j-invariant. -/
   jDenominatorValuation : Option Nat := none
   /-- Signed Frobenius trace code for bad reduction. -/
@@ -91,6 +93,12 @@ structure EllipticWitness where
   deriving Repr, DecidableEq
 
 namespace EllipticWitness
+
+/-- The requested conductor exponents, keyed by their rational primes. -/
+def conductorValuations (w : EllipticWitness) : Option (List (Nat × Nat)) :=
+  let claims := (w.localInvariants.getD []).filterMap fun row =>
+    row.conductorValuation.map fun exponent => (row.prime, exponent)
+  if claims.isEmpty then none else some claims
 
 /-- Convenience constructor for a complete rank-zero candidate. -/
 def central (r : CentralResult) (m : MinimalityWitness) (d : WildData) : EllipticWitness :=

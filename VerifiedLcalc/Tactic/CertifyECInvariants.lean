@@ -64,6 +64,26 @@ private def certifyReductionInvariants (base : Name) (curve m hm : Ident)
     else
       logInfo m!"Unverified {base} local_invariants: supply minimality evidence"
 
+private def certifyConductorValuations (base : Name) (curve hn : Ident)
+    (checkedConductor : Option Ident) : CommandElabM Unit := do
+  let some claims ← bindStored base `conductorValuations `conductor_valuations
+      (← `(List (Nat × Nat))) | return
+  let some n := checkedConductor |
+    logInfo m!"Unverified {base} conductor_valuation: supply a checked conductor"
+  let hv := rootIdent (base ++ `conductor_valuation_value_valid)
+  let hN := rootIdent (base ++ `conductor)
+  checked (base ++ `conductor_valuation_value_valid)
+    (← `(($claims).all (fun row => isPrime row.1 && padicValNat row.1 $n == row.2) = true))
+    (← `(by decide +kernel))
+  checked (base ++ `conductor_valuation)
+    (← `(∀ row ∈ $claims, row.1.Prime ∧
+      (Modularity.modularWitness $curve $hn).level.factorization row.1 = row.2))
+    (← `(by
+      intro row hrow
+      rw [$hN:term]
+      exact Certification.factorization_of_prime_exponent_check _ _ _
+        (List.all_eq_true.mp $hv row hrow))) true
+
 /-- Check each supplied invariant against the actual curve, not an LMFDB label. -/
 def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
@@ -162,16 +182,18 @@ def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
         (← `(Certification.coefficients_of_minimal_witness $curve $hn $m $hm $values $hv))
     else
       logInfo m!"Unverified {base} anlist: supply minimality evidence"
-  if let some n ← bindStored base `conductor `conductor (← `(Nat)) then
-    if hasMinimality && hasLocalData then
-      let hv := rootIdent (base ++ `conductor_claim_valid)
-      checked (base ++ `conductor_claim_valid) (← `(wildLevelFast $curve $d = $n))
-        (← `(by decide +kernel))
-      checked (base ++ `conductor)
-        (← `((Modularity.modularWitness $curve $hn).level = $n))
-        (← `(Certification.conductor_of_arithmetic_witness $curve $hn $m $hm $d $hd $n $hv)) true
-    else
-      logInfo m!"Unverified {base} conductor: supply minimality and localData evidence"
+  let conductor ← bindStored base `conductor `conductor (← `(Nat))
+  let checkedConductor := if hasMinimality && hasLocalData then conductor else none
+  if let some n := checkedConductor then
+    let hv := rootIdent (base ++ `conductor_claim_valid)
+    checked (base ++ `conductor_claim_valid) (← `(wildLevelFast $curve $d = $n))
+      (← `(by decide +kernel))
+    checked (base ++ `conductor)
+      (← `((Modularity.modularWitness $curve $hn).level = $n))
+      (← `(Certification.conductor_of_arithmetic_witness $curve $hn $m $hm $d $hd $n $hv)) true
+  else if conductor.isSome then
+    logInfo m!"Unverified {base} conductor: supply minimality and localData evidence"
+  certifyConductorValuations base curve hn checkedConductor
   if let some w ← bindStored base `rootNumber `root_number (← `(Int)) then
     if hasMinimality && hasLocalData then
       let hv := rootIdent (base ++ `root_number_claim_valid)
