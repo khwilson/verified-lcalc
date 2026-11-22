@@ -25,6 +25,14 @@ run_meta do
 """
 
 
+def header_options(file: str) -> list[str]:
+    """Recognize the project header while keeping the default for other notices."""
+    lines = Path(file).read_text().splitlines()
+    if lines[:1] == ["/-"] and lines[2:3] == ["Part of verified-lcalc."]:
+        return ["-Dweak.linter.style.header.license=Part of verified-lcalc."]
+    return []
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -62,6 +70,7 @@ def main() -> None:
                 "-Dweak.linter.style.longFile=1500",
                 "-Dweak.linter.style.longFileDefValue=1500",
                 "-DwarningAsError=true",
+                *header_options(file),
                 file,
             ],
             check=True,

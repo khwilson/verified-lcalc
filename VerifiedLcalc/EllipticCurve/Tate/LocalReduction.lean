@@ -4,7 +4,7 @@ public import Mathlib.RingTheory.LocalRing.ResidueField.Ideal
 public import VerifiedLcalc.EllipticCurve.BadPrime
 public import VerifiedLcalc.EllipticCurve.GlobalMinimality
 public import VerifiedLcalc.EllipticCurve.Residue
-public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.MinimalModel.Semistable
+public import TauCeti.AlgebraicGeometry.EllipticCurve.MinimalModel.Semistable
 
 /-! # Reduction of minimal integral models at rational primes
 

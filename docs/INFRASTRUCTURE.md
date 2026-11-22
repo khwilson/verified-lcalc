@@ -17,8 +17,8 @@ remains opt-in. This supersedes the earlier source-inspection-only status.
 
 ## Global coefficient integration and first rank-zero certificate
 
-The completion residue-field proof is now also ported, bringing the selected
-TauCeti subset to ten modules/excerpts. Our checked adapters prove rational
+The original port of the completion residue-field proof brought the selected
+TauCeti subset to ten modules/excerpts at this stage. Our checked adapters prove rational
 prime-ideal norm uniqueness, formal Euler-product prime-power extraction and
 an actual-curve global n^3 coefficient bound without a modularity assumption.
 The independent input-model identification is no longer needed for the
@@ -127,8 +127,8 @@ current TauCeti theorem. The existence of a newform analytic-rank definition by
 itself does not supply the curve-to-newform connection or central value bounds.
 
 At that audit stage the older TauCeti checkout used a different Lean and
-Mathlib pair. The selected source ports were added later. The active compiler and
-Mathlib pins now match a published TauCeti revision, as recorded in the
+Mathlib pair. The selected source ports were added later. The project now
+imports TauCeti's tagged package directly, as recorded in the
 [build guide](BUILD.md).
 
 ## David Ledvinka: inclusion and dyadic intervals
@@ -158,8 +158,9 @@ memberships. It also contains kernel-checked uses of `dyadic_interval` for a
 rational cast and a polynomial bound. The default proof route is used; no native
 verification option is enabled.
 
-The pinned inclusion tree itself has no exp/log/gamma extension. Searching
-Ledvinka's unmerged work found:
+The inclusion tree at the time of this audit lacked an exp/log/gamma extension.
+The active Mathlib dependency now provides the interval exponential tactic.
+The earlier audit of Ledvinka's unmerged work covered the following PRs.
 
 - [PR #45193](https://github.com/leanprover-community/mathlib4/pull/45193),
   branch `inclusion-exp`, head `9c80a26d5b6a5b4ec14d6db0aba596463c6b281f`:

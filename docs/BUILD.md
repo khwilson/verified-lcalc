@@ -1,31 +1,35 @@
 # Build and cache
 
-Both Lake configurations resolve Mathlib from its upstream Git repository at
-`31ce06eaadf4a200c0e1407c5f10953cf606b8f8`. The committed
-`lake-manifest.json` locks the transitive dependencies, and `lean-toolchain`
-selects Lean `v4.37.0-rc1`. Lake manages the source checkout in
-`.lake/packages/mathlib`. These versions match
-[TauCeti's locked dependencies](https://github.com/TauCetiProject/TauCeti/blob/b7121f4d7408c1a323335f3547e857b0b547369a/lake-manifest.json)
-and
-[toolchain](https://github.com/TauCetiProject/TauCeti/blob/b7121f4d7408c1a323335f3547e857b0b547369a/lean-toolchain).
-The project continues to use the [selected TauCeti ports](../VerifiedLcalc/Upstream/TauCeti/README.md).
+Both Lake configurations import TauCeti from its published
+[`v4.37.0-rc1` tag](https://github.com/TauCetiProject/TauCeti/tree/e0e414ce57522ba17560057ad0d7f2edab91bf0c).
+The lockfile pins that revision, `e0e414ce57522ba17560057ad0d7f2edab91bf0c`,
+and the matching [upstream Mathlib revision](https://github.com/leanprover-community/mathlib4/tree/31ce06eaadf4a200c0e1407c5f10953cf606b8f8).
+Lake manages both source checkouts in `.lake/packages` using Lean `v4.37.0-rc1`.
 
 Keep both Lake configurations, the manifest and the toolchain aligned when
 updating a dependency. Historical reports retain their recorded dependency
 revisions. A new benchmark records the actual Mathlib Git checkout selected by
 its Lake configuration.
 
-Fetch the targeted Mathlib cache before building proofs.
+The two dependencies publish separate caches. In a Bash shell at the repository
+root, load the TauCeti revision map, then fetch the Mathlib modules used by our
+sources and by their TauCeti imports.
 
-```sh
-MATHLIB_CACHE_DIR="${TMPDIR:-/tmp}/verified-lcalc-mathlib-cache" lake exe cache get Mathlib.Analysis.Complex.Basic Mathlib.Analysis.Analytic.Order Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
+```bash
+export LAKE_CONFIG="$PWD/scripts/tauceti-cache.toml"
+export LAKE_CACHE_DIR="$PWD/.lake/cache"
+export LAKE_ARTIFACT_CACHE=true LAKE_RESTORE_ARTIFACTS=true
+export MATHLIB_CACHE_DIR="${TMPDIR:-/tmp}/verified-lcalc-mathlib-cache"
+lake cache get --package=TauCeti --service=tauceti-public \
+  --repo=TauCetiProject/TauCeti --rev=e0e414ce57522ba17560057ad0d7f2edab91bf0c --mappings-only
+python3 scripts/mathlib_cache_roots.py > .lake/mathlib-cache-roots
+xargs lake exe cache get < .lake/mathlib-cache-roots
 lake build
 ```
 
-Use a writable cache directory. Fetch the modules needed by the intended build,
-following the import list in the [Lean CI workflow](../.github/workflows/lean.yml)
-for the full verification build. Missing cache artifacts require source compilation.
-Use one Lake build owner per dependency checkout.
+Keep those environment variables set for subsequent Lake commands so direct
+Lean replays can read the restored files. Use one Lake build owner per checkout.
+The [Lean CI workflow](../.github/workflows/lean.yml) verifies the procedure on Linux.
 Integral curve inputs now use Mathlib's `WeierstrassCurve ℤ` directly, so the
 computation core imports its canonical basic-curve definition. Keep analytic
 proof imports out of standalone computation entry points where practical;

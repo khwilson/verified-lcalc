@@ -25,10 +25,10 @@ is accepted.
 
 ## Local use
 
-Both Lake configurations use Lean `v4.37.0-rc1` and resolve Mathlib at
-`31ce06eaadf4a200c0e1407c5f10953cf606b8f8` from upstream Git. These versions
-match the published TauCeti pin. See [BUILD.md](docs/BUILD.md) for dependency
-and cache instructions.
+Both Lake configurations use the published TauCeti `v4.37.0-rc1` tag at
+`e0e414ce57522ba17560057ad0d7f2edab91bf0c`, Lean `v4.37.0-rc1`, and
+Mathlib `31ce06eaadf4a200c0e1407c5f10953cf606b8f8`.
+See [BUILD.md](docs/BUILD.md) for dependency and cache instructions.
 
 ```sh
 make certificates

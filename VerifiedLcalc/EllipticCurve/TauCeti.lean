@@ -4,8 +4,10 @@ public import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCount
 public import VerifiedLcalc.EllipticCurve.Correctness
 public import VerifiedLcalc.EllipticCurve.Euler
 public import VerifiedLcalc.EllipticCurve.Bounds
-public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.LocalPolynomial
-public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.LFunction.Basic
+public import TauCeti.AlgebraicGeometry.EllipticCurve.LocalPolynomial
+public import TauCeti.AlgebraicGeometry.EllipticCurve.LFunction.Basic
+
+/-! # Arithmetic interfaces for TauCeti's elliptic-curve coefficients -/
 
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
@@ -21,7 +23,8 @@ minimal local model. No arbitrary input model is silently declared minimal. -/
 theorem localPolynomial_eq_computed (e : (WeierstrassCurve ℤ)) (p : ℕ)
     [Fact p.Prime] (W : WeierstrassCurve K)
     (k : IsLocalRing.ResidueField R ≃+* ZMod p)
-    (hmodel : ((W.minimal R).reduction R).map k.toRingHom = WeierstrassCurve.baseChange e (ZMod p)) :
+    (hmodel : ((W.minimal R).reduction R).map k.toRingHom =
+      WeierstrassCurve.baseChange e (ZMod p)) :
     W.localPolynomial R =
       1 - Polynomial.C (computeFrobeniusTrace e p) * Polynomial.X +
         Polynomial.C (if goodReduction e p then (p : ℤ) else 0) * Polynomial.X ^ 2 := by
@@ -42,9 +45,9 @@ theorem localPolynomial_eq_computed (e : (WeierstrassCurve ℤ)) (p : ℕ)
       simp [hz]
   by_cases hgood : goodReduction e p = true
   · rw [W.localPolynomial_eq_of_hasGoodReduction R (hg.mpr hgood), ht, hc]
-    simp [computePrimePowerCoefficient, hgood]
+    simp [hgood]
   · rw [W.localPolynomial_eq_of_not_hasGoodReduction R (mt hg.mp hgood), ht]
-    simp [computePrimePowerCoefficient, hgood]
+    simp [hgood]
 
 omit [Finite (IsLocalRing.ResidueField R)] in
 /-- The proved recurrence is the actual mathlib inverse local polynomial,
@@ -65,7 +68,8 @@ theorem localPowerSeries_coeff_eq (W : WeierstrassCurve K) (a q : ℤ)
 theorem computePrimePowerCoefficient_correct (e : (WeierstrassCurve ℤ)) (p : ℕ)
     [Fact p.Prime] (W : WeierstrassCurve K)
     (k : IsLocalRing.ResidueField R ≃+* ZMod p)
-    (hmodel : ((W.minimal R).reduction R).map k.toRingHom = WeierstrassCurve.baseChange e (ZMod p)) (n : ℕ) :
+    (hmodel : ((W.minimal R).reduction R).map k.toRingHom =
+      WeierstrassCurve.baseChange e (ZMod p)) (n : ℕ) :
     computePrimePowerCoefficient e p n =
       PowerSeries.coeff n (W.localPowerSeries R) := by
   exact (localPowerSeries_coeff_eq W _ _ (localPolynomial_eq_computed e p W k hmodel) n).symm
@@ -75,7 +79,8 @@ coefficient, once a minimal-reduction identification is supplied. -/
 theorem localEulerFactor_apply_pow_eq (e : (WeierstrassCurve ℤ)) (p : ℕ)
     [Fact p.Prime] (W : WeierstrassCurve K)
     (k : IsLocalRing.ResidueField R ≃+* ZMod p)
-    (hmodel : ((W.minimal R).reduction R).map k.toRingHom = WeierstrassCurve.baseChange e (ZMod p)) (n : ℕ) :
+    (hmodel : ((W.minimal R).reduction R).map k.toRingHom =
+      WeierstrassCurve.baseChange e (ZMod p)) (n : ℕ) :
     W.localEulerFactor R (p ^ n) =
       computePrimePowerCoefficient e p n := by
   have hc : Nat.card (IsLocalRing.ResidueField R) = p := by
@@ -93,11 +98,13 @@ theorem curveCoefficient_eq_euler (e : (WeierstrassCurve ℤ))
     (hl : ∀ p : ℕ, p.Prime → ∀ k : ℕ,
       (WeierstrassCurve.baseChange e ℚ).LFunction (p ^ k) =
         computePrimePowerCoefficient e p k) (n : ℕ) :
-    (WeierstrassCurve.baseChange e ℚ).LFunction n = eulerCoefficient (computePrimePowerCoefficient e) n := by
+    (WeierstrassCurve.baseChange e ℚ).LFunction n =
+      eulerCoefficient (computePrimePowerCoefficient e) n := by
   by_cases hn : n = 0
   · simp [hn, eulerCoefficient]
   rw [ArithmeticFunction.IsMultiplicative.multiplicative_factorization _
-    (WeierstrassCurve.baseChange e ℚ).isMultiplicative_LFunction hn, eulerCoefficient, ite_eq_right hn]
+    (WeierstrassCurve.baseChange e ℚ).isMultiplicative_LFunction hn, eulerCoefficient,
+    ite_eq_right hn]
   unfold Finsupp.prod
   apply Finset.prod_congr rfl
   intro p hp

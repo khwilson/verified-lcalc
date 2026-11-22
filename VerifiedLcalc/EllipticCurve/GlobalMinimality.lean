@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 Kevin H Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin H Wilson
+-/
 module
 
 public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
-public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.GlobalMinimalModel
+public import TauCeti.AlgebraicGeometry.EllipticCurve.GlobalMinimalModel
+
+/-! # Global minimality from checked local witnesses -/
 
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
@@ -18,14 +25,19 @@ private theorem integral_at_localization (e : WeierstrassCurve ℤ) (p : ℕ) [F
   refine ⟨⟨e.baseChange (Localization.AtPrime (rationalPlace p).asIdeal), ?_⟩⟩
   ext <;> simp [WeierstrassCurve.baseChange]
 
+private theorem rationalPlace_valuation_integers (p : ℕ) [Fact p.Prime] :
+    ((rationalPlace p).valuation ℚ).Integers (Localization.AtPrime (rationalPlace p).asIdeal) :=
+  (rationalPlace p).integers_valuation_of_isLocalizationAtPrime
+    (Localization.AtPrime (rationalPlace p).asIdeal) (K := ℚ)
+
 /-- The discriminant criterion proves minimality directly over the canonical
 localization, independently of completion-minimality comparisons. -/
 theorem localization_minimal_of_discriminant_not_dvd (e : WeierstrassCurve ℤ)
     (p : ℕ) [Fact p.Prime] (hd : ¬ (p : ℤ) ^ 12 ∣ e.Δ) :
     IsMinimal (Localization.AtPrime (rationalPlace p).asIdeal) (e.baseChange ℚ) := by
-  letI := integral_at_localization e p
+  let := integral_at_localization e p
   apply minimal_of_small_discriminant (e.baseChange ℚ) ((rationalPlace p).valuation ℚ)
-    ((rationalPlace p).integers_valuation_localizationAtPrime (K := ℚ))
+    (rationalPlace_valuation_integers p)
   simpa [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ, eq_intCast,
     rationalPlace_valuation_intCast] using rationalPlace_intValuation_gt p 12 e.Δ hd
 
@@ -34,8 +46,8 @@ localization used by TauCeti's global-minimality predicate. -/
 theorem modelMinimalAt_localization (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
     (h : modelMinimalAt e p = true) :
     IsMinimal (Localization.AtPrime (rationalPlace p).asIdeal) (e.baseChange ℚ) := by
-  letI := integral_at_localization e p
-  have hv := (rationalPlace p).integers_valuation_localizationAtPrime (K := ℚ)
+  let := integral_at_localization e p
+  have hv := rationalPlace_valuation_integers p
   rcases Bool.or_eq_true_iff.mp h with h | h
   · rcases Bool.or_eq_true_iff.mp h with hd | htwo
     · exact localization_minimal_of_discriminant_not_dvd e p
@@ -86,10 +98,10 @@ theorem globalMinimal_of_witness (e : WeierstrassCurve ℤ) (w : MinimalityWitne
   apply IsGlobalMinimal.of_forall_isMinimal
   intro v
   obtain ⟨p, hp, rfl⟩ : ∃ (p : ℕ) (hp : p.Prime), v = @rationalPlace p ⟨hp⟩ := by
-    letI : Fact (v.asIdeal.absNorm.Prime) := ⟨RationalPrimes.norm_prime v⟩
+    let : Fact (v.asIdeal.absNorm.Prime) := ⟨RationalPrimes.norm_prime v⟩
     refine ⟨v.asIdeal.absNorm, RationalPrimes.norm_prime v, ?_⟩
     exact (RationalPrimes.norm_injective (rationalPlace_norm v.asIdeal.absNorm)).symm
-  letI : Fact p.Prime := ⟨hp⟩
+  let : Fact p.Prime := ⟨hp⟩
   exact localization_minimal_of_witness e w hw p
 
 end VerifiedLcalc.EllipticCurve

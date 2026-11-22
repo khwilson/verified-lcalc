@@ -60,8 +60,8 @@ was also checked for the reduction predicates. Both supply
 `WeierstrassCurve.IsMinimal`, the reduction classes, and the standard
 Weierstrass and affine point types. The TauCeti public main inspected
 here is [b608709](https://github.com/TauCetiProject/TauCeti/tree/b608709b45f23ccda55703d572b0adb1fdec30fd/TauCeti/AlgebraicGeometry/EllipticCurve).
-API names below refer to that source, while this project's vendored excerpts have
-their own pins. Reuse candidates require a compatibility and axiom audit
+API names below refer to that source. The project now imports the
+[tagged TauCeti package](../BUILD.md) directly. Reuse candidates require a compatibility and axiom audit
 before importing. This review inspected declarations and did not compile a
 dependency upgrade.
 
