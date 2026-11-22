@@ -128,6 +128,9 @@ ranks conditional on an explicit realization. The `torsion` field can carry a
 verified positive multiple of the full subgroup order, a consistent supplied
 count, and an exact cardinality when determined.
 
+The `rational.abcQuality` projection holds the exact reported value and error,
+the validated factorization, and the certified bound on the actual quality.
+
 For example, the following reads an invariant from a compiled certificate
 using its exact proof. The default handles a missing value using the equation.
 

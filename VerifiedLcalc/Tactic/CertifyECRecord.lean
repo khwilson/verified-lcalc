@@ -23,7 +23,12 @@ private def rationalFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let sign ← invariantValue base `discriminant_sign
   let j ← invariantValue base `j_invariant
   let integral ← invariantValue base `j_integral
-  `({ discriminantSign := $sign, jInvariant := $j, jIntegral := $integral })
+  let abcQuality ← if (← getEnv).contains (base ++ `abc_quality) then
+    `(some ⟨$(rootIdent (base ++ `claimed_abc_quality)), $(rootIdent (base ++ `abc_quality_valid)),
+      $(rootIdent (base ++ `abc_quality_defined)), $(rootIdent (base ++ `abc_quality))⟩)
+  else `(none)
+  `({ discriminantSign := $sign, jInvariant := $j, jIntegral := $integral,
+      abcQuality := $abcQuality })
 
 private def integralMembershipTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let witnessName := base ++ `witness

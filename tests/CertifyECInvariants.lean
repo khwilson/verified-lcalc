@@ -372,7 +372,7 @@ run_cmd do
 -- an input prerequisite, rather than a direct certified conclusion.
 run_cmd do
   let equation := #[`equation, `bInvariants, `cInvariants, `discriminant]
-  let rational := #[`discriminantSign, `jInvariant, `jIntegral]
+  let rational := #[`discriminantSign, `jInvariant, `jIntegral, `abcQuality]
   let algebraic := #[`integralCoordinates, `integralFiberRoots, `generatorCoordinates,
     `torsionGeneratorCoordinates,
     `infiniteOrderPoints, `independentPoints]
@@ -392,6 +392,7 @@ run_cmd do
   cover ``EllipticWitness (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion)
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
     `jDenominatorValuation, `reductionType]
+  cover ``AbcQualityClaim #[`reported, `error, `factors]
   cover ``TorsionBoundWitness #[`firstPrime, `secondPrime, `bound]
 
 example : EmptyProofs.certificate.equationFacts.discriminant.isNone = true := rfl
@@ -406,3 +407,5 @@ example : BoundedTorsion.certificate.torsion.divisor.map
     (fun fact => (fact.evidence.firstPrime, fact.evidence.secondPrime)) = some (3, 5) := rfl
 example : BoundedTorsion.certificate.torsion.cardinality.isNone = true := rfl
 example : TrivialTorsion.certificate.torsion.cardinality.map Subtype.val = some 1 := rfl
+
+example : RawAbcMetadata.certificate.rational.abcQuality.isNone = true := rfl

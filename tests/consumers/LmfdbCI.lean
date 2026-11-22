@@ -228,3 +228,17 @@ example : LMFDB.C112a2.certificate.algebraic.generators.map AffineMembership.coo
 
 example : LMFDB.C112a2.certificate.algebraic.torsionGeneratorOrders.map
     TorsionGeneratorOrderFacts.orders = some [2] := rfl
+
+private def checkedAbcQuality :=
+  LMFDB.C112a2.certificate.rational.abcQuality.get (by decide +kernel)
+
+/-- The compiled aggregate bounds the actual abc quality. -/
+theorem imported_abc_quality_bound :
+    |(LMFDB.C112a2.curve.baseChange ℚ).abcQuality checkedAbcQuality.defined -
+      (checkedAbcQuality.claim.reported : ℝ)| ≤ (checkedAbcQuality.claim.error : ℝ) :=
+  checkedAbcQuality.within_error
+
+run_cmd do
+  for axiomName in ← liftTermElabM (Lean.collectAxioms ``imported_abc_quality_bound) do
+    unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+      throwError "Unexpected aggregate axiom: {axiomName}"
