@@ -172,6 +172,9 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `ConflictingBProof (← `(certify_ec ConflictingBProof from
+    { equation := Invariants37.curve, bInvariants := some (0, 0, 0, 0) }
+    with_proofs Invariants37.checked_facts))
   invariantRejected `WrongTorsion (← `(certify_ec WrongTorsion from
     { TrivialTorsion.witness with torsion := some 2 }))
   invariantRejected `InconsistentTorsion (← `(certify_ec InconsistentTorsion from
@@ -183,9 +186,6 @@ run_cmd do
   invariantRejected `ConflictingAggregateReuse (← `(certify_ec ConflictingAggregateReuse from
     { equation := Invariants37.certificate.equation, cInvariants := some (48, 216) }
     with_proofs Invariants37.certificate.equationFacts))
-  invariantRejected `ConflictingBProof (← `(certify_ec ConflictingBProof from
-    { equation := Invariants37.curve, bInvariants := some (0, 0, 0, 0) }
-    with_proofs Invariants37.checked_facts))
   invariantRejected `WrongProofCurve (← `(certify_ec WrongProofCurve from
     { equation := JZero.curve } with_proofs Invariants37.discriminant_witness.toProofs))
   invariantRejected `ConflictingProofValue (← `(certify_ec ConflictingProofValue from
