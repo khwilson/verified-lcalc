@@ -527,6 +527,7 @@ run_cmd do
   let equation := #[`equation, `bInvariants, `cInvariants, `discriminant]
   let rational := #[`discriminantSign, `jInvariant, `jIntegral, `abcQuality]
   let algebraic := #[`integralCoordinates, `integralFiberRoots, `generatorCoordinates,
+    `generatorCount, `algebraicRank, `algebraicRankBounds,
     `torsionGeneratorCoordinates,
     `infiniteOrderPoints, `independentPoints]
   let arithmetic := #[`potentialGoodReduction, `minimalDiscriminantAbs, `conductor, `rootNumber,
