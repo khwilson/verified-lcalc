@@ -20,44 +20,50 @@ open TauCeti WeierstrassCurve WeierstrassCurve.Affine
 open scoped BigOperators
 section PairKernel
 
-variable {G : Type*} [AddCommGroup G]
-private def twoKernel (P : G) (h : P + P = 0) : AddSubgroup G where
-  carrier := {0, P}
-  zero_mem' := Set.mem_insert 0 _
-  add_mem' := by
+variable {G : Type*} [Group G]
+@[to_additive twoKernel]
+private def twoKernelMul (P : G) (h : P * P = 1) : Subgroup G where
+  carrier := {1, P}
+  one_mem' := Set.mem_insert 1 _
+  mul_mem' := by
     intro a b
     simp only [Set.mem_insert_iff, Set.mem_singleton_iff]
     rintro (rfl | rfl) (rfl | rfl) <;> simp [h]
-  neg_mem' := by
-    have hn : -P = P := (eq_neg_of_add_eq_zero_left h).symm
+  inv_mem' := by
+    have hn : P⁻¹ = P := (eq_inv_of_mul_eq_one_left h).symm
     intro a
     simp only [Set.mem_insert_iff, Set.mem_singleton_iff]
     rintro (rfl | rfl) <;> simp [hn]
-private def pointInKernel (P : G) (h : P + P = 0) : twoKernel P h :=
+
+@[to_additive pointInKernel]
+private def pointInKernelMul (P : G) (h : P * P = 1) : twoKernelMul P h :=
   ⟨P, Set.mem_insert_of_mem _ (Set.mem_singleton _)⟩
 
-private noncomputable def kernelEquiv (P : G) (h : P + P = 0) (hne : P ≠ 0) :
-    Bool ≃ twoKernel P h := by
-  let f : Bool → twoKernel P h := fun b => if b then pointInKernel P h else 0
-  have hf0 : f false = 0 := rfl
-  have hf1 : f true = pointInKernel P h := rfl
-  have hp : pointInKernel P h ≠ 0 := fun he => hne (congrArg Subtype.val he)
+@[to_additive kernelEquiv]
+private noncomputable def kernelEquivMul (P : G) (h : P * P = 1) (hne : P ≠ 1) :
+    Bool ≃ twoKernelMul P h := by
+  let f : Bool → twoKernelMul P h := fun b => if b then pointInKernelMul P h else 1
+  have hf0 : f false = 1 := rfl
+  have hf1 : f true = pointInKernelMul P h := rfl
+  have hp : pointInKernelMul P h ≠ 1 := fun he => hne (congrArg Subtype.val he)
   refine Equiv.ofBijective f ⟨?_, ?_⟩
   · intro a b hab
     cases a <;> cases b <;> simp_all
   · rintro ⟨a, ha⟩
-    change a = 0 ∨ a = P at ha
+    change a = 1 ∨ a = P at ha
     rcases ha with rfl | rfl
     · exact ⟨false, hf0⟩
     · exact ⟨true, hf1⟩
 
-private theorem sum_kernel {M : Type*} [AddCommMonoid M] (P : G) (h : P + P = 0) (hne : P ≠ 0)
-    [Fintype (twoKernel P h)] (f : twoKernel P h → M) :
-    (∑ q : twoKernel P h, f q) = f 0 + f (pointInKernel P h) := by
-  rw [← Fintype.sum_equiv (kernelEquiv P h hne) (f ∘ kernelEquiv P h hne) f (fun _ => rfl)]
-  rw [Fintype.sum_bool]
-  change f (pointInKernel P h) + f 0 = _
-  exact add_comm _ _
+@[to_additive sum_kernel]
+private theorem prod_kernelMul {M : Type*} [CommMonoid M] (P : G) (h : P * P = 1)
+    (hne : P ≠ 1) [Fintype (twoKernelMul P h)] (f : twoKernelMul P h → M) :
+    (∏ q : twoKernelMul P h, f q) = f 1 * f (pointInKernelMul P h) := by
+  rw [← Fintype.prod_equiv (kernelEquivMul P h hne) (f ∘ kernelEquivMul P h hne) f
+    (fun _ => rfl)]
+  rw [Fintype.prod_bool]
+  change f (pointInKernelMul P h) * f 1 = _
+  exact mul_comm _ _
 
 end PairKernel
 
