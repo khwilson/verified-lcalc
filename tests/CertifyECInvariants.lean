@@ -124,6 +124,15 @@ example : ∀ n, (KodairaAdditive.curve.baseChange ℚ).reductionSymbol
     (by decide +kernel)
   exact h 2 rfl
 
+-- Positive starred indices compute the actual odd or even stopping stage.
+example : LocalReductionClaim.checkKodairaTerminal
+    { prime := 5, kodairaSymbol := some (-5), kodairaTerminal := some (0, 0, 0) }
+    ⟨0, 5, 25, 125, 0⟩ = true := by decide +kernel
+
+example : LocalReductionClaim.checkKodairaTerminal
+    { prime := 5, kodairaSymbol := some (-6), kodairaTerminal := some (0, 0, 0) }
+    ⟨0, 5, 125, 125, 3125⟩ = true := by decide +kernel
+
 certify_ec SplitLocal from_json_string
   r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
       "local_invariants":[{"prime":11,"reduction_type":1,"kodaira_symbol":9}]}"#
@@ -195,6 +204,7 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
       `semistable, `squarefree_discriminant, `local_invariants, `kodaira_symbols,
+      `kodaira_terminal_symbols, `kodaira_terminal_values_valid,
       `claimed_semistable, `claimed_squarefree_discriminant, `claimed_local_invariants,
       `claimed_conductor_valuations,
       `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation] do
@@ -212,6 +222,13 @@ run_cmd do
         localInvariants := some [{ prime := 11, kodairaSymbol := some (-5) }] }))
   invariantRejected `WrongMultiplicativeIndex (← `(certify_ec WrongMultiplicativeIndex from
     { SplitLocal.witness with localInvariants := some [{ prime := 11, kodairaSymbol := some 5 }] }))
+  invariantRejected `WrongAdditiveTerminal (← `(certify_ec WrongAdditiveTerminal
+    from_json_string
+    r#"{"ainvs":[1,1,1,-3,1],"prime":5,"kodaira_symbol":3,"kodaira_terminal":[0,0,2]}"#))
+  invariantRejected `WrongAdditiveTranslation (← `(certify_ec WrongAdditiveTranslation from
+    { equation := ⟨1, 1, 1, -3, 1⟩
+      localInvariants := some [
+        { prime := 5, kodairaSymbol := some 2, kodairaTerminal := some (0, 0, 0) }] }))
   invariantRejected `WrongTorsion (← `(certify_ec WrongTorsion from
     { TrivialTorsion.witness with torsion := some 2 }))
   invariantRejected `InconsistentTorsion (← `(certify_ec InconsistentTorsion from
@@ -304,7 +321,8 @@ run_cmd do
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
-  for theoremName in [`KodairaGood.kodaira_symbols, `KodairaAdditive.kodaira_symbols,
+  for theoremName in [`ExactAdditiveKodaira.kodaira_terminal_symbols,
+      `KodairaGood.kodaira_symbols, `KodairaAdditive.kodaira_symbols,
       `TrivialTorsion.torsion, `BoundedTorsion.torsion_bound,
       `IntegralJ.j_integral, `NonintegralJ.j_integral,
       `PotentialGood.potential_good_reduction, `NoPotentialGood.potential_good_reduction] do

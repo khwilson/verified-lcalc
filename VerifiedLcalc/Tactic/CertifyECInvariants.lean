@@ -53,6 +53,20 @@ private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
       logInfo m!"Unverified {base} squarefree_disc: supply minimality evidence"
   if let some rows ← bindStored base `localInvariants `local_invariants
       (← `(List LocalReductionClaim)) then
+    let hasTerminal ← liftTermElabM do
+      let test ← `(($rows).any fun row => row.kodairaTerminal.isSome)
+      whnf (← Term.elabTerm test (some (mkConst ``Bool)))
+    if hasTerminal.isConstOf ``Bool.true then
+      let hTerminal := rootIdent (base ++ `kodaira_terminal_values_valid)
+      checked (base ++ `kodaira_terminal_values_valid)
+        (← `(($rows).all (fun row => row.checkKodairaTerminal $curve) = true))
+        (← `(by decide +kernel))
+      checked (base ++ `kodaira_terminal_symbols)
+        (← `(∀ row ∈ $rows, LocalReductionClaim.KodairaTerminalSpec row $curve))
+        (← `(by
+          intro row hrow
+          exact LocalReductionClaim.kodairaTerminal_correct row $curve
+            (List.all_eq_true.mp $hTerminal row hrow)))
     if hasMinimality then
       let hv := rootIdent (base ++ `local_invariants_value_valid)
       checked (base ++ `local_invariants_value_valid)
@@ -73,7 +87,13 @@ private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
       if additive.isConstOf ``Bool.true then
         logInfo m!"{base}: additive Kodaira family verified. Exact additive codes unverified."
     else
-      logInfo m!"Unverified {base} local_invariants: supply minimality evidence"
+      let needsMinimality ← `(($rows).any fun row => row.discriminantValuation.isSome ||
+        row.jDenominatorValuation.isSome || row.reductionType.isSome ||
+        (row.kodairaSymbol.isSome && row.kodairaTerminal.isNone))
+      let needsMinimality ← liftTermElabM do
+        whnf (← Term.elabTerm needsMinimality (some (mkConst ``Bool)))
+      if needsMinimality.isConstOf ``Bool.true then
+        logInfo m!"Unverified {base} local_invariants: supply minimality evidence"
 
 private def certifyConductorValuations (base : Name) (curve hn : Ident)
     (checkedConductor : Option Ident) : CommandElabM Unit := do

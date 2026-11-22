@@ -1,7 +1,7 @@
 module
 public import VerifiedLcalc.Tactic.CertifyEC
 
-/-! # Invariant certificates for 37.a1 -/
+/-! # Invariant certificates for rational curves -/
 
 @[expose] public section
 
@@ -38,3 +38,7 @@ certify_ec ProofCarrying37 from
 
 certify_ec FileProofCarrying37 from_json "../../../data/curve-data/37a1.json"
   with_proofs Invariants37.discriminant_witness.toProofs
+
+-- LMFDB 50.b3, with a supplied translation to a type-II equation at 5.
+certify_ec ExactAdditiveKodaira from_json_string
+  r#"{"ainvs":[1,1,1,-3,1],"prime":5,"kodaira_symbol":2,"kodaira_terminal":[0,0,2]}"#

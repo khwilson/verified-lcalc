@@ -47,6 +47,8 @@ structure LocalReductionClaim where
   reductionType : Option Int := none
   /-- Claimed PARI Kodaira code. Additive codes request a family check. -/
   kodairaSymbol : Option Int := none
+  /-- Integral translation `(r,s,t)` supplied to verify an exact additive symbol. -/
+  kodairaTerminal : Option (ℤ × ℤ × ℤ) := none
   deriving Repr, DecidableEq
 
 /-- Two proposed odd primes of good reduction and the gcd of their point counts. -/

@@ -28,3 +28,20 @@ example : ProofCarrying37.discriminant_witness.curve.Δ = 37 :=
   ProofCarrying37.discriminant_witness.discriminant_eq
 
 example : FileProofCarrying37.curve.Δ = 37 := FileProofCarrying37.discriminant
+
+open VerifiedLcalc VerifiedLcalc.EllipticCurve
+
+/-- The compiled terminal witness proves type II at 5 for LMFDB 50.b3. -/
+theorem imported_additive_kodaira :
+    letI : Fact (Nat.Prime 5) := ⟨by decide⟩
+    (ExactAdditiveKodaira.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 5) =
+      TauCeti.ReductionSymbol.II := by
+  let row : LocalReductionClaim :=
+    { prime := 5, kodairaSymbol := some 2, kodairaTerminal := some (0, 0, 2) }
+  obtain ⟨hp, code, fact, _, hcode, hsymbol⟩ :=
+    ExactAdditiveKodaira.kodaira_terminal_symbols row (by decide +kernel) (0, 0, 2) rfl
+  have hcode' : code = 2 := by simpa [row] using hcode.symm
+  subst code
+  have hsymbol' : fact.symbol.val = TauCeti.ReductionSymbol.II := by
+    exact congrArg Subtype.val (Option.some.inj hsymbol.symm)
+  exact fact.reductionSymbol_eq.trans hsymbol'

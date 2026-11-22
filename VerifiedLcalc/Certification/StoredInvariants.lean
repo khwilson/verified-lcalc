@@ -2,6 +2,7 @@ module
 
 public import VerifiedLcalc.Certification.WildCertification
 public import VerifiedLcalc.EllipticCurve.Tate.Kodaira
+public import VerifiedLcalc.EllipticCurve.Tate.AdditiveTerminal
 public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReduction
 public import VerifiedLcalc.Certificate.EllipticWitness
 public import Mathlib.Data.Nat.Squarefree
@@ -215,9 +216,10 @@ theorem LocalReductionClaim.check_correct (row : LocalReductionClaim) (e : Weier
       · exact Or.inl ⟨ht.symm.trans (he.trans (ite_eq_left hroot)), hsplit.mpr hroot⟩
       · exact Or.inr ⟨ht.symm.trans (he.trans (ite_eq_right hroot)), mt hsplit.mp hroot⟩
 
-/-- Whether any row requests a specific additive Kodaira code. -/
+/-- Whether an additive Kodaira claim omits its terminal translation. -/
 def hasAdditiveKodairaClaim (rows : List LocalReductionClaim) : Bool :=
-  rows.any fun row => row.kodairaSymbol.any fun code => (kodairaIIndex code).isNone
+  rows.any fun row =>
+    row.kodairaTerminal.isNone && row.kodairaSymbol.any fun code => (kodairaIIndex code).isNone
 
 /-- Exact canonical symbol for a good or multiplicative code, or exclusion of
 the multiplicative family for an additive code. -/
@@ -239,5 +241,33 @@ theorem LocalReductionClaim.kodaira_correct (row : LocalReductionClaim) (e : Wei
   have hkod := (Bool.and_eq_true_iff.mp h).2
   rw [hc] at hkod
   exact checkKodairaCode_correct e row.prime hn code hkod
+
+/-- Check any supplied terminal translation against the canonical additive stopping criterion. -/
+def LocalReductionClaim.checkKodairaTerminal (row : LocalReductionClaim)
+    (e : WeierstrassCurve ℤ) : Bool :=
+  row.kodairaTerminal.all fun rst =>
+    isPrime row.prime && row.kodairaSymbol.any fun code =>
+      (additiveKodairaSymbol code).any fun symbol =>
+        @decide _ (decidableIsTateTerminalInt (intTateTranslation rst • e) row.prime symbol.val)
+
+/-- A supplied terminal translation certifies the exact decoded symbol at the given prime. -/
+def LocalReductionClaim.KodairaTerminalSpec (row : LocalReductionClaim)
+    (e : WeierstrassCurve ℤ) : Prop :=
+  ∀ rst, row.kodairaTerminal = some rst →
+    ∃ (hp : row.prime.Prime) (code : ℤ) (fact : AdditiveTerminalFact e ⟨row.prime, hp⟩),
+      fact.translation = rst ∧
+      row.kodairaSymbol = some code ∧ additiveKodairaSymbol code = some fact.symbol
+
+/-- The finite terminal check produces proof-carrying data about the supplied equation. -/
+theorem LocalReductionClaim.kodairaTerminal_correct (row : LocalReductionClaim)
+    (e : WeierstrassCurve ℤ) (h : row.checkKodairaTerminal e = true) :
+    row.KodairaTerminalSpec e := by
+  intro rst hrst
+  simp only [checkKodairaTerminal, hrst, Option.all_some, Bool.and_eq_true,
+    isPrime_correct, Option.any_eq_true] at h
+  obtain ⟨hp, code, hcode, symbol, hsymbol, hterminal⟩ := h
+  let : Decidable ((intTateTranslation rst • e).IsTateTerminal (row.prime : ℤ) symbol.val) :=
+    decidableIsTateTerminalInt _ _ _
+  exact ⟨hp, code, ⟨rst, symbol, of_decide_eq_true hterminal⟩, rfl, hcode, hsymbol⟩
 
 end VerifiedLcalc
