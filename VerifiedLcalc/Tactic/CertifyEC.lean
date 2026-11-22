@@ -28,6 +28,8 @@ All three forms, and `CertifyEC.certify` / `certifyAtomic`, use the same checker
 Optional stored invariants include b/c values, equation discriminant and sign,
 j-invariant and its integrality, everywhere potential good reduction, minimal absolute
 discriminant, bad-prime set/count, anlist, conductor and global root number.
+An `abc_quality_evidence` object supplies a rational error and the factorization
+needed to bound the actual abc quality about the reported `abc_quality` decimal.
 Prerequisite-dependent claims without the required evidence are reported as unverified. See
 `docs/LMFDB_INVARIANTS.md` for the exact mathematical outputs and trust boundary.
 JSON can supply `ainvs`, `ap` or `aplist`, and `integral_points` or
@@ -266,8 +268,11 @@ def certifyJson (name : Name) (text : String)
         "j_integral", "potential_good_reduction"] ++
         localKeys ++ if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
           then ["prime"] else []
+      let checkedAbcQuality := (← getEnv).contains (base ++ `abc_quality)
       let skipped := object.toList.filterMap fun (key, _) =>
-        if known.contains key || (checkedRank && rankKeys.contains key) then none else some key
+        if known.contains key || (checkedRank && rankKeys.contains key) ||
+            (checkedAbcQuality && ["abc_quality", "abc_quality_evidence"].contains key) then none
+        else some key
       unless skipped.isEmpty do
         logInfo m!"Unverified metadata (no claim emitted): {skipped}"
 

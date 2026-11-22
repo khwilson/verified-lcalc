@@ -26,3 +26,8 @@ checked analytic-rank-one witness for 112.a2 on the same integral equation.
 The 112.a2 fixture also includes the point triples from the
 [LMFDB Mordell–Weil generators table](https://www.lmfdb.org/EllipticCurve/Q/112/a/2#Mordell-Weil_generators).
 The consumer checks membership in the rational curve for points from both lists.
+
+The 112.a2 fixture copies the published abc-quality decimal from the
+[LMFDB curve page](https://www.lmfdb.org/EllipticCurve/Q/112/a/2#invariants).
+Its separate error witness supplies a factorization of the reduced abc product
+and asks Lean to prove an absolute error bound of `10⁻¹⁵`.

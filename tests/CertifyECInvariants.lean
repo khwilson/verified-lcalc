@@ -15,6 +15,21 @@ certify_ec Partial37 from_json_string
       "conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3]}"#
 example : (Partial37.curve.baseChange ℚ).j = 110592 / 37 := Partial37.j_invariant
 
+certify_ec DirectAbcQuality from
+  { equation := ⟨0, 1, 0, 0, 4⟩,
+    abcQuality := some {
+      reported := 1
+      error := 1 / 10
+      factors := [2, 2, 2, 2, 3, 3, 3, 5, 5, 7, 11, 11] } }
+example :
+    |(DirectAbcQuality.curve.baseChange ℚ).abcQuality DirectAbcQuality.abc_quality_defined -
+      1| ≤ (1 / 10 : ℝ) := by
+  convert DirectAbcQuality.abc_quality using 1 <;> norm_num [DirectAbcQuality.claimed_abc_quality]
+
+certify_ec RawAbcMetadata from_json_string
+  r#"{"ainvs":[0,1,0,0,4],"abc_quality":1.0348177494302118}"#
+example : RawAbcMetadata.witness.abcQuality = none := rfl
+
 certify_ec JZero from_json_string
   r#"{"ainvs":[0,0,0,0,1],"jinv":"0","signD":-1,"discriminant":-432}"#
 certify_ec IntegralJ from { equation := ⟨0, 0, 0, 0, 1⟩, jIntegral := some true }
@@ -105,6 +120,8 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
   for suffix in [`witness, `curve, `nonsingular, `j_invariant, `discriminant,
       `claimed_j_invariant, `claimed_j_integral, `j_integral, `j_integral_input_eq,
       `j_integral_value_valid, `claimed_discriminant, `global_minimal,
+      `claimed_abc_quality, `abc_quality_input_eq, `abc_quality_valid, `abc_quality_defined,
+      `abc_quality,
       `claimed_potential_good_reduction, `potential_good_reduction,
       `potential_good_reduction_input_eq, `potential_good_reduction_value_valid,
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
@@ -115,6 +132,22 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `WrongAbcDecimal (← `(certify_ec WrongAbcDecimal from_json_string
+    r#"{"ainvs":[0,1,0,0,4],"abc_quality":1.05,
+        "abc_quality_evidence":{"error":[1,1000000],"factors":[2,2,2,2,3,3,3,5,5,7,11,11]}}"#))
+  invariantRejected `MissingAbcDecimal (← `(certify_ec MissingAbcDecimal from_json_string
+    r#"{"ainvs":[0,1,0,0,4],"abc_quality_evidence":{"error":1,"factors":[]}}"#))
+  invariantRejected `WrongAbcFactors (← `(certify_ec WrongAbcFactors from
+    { DirectAbcQuality.witness with
+      abcQuality := some { DirectAbcQuality.claimed_abc_quality with
+        factors := [2, 2, 2, 2, 3, 3, 3, 5, 5, 7, 121] } }))
+  invariantRejected `NegativeAbcError (← `(certify_ec NegativeAbcError from
+    { DirectAbcQuality.witness with
+      abcQuality := some { DirectAbcQuality.claimed_abc_quality with error := -1 } }))
+  invariantRejected `UndefinedAbcZero (← `(certify_ec UndefinedAbcZero from
+    { JZero.witness with abcQuality := some DirectAbcQuality.claimed_abc_quality }))
+  invariantRejected `UndefinedAbc1728 (← `(certify_ec UndefinedAbc1728 from
+    { J1728.witness with abcQuality := some DirectAbcQuality.claimed_abc_quality }))
   invariantRejected `WrongJ (← `(certify_ec WrongJ from
     { Invariants37.witness with jInvariant := some 0 }))
   invariantRejected `WrongIntegralJ (← `(certify_ec WrongIntegralJ from_json_string

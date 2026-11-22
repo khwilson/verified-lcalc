@@ -187,6 +187,18 @@ def localReductionClaims (j : Json) :
     return some ((← localReductionClaim j) :: rows.getD [])
   return rows
 
+/-- Interpret the stored JSON decimal exactly when explicit error evidence is present. -/
+def abcQualityClaim (j : Json) : Except String (Option AbcQualityClaim) := do
+  let some evidence := optionalData j "abc_quality_evidence" | return none
+  let number ← (← j.getObjVal? "abc_quality").getNum?
+  unless number.exponent ≤ 512 && (toString number.mantissa).length ≤ 512 do
+    throw "Oversized abc_quality decimal"
+  let reported : Rat := (number.mantissa : Rat) / 10 ^ number.exponent
+  let error ← rationalValue (← evidence.getObjVal? "error")
+  let rows ← array (← evidence.getObjVal? "factors") 4096
+  let factors ← rows.toList.mapM nonnegativeInteger
+  return some { reported, error, factors }
+
 /-- Decode whichever supported fields are present. Integer square-root
 reconstruction supplies candidate y-coordinates for stored integral x-values;
 the certifier subsequently proves every resulting curve equation. -/
@@ -247,6 +259,7 @@ def decode (j : Json) : Except String EllipticWitness := do
   let cInvariants ← optionalValue j "cinvs" cValues
   let discriminant ← optionalValue j "discriminant" integer
   let jInvariant ← optionalValue j "jinv" rationalValue
+  let abcQuality ← abcQualityClaim j
   let jIntegral ← optionalValue j "j_integral" Json.getBool?
   let potentialGoodReduction ← optionalValue j "potential_good_reduction" Json.getBool?
   let discriminantSign ← optionalValue j "signD" integer
@@ -272,6 +285,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     cInvariants
     discriminant
     jInvariant
+    abcQuality
     jIntegral
     potentialGoodReduction
     discriminantSign

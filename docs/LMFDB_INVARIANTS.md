@@ -22,6 +22,7 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `ainvs` | `equation` | Actual Mathlib `WeierstrassCurve ℤ`; nonsingularity is checked. |
 | `binvs`, `cinvs` | `bInvariants`, `cInvariants` | Equalities with Mathlib's b₂,b₄,b₆,b₈ and c₄,c₆. These are optional equation-data extensions. |
 | `discriminant` | `discriminant` | Equality with this supplied equation's Mathlib Δ; does not assert minimality. |
+| `abc_quality` with `abc_quality_evidence` | `abcQuality` | Proved absolute error bound between the reported decimal and TauCeti’s real abc quality, using the factorization in the evidence. |
 | `jinv` | `jInvariant` | Equality with Mathlib's actual rational-curve `j`. Accepts an exact numerator/positive-denominator pair, fraction string, or integer. |
 | `j_integral` | `jIntegral` | Exact JSON boolean. The exported `j_integral` theorem equates `IsLocalization.IsInteger ℤ` of Mathlib's j-invariant with the supplied flag being true. |
 | `potential_good_reduction` | `potentialGoodReduction` | Exact JSON boolean. The exported theorem equates potential good reduction at every rational prime with the supplied flag being true. |
@@ -41,6 +42,16 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
 | Point-index requests | `infiniteOrderPoints`, `independentPoints` | Infinite order and algebraic-rank lower bounds, with an explicit independence proof for a requested family. |
 | Complete numerical payload | `centralResult`, `derivativeResult` | Existing analytic-rank-zero/one certificates under the documented modularity assumption. |
+
+`abc_quality` is stored as a double-precision approximation. With explicit
+evidence, JSON digits are interpreted as an exact rational center. Supply
+`abc_quality_evidence` with a nonnegative exact rational `error` and the
+complete list `factors` of prime factors of the reduced abc product, repeated
+with multiplicity. The checker proves
+`|curve.abcQuality h - reported| ≤ error` using exact dyadic log bounds.
+It rejects evidence at j = 0 or 1728, where the quality is undefined.
+A bare decimal remains metadata. Direct Lean input uses `AbcQualityClaim`.
+[LMFDB definition](https://www.lmfdb.org/knowledge/show/ec.q.abc_quality)
 
 `j_integral` checks whether the j-invariant is the image of an integer.
 `potential_good_reduction` uses the same denominator computation to check
@@ -91,7 +102,7 @@ missing theorem.
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |
 | `cm`, quadratic-twist fields | Actual endomorphism/twist statements and, for a minimal twist, the required minimality comparison. A j-value lookup alone is not a CM certificate. |
 | Modular `degree`, `manin_constant`, `optimality` | Statements about the modular parametrization, not the degree of an arbitrary isogeny. |
-| Heights, periods, regulator, Faltings data, special values, `abc_quality`, `szpiro_ratio` | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |
+| Heights, periods, regulator, Faltings data, special values, `szpiro_ratio` | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |
 | `sha`, `sha_an`, `sha_primes` | Cohomological/descent proofs and a precise analytic-vs-algebraic interpretation; no BSD axiom is authorized. |
 | Galois-image, adelic, nonmaximal-prime, Serre, Iwasawa, and torsion-growth data | The relevant representations, fields, group images, and completeness proofs. |
 | Labels, ordering/index fields, hashes | Catalogue/provenance metadata; not mathematical identity certificates. |

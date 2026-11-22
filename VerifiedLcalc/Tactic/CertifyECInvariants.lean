@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certification.StoredInvariants
+public import VerifiedLcalc.Certification.AbcQuality
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public meta import Lean
 
@@ -84,10 +84,26 @@ private def certifyConductorValuations (base : Name) (curve hn : Ident)
       exact Certification.factorization_of_prime_exponent_check _ _ _
         (List.all_eq_true.mp $hv row hrow))) true
 
+/-- Certify the requested error on the actual abc quality of the curve. -/
+private def certifyAbcQuality (base : Name) (curve : Ident) : CommandElabM Unit := do
+  let some claim ← bindStored base `abcQuality `abc_quality (← `(AbcQualityClaim)) | return
+  let valid := rootIdent (base ++ `abc_quality_valid)
+  checked (base ++ `abc_quality_valid)
+    (← `(Certification.abcQualityValid $curve $claim = true)) (← `(by decide +kernel))
+  let defined := rootIdent (base ++ `abc_quality_defined)
+  checked (base ++ `abc_quality_defined)
+    (← `((($curve).baseChange ℚ).j ≠ 0 ∧ (($curve).baseChange ℚ).j ≠ 1728))
+    (← `(Certification.abc_quality_defined_of_check $curve $claim $valid))
+  checked (base ++ `abc_quality)
+    (← `(|(($curve).baseChange ℚ).abcQuality $defined - (($claim).reported : ℝ)| ≤
+      (($claim).error : ℝ)))
+    (← `(Certification.abc_quality_of_check $curve $claim $valid $defined))
+
 /-- Check each supplied invariant against the actual curve, not an LMFDB label. -/
 def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
   let hn := rootIdent (base ++ `nonsingular)
+  certifyAbcQuality base curve
   if let some b ← bindStored base `bInvariants `b_invariants (← `(Int × Int × Int × Int)) then
     checked (base ++ `b_invariants)
       (← `((($curve).b₂, ($curve).b₄, ($curve).b₆, ($curve).b₈) = $b))

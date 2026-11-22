@@ -28,6 +28,16 @@ structure LocalReductionClaim where
   reductionType : Option Int := none
   deriving Repr, DecidableEq
 
+/-- A reported abc quality and evidence for its absolute error bound. -/
+structure AbcQualityClaim where
+  /-- Exact rational interpretation of the reported value. -/
+  reported : Rat
+  /-- Claimed maximum absolute error. -/
+  error : Rat
+  /-- All prime factors of the abc product, with multiplicity. -/
+  factors : List Nat
+  deriving Repr, DecidableEq
+
 /-- The single input record for elliptic-curve certification. `none` means that
 no data of that kind was supplied; `some []` is an explicitly supplied empty
 list, not a claim of completeness. Numerical results are rank candidates;
@@ -44,6 +54,8 @@ structure EllipticWitness where
   discriminant : Option Int := none
   /-- Claimed exact rational j-invariant. -/
   jInvariant : Option Rat := none
+  /-- An error bound on the reported abc quality. -/
+  abcQuality : Option AbcQualityClaim := none
   /-- Whether the rational j-invariant belongs to the image of ℤ. -/
   jIntegral : Option Bool := none
   /-- Whether the curve has potential good reduction at every rational prime. -/
