@@ -75,6 +75,7 @@ def main() -> None:
         "tests/IntervalMultiplication.lean",
         "tests/OddPointCount.lean",
         "tests/consumers/CertifiedECConsumer.lean",
+        "tests/consumers/CatalogueAnalyticRank.lean",
         "tests/consumers/CertifiedECDataConsumer.lean",
         "tests/consumers/CertifiedECPointsConsumer.lean",
         "tests/consumers/CertifiedECInvariantsConsumer.lean",

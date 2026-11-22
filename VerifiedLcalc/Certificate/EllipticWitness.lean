@@ -69,6 +69,8 @@ This record asserts no mathematical validity. -/
 structure EllipticWitness where
   /-- Integral Weierstrass equation representing the input curve. -/
   equation : WeierstrassCurve ℤ
+  /-- LMFDB analytic rank to compare with an independently checked analytic payload. -/
+  catalogueAnalyticRank : Option Nat := none
   /-- Claims for the ordered tuple of b₂, b₄, b₆ and b₈. -/
   bInvariants : Option (Int × Int × Int × Int) := none
   /-- Claims for the ordered pair of c₄ and c₆. -/
