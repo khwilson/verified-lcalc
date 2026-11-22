@@ -3,7 +3,13 @@ import VerifiedLcalc.EllipticCurve.TorsionBound
 import VerifiedLcalc.EllipticCurve.TwoFactorTorsion
 import Lean
 
-/-! A noncyclic torsion example and a dependent control using the 120.b4 equation. -/
+/-!
+# Two-factor torsion on 120.b4
+
+The equation and generator coordinates come from
+`data/lmfdb/raw/curvedata-first-1200.txt`. The dependent control uses the
+double of the supplied point of order four.
+-/
 
 open Lean Elab Command VerifiedLcalc VerifiedLcalc.EllipticCurve
 
