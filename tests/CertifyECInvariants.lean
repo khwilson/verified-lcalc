@@ -155,7 +155,8 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
 
 run_cmd do
   invariantRejected `WrongTamagawa (← `(certify_ec WrongTamagawa from
-    { GoodTamagawa.witness with localInvariants := some [{ prime := 3, tamagawaNumber := some 2 }] }))
+    { GoodTamagawa.witness with
+      localInvariants := some [{ prime := 3, tamagawaNumber := some 2 }] }))
   invariantRejected `WrongTorsion (← `(certify_ec WrongTorsion from
     { TrivialTorsion.witness with torsion := some 2 }))
   invariantRejected `InconsistentTorsion (← `(certify_ec InconsistentTorsion from

@@ -58,7 +58,8 @@ private theorem hasGoodReduction_completed (e : WeierstrassCurve ℤ) (p : ℕ)
 private theorem tamagawaNumberAt_adicValued (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime] :
     (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) =
       ((e.baseChange ℚ).baseChange ((rationalPlace p).adicCompletion ℚ)).tamagawaNumber
-        (Valued.v : Valuation ((rationalPlace p).adicCompletion ℚ) (WithZero (Multiplicative ℤ))) := by
+        (Valued.v : Valuation ((rationalPlace p).adicCompletion ℚ)
+          (WithZero (Multiplicative ℤ))) := by
   let v := rationalPlace p
   let F := v.adicCompletion ℚ
   let V : Valuation F (WithZero (Multiplicative ℤ)) := Valued.v
