@@ -185,6 +185,15 @@ example :
     Nat.card (AddCommGroup.torsion (LooseTorsionBound.curve.baseChange ℚ).toAffine.Point) ∣ 6 :=
   LooseTorsionBound.torsion_bound.1
 
+certify_ec LooseTorsionPrimeSupport from_json_string
+  r#"{"ainvs":[0,1,0,-20,0],"torsion_primes":[2],
+      "torsion_bound":{"first_prime":7,"second_prime":11,"bound":8}}"#
+example : LooseTorsionPrimeSupport.certificate.torsion.primeSupport.isNone = true := rfl
+
+run_cmd do
+  if (← getEnv).contains `LooseTorsionPrimeSupport.torsion_primes then
+    throwError "A loose torsion divisor generated exact prime support"
+
 certify_ec NoncyclicTorsion from_json_string
   r#"{"ainvs":[0,0,0,-1,0],"torsion":4,"torsion_structure":[2,2],
       "torsion_generators":[[0,0,1],[-1,0,1]],"torsion_generator_orders":[2,2],
@@ -263,6 +272,8 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `torsion, `torsion_bound, `claimed_torsion, `claimed_torsion_bound,
       `torsion_input_eq, `torsion_bound_input_eq, `torsion_bound_value_valid,
       `torsion_claim_consistent,
+      `claimed_torsion_primes, `torsion_primes_input_eq, `torsion_primes_value_valid,
+      `torsion_primes, `torsion_primes_nodup, `torsion_primes_exact,
       `claimed_potential_good_reduction, `potential_good_reduction,
       `potential_good_reduction_input_eq, `potential_good_reduction_value_valid,
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
@@ -274,7 +285,11 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation,
       `claimed_torsion_structure, `torsion_structure, `torsion_structure_order_consistent,
       `torsion_point_orders_consistent, `torsion_structure_divisor_consistent,
-      `torsion_structure_normalized] do
+      `torsion_structure_normalized, `torsion_structure_equiv,
+      `torsion_structure_second_order, `torsion_structure_first_generator,
+      `torsion_structure_second_generator, `torsion_structure_image_witness,
+      `torsion_structure_first_image, `torsion_structure_second_image,
+      `torsion_structure_cardinality, `torsion_generators.independence_valid] do
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
@@ -355,6 +370,16 @@ run_cmd do
     r#"{"ainvs":[0,0,1,-1,0],"potential_good_reduction":true}"#))
   invariantRejected `WrongNoPotentialGood (← `(certify_ec WrongNoPotentialGood from
     { PotentialGood.witness with potentialGoodReduction := some false }))
+  invariantRejected `DependentTorsionPair (← `(certify_ec DependentTorsionPair from_json_string
+    r#"{"ainvs":[0,1,0,-20,0],"torsion":8,"torsion_structure":[2,4],
+        "torsion_generators":[[4,0,1],[-2,6,1]],"torsion_generator_orders":[2,4],
+        "torsion_bound":{"first_prime":7,"second_prime":11,"bound":8}}"#))
+  invariantRejected `WrongTorsionPrimeSupport (← `(certify_ec WrongTorsionPrimeSupport
+    from_json_string
+    r#"{"ainvs":[0,1,0,-20,0],"torsion":8,"torsion_structure":[2,4],
+        "torsion_primes":[3],"torsion_generators":[[0,0,1],[-2,6,1]],
+        "torsion_generator_orders":[2,4],
+        "torsion_bound":{"first_prime":7,"second_prime":11,"bound":8}}"#))
   invariantRejected `TorsionCountBelowPointOrder (← `(certify_ec TorsionCountBelowPointOrder
     from_json_string
     r#"{"ainvs":[0,1,0,0,4],"torsion":1,
@@ -440,7 +465,7 @@ run_cmd do
   if (← getEnv).contains `IntegralJ.potential_good_reduction then
     throwError "An omitted potential_good_reduction claim generated a theorem"
   for suffix in [`torsion, `torsion_structure] do
-    for name in [`AssertedTorsionOnly, `LooseTorsionBound, `NoncyclicTorsion] do
+    for name in [`AssertedTorsionOnly, `LooseTorsionBound] do
       if (← getEnv).contains (name ++ suffix) then
         throwError "Insufficient torsion evidence generated a claim"
   if (← getEnv).contains `LocalSignMetadata.root_number then
@@ -533,7 +558,8 @@ run_cmd do
     `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
     `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData]
   let analytic := #[`centralResult, `derivativeResult, `catalogueAnalyticRank]
-  let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionGeneratorOrders]
+  let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionPrimes,
+    `torsionGeneratorOrders]
   let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do
     let fields := Lean.getStructureFields (← getEnv) record
     for field in fields do

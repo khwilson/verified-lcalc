@@ -134,13 +134,29 @@ private def torsionFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
     let n ← literalSyntax value
     `(some ⟨$n, $(rootIdent exactName)⟩)
   else `(none)
-  let cyclic ← if (← getEnv).contains (base ++ `torsion_structure) then
+  let cyclic ← if (← getEnv).contains (base ++ `torsion_structure) &&
+      !(← getEnv).contains (base ++ `torsion_structure_equiv) then
     `(some ⟨$(rootIdent (base ++ `claimed_torsion_structure)),
       $(rootIdent (base ++ `cyclic_torsion_order)),
       $(rootIdent (base ++ `cyclic_torsion_generator)), $(rootIdent (base ++ `torsion_structure))⟩)
   else `(none)
+  let twoFactor ← if (← getEnv).contains (base ++ `torsion_structure_equiv) then
+    `(some ⟨$(rootIdent (base ++ `torsion_structure_second_order)),
+      $(rootIdent (base ++ `torsion_structure_first_generator)),
+      $(rootIdent (base ++ `torsion_structure_second_generator)),
+      $(rootIdent (base ++ `torsion_structure_equiv)),
+      $(rootIdent (base ++ `torsion_structure_first_image)),
+      $(rootIdent (base ++ `torsion_structure_second_image)),
+      $(rootIdent (base ++ `torsion_structure_cardinality))⟩)
+  else `(none)
+  let primeSupport ← if (← getEnv).contains (base ++ `torsion_primes_exact) then
+    `(some ⟨$(rootIdent (base ++ `torsion_primes)),
+      $(rootIdent (base ++ `torsion_primes_nodup)),
+      $(rootIdent (base ++ `torsion_primes_exact))⟩)
+  else `(none)
   `({ divisor := some ⟨$evidence, $checkedBound, $valid, $consistent⟩,
-      cardinality := $exactCardinality, cyclicStructure := $cyclic })
+      cardinality := $exactCardinality, cyclicStructure := $cyclic,
+      twoFactorStructure := $twoFactor, primeSupport := $primeSupport })
 
 /-- Emit the indexed public certificate with a standard-axiom dependency audit. -/
 def certifyRecord (base : Name) : CommandElabM Unit := do
@@ -170,7 +186,8 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     analytic := $analytic
     torsion := $torsion
     isogeny := $isogeny })
-  if (← getEnv).contains edgeName then
+  if (← getEnv).contains edgeName ||
+      (← getEnv).contains (base ++ `torsion_structure_equiv) then
     emit (← `(noncomputable def $certificate : EllipticCertificate $curve := $record))
   else
     emit (← `(def $certificate : EllipticCertificate $curve := $record))
