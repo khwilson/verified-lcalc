@@ -128,6 +128,12 @@ ranks conditional on an explicit realization. The `torsion` field can carry a
 verified positive multiple of the full subgroup order, a consistent supplied
 count, and an exact cardinality when determined.
 
+The `torsion.cyclicStructure` projection gives the checked factors, order,
+and rational generator together with a generator-preserving equivalence.
+
+The `rational.abcQuality` projection holds the exact reported value and error,
+the validated factorization, and the certified bound on the actual quality.
+
 For example, the following reads an invariant from a compiled certificate
 using its exact proof. The default handles a missing value using the equation.
 
@@ -265,6 +271,17 @@ from 1 to 256 are accepted for checking. The command exports
 a theorem about Mathlib’s `addOrderOf`. An incorrect order, mismatched list
 length, or missing coordinate list rejects the whole certificate. The
 default when no orders are supplied is membership checking alone.
+With a verified `torsion_bound` and the matching exact order of the first
+torsion point, the LMFDB `torsion` claim certifies the cardinality of the
+full rational torsion subgroup. Supply the cyclic `torsion_structure` as
+`[n]` for a nontrivial group of order `n`. The structure theorem gives an
+additive equivalence from `ZMod n` sending 1 to that first point. The trivial
+group uses `[]` and the identity point. If the verified bound is larger
+than the claimed order, the cyclic certificate requires tighter evidence.
+Invariant factors must be greater than one and each must divide every later
+factor. Their product must agree with the claimed cardinality and divide the
+verified divisibility bound when those claims are supplied. Each checked point
+order must divide the last factor, or one for the empty list.
 Generation and independence require separate evidence.
 
 The same `certify_ec` command establishes stronger facts when
@@ -388,6 +405,15 @@ The reusable-theorem extraction plan is in [TAUCETI_ROADMAP.md](TAUCETI_ROADMAP.
 with separate arithmetic and analytic roadmaps. Certificate metadata and
 metaprogramming stay in this project; mathematical replacements should be
 upstreamed independently, with their own proof and axiom audits.
+
+A native `analytic_rank` or Lean `catalogueAnalyticRank` is an optional
+catalogue value to compare with an independently verified order. The command
+exports `E.catalogue_rank` and `E.catalogue_analytic_rank` only after an actual
+analytic payload establishes that same order. Both are indexed by the checked
+curve and use an explicitly supplied arithmetic modular realization. A conflict
+rolls back the whole command. Missing analytic evidence leaves the reference
+value unverified. The algebraic `rank` column and the legacy rank-witness
+format's payload selector have their existing meanings.
 
 ## A single degree-two rational isogeny edge
 

@@ -1,6 +1,11 @@
 {
   "ainvs": [0, 1, 0, 0, 4],
   "jinv": [-4, 7],
+  "abc_quality": 1.0348177494302118,
+  "abc_quality_evidence": {
+    "error": [1, 1000000000000000],
+    "factors": [2, 2, 2, 2, 3, 3, 3, 5, 5, 7, 11, 11]
+  },
   "signD": -1,
   "absD": 7168,
   "bad_primes": [2, 7],
@@ -11,6 +16,9 @@
   "gens": [[0, 2, 1]],
   "torsion_generators": [[-2, 0, 1]],
   "torsion_generator_orders": [2],
+  "torsion": 2,
+  "torsion_structure": [2],
+  "torsion_bound": {"first_prime": 3, "second_prime": 5, "bound": 2},
   "anlist": [0, 1, 0, -2, 0, -4, 0, -1, 0],
   "conductor": 112,
   "prime": 2,

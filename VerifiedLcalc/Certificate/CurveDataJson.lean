@@ -165,7 +165,8 @@ def weightedCoordinates (j : Json) : Except String (List (Rat × Rat)) := do
 
 /-- Optional data fields that identify a top-level local reduction row. -/
 def localReductionFields : List String :=
-  ["discriminant_valuation", "j_denominator_valuation", "reduction_type", "conductor_valuation"]
+  ["discriminant_valuation", "j_denominator_valuation", "reduction_type", "conductor_valuation",
+    "kodaira_symbol", "tamagawa_number"]
 
 /-- Decode the supported exact fields from one local reduction row. -/
 def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
@@ -176,7 +177,13 @@ def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
   let reductionType ← optionalValue j "reduction_type" integer
   if let some code := reductionType then
     unless code == 0 || code == 1 || code == -1 do throw "Unsupported local reduction type"
-  return { prime, discriminantValuation, conductorValuation, jDenominatorValuation, reductionType }
+  let kodairaSymbol ← optionalValue j "kodaira_symbol" integer
+  if let some code := kodairaSymbol then
+    unless code != 0 do throw "Zero is not a PARI Kodaira code"
+  let tamagawaNumber ← optionalValue j "tamagawa_number" nonnegativeInteger
+  return {
+    prime, discriminantValuation, conductorValuation, jDenominatorValuation
+    reductionType, kodairaSymbol, tamagawaNumber }
 
 /-- Decode a local-row list and any top-level local claim. -/
 def localReductionClaims (j : Json) :
@@ -186,6 +193,18 @@ def localReductionClaims (j : Json) :
   if localReductionFields.any (fun key => (optionalData j key).isSome) then
     return some ((← localReductionClaim j) :: rows.getD [])
   return rows
+
+/-- Interpret the stored JSON decimal exactly when explicit error evidence is present. -/
+def abcQualityClaim (j : Json) : Except String (Option AbcQualityClaim) := do
+  let some evidence := optionalData j "abc_quality_evidence" | return none
+  let number ← (← j.getObjVal? "abc_quality").getNum?
+  unless number.exponent ≤ 512 && (toString number.mantissa).length ≤ 512 do
+    throw "Oversized abc_quality decimal"
+  let reported : Rat := (number.mantissa : Rat) / 10 ^ number.exponent
+  let error ← rationalValue (← evidence.getObjVal? "error")
+  let rows ← array (← evidence.getObjVal? "factors") 4096
+  let factors ← rows.toList.mapM nonnegativeInteger
+  return some { reported, error, factors }
 
 /-- Decode exact raw data for one rational isogeny edge. -/
 def isogenyEdgeClaim (j : Json) : Except String IsogenyEdgeClaim := do
@@ -201,6 +220,7 @@ def decode (j : Json) : Except String EllipticWitness := do
   let _ ← j.getObj?
   let equation ← equation j
   let isogenyEdge ← optionalValue j "isogeny_edge" isogenyEdgeClaim
+  let catalogueAnalyticRank ← optionalValue j "analytic_rank" nonnegativeInteger
   let mut primeCoefficients : Array (Nat × Int) := #[]
   if let some rows := optionalData j "ap" then
     for row in ← array rows 256 do
@@ -235,6 +255,8 @@ def decode (j : Json) : Except String EllipticWitness := do
   let torsionGeneratorCoordinates ← optionalValue j "torsion_generators" weightedCoordinates
   let torsionGeneratorOrders ← optionalValue j "torsion_generator_orders" fun value => do
     (← array value 4096).toList.mapM nonnegativeInteger
+  let torsionStructure ← optionalValue j "torsion_structure" fun value => do
+    (← array value 16).toList.mapM nonnegativeInteger
   let numeric ← numericFields j
   let base := numeric.getD { equation }
   let primeData := if (optionalData j "ap").isSome || (optionalData j "aplist").isSome
@@ -259,6 +281,7 @@ def decode (j : Json) : Except String EllipticWitness := do
   let cInvariants ← optionalValue j "cinvs" cValues
   let discriminant ← optionalValue j "discriminant" integer
   let jInvariant ← optionalValue j "jinv" rationalValue
+  let abcQuality ← abcQualityClaim j
   let jIntegral ← optionalValue j "j_integral" Json.getBool?
   let potentialGoodReduction ← optionalValue j "potential_good_reduction" Json.getBool?
   let discriminantSign ← optionalValue j "signD" integer
@@ -289,10 +312,12 @@ def decode (j : Json) : Except String EllipticWitness := do
   return { base with
     equation
     isogenyEdge
+    catalogueAnalyticRank
     bInvariants
     cInvariants
     discriminant
     jInvariant
+    abcQuality
     jIntegral
     potentialGoodReduction
     discriminantSign
@@ -313,6 +338,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     generatorCoordinates
     torsionGeneratorCoordinates
     torsionGeneratorOrders
+    torsionStructure
     infiniteOrderPoints
     independentPoints
     minimality

@@ -1,7 +1,8 @@
 module
 
-public import VerifiedLcalc.Certification.StoredInvariants
+public import VerifiedLcalc.Certification.AbcQuality
 public import VerifiedLcalc.EllipticCurve.TorsionBound
+public import VerifiedLcalc.EllipticCurve.TorsionStructure
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public meta import Lean
 
@@ -25,7 +26,7 @@ private def bindStored (base field label : Name) (type : TSyntax `term) :
     (← `($projection $w = some $value)) (← `(by rfl))
   return some value
 
-private def certifyReductionInvariants (base : Name) (curve m hm : Ident)
+private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
     (hasMinimality : Bool) : CommandElabM Unit := do
   let hglobal := rootIdent (base ++ `global_minimal)
   if let some claim ← bindStored base `semistable `semistable (← `(Bool)) then
@@ -53,6 +54,24 @@ private def certifyReductionInvariants (base : Name) (curve m hm : Ident)
       logInfo m!"Unverified {base} squarefree_disc: supply minimality evidence"
   if let some rows ← bindStored base `localInvariants `local_invariants
       (← `(List LocalReductionClaim)) then
+    let hagree := rootIdent (base ++ `local_invariants_agree_valid)
+    checked (base ++ `local_invariants_agree_valid)
+      (← `(localReductionClaimsAgree $rows = true)) (← `(by decide +kernel))
+    checked (base ++ `local_invariants_agree)
+      (← `(∀ a ∈ $rows, ∀ b ∈ $rows, LocalReductionClaim.Compatible a b))
+      (← `(localReductionClaimsAgree_correct $rows $hagree))
+    let hTam := rootIdent (base ++ `tamagawa_values_valid)
+    checked (base ++ `tamagawa_values_valid)
+      (← `(($rows).all (fun row => row.checkTamagawa $curve) = true)) (← `(by decide +kernel))
+    checked (base ++ `tamagawa_numbers)
+      (← `(∀ row ∈ $rows, LocalReductionClaim.TamagawaSpec row $curve)) (← `(by
+        intro row hrow
+        exact LocalReductionClaim.tamagawa_correct row $curve (List.all_eq_true.mp $hTam row hrow)))
+    let unsupported := mkApp2 (mkConst ``hasUnsupportedTamagawaClaim) (mkConst (base ++ `curve))
+      (mkConst (base ++ `claimed_local_invariants))
+    let unsupported ← liftTermElabM <| whnf unsupported
+    if unsupported.isConstOf ``Bool.true then
+      logInfo m!"{base}: Tamagawa claims outside good or I₁ reduction are unverified."
     if hasMinimality then
       let hv := rootIdent (base ++ `local_invariants_value_valid)
       checked (base ++ `local_invariants_value_valid)
@@ -62,8 +81,22 @@ private def certifyReductionInvariants (base : Name) (curve m hm : Ident)
           intro row hrow
           exact LocalReductionClaim.check_correct row $curve $hglobal
             (List.all_eq_true.mp $hv row hrow)))
+      checked (base ++ `kodaira_symbols)
+        (← `(∀ row ∈ $rows, LocalReductionClaim.KodairaSpec row $curve)) (← `(by
+          intro row hrow
+          exact LocalReductionClaim.kodaira_correct row $curve $hn $hglobal
+            (List.all_eq_true.mp $hv row hrow)))
+      let additive := mkApp (mkConst ``hasAdditiveKodairaClaim)
+        (mkConst (base ++ `claimed_local_invariants))
+      let additive ← liftTermElabM <| whnf additive
+      if additive.isConstOf ``Bool.true then
+        logInfo m!"{base}: additive Kodaira family verified. Exact additive codes unverified."
     else
-      logInfo m!"Unverified {base} local_invariants: supply minimality evidence"
+      let needsMinimality := mkApp (mkConst ``hasMinimalityDependentLocalClaim)
+        (mkConst (base ++ `claimed_local_invariants))
+      let needsMinimality ← liftTermElabM <| whnf needsMinimality
+      if needsMinimality.isConstOf ``Bool.true then
+        logInfo m!"Unverified {base} local_invariants: supply minimality evidence"
 
 private def certifyConductorValuations (base : Name) (curve hn : Ident)
     (checkedConductor : Option Ident) : CommandElabM Unit := do
@@ -84,6 +117,21 @@ private def certifyConductorValuations (base : Name) (curve hn : Ident)
       rw [$hN:term]
       exact Certification.factorization_of_prime_exponent_check _ _ _
         (List.all_eq_true.mp $hv row hrow))) true
+
+/-- Certify the requested error on the actual abc quality of the curve. -/
+private def certifyAbcQuality (base : Name) (curve : Ident) : CommandElabM Unit := do
+  let some claim ← bindStored base `abcQuality `abc_quality (← `(AbcQualityClaim)) | return
+  let valid := rootIdent (base ++ `abc_quality_valid)
+  checked (base ++ `abc_quality_valid)
+    (← `(Certification.abcQualityValid $curve $claim = true)) (← `(by decide +kernel))
+  let defined := rootIdent (base ++ `abc_quality_defined)
+  checked (base ++ `abc_quality_defined)
+    (← `((($curve).baseChange ℚ).j ≠ 0 ∧ (($curve).baseChange ℚ).j ≠ 1728))
+    (← `(Certification.abc_quality_defined_of_check $curve $claim $valid))
+  checked (base ++ `abc_quality)
+    (← `(|(($curve).baseChange ℚ).abcQuality $defined - (($claim).reported : ℝ)| ≤
+      (($claim).error : ℝ)))
+    (← `(Certification.abc_quality_of_check $curve $claim $valid $defined))
 
 private def certifyTorsionInvariants (base : Name) (curve : Ident) : CommandElabM Unit := do
   let evidence ← bindStored base `torsionBound `torsion_bound (← `(TorsionBoundWitness))
@@ -117,8 +165,88 @@ private def certifyTorsionInvariants (base : Name) (curve : Ident) : CommandElab
         have h₁ : ($evidence).bound = 1 := by decide +kernel
         have hdiv : $htorsion ∣ 1 := h₁ ▸ ($hbound).1
         exact (Nat.dvd_one.mp hdiv).trans (by decide +kernel)))
-  else if claim.isSome then
-    logInfo m!"Unverified {base} torsion: the checked divisibility bound is not exact"
+
+/-- Recover cyclic torsion when the verified bound matches an exact point order. -/
+private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Unit := do
+  let factors ← bindStored base `torsionStructure `torsion_structure (← `(List Nat))
+  let orderName := base ++ `claimed_torsion
+  let order := if (← getEnv).contains orderName then some (rootIdent orderName) else none
+  let some nInput ← (match order, factors with
+    | some order, _ => pure (some (order : TSyntax `term))
+    | none, some factors => some <$> `(($factors).prod)
+    | none, none => pure none) | return
+  let nName := base ++ `cyclic_torsion_order
+  let n := rootIdent nName
+  emit (← `(def $n : Nat := $nInput))
+  if let some ofOrder := order then
+    if let some factors := factors then
+      checked (base ++ `torsion_structure_order_consistent)
+        (← `(($factors).prod = $ofOrder)) (← `(by decide +kernel))
+  let exponent ← if let some factors := factors then do
+    checked (base ++ `torsion_structure_normalized)
+      (← `((($factors).all (fun factor => decide (1 < factor)) = true) ∧
+        ($factors).Pairwise (fun a b => a ∣ b))) (← `(by decide +kernel))
+    `(($factors).getLastD 1)
+  else `($n)
+  let ordersName := base ++ `torsion_generators.orders
+  if (← getEnv).contains ordersName then
+    let orders := rootIdent ordersName
+    checked (base ++ `torsion_point_orders_consistent)
+      (← `(($orders).all (fun order => decide (order ∣ $exponent)) = true))
+      (← `(by decide +kernel))
+  unless (← getEnv).contains (base ++ `torsion_bound) do
+    if factors.isSome then
+      logInfo m!"Unverified {base} torsion_structure: supply a checked torsion bound"
+    return
+  let candidate := rootIdent (base ++ `claimed_torsion_bound)
+  if factors.isSome then
+    checked (base ++ `torsion_structure_divisor_consistent)
+      (← `(0 < $n ∧ $n ∣ ($candidate).bound)) (← `(by decide +kernel))
+  let equalBound ← liftTermElabM do
+    let claimedBound ← Lean.Elab.Term.elabTerm (← `(($candidate).bound)) (some (mkConst ``Nat))
+    Meta.isDefEq (mkConst nName) claimedBound
+  unless equalBound do
+    logInfo m!"Unverified {base} cyclic torsion: the verified bound must match the claimed order"
+    return
+  let trivial ← liftTermElabM <| Meta.isDefEq (mkConst nName) (mkNatLit 1)
+  let pointOrder := base ++ `torsion_generators.exact_order
+  unless trivial do
+    unless (← getEnv).contains pointOrder do
+      logInfo m!"Unverified {base} cyclic torsion: supply the exact order of the first point"
+      return
+    let orders := rootIdent (base ++ `torsion_generators.orders)
+    let hasGeneratorOrder ← liftTermElabM do
+      let observed ← Lean.Elab.Term.elabTerm (← `(($orders).head?)) none
+      let expected ← Lean.Elab.Term.elabTerm (← `(some $n)) none
+      Meta.isDefEq observed expected
+    unless hasGeneratorOrder do
+      logInfo m!"Unverified {base} cyclic torsion: first point order must match the claimed order"
+      return
+  if let some factors := factors then
+    checked (base ++ `torsion_structure_claim_valid)
+      (← `($factors = if $n = 1 then [] else [$n])) (← `(by decide +kernel))
+  let torsionType ← `(AddCommGroup.torsion (($curve).baseChange ℚ).toAffine.Point)
+  let bound := rootIdent (base ++ `torsion_bound)
+  let (point, orderProof) ← if trivial then
+    pure (← `((0 : (($curve).baseChange ℚ).toAffine.Point)), ← `(addOrderOf_zero))
+  else
+    let first := rootIdent (base ++ `torsion_generators.point)
+    let exactOrder := rootIdent pointOrder
+    pure (← `($first ⟨0, by decide +kernel⟩), ← `($exactOrder ⟨0, by decide +kernel⟩))
+  let horder := rootIdent (base ++ `cyclic_torsion_order_valid)
+  checked (base ++ `cyclic_torsion_order_valid) (← `(addOrderOf $point = $n)) orderProof
+  unless (← getEnv).contains (base ++ `torsion) do
+    checked (base ++ `torsion) (← `(Nat.card $torsionType = $n))
+      (← `(torsion_card_eq_of_order_dvd ($bound).2 $horder ($bound).1))
+  if let some factors := factors then
+    let generator := rootIdent (base ++ `cyclic_torsion_generator)
+    emit (← `(def $generator : (($curve).baseChange ℚ).toAffine.Point := $point))
+    let hf := rootIdent (base ++ `torsion_structure_claim_valid)
+    checked (base ++ `torsion_structure)
+      (← `($factors = (if $n = 1 then [] else [$n]) ∧
+        ∃ e : ZMod $n ≃+ $torsionType,
+          (e 1 : (($curve).baseChange ℚ).toAffine.Point) = $generator))
+      (← `(⟨$hf, exists_torsion_addEquiv_of_order_dvd ($bound).2 $horder ($bound).1⟩))
 
 /-- Check one optional equation invariant and return the corresponding proved value. -/
 private def certifyProofFact (base field label : Name) (proofs : Option Ident)
@@ -176,7 +304,9 @@ def certifyStoredInvariants (base : Name)
     (proofs : Option (TSyntax `term) := none) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
   let hn := rootIdent (base ++ `nonsingular)
+  certifyAbcQuality base curve
   certifyTorsionInvariants base curve
+  certifyCyclicTorsion base curve
   certifyProofFacts base curve proofs
   if let some s ← bindStored base `discriminantSign `discriminant_sign (← `(Int)) then
     checked (base ++ `discriminant_sign) (← `(($curve).Δ.sign = $s)) (← `(by decide +kernel))
@@ -208,7 +338,7 @@ def certifyStoredInvariants (base : Name)
   let hm := rootIdent (base ++ `minimality_valid)
   let d := rootIdent (base ++ `localData)
   let hd := rootIdent (base ++ `local_data_valid)
-  certifyReductionInvariants base curve m hm hasMinimality
+  certifyReductionInvariants base curve hn m hm hasMinimality
   if let some values ← bindStored base `badPrimes `bad_primes (← `(List Nat)) then
     if hasMinimality then
       let hv := rootIdent (base ++ `bad_primes_value_valid)

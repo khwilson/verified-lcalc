@@ -3,6 +3,7 @@ module
 public import VerifiedLcalc.Certification.DegreeTwoIsogeny
 public import VerifiedLcalc.Certification.CurveData
 public import VerifiedLcalc.Certificate.ArithmeticFacts
+public import VerifiedLcalc.Certification.AbcQuality
 public import VerifiedLcalc.Certificate.AnalyticFacts
 public import VerifiedLcalc.EllipticCurve.PointIndependence
 public import VerifiedLcalc.EllipticCurve.TorsionBound
@@ -20,7 +21,19 @@ and a proof of independence carry their stated lower-bound conclusions.
 
 namespace VerifiedLcalc
 
-/-- Exact invariants whose definitions specialize to the integral or rational equation. -/
+/-- The exact rational report, its evidence, and a bound on the actual abc quality. -/
+structure AbcQualityFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
+  /-- The submitted report, error, and factorization. -/
+  claim : AbcQualityClaim
+  /-- The exact finite evidence check succeeded. -/
+  valid : Certification.abcQualityValid curve claim = true
+  /-- The curve is in the domain of abc quality. -/
+  defined : (curve.baseChange ℚ).j ≠ 0 ∧ (curve.baseChange ℚ).j ≠ 1728
+  /-- The actual quality lies within the certified absolute error. -/
+  within_error : |(curve.baseChange ℚ).abcQuality defined - (claim.reported : ℝ)| ≤
+    (claim.error : ℝ)
+
+/-- Checked invariants whose definitions specialize to the integral or rational equation. -/
 structure RationalInvariantFacts (curve : WeierstrassCurve ℤ)
     [(curve.baseChange ℚ).IsElliptic] where
   /-- The sign of the integral equation's discriminant. -/
@@ -30,6 +43,8 @@ structure RationalInvariantFacts (curve : WeierstrassCurve ℤ)
   /-- The truth value for integrality of the rational j-invariant. -/
   jIntegral : Option { b : Bool //
     IsLocalization.IsInteger ℤ (curve.baseChange ℚ).j ↔ b = true } := none
+  /-- The checked abc-quality enclosure. -/
+  abcQuality : Option (AbcQualityFacts curve) := none
 
 /-- Membership of every supplied coordinate pair on the given equation. -/
 structure AffineMembership {R : Type*} [CommRing R] (curve : WeierstrassCurve R) where
@@ -152,6 +167,19 @@ def TorsionDivisorFacts.bound {curve : WeierstrassCurve ℤ}
     (facts : TorsionDivisorFacts curve) : ℕ :=
   facts.evidence.bound
 
+/-- Checked invariant factors and a generator-preserving equivalence for cyclic torsion. -/
+structure CyclicTorsionFacts (curve : WeierstrassCurve ℤ) where
+  /-- The supplied invariant factors. -/
+  factors : List ℕ
+  /-- The order of the whole cyclic group. -/
+  order : ℕ
+  /-- The selected rational point, or the identity for trivial torsion. -/
+  generator : (curve.baseChange ℚ).toAffine.Point
+  /-- The canonical factors and an equivalence sending one to the selected point. -/
+  structure_eq : factors = (if order = 1 then [] else [order]) ∧
+    ∃ e : ZMod order ≃+ AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point,
+      (e 1 : (curve.baseChange ℚ).toAffine.Point) = generator
+
 /-- Partial divisibility bounds and exact cardinality assertions for the torsion subgroup. -/
 structure TorsionFacts (curve : WeierstrassCurve ℤ) where
   /-- Evidence that the full torsion order divides a checked positive bound. -/
@@ -159,6 +187,8 @@ structure TorsionFacts (curve : WeierstrassCurve ℤ) where
   /-- The exact cardinality of the whole torsion subgroup when determined. -/
   cardinality : Option { n : ℕ //
     Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) = n } := none
+  /-- The checked cyclic structure, if requested and determined. -/
+  cyclicStructure : Option (CyclicTorsionFacts curve) := none
 
 /-- The family-indexed certificate exported by the verification command. -/
 structure EllipticCertificate (curve : WeierstrassCurve ℤ)
