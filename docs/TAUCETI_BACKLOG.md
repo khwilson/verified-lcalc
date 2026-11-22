@@ -69,7 +69,7 @@ in an upstream proposal.
 
 Status: the canonical `WeierstrassCurve.IsGlobalMinimal` predicate and its
 introduction/elimination interface are now imported from the pinned TauCeti
-`GlobalMinimalModel.lean` excerpt. The project-specific `GloballyMinimalInput`
+`GlobalMinimalModel.lean` module. The project-specific `GloballyMinimalInput`
 definition is removed. Conductor/sign compatibility uses
 `IsGlobalMinimal (𝓞 ℚ) (e.baseChange ℚ)` directly, with the usual ellipticity
 instance.

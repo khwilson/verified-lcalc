@@ -1,7 +1,9 @@
 module
 
-public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.PointCount
+public import TauCeti.AlgebraicGeometry.EllipticCurve.PointCount
 public import Mathlib.Tactic.Linarith
+
+/-! # Computable point counts for finite Weierstrass models -/
 
 @[expose] public section
 
@@ -39,7 +41,8 @@ theorem pointCountFinite_le (W : WeierstrassCurve F) :
   have h := Nat.card_le_card_of_injective
     (Subtype.val : {p : F × F // W.toAffine.Equation p.1 p.2} → F × F)
     Subtype.val_injective
-  simpa only [Nat.card_prod, Nat.card_eq_fintype_card, Fintype.card_prod, pow_two] using Nat.add_le_add_right h 1
+  simpa only [Nat.card_prod, Nat.card_eq_fintype_card, Fintype.card_prod, pow_two] using
+    Nat.add_le_add_right h 1
 
 /-- Executable trace from the finite-field point-count algorithm. -/
 def frobeniusTraceFinite (W : WeierstrassCurve F) : ℤ :=

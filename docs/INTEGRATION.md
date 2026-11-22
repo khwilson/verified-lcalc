@@ -12,9 +12,9 @@ vanishing principle or extra arithmetic axiom was added.
 
 ## Completed connections
 
-Eleven selected TauCeti modules/excerpts now compile against our existing pinned
-mathlib. Source revisions, original/ported hashes and the Apache license are
-recorded under `VerifiedLcalc/Upstream/TauCeti` and `LICENSES`.
+The project imports TauCeti through the package pinned in the [build guide](BUILD.md).
+The original integration used selected source excerpts. Their [historical
+provenance](../VerifiedLcalc/Upstream/TauCeti/README.md) records those revisions and adaptations.
 
 - `EllipticCurve/TauCeti.lean` connects the executable point counts and traces
   with TauCeti's projective-model definitions, including singular reductions.
@@ -26,7 +26,7 @@ recorded under `VerifiedLcalc/Upstream/TauCeti` and `LICENSES`.
   formal Euler product.
 - `RationalPrimes.lean` transports prime ideals of O_Q to Z, proves their norms
   are prime and proves the norm distinguishes the prime ideals.
-- The new TauCeti completion port identifies the completed valuation-ring
+- TauCeti's completion theorem identifies the completed valuation-ring
   residue field with the original ideal quotient. `GlobalCoefficients.lean`
   consequently identifies each actual global LFunction coefficient at p^k
   with the corresponding local power-series coefficient.
