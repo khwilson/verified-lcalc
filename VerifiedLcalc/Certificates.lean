@@ -9,5 +9,7 @@ public import VerifiedLcalc.Certificates.PrecisionPolicy
 public import VerifiedLcalc.Certificates.Transcripts
 public import VerifiedLcalc.Certificates.NumericalData
 public import VerifiedLcalc.Certificates.NumericalContracts
+public import VerifiedLcalc.Certificates.CurveWitness
+public import VerifiedLcalc.Certificates.RationalInvariants
 
 /-! # Mathematical certificate contracts -/

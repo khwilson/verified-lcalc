@@ -5,6 +5,7 @@ public import VerifiedLcalc.Certification.CurveData
 public import VerifiedLcalc.Certification.IntegralPointCount
 public import VerifiedLcalc.Certification.TorsionBoundFacts
 public import VerifiedLcalc.Certificate.ArithmeticFacts
+public import VerifiedLcalc.Certificates.RationalInvariants
 public import VerifiedLcalc.Certificates.TorsionFacts
 public import VerifiedLcalc.Certification.AbcQuality
 public import VerifiedLcalc.Certificate.AnalyticFacts
@@ -25,31 +26,6 @@ and a proof of independence carry their stated lower-bound conclusions.
 
 namespace VerifiedLcalc
 open EllipticCurve
-
-/-- The exact rational report, its evidence, and a bound on the actual abc quality. -/
-structure AbcQualityFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
-  /-- The submitted report, error, and factorization. -/
-  claim : AbcQualityClaim
-  /-- The exact finite evidence check succeeded. -/
-  valid : Certification.abcQualityValid curve claim = true
-  /-- The curve is in the domain of abc quality. -/
-  defined : (curve.baseChange ℚ).j ≠ 0 ∧ (curve.baseChange ℚ).j ≠ 1728
-  /-- The actual quality lies within the certified absolute error. -/
-  within_error : |(curve.baseChange ℚ).abcQuality defined - (claim.reported : ℝ)| ≤
-    (claim.error : ℝ)
-
-/-- Checked invariants whose definitions specialize to the integral or rational equation. -/
-structure RationalInvariantFacts (curve : WeierstrassCurve ℤ)
-    [(curve.baseChange ℚ).IsElliptic] where
-  /-- The sign of the integral equation's discriminant. -/
-  discriminantSign : Option { s : ℤ // curve.Δ.sign = s } := none
-  /-- The j-invariant of the rational curve. -/
-  jInvariant : Option { j : ℚ // (curve.baseChange ℚ).j = j } := none
-  /-- The truth value for integrality of the rational j-invariant. -/
-  jIntegral : Option { b : Bool //
-    IsLocalization.IsInteger ℤ (curve.baseChange ℚ).j ↔ b = true } := none
-  /-- The checked abc-quality enclosure. -/
-  abcQuality : Option (AbcQualityFacts curve) := none
 
 /-- Membership of every supplied coordinate pair on the given equation. -/
 structure AffineMembership {R : Type*} [CommRing R] (curve : WeierstrassCurve R) where
