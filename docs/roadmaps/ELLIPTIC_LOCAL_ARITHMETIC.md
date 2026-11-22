@@ -67,7 +67,15 @@ This bound is deliberately weak and explicit, and is independent of modularity. 
 
 ## T1: Tate reduction transcript is an algorithmic theorem
 
-The pinned TauCeti `TateCurve/Basic.lean` and `TateCurve/Specialization.lean` concern the formal Tate q-curve and specialization. They are relevant infrastructure, but are not a complete Tate reduction algorithm. A targeted search of the pinned elliptic subtree found no dedicated full Tate-algorithm implementation; current branches and PRs still need checking.
+The pinned TauCeti release provides `IsTateTerminal` for each algorithmic
+symbol and `reductionSymbol_eq_of_isTateTerminal` to compare a terminal equation
+with the canonical local symbol. The project checks a supplied integral
+translation by evaluating the same terminal predicate over ℤ and then
+transports the result to the local ring. This certifies exact additive symbols
+when the input contains the translation. The formal Tate q-curve and its
+specialization are a separate strand of the roadmap.
+[Stopping conditions](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/Terminal.lean#L105-L139)
+· [Canonical symbol comparison](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/Reduction/Curve.lean#L117-L137).
 
 Current local sources [WildTateCore](../../VerifiedLcalc/EllipticCurve/Tate/WildTateCore.lean) and [WildArithmetic](../../VerifiedLcalc/EllipticCurve/Tate/WildArithmetic.lean) check transformations, divisibility, polynomial conditions and wild paths. `tateWitness_valid_correct` equates `TateWitness.Valid` with an `ArithmeticSpec` involving additive reduction, a path, and a discriminant-valuation bound. It does **not** identify a geometric fiber, Artin conductor or local epsilon factor. Search soundness (`tateWitness?_sound`, `wildData?_sound`) is distinct from algorithm completeness.
 
