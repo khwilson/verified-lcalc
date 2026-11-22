@@ -560,7 +560,8 @@ run_cmd do
   let arithmetic := #[`potentialGoodReduction, `minimalDiscriminantAbs, `conductor, `rootNumber,
     `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
     `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData]
-  let analytic := #[`centralResult, `derivativeResult, `catalogueAnalyticRank]
+  let analytic := #[`centralResult, `derivativeResult, `catalogueAnalyticRank,
+    `specialLValue]
   let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionPrimes,
     `torsionGeneratorOrders]
   let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do

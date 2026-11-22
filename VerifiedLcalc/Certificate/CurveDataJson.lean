@@ -233,6 +233,14 @@ def regulatorClaim (j : Json) : Except String (Option RegulatorClaim) := do
     regulatorErrorValue (← value.getObjVal? "error")
   return some { reported, error }
 
+/-- Decode a stored Taylor leading coefficient only with explicit error evidence. -/
+def specialLValueClaim (j : Json) : Except String (Option SpecialLValueClaim) := do
+  let some evidence := optionalData j "special_value_evidence" | return none
+  let reported ← exactReportedDecimal (← j.getObjVal? "special_value")
+  let error ← rationalValue (← evidence.getObjVal? "error")
+  unless 0 ≤ error do throw "Expected a nonnegative special-value error"
+  return some { reported, error }
+
 /-- Interpret the stored JSON decimal exactly when explicit error evidence is present. -/
 def abcQualityClaim (j : Json) : Except String (Option AbcQualityClaim) := do
   let some evidence := optionalData j "abc_quality_evidence" | return none
@@ -347,6 +355,7 @@ def decode (j : Json) : Except String EllipticWitness := do
   let jInvariant ← optionalValue j "jinv" rationalValue
   let abcQuality ← abcQualityClaim j
   let regulator ← regulatorClaim j
+  let specialLValue ← specialLValueClaim j
   let jIntegral ← optionalValue j "j_integral" Json.getBool?
   let potentialGoodReduction ← optionalValue j "potential_good_reduction" Json.getBool?
   let discriminantSign ← optionalValue j "signD" integer
@@ -376,6 +385,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     return ({ firstPrime, secondPrime, bound } : TorsionBoundWitness)
   return { base with
     equation
+    specialLValue
     isogenyEdge
     catalogueAnalyticRank
     bInvariants

@@ -100,6 +100,8 @@ def main() -> None:
         "tests/consumers/LowRankBSDDefaultAbsent.lean",
         "tests/consumers/CompleteIntegralPoints.lean",
         "tests/consumers/CertificateCompatibility.lean",
+        "tests/consumers/SpecialLValue.lean",
+        "tests/consumers/SpecialValueContract.lean",
     ):
         run(["lake", "-f", "lakefile.certificates.lean", "env", "lean", source])
     for source in AUDITS:

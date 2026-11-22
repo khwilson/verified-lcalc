@@ -34,6 +34,8 @@ test-certificates: certificates
 	lake -f lakefile.certificates.lean env lean tests/consumers/CertifiedECDataConsumer.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/CertifiedECPointsConsumer.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/CertifiedECInvariantsConsumer.lean
+	lake -f lakefile.certificates.lean env lean tests/consumers/SpecialLValue.lean
+	lake -f lakefile.certificates.lean env lean tests/consumers/SpecialValueContract.lean
 
 .PHONY: test-lean
 test-lean:

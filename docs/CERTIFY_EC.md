@@ -197,6 +197,21 @@ the report is exactly one. A bad error or an enclosure disjoint from one rejects
 the whole command. Without an exact zero-rank proof, the field remains
 unverified; positive-rank regulators need a separate mathematical evaluator.
 
+## Check a stored special value
+
+The optional `special_value` is a leading Taylor coefficient
+`L^{(r)}(1)/r!` in arithmetic normalization. The shared decoder accepts an
+exact JSON decimal, canonical decimal string, or Sage `__RealLiteral__` data.
+The `special_value_evidence.error` field must supply a nonnegative exact
+rational (integer, fraction string, or numerator/denominator pair); the
+precision tag is never treated as an error bound. The checker accepts a
+report only when a checked central enclosure establishes order zero or a
+checked first-derivative enclosure establishes order one, and verifies the
+reported interval against that actual enclosure. The resulting proof is
+available as `Name.certificate.analytic.specialValue` and applies to every
+`ArithmeticModularRealization` of the same curve. Higher-order evaluators are
+not supplied, so a higher-order report remains unverified.
+
 An inline legacy analytic payload still uses `rank` for the numerical
 candidate. With nested `analytic_witness`, a top-level algebraic claim can be
 supplied separately. The explicit `algebraic_rank` key is also accepted.
