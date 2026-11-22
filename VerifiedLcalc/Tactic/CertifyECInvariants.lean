@@ -227,7 +227,10 @@ private def certifyTwoFactorTorsion (base : Name) (curve factors n orders : Iden
   emit (← `(noncomputable def $equivalence : ZMod 2 × ZMod $kTerm ≃+
     $torsionType := Classical.choose ($structureProof).2))
   let imageWitness := rootIdent (base ++ `torsion_structure_image_witness)
-  emit (← `(theorem $imageWitness := Classical.choose_spec ($structureProof).2))
+  emit (← `(theorem $imageWitness :
+    (($equivalence (1, 0) : (($curve).baseChange ℚ).toAffine.Point) = $firstGenerator) ∧
+    (($equivalence (0, 1) : (($curve).baseChange ℚ).toAffine.Point) = $secondGenerator) :=
+      Classical.choose_spec ($structureProof).2))
   checked (base ++ `torsion_structure_first_image)
     (← `(($equivalence (1, 0) : (($curve).baseChange ℚ).toAffine.Point) = $firstGenerator))
     (← `(by exact $imageWitness.1))
