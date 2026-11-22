@@ -1,0 +1,8 @@
+{
+  "ainvs": [0, 1, 0, -20, 0],
+  "torsion": 8,
+  "torsion_structure": [2, 4],
+  "torsion_generators": [[0, 0, 1], [-2, 6, 1]],
+  "torsion_generator_orders": [2, 4],
+  "torsion_bound": {"first_prime": 7, "second_prime": 11, "bound": 8}
+}

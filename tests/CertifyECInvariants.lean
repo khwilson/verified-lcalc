@@ -155,7 +155,7 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `semistable, `squarefree_discriminant, `local_invariants, `claimed_semistable,
       `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_conductor_valuations,
       `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation,
-      `claimed_torsion_structure, `torsion_structure] do
+      `claimed_torsion_structure, `torsion_structure, `torsion_generators.independence_valid] do
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
@@ -177,6 +177,10 @@ run_cmd do
     r#"{"ainvs":[0,0,1,-1,0],"potential_good_reduction":true}"#))
   invariantRejected `WrongNoPotentialGood (← `(certify_ec WrongNoPotentialGood from
     { PotentialGood.witness with potentialGoodReduction := some false }))
+  invariantRejected `DependentTorsionPair (← `(certify_ec DependentTorsionPair from_json_string
+    r#"{"ainvs":[0,1,0,-20,0],"torsion":8,"torsion_structure":[2,4],
+        "torsion_generators":[[4,0,1],[-2,6,1]],"torsion_generator_orders":[2,4],
+        "torsion_bound":{"first_prime":7,"second_prime":11,"bound":8}}"#))
   invariantRejected `WrongCyclicStructure (← `(certify_ec WrongCyclicStructure from
     { equation := ⟨1, -1, -1, 0, 0⟩, torsionGeneratorCoordinates := some [(0, 0)],
       torsionGeneratorOrders := some [4], torsion := some 4, torsionStructure := some [2, 2],
@@ -245,7 +249,7 @@ run_cmd do
   if (← getEnv).contains `IntegralJ.potential_good_reduction then
     throwError "An omitted potential_good_reduction claim generated a theorem"
   for suffix in [`torsion, `torsion_structure] do
-    for name in [`AssertedTorsionOnly, `LooseTorsionBound, `NoncyclicTorsion] do
+    for name in [`AssertedTorsionOnly, `LooseTorsionBound] do
       if (← getEnv).contains (name ++ suffix) then
         throwError "Insufficient torsion evidence generated a claim"
   if (← getEnv).contains `LocalSignMetadata.root_number then

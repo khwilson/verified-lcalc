@@ -24,6 +24,7 @@ AUDITS = (
     "tests/consumers/Additive.lean",
     "tests/consumers/Wild.lean",
     "tests/CyclicTorsionStructure.lean",
+    "tests/TwoFactorTorsion.lean",
 )
 
 
@@ -47,6 +48,7 @@ def main() -> None:
                 "CertifiedCurves",
                 "VerifiedLcalcTests",
                 "VerifiedLcalc.Certification.Precision",
+                "VerifiedLcalcTests.Fixtures.TwoFactorTorsion",
             ]
         )
         audit_modules = sorted(
@@ -79,6 +81,7 @@ def main() -> None:
         "tests/consumers/CertifiedECDataConsumer.lean",
         "tests/consumers/CertifiedECPointsConsumer.lean",
         "tests/consumers/CertifiedECInvariantsConsumer.lean",
+        "tests/consumers/TwoFactorTorsion.lean",
     ):
         run(["lake", "-f", "lakefile.certificates.lean", "env", "lean", source])
     for source in AUDITS:
