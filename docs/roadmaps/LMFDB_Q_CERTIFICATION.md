@@ -226,7 +226,10 @@ still requires the next nonvanishing. Accept positive and negative Fricke
 signs, include order two and three enclosures, and reject ambiguous intervals
 and precision records with mismatched curve or normalization.
 
-**A2 · Real and complex invariants.** Reuse
+**A2 · Real and complex invariants.** The abc-quality check proves a
+rational error bound about the reported LMFDB decimal using the checked prime
+factorization of the reduced abc product and directed dyadic logarithms.
+Reuse
 `minimalRealPeriod`, `canonicalHeightQuadratic`,
 `Point.exists_abs_naiveHeight_nsmul_div_sq_sub_le`,
 `regulator_eq_abs_det_neronTateGramMatrix`, `abcQuality`, and the

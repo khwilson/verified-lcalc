@@ -30,6 +30,8 @@ All three forms, and `CertifyEC.certify` / `certifyAtomic`, use the same checker
 Optional stored invariants include b/c values, equation discriminant and sign,
 j-invariant and its integrality, everywhere potential good reduction, minimal absolute
 discriminant, bad-prime set/count, anlist, conductor and global root number.
+An `abc_quality_evidence` object supplies a rational error and the factorization
+needed to bound the actual abc quality about the reported `abc_quality` decimal.
 Prerequisite-dependent claims without the required evidence are reported as unverified. See
 `docs/LMFDB_INVARIANTS.md` for the exact mathematical outputs and trust boundary.
 JSON can supply `ainvs`, `ap` or `aplist`, and `integral_points` or
@@ -273,15 +275,19 @@ def certifyJson (name : Name) (text : String)
       let localKeys := CurveDataJson.localReductionFields
       let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points",
         "minimality", "local_data", "gens", "torsion_generators", "torsion_generator_orders",
-        "infinite_order_points", "independent_points", "binvs", "cinvs",
+        "torsion_structure", "infinite_order_points",
+        "independent_points", "binvs", "cinvs",
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
         "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
         localKeys ++ if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
           then ["prime"] else []
+      let checkedAbcQuality := (← getEnv).contains (base ++ `abc_quality)
       let skipped := object.toList.filterMap fun (key, _) =>
         if known.contains key || (checkedRank && rankKeys.contains key) ||
-            (checkedCatalogueRank && key == "analytic_rank") then none else some key
+            (checkedCatalogueRank && key == "analytic_rank") ||
+            (checkedAbcQuality && ["abc_quality", "abc_quality_evidence"].contains key) then none
+        else some key
       unless skipped.isEmpty do
         logInfo m!"Unverified metadata (no claim emitted): {skipped}"
 

@@ -43,6 +43,25 @@ The public [TauCeti roadmap](https://github.com/TauCetiProject/TauCetiRoadmap) w
 
 Source paths, exact statement examples and dependencies are in the two detailed plans. Existing [elliptic-curve](https://github.com/TauCetiProject/TauCetiRoadmap/blob/main/TauCetiRoadmap/EllipticCurves/README.md) and [modular-form](https://github.com/TauCetiProject/TauCetiRoadmap/blob/main/TauCetiRoadmap/ModularForms/README.md) roadmaps already own the surrounding theory. Propose focused additions to those workstreams rather than another competing foundations library.
 
+### Current release update for local reduction
+
+The project now pins TauCeti `e0e414ce57522ba17560057ad0d7f2edab91bf0c`.
+It includes the canonical `WeierstrassCurve.reductionSymbol` and
+`reductionSymbol_eq_I_iff` for good and multiplicative reduction.
+`forall_reductionSymbol_ne_I_iff` characterizes the additive family.
+The project specializes these to a checked minimal integral equation at
+a rational prime. Certifying a specific additive symbol requires a bridge
+from supplied finite transcripts to TauCeti's `IsTateTerminal`.
+[Release reduction APIs](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/Reduction/Curve.lean#L149-L197)
+
+The same release defines the intrinsic Tamagawa number on the completed
+field. Its `tamagawaNumber_eq_tateLocalIndex` theorem compares that number
+with the algorithmic local index given a terminal transcript and the stated
+local-ring hypotheses. The source does not supply an intrinsic local epsilon
+factor through this API. The project's current modularity fields constrain
+the global sign product.
+[Release Tamagawa comparison](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Local.lean#L139-L156)
+
 ## Assumption boundary
 
 The current custom axiom is `VerifiedLcalc.Assumptions.ellipticModularity`. Its type, [GeneralEllipticModularity](../VerifiedLcalc/EllipticCurve/Modularity/ArithmeticRealization.lean), supplies an `ArithmeticModularRealization` for every nonsingular input equation over Q. This includes modular-form existence, coefficient matching and arithmetic normalization; it is not merely semistable FLT-era modularity.

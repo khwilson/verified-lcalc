@@ -11,9 +11,25 @@ certify_ec Partial37 from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"jinv":[110592,37],"signD":1,"absD":37,
       "bad_primes":[37],"num_bad_primes":1,"semistable":true,"squarefree_disc":true,
       "local_invariants":[{"prime":37,"discriminant_valuation":1,
-        "j_denominator_valuation":1,"reduction_type":-1,"conductor_valuation":1}],
+        "j_denominator_valuation":1,"reduction_type":-1,
+        "conductor_valuation":1,"kodaira_symbol":5}],
       "conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3]}"#
 example : (Partial37.curve.baseChange ℚ).j = 110592 / 37 := Partial37.j_invariant
+
+certify_ec DirectAbcQuality from
+  { equation := ⟨0, 1, 0, 0, 4⟩,
+    abcQuality := some {
+      reported := 1
+      error := 1 / 10
+      factors := [2, 2, 2, 2, 3, 3, 3, 5, 5, 7, 11, 11] } }
+example :
+    |(DirectAbcQuality.curve.baseChange ℚ).abcQuality DirectAbcQuality.abc_quality_defined -
+      1| ≤ (1 / 10 : ℝ) := by
+  convert DirectAbcQuality.abc_quality using 1 <;> norm_num [DirectAbcQuality.claimed_abc_quality]
+
+certify_ec RawAbcMetadata from_json_string
+  r#"{"ainvs":[0,1,0,0,4],"abc_quality":1.0348177494302118}"#
+example : RawAbcMetadata.witness.abcQuality = none := rfl
 
 certify_ec TrivialTorsion from
   { equation := ⟨0, 0, 1, -1, 0⟩, torsionBound := some ⟨3, 5, 1⟩ }
@@ -99,9 +115,92 @@ example : ¬ WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
   have := AdditiveLocal.semistable.mp h
   contradiction
 
+certify_ec GoodTamagawa from
+  { equation := ⟨0, 0, 8, -16, 0⟩,
+    localInvariants := some [{ prime := 3, tamagawaNumber := some 1 }] }
+
+example : (GoodTamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 3) = 1 := by
+  obtain ⟨_, h⟩ := GoodTamagawa.tamagawa_numbers { prime := 3, tamagawaNumber := some 1 }
+    (by decide +kernel) 1 rfl
+  exact h (by decide +kernel)
+
+/--
+info: TamagawaOutsideScope: Tamagawa claims outside good or I₁ reduction are unverified.
+---
+info: Certified TamagawaOutsideScope.ap_correct and TamagawaOutsideScope.point_integral
+for the supplied lists
+-/
+#guard_msgs (whitespace := lax) in
+certify_ec TamagawaOutsideScope from_json_string
+  r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],"prime":11,"tamagawa_number":5}"#
+
+certify_ec CompatibleTamagawaRows from_json_string
+  r#"{"ainvs":[0,0,8,-16,0],"prime":3,"tamagawa_number":1,
+      "local_invariants":[{"prime":3,"tamagawa_number":1}]}"#
+
+certify_ec KodairaGood from
+  { equation := ⟨0, 0, 1, -1, 0⟩, minimality := some ⟨[37]⟩,
+    localInvariants := some [{ prime := 3, kodairaSymbol := some 1 }] }
+
+example : (KodairaGood.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 3) = .I 0 := by
+  obtain ⟨_, h⟩ := KodairaGood.kodaira_symbols { prime := 3, kodairaSymbol := some 1 }
+    (by decide +kernel)
+  exact h 1 rfl
+
+/--
+info: KodairaAdditive: additive Kodaira family verified. Exact additive codes unverified.
+---
+info: Certified KodairaAdditive.ap_correct and KodairaAdditive.point_integral for the supplied lists
+-/
+#guard_msgs in
+certify_ec KodairaAdditive from_json_string
+  r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],"prime":3,"kodaira_symbol":2}"#
+
+example : ∀ n, (KodairaAdditive.curve.baseChange ℚ).reductionSymbol
+    (RationalLocalRing 3) ≠ .I n := by
+  obtain ⟨_, h⟩ := KodairaAdditive.kodaira_symbols { prime := 3, kodairaSymbol := some 2 }
+    (by decide +kernel)
+  exact h 2 rfl
+
+certify_ec CompatibleKodairaRows from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"minimality":[37],"prime":3,"kodaira_symbol":1,
+      "local_invariants":[{"prime":3,"kodaira_symbol":1}]}"#
+
+certify_ec TrivialCyclicStructure from
+  { equation := ⟨0, 0, 1, -1, 0⟩, torsionStructure := some [],
+    torsionBound := some ⟨3, 5, 1⟩ }
+example : Nonempty (ZMod 1 ≃+ AddCommGroup.torsion
+    (TrivialCyclicStructure.curve.baseChange ℚ).toAffine.Point) := by
+  obtain ⟨equiv, -⟩ := TrivialCyclicStructure.torsion_structure.2
+  exact ⟨equiv⟩
+
+certify_ec AssertedTorsionOnly from_json_string
+  r#"{"ainvs":[0,1,0,0,4],"torsion":2,"torsion_structure":[2]}"#
+
+certify_ec LooseTorsionBound from_json_string
+  r#"{"ainvs":[0,1,0,0,4],"torsion":2,"torsion_structure":[2],
+      "torsion_generators":[[-2,0,1]],"torsion_generator_orders":[2],
+      "torsion_bound":{"first_prime":3,"second_prime":11,"bound":6}}"#
+example :
+    Nat.card (AddCommGroup.torsion (LooseTorsionBound.curve.baseChange ℚ).toAffine.Point) ∣ 6 :=
+  LooseTorsionBound.torsion_bound.1
+
+certify_ec NoncyclicTorsion from_json_string
+  r#"{"ainvs":[0,0,0,-1,0],"torsion":4,"torsion_structure":[2,2],
+      "torsion_generators":[[0,0,1],[-1,0,1]],"torsion_generator_orders":[2,2],
+      "torsion_bound":{"first_prime":3,"second_prime":5,"bound":4}}"#
+
 certify_ec SplitLocal from_json_string
   r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
-      "local_invariants":[{"prime":11,"reduction_type":1}]}"#
+      "local_invariants":[{"prime":11,"reduction_type":1,"kodaira_symbol":9}]}"#
+
+example :
+    letI : Fact (Nat.Prime 11) := ⟨by decide⟩
+    (SplitLocal.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 11) = .I 5 := by
+  let row : LocalReductionClaim :=
+    { prime := 11, reductionType := some 1, kodairaSymbol := some 9 }
+  obtain ⟨_, h⟩ := SplitLocal.kodaira_symbols row (by decide +kernel)
+  exact h 9 rfl
 
 run_cmd do
   let input ← CertifyEC.jsonInput
@@ -159,6 +258,8 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `proofs, `discriminant_witness, `checked_facts, `certificate,
       `claimed_j_invariant, `claimed_j_integral, `j_integral, `j_integral_input_eq,
       `j_integral_value_valid, `claimed_discriminant, `global_minimal,
+      `claimed_abc_quality, `abc_quality_input_eq, `abc_quality_valid, `abc_quality_defined,
+      `abc_quality,
       `torsion, `torsion_bound, `claimed_torsion, `claimed_torsion_bound,
       `torsion_input_eq, `torsion_bound_input_eq, `torsion_bound_value_valid,
       `torsion_claim_consistent,
@@ -166,12 +267,63 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `potential_good_reduction_input_eq, `potential_good_reduction_value_valid,
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
-      `semistable, `squarefree_discriminant, `local_invariants, `claimed_semistable,
+      `local_invariants_agree, `local_invariants_agree_valid,
+      `semistable, `squarefree_discriminant, `local_invariants, `tamagawa_numbers, `kodaira_symbols,
+      `tamagawa_values_valid, `claimed_semistable,
       `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_conductor_valuations,
-      `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation] do
+      `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation,
+      `claimed_torsion_structure, `torsion_structure, `torsion_structure_order_consistent,
+      `torsion_point_orders_consistent, `torsion_structure_divisor_consistent,
+      `torsion_structure_normalized] do
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `IncompatibleTamagawaRows (← `(certify_ec IncompatibleTamagawaRows
+    from_json_string
+    r#"{"ainvs":[0,0,8,-16,0],"prime":2,"tamagawa_number":1,
+        "local_invariants":[{"prime":2,"tamagawa_number":2}]}"#))
+  invariantRejected `IncompatibleTamagawaRowsReversed
+    (← `(certify_ec IncompatibleTamagawaRowsReversed from_json_string
+      r#"{"ainvs":[0,0,8,-16,0],"prime":2,"tamagawa_number":2,
+          "local_invariants":[{"prime":2,"tamagawa_number":1}]}"#))
+  invariantRejected `WrongTamagawa (← `(certify_ec WrongTamagawa from
+    { GoodTamagawa.witness with
+      localInvariants := some [{ prime := 3, tamagawaNumber := some 2 }] }))
+  invariantRejected `IncompatibleAdditiveRows (← `(certify_ec IncompatibleAdditiveRows
+    from_json_string
+    r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],
+        "prime":3,"kodaira_symbol":2,"local_invariants":[{"prime":3,"kodaira_symbol":3}]}"#))
+  invariantRejected `IncompatibleAdditiveRowsReversed
+    (← `(certify_ec IncompatibleAdditiveRowsReversed from_json_string
+      r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],
+          "prime":3,"kodaira_symbol":3,"local_invariants":[{"prime":3,"kodaira_symbol":2}]}"#))
+  invariantRejected `AdditiveCodeAtGoodPrime (← `(certify_ec AdditiveCodeAtGoodPrime from
+    { KodairaGood.witness with localInvariants := some [{ prime := 3, kodairaSymbol := some 2 }] }))
+  invariantRejected `GoodCodeAtAdditivePrime (← `(certify_ec GoodCodeAtAdditivePrime from
+    { KodairaAdditive.witness with
+      localInvariants := some [{ prime := 3, kodairaSymbol := some 1 }] }))
+  invariantRejected `AdditiveCodeAtMultiplicativePrime
+    (← `(certify_ec AdditiveCodeAtMultiplicativePrime from
+      { SplitLocal.witness with
+        localInvariants := some [{ prime := 11, kodairaSymbol := some (-5) }] }))
+  invariantRejected `WrongMultiplicativeIndex (← `(certify_ec WrongMultiplicativeIndex from
+    { SplitLocal.witness with localInvariants := some [{ prime := 11, kodairaSymbol := some 5 }] }))
+  invariantRejected `WrongAbcDecimal (← `(certify_ec WrongAbcDecimal from_json_string
+    r#"{"ainvs":[0,1,0,0,4],"abc_quality":1.05,
+        "abc_quality_evidence":{"error":[1,1000000],"factors":[2,2,2,2,3,3,3,5,5,7,11,11]}}"#))
+  invariantRejected `MissingAbcDecimal (← `(certify_ec MissingAbcDecimal from_json_string
+    r#"{"ainvs":[0,1,0,0,4],"abc_quality_evidence":{"error":1,"factors":[]}}"#))
+  invariantRejected `WrongAbcFactors (← `(certify_ec WrongAbcFactors from
+    { DirectAbcQuality.witness with
+      abcQuality := some { DirectAbcQuality.claimed_abc_quality with
+        factors := [2, 2, 2, 2, 3, 3, 3, 5, 5, 7, 121] } }))
+  invariantRejected `NegativeAbcError (← `(certify_ec NegativeAbcError from
+    { DirectAbcQuality.witness with
+      abcQuality := some { DirectAbcQuality.claimed_abc_quality with error := -1 } }))
+  invariantRejected `UndefinedAbcZero (← `(certify_ec UndefinedAbcZero from
+    { JZero.witness with abcQuality := some DirectAbcQuality.claimed_abc_quality }))
+  invariantRejected `UndefinedAbc1728 (← `(certify_ec UndefinedAbc1728 from
+    { J1728.witness with abcQuality := some DirectAbcQuality.claimed_abc_quality }))
   invariantRejected `ConflictingBProof (← `(certify_ec ConflictingBProof from
     { equation := Invariants37.curve, bInvariants := some (0, 0, 0, 0) }
     with_proofs Invariants37.checked_facts))
@@ -203,6 +355,26 @@ run_cmd do
     r#"{"ainvs":[0,0,1,-1,0],"potential_good_reduction":true}"#))
   invariantRejected `WrongNoPotentialGood (← `(certify_ec WrongNoPotentialGood from
     { PotentialGood.witness with potentialGoodReduction := some false }))
+  invariantRejected `TorsionCountBelowPointOrder (← `(certify_ec TorsionCountBelowPointOrder
+    from_json_string
+    r#"{"ainvs":[0,1,0,0,4],"torsion":1,
+        "torsion_generators":[[-2,0,1]],"torsion_generator_orders":[2],
+        "torsion_bound":{"first_prime":3,"second_prime":5,"bound":2}}"#))
+  invariantRejected `StructureCountMismatch (← `(certify_ec StructureCountMismatch
+    from_json_string r#"{"ainvs":[0,1,0,0,4],"torsion":4,"torsion_structure":[2]}"#))
+  invariantRejected `StructureAboveDivisor (← `(certify_ec StructureAboveDivisor
+    from_json_string r#"{"ainvs":[0,1,0,0,4],"torsion_structure":[4],
+        "torsion_bound":{"first_prime":3,"second_prime":5,"bound":2}}"#))
+  invariantRejected `OrderAboveStructureExponent (← `(certify_ec OrderAboveStructureExponent from
+    { equation := ⟨1, -1, -1, 0, 0⟩, torsionGeneratorCoordinates := some [(0, 0)],
+      torsionGeneratorOrders := some [4], torsion := some 4, torsionStructure := some [2, 2],
+      torsionBound := some ⟨5, 13, 8⟩ }))
+  invariantRejected `WrongCyclicStructure (← `(certify_ec WrongCyclicStructure from
+    { equation := ⟨1, -1, -1, 0, 0⟩, torsionGeneratorCoordinates := some [(0, 0)],
+      torsionGeneratorOrders := some [4], torsion := some 4, torsionStructure := some [2, 2],
+      torsionBound := some ⟨3, 5, 4⟩ }))
+  invariantRejected `TorsionAtTwo (← `(certify_ec TorsionAtTwo from
+    { TrivialTorsion.witness with torsionBound := some ⟨2, 5, 1⟩ }))
   invariantRejected `WrongDiscriminant (← `(certify_ec WrongDiscriminant from
     { Invariants37.witness with discriminant := some (-37) }))
   invariantRejected `WrongB (← `(certify_ec WrongB from
@@ -254,9 +426,12 @@ run_cmd do
       minimalDiscriminantAbs := some 151552 }))
   for suffix in [`minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
-      `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation] do
+      `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation,
+      `kodaira_symbols] do
     if (← getEnv).contains (`Partial37 ++ suffix) then
       throwError "Missing arithmetic evidence generated an invariant claim"
+  if (← getEnv).contains `GoodTamagawa.global_minimal then
+    throwError "Local Tamagawa verification unexpectedly required global minimality"
   for name in [`BoundedTorsion, `UncheckedTorsion] do
     if (← getEnv).contains (name ++ `torsion) then
       throwError "Unproved torsion order generated a theorem"
@@ -264,12 +439,20 @@ run_cmd do
     throwError "An omitted j_integral claim generated a theorem"
   if (← getEnv).contains `IntegralJ.potential_good_reduction then
     throwError "An omitted potential_good_reduction claim generated a theorem"
+  for suffix in [`torsion, `torsion_structure] do
+    for name in [`AssertedTorsionOnly, `LooseTorsionBound, `NoncyclicTorsion] do
+      if (← getEnv).contains (name ++ suffix) then
+        throwError "Insufficient torsion evidence generated a claim"
   if (← getEnv).contains `LocalSignMetadata.root_number then
     throwError "Local root metadata became a global sign theorem"
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
-  for theoremName in [`TrivialTorsion.torsion, `BoundedTorsion.torsion_bound,
+  for theoremName in [`CompatibleTamagawaRows.local_invariants_agree,
+      `GoodTamagawa.tamagawa_numbers,
+      `CompatibleKodairaRows.local_invariants_agree,
+      `KodairaGood.kodaira_symbols, `KodairaAdditive.kodaira_symbols,
+      `TrivialTorsion.torsion, `BoundedTorsion.torsion_bound,
       `IntegralJ.j_integral, `NonintegralJ.j_integral,
       `PotentialGood.potential_good_reduction, `NoPotentialGood.potential_good_reduction] do
     for ax in ← liftTermElabM <| Lean.collectAxioms theoremName do
@@ -314,6 +497,9 @@ run_cmd do
     match CurveDataJson.parse ("{\"ainvs\":[0,0,1,-1,0],\"jinv\":" ++ j ++ "}") with
     | .error _ => pure ()
     | .ok _ => throwError "Malformed exact rational accepted"
+  match CurveDataJson.parse r#"{"ainvs":[0,0,0,0,1],"prime":3,"kodaira_symbol":0}"# with
+  | .error _ => pure ()
+  | .ok _ => throwError "Zero PARI Kodaira code accepted"
   match CurveDataJson.parse r#"{"ainvs":[0,0,1,-1,0],"j_integral":"false"}"# with
   | .error _ => pure ()
   | .ok _ => throwError "Non-boolean j_integral accepted"
@@ -339,7 +525,7 @@ run_cmd do
 -- an input prerequisite, rather than a direct certified conclusion.
 run_cmd do
   let equation := #[`equation, `bInvariants, `cInvariants, `discriminant]
-  let rational := #[`discriminantSign, `jInvariant, `jIntegral]
+  let rational := #[`discriminantSign, `jInvariant, `jIntegral, `abcQuality]
   let algebraic := #[`integralCoordinates, `integralFiberRoots, `generatorCoordinates,
     `torsionGeneratorCoordinates,
     `infiniteOrderPoints, `independentPoints]
@@ -347,7 +533,7 @@ run_cmd do
     `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
     `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData]
   let analytic := #[`centralResult, `derivativeResult, `catalogueAnalyticRank]
-  let torsion := #[`torsionBound, `torsion, `torsionGeneratorOrders]
+  let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionGeneratorOrders]
   let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do
     let fields := Lean.getStructureFields (← getEnv) record
     for field in fields do
@@ -358,7 +544,8 @@ run_cmd do
         throwError "Remove obsolete witness field {record}.{field} from the certificate inventory"
   cover ``EllipticWitness (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion)
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
-    `jDenominatorValuation, `reductionType]
+    `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol]
+  cover ``AbcQualityClaim #[`reported, `error, `factors]
   cover ``TorsionBoundWitness #[`firstPrime, `secondPrime, `bound]
 
 example : EmptyProofs.certificate.equationFacts.discriminant.isNone = true := rfl
@@ -373,3 +560,18 @@ example : BoundedTorsion.certificate.torsion.divisor.map
     (fun fact => (fact.evidence.firstPrime, fact.evidence.secondPrime)) = some (3, 5) := rfl
 example : BoundedTorsion.certificate.torsion.cardinality.isNone = true := rfl
 example : TrivialTorsion.certificate.torsion.cardinality.map Subtype.val = some 1 := rfl
+
+
+example : GoodTamagawa.certificate.arithmetic.tamagawa.map LocalTamagawaFact.value = [1] :=
+  by decide +kernel
+
+example : TamagawaOutsideScope.certificate.arithmetic.tamagawa.length = 0 := by decide +kernel
+
+example : ((KodairaAdditive.certificate.arithmetic.minimalModel.get
+    (by decide +kernel)).kodaira.map LocalKodairaFact.index) = [none] := by decide +kernel
+
+example : LooseTorsionBound.certificate.torsion.cyclicStructure.isNone = true := rfl
+example : TrivialCyclicStructure.certificate.torsion.cyclicStructure.map
+    CyclicTorsionFacts.factors = some [] := rfl
+
+example : RawAbcMetadata.certificate.rational.abcQuality.isNone = true := rfl

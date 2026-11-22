@@ -9,7 +9,7 @@
   "squarefree_disc": true,
   "local_invariants": [
     {"prime": 179, "discriminant_valuation": 1,
-     "j_denominator_valuation": 1, "reduction_type": 1}
+     "j_denominator_valuation": 1, "reduction_type": 1, "kodaira_symbol": 5, "tamagawa_number": 1}
   ],
   "minimality": [179],
   "discriminant": -179,

@@ -7,11 +7,16 @@ import VerifiedLcalcTests.Fixtures.LmfdbCI
 Check the exported theorem types and audit their dependencies after importing the compiled fixtures.
 -/
 
-open Lean Elab Command VerifiedLcalc
+open Lean Elab Command VerifiedLcalc VerifiedLcalc.EllipticCurve
 
 example : (LMFDB.C112a2.curve.baseChange ℚ).j = -4 / 7 :=
   LMFDB.C112a2.j_invariant
 example : LMFDB.C112a2.curve.Δ = -7168 := LMFDB.C112a2.discriminant
+
+example :
+    |(LMFDB.C112a2.curve.baseChange ℚ).abcQuality LMFDB.C112a2.abc_quality_defined -
+      (10348177494302118 / 10000000000000000 : ℝ)| ≤ (1 / 1000000000000000 : ℝ) := by
+  convert LMFDB.C112a2.abc_quality using 1 <;> norm_num [LMFDB.C112a2.claimed_abc_quality]
 
 example : (LMFDB.C179a1.curve.baseChange ℚ).j = -110592 / 179 :=
   LMFDB.C179a1.j_invariant
@@ -24,8 +29,39 @@ example : Squarefree LMFDB.C179a1.curve.Δ.natAbs :=
 example :
     LocalReductionClaim.Spec
       { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
-        reductionType := some 1 } LMFDB.C179a1.curve :=
+        reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1 }
+      LMFDB.C179a1.curve :=
   LMFDB.C179a1.local_invariants _ (by decide +kernel)
+
+example :
+    letI : Fact (Nat.Prime 179) := ⟨by decide +kernel⟩
+    (LMFDB.C179a1.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 179) = 1 := by
+  let row : LocalReductionClaim :=
+    { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
+      reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1 }
+  obtain ⟨_, h⟩ := LMFDB.C179a1.tamagawa_numbers row (by decide +kernel) 1 rfl
+  exact h (by decide +kernel)
+
+example : (LMFDB.C179a1.certificate.arithmetic.tamagawa.map fun fact =>
+    ((fact.prime : ℕ), fact.value)) = [(179, 1)] := by decide +kernel
+
+example :
+    letI : Fact (Nat.Prime 179) := ⟨by decide +kernel⟩
+    (LMFDB.C179a1.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 179) = .I 1 := by
+  let row : LocalReductionClaim :=
+    { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
+      reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1 }
+  obtain ⟨_, h⟩ := LMFDB.C179a1.kodaira_symbols row (by decide +kernel)
+  exact h 5 rfl
+
+example : ((LMFDB.C179a1.certificate.arithmetic.minimalModel.get
+    (by decide +kernel)).kodaira.map fun fact => ((fact.prime : ℕ), fact.index)) =
+    [(179, some 1)] := by decide +kernel
+
+example :
+    (((LMFDB.C179a1.certificate.arithmetic.minimalModel.get
+      (by decide +kernel)).localRows.get (by decide +kernel)).val.map fun row =>
+        (row.kodairaSymbol, row.tamagawaNumber)) = [(none, none)] := by decide +kernel
 
 example : (LMFDB.C197a1.curve.baseChange ℚ).j = 13824000 / 197 :=
   LMFDB.C197a1.j_invariant
@@ -130,6 +166,15 @@ example :
       4 :=
   (LMFDB.C112a2.conductor_valuation (2, 4) (by decide +kernel)).2
 
+example :
+    Nat.card (AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) = 2 :=
+  LMFDB.C112a2.torsion
+
+example : ∃ e : ZMod 2 ≃+ AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point,
+    (e 1 : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =
+      LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩ :=
+  LMFDB.C112a2.torsion_structure.2
+
 run_cmd do
   let unconditional := [``propext, ``Classical.choice, ``Quot.sound]
   let modularity := ``Assumptions.ellipticModularity
@@ -143,10 +188,18 @@ run_cmd do
     for axiomName in dependencies do
       unless unconditional.contains axiomName || (conditional && axiomName == modularity) do
         throwError "Unexpected dependency {axiomName} in {lemmaName}"
+  check `LMFDB.C112a2 `abc_quality false
   check `LMFDB.C112a2 `integral_y_fiber_complete false
   check `LMFDB.C112a2 `generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.points_on_curve false
+  check `LMFDB.C179a1 `tamagawa_numbers false
+  check `LMFDB.C179a1 `kodaira_symbols false
+  for axiomName in ← liftTermElabM (Lean.collectAxioms ``LMFDB.C179a1.certificate) do
+    unless unconditional.contains axiomName do
+      throwError "Unexpected aggregate dependency {axiomName}"
   check `LMFDB.C112a2 `torsion_generators.exact_order false
+  check `LMFDB.C112a2 `torsion false
+  check `LMFDB.C112a2 `torsion_structure false
   check `LMFDB.C112a2 `dirichlet_coefficients false
   check `LMFDB.C197a1 `j_integral false
   check `LMFDB.C288a1 `j_integral false
@@ -222,3 +275,34 @@ example : LMFDB.C112a2.certificate.algebraic.generators.map AffineMembership.coo
 
 example : LMFDB.C112a2.certificate.algebraic.torsionGeneratorOrders.map
     TorsionGeneratorOrderFacts.orders = some [2] := rfl
+
+private def checkedCyclic :=
+  LMFDB.C112a2.certificate.torsion.cyclicStructure.get (by decide +kernel)
+
+example : checkedCyclic.factors = [2] := rfl
+
+/-- The compiled aggregate equivalence sends one to the checked rational generator. -/
+theorem imported_cyclic_torsion_structure :
+    ∃ e : ZMod 2 ≃+ AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point,
+      (e 1 : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =
+        LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩ :=
+  checkedCyclic.structure_eq.2
+
+run_cmd do
+  for axiomName in ← liftTermElabM (Lean.collectAxioms ``imported_cyclic_torsion_structure) do
+    unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+      throwError "Unexpected aggregate axiom: {axiomName}"
+
+private def checkedAbcQuality :=
+  LMFDB.C112a2.certificate.rational.abcQuality.get (by decide +kernel)
+
+/-- The compiled aggregate bounds the actual abc quality. -/
+theorem imported_abc_quality_bound :
+    |(LMFDB.C112a2.curve.baseChange ℚ).abcQuality checkedAbcQuality.defined -
+      (checkedAbcQuality.claim.reported : ℝ)| ≤ (checkedAbcQuality.claim.error : ℝ) :=
+  checkedAbcQuality.within_error
+
+run_cmd do
+  for axiomName in ← liftTermElabM (Lean.collectAxioms ``imported_abc_quality_bound) do
+    unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+      throwError "Unexpected aggregate axiom: {axiomName}"

@@ -24,6 +24,7 @@ AUDITS = (
     "tests/consumers/SecondMellinDerivative.lean",
     "tests/consumers/Additive.lean",
     "tests/consumers/Wild.lean",
+    "tests/CyclicTorsionStructure.lean",
 )
 
 

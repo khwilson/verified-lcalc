@@ -49,6 +49,20 @@ structure LocalReductionClaim where
   jDenominatorValuation : Option Nat := none
   /-- Signed Frobenius trace code for bad reduction. -/
   reductionType : Option Int := none
+  /-- Claimed intrinsic local component-group order. -/
+  tamagawaNumber : Option Nat := none
+  /-- Claimed PARI Kodaira code. Additive codes request a family check. -/
+  kodairaSymbol : Option Int := none
+  deriving Repr, DecidableEq
+
+/-- A reported abc quality and evidence for its absolute error bound. -/
+structure AbcQualityClaim where
+  /-- Exact rational interpretation of the reported value. -/
+  reported : Rat
+  /-- Claimed maximum absolute error. -/
+  error : Rat
+  /-- All prime factors of the abc product, with multiplicity. -/
+  factors : List Nat
   deriving Repr, DecidableEq
 
 /-- Two proposed odd primes of good reduction and the gcd of their point counts. -/
@@ -79,6 +93,8 @@ structure EllipticWitness where
   discriminant : Option Int := none
   /-- Claimed exact rational j-invariant. -/
   jInvariant : Option Rat := none
+  /-- An error bound on the reported abc quality. -/
+  abcQuality : Option AbcQualityClaim := none
   /-- Whether the rational j-invariant belongs to the image of ℤ. -/
   jIntegral : Option Bool := none
   /-- Whether the curve has potential good reduction at every rational prime. -/
@@ -119,6 +135,8 @@ structure EllipticWitness where
   torsionGeneratorCoordinates : Option (List (Rat × Rat)) := none
   /-- Claimed exact additive orders, in the same order as the torsion coordinates. -/
   torsionGeneratorOrders : Option (List Nat) := none
+  /-- Claimed invariant factors of rational torsion. -/
+  torsionStructure : Option (List Nat) := none
   /-- Indices into the supplied integral-coordinate list. -/
   infiniteOrderPoints : Option (List Nat) := none
   /-- Selected indices for a rank bound; requires a supplied independence proof. -/

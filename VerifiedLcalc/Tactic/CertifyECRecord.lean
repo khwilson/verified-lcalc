@@ -23,7 +23,12 @@ private def rationalFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let sign ← invariantValue base `discriminant_sign
   let j ← invariantValue base `j_invariant
   let integral ← invariantValue base `j_integral
-  `({ discriminantSign := $sign, jInvariant := $j, jIntegral := $integral })
+  let abcQuality ← if (← getEnv).contains (base ++ `abc_quality) then
+    `(some ⟨$(rootIdent (base ++ `claimed_abc_quality)), $(rootIdent (base ++ `abc_quality_valid)),
+      $(rootIdent (base ++ `abc_quality_defined)), $(rootIdent (base ++ `abc_quality))⟩)
+  else `(none)
+  `({ discriminantSign := $sign, jInvariant := $j, jIntegral := $integral,
+      abcQuality := $abcQuality })
 
 private def integralMembershipTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let witnessName := base ++ `witness
@@ -129,8 +134,13 @@ private def torsionFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
     let n ← literalSyntax value
     `(some ⟨$n, $(rootIdent exactName)⟩)
   else `(none)
+  let cyclic ← if (← getEnv).contains (base ++ `torsion_structure) then
+    `(some ⟨$(rootIdent (base ++ `claimed_torsion_structure)),
+      $(rootIdent (base ++ `cyclic_torsion_order)),
+      $(rootIdent (base ++ `cyclic_torsion_generator)), $(rootIdent (base ++ `torsion_structure))⟩)
+  else `(none)
   `({ divisor := some ⟨$evidence, $checkedBound, $valid, $consistent⟩,
-      cardinality := $exactCardinality })
+      cardinality := $exactCardinality, cyclicStructure := $cyclic })
 
 /-- Emit the indexed public certificate with a standard-axiom dependency audit. -/
 def certifyRecord (base : Name) : CommandElabM Unit := do
