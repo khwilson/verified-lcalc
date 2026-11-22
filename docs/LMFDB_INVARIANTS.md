@@ -35,6 +35,7 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `ap` / `aplist` | `primeCoefficients` | Actual `LFunction p` coefficients with proved sufficient local minimality checks. |
 | `anlist` | `dirichletCoefficients` | Actual consecutive `LFunction n` coefficients; requires `minimality`. Native JSON starts with a₀=0, which is checked and removed; direct Lean lists start at a₁. |
 | `conductor` | `conductor` | Identification with the chosen modular realization's level; requires `minimality`, `localData`, and the existing modularity/arithmetic-compatibility axiom. |
+| Local `conductor_valuation` | `localInvariants[].conductorValuation` | Proves primality and the claimed exponent in the Mathlib factorization of the curve's checked modular level. Requires a checked `conductor` with `minimality` and `localData`. |
 | `global_root_number` | `rootNumber` | Identification with that realization's global root/Fricke sign under the same conditions. This is an explicit extension key, not the local-table `root_number`. |
 | `integral_points` | `integralCoordinates` | Point membership on the supplied equation. |
 | `xcoord_integral_points` | `integralFiberRoots` | Complete finite y-fibers at the listed x-values, with a double root represented once. The theorem makes no claim over other x-values. |
@@ -51,18 +52,22 @@ criterion and its rational denominator criterion.
 [Local criterion](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/PotentialGoodReduction.lean#L438-L442)
 · [Denominator criterion](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/NumberTheory/Padics/RatCast.lean#L67-L80)
 
-Equation invariants, minimality, bad-prime, coefficient, semistability, local
-reduction and potential good reduction results have only standard Lean axiom
-dependencies. Conductor and global-root identification are
-explicitly conditional. Supplying `minimality` also exports `global_minimal`.
+Equation invariants, minimality, bad-prime, coefficient, semistability, and potential good reduction
+results use standard Lean axioms. The local discriminant and j-denominator valuations and reduction codes have the same
+dependencies. The `conductor_valuation` theorem uses the authorized modularity assumption through
+the checked level equation, as does the conductor certificate. The finite check of the supplied
+integer level is independent of that assumption. A comparison with the intrinsic Artin exponent
+or with the norm of TauCeti's algorithmic conductor ideal requires a separate theorem.
+[Algorithmic conductor ideal](https://github.com/TauCetiProject/TauCeti/pull/15468)
+
+Supplying `minimality` also exports `global_minimal`.
 None of these checks certifies an external label or database provenance.
 
-A local row has a required `prime` and optional exact integer values for
-the two valuations and the reduction code. The valuations are the exponents of
-that prime in the absolute discriminant and the reduced rational denominator
-of `j`. The reduction codes are 0 for additive, 1 for split multiplicative,
-and −1 for nonsplit multiplicative reduction. The certificate covers the supplied
-rows individually.
+A local row requires `prime`. An optional valuation gives its exponent in the absolute minimal
+discriminant, the reduced rational denominator of `j`, or the checked modular level. Conductor
+exponents may be supplied for any rational prime and are zero when that prime does not divide the
+level. The reduction codes are 0 for additive, 1 for split multiplicative, and −1 for nonsplit
+multiplicative reduction. Certificates cover each supplied row individually.
 
 `root_number` in an `ec_localdata` row is **local**, at that row's `prime`.
 It is deliberately not decoded as a global sign. The local reduction table is
@@ -81,7 +86,7 @@ missing theorem.
 
 | Group / fields | Proof work still needed |
 | --- | --- |
-| Local `conductor_valuation`, `kodaira_symbol`, `root_number`, `tamagawa_number`, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
+| Local `kodaira_symbol`, `root_number`, `tamagawa_number`, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
 | `gens`, `torsion_generators`, `torsion`, `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | Prove generator orders, independence, generation, and a torsion upper bound. Membership alone does not prove subgroup order or exhaustivity. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Lower bounds already have the explicit independence route. Exact rank needs an upper-bound/descent certificate; integral-point counts need completeness proofs. |
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |
