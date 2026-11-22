@@ -7,6 +7,7 @@ public import VerifiedLcalcTests.Fixtures.Cubic
 public import VerifiedLcalcTests.Fixtures.DegreeTwoIsogeny
 public import VerifiedLcalcTests.Fixtures.Curve11Arithmetic
 public import VerifiedLcalcTests.Fixtures.Curve11Central
+public import VerifiedLcalcTests.Fixtures.Curve27a3
 public import VerifiedLcalcTests.Fixtures.GeneralModularityExamples
 public import VerifiedLcalcTests.Fixtures.MordellWeilRank
 public import VerifiedLcalcTests.Fixtures.NegativeSigns

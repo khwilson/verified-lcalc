@@ -2,6 +2,7 @@ module
 
 public import VerifiedLcalc.Certification.DegreeTwoIsogeny
 public import VerifiedLcalc.Certification.CurveData
+public import VerifiedLcalc.Certification.IntegralPointCount
 public import VerifiedLcalc.Certificate.ArithmeticFacts
 public import VerifiedLcalc.Certification.AbcQuality
 public import VerifiedLcalc.Certificate.AnalyticFacts
@@ -141,6 +142,8 @@ structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).
   integralPoints : Option (AffineMembership curve) := none
   /-- Complete integral y-fibers at the specified integral x-coordinates. -/
   integralYFibers : Option (IntegralYFiberFacts curve) := none
+  /-- Exhaustive finite set and exact cardinality of all affine integral points. -/
+  completeIntegralPoints : Option (CompleteIntegralPointFacts curve) := none
   /-- Membership for the supplied rational generator coordinates. -/
   generators : Option (AffineMembership (curve.baseChange ℚ)) := none
   /-- The checked `ngens` count for the supplied generator coordinates. -/

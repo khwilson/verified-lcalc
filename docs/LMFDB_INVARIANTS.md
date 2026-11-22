@@ -42,6 +42,7 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `global_root_number` | `rootNumber` | Identification with that realization's global root/Fricke sign under the same conditions. This is an explicit extension key, not the local-table `root_number`. |
 | `integral_points` | `integralCoordinates` | Point membership on the supplied equation. |
 | `xcoord_integral_points` | `integralFiberRoots` | Complete finite y-fibers at the listed x-values, with a double root represented once. The theorem makes no claim over other x-values. |
+| `num_int_pts` | `numIntegralPoints` | Exact cardinality theorem from supplied exhaustive `IntegralXSupport`; available at `certificate.algebraic.completeIntegralPoints` with finite-set completeness and `Finite` evidence. Without support it is unverified, but a count below the number of distinct checked points or seed-fiber solutions is rejected. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
 | `rank`, `rank_bounds` | `algebraicRank`, `algebraicRankBounds` | Verify supplied endpoints against a typed proof of bounds on the actual Mordell–Weil rank. A singleton proof gives exact rank. |
 | `ngens` | `generatorCount` | Length of the checked `gens` list. A basis or spanning claim needs its own evidence. |
@@ -83,6 +84,12 @@ or with the norm of TauCeti's algorithmic conductor ideal requires a separate th
 
 Supplying `minimality` also exports `global_minimal`.
 None of these checks certifies an external label or database provenance.
+
+The `num_int_pts` and `xcoord_integral_points` field names are taken from the
+current LMFDB [`ec_curvedata` API](https://www.lmfdb.org/api/ec_curvedata/) and
+[`ec_mwbsd` API](https://www.lmfdb.org/api/ec_mwbsd/), respectively. The latter
+lists `xcoord_integral_points` as a numeric array. These values are inputs; the
+Lean support proof, not a database completeness claim, justifies an exact count.
 
 A local row requires `prime`. An optional valuation gives its exponent in the absolute minimal
 discriminant, the reduced rational denominator of `j`, or the checked modular level. Conductor
@@ -137,7 +144,7 @@ missing theorem.
 | --- | --- |
 | Specific additive `kodaira_symbol`, local `root_number`, other `tamagawa_number` branches, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
 | Noncyclic `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | Prove independence for noncyclic generators and match their subgroup order to a verified bound. Prime support follows from the exact group order. Intrinsic torsion requires the torsion pairing. |
-| `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Rank intervals can be supplied as Lean proofs and are checked against the actual rational point group; exact rank requires a singleton interval. `ngens` checks only the length of the supplied generator list, not that it is a basis. Integral-point counts need completeness proofs. |
+| `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Rank intervals can be supplied as Lean proofs and are checked against the actual rational point group; exact rank requires a singleton interval. `ngens` checks only the length of the supplied generator list, not that it is a basis. Integral-point counts can use supplied exhaustive support; deriving it automatically still needs a bound and complete search. |
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |
 | `cm`, quadratic-twist fields | Actual endomorphism/twist statements and, for a minimal twist, the required minimality comparison. A j-value lookup alone is not a CM certificate. |
 | Modular `degree`, `manin_constant`, `optimality` | Statements about the modular parametrization, not the degree of an arbitrary isogeny. |

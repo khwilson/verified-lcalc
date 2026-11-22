@@ -31,7 +31,7 @@ the source schema before creating a witness.
 | `ec_classdata.aplist, anlist` | Initial primes and consecutive arithmetic Dirichlet coefficients. Supported for the represented curve. Transfer to other class members requires the isogeny theorem in I1. |
 | `ec_classdata.isogeny_matrix, class_size, class_deg`; copies and `ec_curvedata.isogeny_degrees` | Minimum isogeny degrees between indexed representatives, number of rational isomorphism classes, maximum matrix entry, and distinct entries of the represented curve's row, respectively. I1. |
 | `ec_mwbsd.gens, torsion_generators, ngens, rank_bounds`; `ec_curvedata.rank, torsion, torsion_structure, torsion_primes, intrinsic_torsion` | Weighted triples $(a,b,c)$ with $c\ne0$ represent $(a/c^2,b/c^3)$. Generator count is list length. Rank bounds refer to Mordell–Weil rank. Torsion data concern the full rational torsion subgroup. Intrinsic torsion is the radical of the torsion pairing with values in $\mathbf Q^\times\otimes\mathbf Q/\mathbf Z$. Integral infinite-order and supplied independence proofs already give rank lower bounds. M1–M2. |
-| `ec_mwbsd.xcoord_integral_points`; `ec_curvedata.num_int_pts` | Finite affine integral solutions in the specified model, with one stored x per fiber and the count over all y. Membership and exact fibers over listed x-values are supported. M3 tracks global exhaustivity. |
+| `ec_mwbsd.xcoord_integral_points`; `ec_curvedata.num_int_pts` | Finite affine integral solutions in the specified model, with one stored x per fiber and the count over all y. Membership and exact fibers over listed x-values are supported. M3 accepts a supplied Lean proof of exhaustive abscissa support and certifies the count; deriving that support automatically remains backlog. |
 | `ec_curvedata.cm, min_quad_twist_ainvs, min_quad_twist_disc` | Geometric endomorphism ring is ℤ when the CM code is zero, otherwise it is the order of the specified discriminant. Twist data give an integral representative minimizing conductor and a quadratic discriminant (1 for the trivial twist). The producer applies further tie rules, including special j values. I2. |
 | `ec_curvedata.degree, manin_constant, optimality` | Degree and differential scaling for the modular parametrization, and optimal-quotient status. The producer's optimality codes above 1 express ambiguity among candidates. Manin data can be conditional on optimality. I3. |
 | `ec_curvedata.analytic_rank`; `ec_mwbsd.special_value` | Vanishing order at 1 and leading coefficient $L^{(r)}(1)/r!$ in arithmetic normalization. Rank 0/1 are supported with full checked numerical payloads. Reference data for higher rank may carry uncertainty. A1. |
@@ -172,13 +172,20 @@ rejects an invalid square or a division that has rounded to a nonroot. For each
 listed x, TauCeti's chord identity shows that any other integral y is either the
 checked root or its Weierstrass negation. The certified fiber is a finite set and
 counts a double root once. The original integral-coordinate list retains its
-indices.
+indices. `CompleteIntegralPointFacts` combines those checked fibers with a
+supplied `IntegralXSupport`, the exact finite coordinate set, exhaustivity,
+finiteness of `curve.integralPoints`, and its `Nat.card`. The result appears in
+the mixed public aggregate at `certificate.algebraic.completeIntegralPoints`.
 
-Global exhaustivity still requires a proved bound on x or on Mordell–Weil
-coefficients for every integral point, followed by a checked sieve or finite
-enumeration. Use M2 for coefficient bounds and specify the effective height bound
-or covering descent separately. The global checker must reject an omitted valid
-x.
+The input must supply a Lean proof that every integral solution has an abscissa
+in the listed support. A raw LMFDB count remains unverified without it, though a
+count below the number of distinct points already verified from the listed
+coordinates and fibers is rejected. Producing support automatically remains a
+generalized computational-lemma backlog: derive a bound on x or Mordell–Weil
+coefficients for every integral point, then run a checked sieve or finite
+enumeration. Use M2 for coefficient bounds and state the effective height bound
+or covering descent separately. Regression cases include zero points,
+duplicate seed/coordinate data, conjugate fibers, and omitted valid x-values.
 
 ## Isogenies, twists and modular parametrizations
 
@@ -328,7 +335,8 @@ transport along an isogeny.
    squarefree discriminant and j-denominator checks, then local reduction
    exports. Add L2 as the terminal-index bridge becomes available.
 2. Deliver M1, then M2's first finite descent/saturation path and M3's y-fiber
-   checker, with integral-point exhaustivity after a bound. Run A1 and the
+   checker with supplied exhaustive support; automatic support from bounds
+   still needs a complete search. Run A1 and the
    small A2 log-ratio work in parallel. Develop I1 and I2 against existing
    isogeny and twist APIs.
 3. Build the remaining A2–A3 and I3/G1–G3 dependency contracts before claiming

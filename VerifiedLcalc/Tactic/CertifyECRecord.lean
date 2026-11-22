@@ -117,9 +117,16 @@ private def integralYFiberTerm (base : Name) : CommandElabM (TSyntax `term) := d
   `(some ⟨⟨$roots, EllipticWitness.affineCoordinatesValid_sound $curve $roots $valid⟩,
     $fiber, $complete⟩)
 
+private def completeIntegralPointsTerm (base : Name) : CommandElabM (TSyntax `term) := do
+  let name := base ++ `integral_point_certificate
+  if (← getEnv).contains name then
+    return ← `(some $(rootIdent name))
+  `(none)
+
 private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let integral ← integralMembershipTerm base
   let fibers ← integralYFiberTerm base
+  let completeIntegralPoints ← completeIntegralPointsTerm base
   let generators ← rationalMembershipTerm (base ++ `generators)
   let generatorCount ← generatorCountTerm base
   let torsionGenerators ← rationalMembershipTerm (base ++ `torsion_generators)
@@ -129,7 +136,8 @@ private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := d
   let lowerBound ← rankLowerBoundTerm base
   let rankBounds ← rankBoundsTerm base
   let exactRank ← exactRankTerm base
-  `({ integralPoints := $integral, integralYFibers := $fibers, generators := $generators,
+  `({ integralPoints := $integral, integralYFibers := $fibers,
+      completeIntegralPoints := $completeIntegralPoints, generators := $generators,
       generatorCount := $generatorCount,
       torsionGenerators := $torsionGenerators, torsionGeneratorOrders := $torsionOrders,
       infiniteOrderPoints := $infinite,
