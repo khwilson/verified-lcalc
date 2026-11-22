@@ -74,7 +74,7 @@ private theorem ratioErrorValid_sound {num den : RealInterval} {n d : ℝ}
   simp only [lo, hi, Rat.cast_sub, Rat.cast_add] at left right
   exact abs_le.mpr ⟨by linarith, by linarith⟩
 
-/-- Verify factorization and the reported error bound, using only integer and rational operations. -/
+/-- Check the factorization and error bound with integer and rational arithmetic. -/
 def abcQualityValid (e : WeierstrassCurve ℤ) (claim : AbcQualityClaim) : Bool :=
   let j := abcJ e
   let radical := claim.factors.toFinset.prod id
