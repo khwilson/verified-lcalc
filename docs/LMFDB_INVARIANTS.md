@@ -30,6 +30,16 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | G2 specifies the field of definition and the full torsion subgroup after base change. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
+The current checked-field inventory covers **32 of 85 distinct LMFDB column
+names**: 18 in `ec_curvedata` (including the rank-zero-scoped `regulator`), 2
+distinct `ec_classdata` coefficient names, 5 in `ec_mwbsd`, and 7 in
+`ec_localdata` (including the required row key `prime`). It covers zero new
+names in `ec_galrep`, `ec_padic`, `ec_torsion_growth`, and `ec_iwasawa`.
+These are distinct names within each table: a shared name across tables is
+counted once for that table-qualified contract, and project-only extensions
+are excluded. The numerator counts source fields rather than mathematical
+claims or internal witness fields.
+
 Count coverage by the mathematical assertion and the evidence a consumer can
 project. For example, `ec_curvedata.torsion` is a cardinality over ℚ, while
 `ec_torsion_growth.torsion` gives invariant factors over a specified extension.

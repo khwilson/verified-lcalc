@@ -1,9 +1,11 @@
 module
 
 public import VerifiedLcalc.Certificate.IntegralXSupport
+public import VerifiedLcalc.Certificates.TorsionFacts
 public import VerifiedLcalc.Certificates.AlgebraicRank
 public import VerifiedLcalc.Certificates.Regulator
 public import VerifiedLcalc.Certificates.SpecialValue
+public import VerifiedLcalc.EllipticCurve.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.DerivativeCore
 public import VerifiedLcalc.EllipticCurve.Tate.WildRootCore
 
@@ -68,16 +70,6 @@ structure AbcQualityClaim where
   error : Rat
   /-- All prime factors of the abc product, with multiplicity. -/
   factors : List Nat
-  deriving Repr, DecidableEq
-
-/-- Two proposed odd primes of good reduction and the gcd of their point counts. -/
-structure TorsionBoundWitness where
-  /-- First proposed prime of good reduction. -/
-  firstPrime : Nat
-  /-- Second proposed prime of good reduction. -/
-  secondPrime : Nat
-  /-- Claimed positive gcd of the two reduced point counts. -/
-  bound : Nat
   deriving Repr, DecidableEq
 
 /-- A single oriented edge claim with an exact integral target equation. -/
