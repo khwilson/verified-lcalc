@@ -124,6 +124,10 @@ example : ∀ n, (KodairaAdditive.curve.baseChange ℚ).reductionSymbol
     (by decide +kernel)
   exact h 2 rfl
 
+certify_ec CompatibleKodairaRows from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"minimality":[37],"prime":3,"kodaira_symbol":1,
+      "local_invariants":[{"prime":3,"kodaira_symbol":1}]}"#
+
 certify_ec SplitLocal from_json_string
   r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
       "local_invariants":[{"prime":11,"reduction_type":1,"kodaira_symbol":9}]}"#
@@ -206,6 +210,14 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `IncompatibleAdditiveRows (← `(certify_ec IncompatibleAdditiveRows
+    from_json_string
+    r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],
+        "prime":3,"kodaira_symbol":2,"local_invariants":[{"prime":3,"kodaira_symbol":3}]}"#))
+  invariantRejected `IncompatibleAdditiveRowsReversed
+    (← `(certify_ec IncompatibleAdditiveRowsReversed from_json_string
+      r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],
+          "prime":3,"kodaira_symbol":3,"local_invariants":[{"prime":3,"kodaira_symbol":2}]}"#))
   invariantRejected `AdditiveCodeAtGoodPrime (← `(certify_ec AdditiveCodeAtGoodPrime from
     { KodairaGood.witness with localInvariants := some [{ prime := 3, kodairaSymbol := some 2 }] }))
   invariantRejected `GoodCodeAtAdditivePrime (← `(certify_ec GoodCodeAtAdditivePrime from
@@ -296,6 +308,7 @@ run_cmd do
       minimalDiscriminantAbs := some 151552 }))
   for suffix in [`minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
+      `local_invariants_agree, `local_invariants_agree_valid,
       `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation,
       `kodaira_symbols] do
     if (← getEnv).contains (`Partial37 ++ suffix) then
@@ -312,7 +325,8 @@ run_cmd do
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
-  for theoremName in [`KodairaGood.kodaira_symbols, `KodairaAdditive.kodaira_symbols,
+  for theoremName in [`CompatibleKodairaRows.local_invariants_agree,
+      `KodairaGood.kodaira_symbols, `KodairaAdditive.kodaira_symbols,
       `TrivialTorsion.torsion, `BoundedTorsion.torsion_bound,
       `IntegralJ.j_integral, `NonintegralJ.j_integral,
       `PotentialGood.potential_good_reduction, `NoPotentialGood.potential_good_reduction] do

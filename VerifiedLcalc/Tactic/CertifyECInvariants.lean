@@ -53,6 +53,12 @@ private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
       logInfo m!"Unverified {base} squarefree_disc: supply minimality evidence"
   if let some rows ← bindStored base `localInvariants `local_invariants
       (← `(List LocalReductionClaim)) then
+    let hagree := rootIdent (base ++ `local_invariants_agree_valid)
+    checked (base ++ `local_invariants_agree_valid)
+      (← `(localReductionClaimsAgree $rows = true)) (← `(by decide +kernel))
+    checked (base ++ `local_invariants_agree)
+      (← `(∀ a ∈ $rows, ∀ b ∈ $rows, LocalReductionClaim.Compatible a b))
+      (← `(localReductionClaimsAgree_correct $rows $hagree))
     if hasMinimality then
       let hv := rootIdent (base ++ `local_invariants_value_valid)
       checked (base ++ `local_invariants_value_valid)

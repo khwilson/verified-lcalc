@@ -83,6 +83,9 @@ Tate-algorithm evidence.
 [Producer](https://github.com/JohnCremona/ecdata/blob/25cec5ecfec8b9f016eb1631ac633194c2bed39f/scripts/files.py#L137-L149)
 · [PARI code mapping](https://github.com/sagemath/sage/blob/8de8dad7bcb38e1baa43508cbe944bf04a2d0401/src/sage/schemes/elliptic_curves/kodaira_symbol.py#L111-L148)
 
+Local claims can be split across rows. When two rows name the same prime,
+any supplied single-valued invariants must agree.
+
 `root_number` in an `ec_localdata` row is **local**, at that row's `prime`.
 It is deliberately not decoded as a global sign. The local reduction table is
 not the same data format as the supplied checked Tate transcripts in `localData`.
