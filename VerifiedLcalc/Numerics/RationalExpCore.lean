@@ -17,7 +17,7 @@ def rationalExpBounds (lo hi : Rat) (prec : Nat) : Rat × Rat :=
   let upper := -((-hi).toDyadic prec)
   ((expBounds lower prec).1.toRat, (expBounds upper prec).2.toRat)
 
-/-! Exact data for a rational multiple of an exponential term. -/
+/-- Exact data for a rational multiple of an exponential term. -/
 structure RationalExpTerm where
   /-- Rational multiplicative coefficient. -/
   coefficient : Rat

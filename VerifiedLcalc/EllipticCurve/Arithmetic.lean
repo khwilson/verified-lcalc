@@ -34,7 +34,7 @@ Tate's algorithm or assert that a singular model is minimal. -/
 def goodReduction (e : (WeierstrassCurve ℤ)) (p : Nat) : Bool :=
   decide (e.Δ % (p : Int) ≠ 0)
 
-/-! The exact finite-field data retained for one supported prime. -/
+/-- The exact finite-field data retained for one supported prime. -/
 structure PrimeData where
   /-- Prime modulus used for the reduction. -/
   prime : Nat
