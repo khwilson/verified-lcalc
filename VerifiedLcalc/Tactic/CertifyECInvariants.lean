@@ -1,6 +1,7 @@
 module
 
 public import VerifiedLcalc.Certification.AbcQuality
+public import VerifiedLcalc.Certification.Regulator
 public import VerifiedLcalc.EllipticCurve.TorsionBound
 public import VerifiedLcalc.EllipticCurve.TorsionStructure
 public import VerifiedLcalc.EllipticCurve.TwoFactorTorsion
@@ -27,6 +28,47 @@ private def bindStored (base field label : Name) (type : TSyntax `term) :
     (← `($projection $w = some $value)) (← `(by rfl))
   return some value
 
+/-- Certify the stored regulator only when the checked algebraic rank is exactly zero. -/
+private def certifyRankZeroRegulator (base : Name) : CommandElabM Unit := do
+  let some claim ← bindStored base `regulator `regulator (← `(RegulatorClaim)) | return
+  checked (base ++ `regulator_error_nonneg)
+    (← `(0 ≤ ($claim).error.getD 0)) (← `(by decide +kernel))
+  let rankName := base ++ `algebraic_rank
+  unless (← getEnv).contains rankName do
+    logInfo m!"Unverified {base} regulator: supply an exact algebraic rank of zero"
+    return
+  let rankValue := base ++ `mordell_weil_rank
+  let isZero ← liftTermElabM do
+    let rhs ← whnf (mkConst rankValue)
+    Meta.isDefEq rhs (mkNatLit 0)
+  unless isZero do
+    logInfo m!"Unverified {base} regulator: the checked algebraic rank is nonzero"
+    return
+  let curve := rootIdent (base ++ `curve)
+  let rankZero := rootIdent (base ++ `regulator_rank_zero)
+  checked (base ++ `regulator_rank_zero)
+    (← `(Module.finrank ℤ (($curve).baseChange ℚ).toAffine.Point = 0))
+    (← `(by exact $(rootIdent rankName)))
+  let valid := rootIdent (base ++ `regulator_value_valid)
+  checked (base ++ `regulator_value_valid)
+    (← `(Certification.rankZeroRegulatorValid ($claim).reported ($claim).error = true))
+    (← `(by decide +kernel))
+  let exact := rootIdent (base ++ `regulator_eq_one)
+  checked (base ++ `regulator_eq_one)
+    (← `(WeierstrassCurve.Affine.regulator
+      (WeierstrassCurve.toAffine (($curve).baseChange ℚ)) = 1))
+    (← `(Certification.regulator_eq_one_of_finrank_eq_zero
+      (($curve).baseChange ℚ) $rankZero))
+  checked (base ++ `regulator_within_error)
+    (← `( |WeierstrassCurve.Affine.regulator
+        (WeierstrassCurve.toAffine (($curve).baseChange ℚ)) -
+        (($claim).reported : ℝ)| ≤ (Option.getD ($claim).error (0 : Rat) : ℝ)))
+    (← `(Certification.regulator_within_error_of_valid (($curve).baseChange ℚ)
+      ($claim).reported (Option.getD ($claim).error (0 : Rat)) $exact $valid))
+  let fact := rootIdent (base ++ `regulator_facts)
+  emit (← `(def $fact : RegulatorFacts (($curve).baseChange ℚ) :=
+    Certification.rankZeroRegulatorFacts (($curve).baseChange ℚ) $claim $rankZero $valid))
+
 private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
     (hasMinimality : Bool) : CommandElabM Unit := do
   let hglobal := rootIdent (base ++ `global_minimal)
@@ -38,7 +80,8 @@ private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
       checked (base ++ `semistable)
         (← `(WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
           (($curve).baseChange ℚ) ↔ $claim = true)) (← `(by
-          rw [semistable_iff_coprime_of_isGlobalMinimal $curve $hglobal, ← $hv, decide_eq_true_eq]))
+          rw [semistable_iff_coprime_of_isGlobalMinimal $curve $hglobal,
+            ← $hv, decide_eq_true_eq]))
     else
       logInfo m!"Unverified {base} semistable: supply minimality evidence"
   if let some claim ← bindStored base `squarefreeDiscriminant `squarefree_discriminant
@@ -409,11 +452,13 @@ private def certifyProofFacts (base : Name) (curve : Ident)
     let name := rootIdent (base ++ `proofs)
     emit (← `(def $name : EllipticProofs $curve := $term))
     pure name
-  let b ← certifyProofFact base `bInvariants `b_invariants proofs (← `(Int × Int × Int × Int))
+  let b ← certifyProofFact base `bInvariants `b_invariants proofs
+    (← `(Int × Int × Int × Int))
     (← `((($curve).b₂, ($curve).b₄, ($curve).b₆, ($curve).b₈)))
   let c ← certifyProofFact base `cInvariants `c_invariants proofs (← `(Int × Int))
     (← `((($curve).c₄, ($curve).c₆)))
-  let d ← certifyProofFact base `discriminant `discriminant proofs (← `(Int)) (← `(($curve).Δ))
+  let d ← certifyProofFact base `discriminant `discriminant proofs (← `(Int))
+    (← `(($curve).Δ))
   if d.isSome then
     let witness := rootIdent (base ++ `discriminant_witness)
     let value := rootIdent (base ++ `claimed_discriminant)
@@ -437,6 +482,7 @@ def certifyStoredInvariants (base : Name)
   certifyCyclicTorsion base curve
   certifyTorsionPrimes base
   certifyProofFacts base curve proofs
+  certifyRankZeroRegulator base
   if let some s ← bindStored base `discriminantSign `discriminant_sign (← `(Int)) then
     checked (base ++ `discriminant_sign) (← `(($curve).Δ.sign = $s)) (← `(by decide +kernel))
   if let some j ← bindStored base `jInvariant `j_invariant (← `(Rat)) then
@@ -499,7 +545,8 @@ def certifyStoredInvariants (base : Name)
           exact $hv))
     else
       logInfo m!"Unverified {base} num_bad_primes: supply minimality evidence"
-  if let some a ← bindStored base `minimalDiscriminantAbs `minimal_discriminant_abs (← `(Nat)) then
+  if let some a ← bindStored base `minimalDiscriminantAbs `minimal_discriminant_abs
+      (← `(Nat)) then
     if hasMinimality then
       let hv := rootIdent (base ++ `abs_discriminant_value_valid)
       checked (base ++ `abs_discriminant_value_valid)
@@ -541,7 +588,8 @@ def certifyStoredInvariants (base : Name)
         (← `(by decide +kernel))
       checked (base ++ `root_number)
         (← `((Modularity.modularWitness $curve $hn).rootNumber = $w))
-        (← `(Certification.root_number_of_arithmetic_witness $curve $hn $m $hm $d $hd $w $hv)) true
+        (← `(Certification.root_number_of_arithmetic_witness
+          $curve $hn $m $hm $d $hd $w $hv)) true
     else
       logInfo m!"Unverified {base} root_number: supply minimality and localData evidence"
 

@@ -25,7 +25,8 @@ private def rationalFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let j ← invariantValue base `j_invariant
   let integral ← invariantValue base `j_integral
   let abcQuality ← if (← getEnv).contains (base ++ `abc_quality) then
-    `(some ⟨$(rootIdent (base ++ `claimed_abc_quality)), $(rootIdent (base ++ `abc_quality_valid)),
+    `(some ⟨$(rootIdent (base ++ `claimed_abc_quality)),
+      $(rootIdent (base ++ `abc_quality_valid)),
       $(rootIdent (base ++ `abc_quality_defined)), $(rootIdent (base ++ `abc_quality))⟩)
   else `(none)
   `({ discriminantSign := $sign, jInvariant := $j, jIntegral := $integral,
@@ -96,6 +97,11 @@ private def exactRankTerm (base : Name) : CommandElabM (TSyntax `term) := do
   unless (← getEnv).contains proofName do return ← `(none)
   `(some ⟨$(rootIdent (base ++ `mordell_weil_rank)), $(rootIdent proofName)⟩)
 
+private def regulatorFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
+  let name := base ++ `regulator_facts
+  unless (← getEnv).contains name do return ← `(none)
+  `(some $(rootIdent name))
+
 private def torsionGeneratorOrderTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let child := base ++ `torsion_generators
   unless (← getEnv).contains (child ++ `exact_order) do return ← `(none)
@@ -137,13 +143,14 @@ private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := d
   let lowerBound ← rankLowerBoundTerm base
   let rankBounds ← rankBoundsTerm base
   let exactRank ← exactRankTerm base
+  let regulator ← regulatorFactsTerm base
   `({ integralPoints := $integral, integralYFibers := $fibers,
       completeIntegralPoints := $completeIntegralPoints, generators := $generators,
       generatorCount := $generatorCount,
       torsionGenerators := $torsionGenerators, torsionGeneratorOrders := $torsionOrders,
       infiniteOrderPoints := $infinite,
       independentPoints := $independent, rankLowerBound := $lowerBound,
-      rankBounds := $rankBounds, rank := $exactRank })
+      rankBounds := $rankBounds, rank := $exactRank, regulator := $regulator })
 
 private def torsionFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `term) := do
   let boundName := base ++ `torsion_bound
@@ -169,7 +176,8 @@ private def torsionFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSynt
       !(← getEnv).contains (base ++ `torsion_structure_equiv) then
     `(some ⟨$(rootIdent (base ++ `claimed_torsion_structure)),
       $(rootIdent (base ++ `cyclic_torsion_order)),
-      $(rootIdent (base ++ `cyclic_torsion_generator)), $(rootIdent (base ++ `torsion_structure))⟩)
+      $(rootIdent (base ++ `cyclic_torsion_generator)),
+      $(rootIdent (base ++ `torsion_structure))⟩)
   else `(none)
   let twoFactor ← if (← getEnv).contains (base ++ `torsion_structure_equiv) then
     `(some ⟨$(rootIdent (base ++ `torsion_structure_second_order)),
