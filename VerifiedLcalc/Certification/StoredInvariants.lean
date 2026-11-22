@@ -1,7 +1,7 @@
 module
 
 public import VerifiedLcalc.Certification.WildCertification
-public import VerifiedLcalc.EllipticCurve.Tate.LocalReduction
+public import VerifiedLcalc.EllipticCurve.Tate.Kodaira
 public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReduction
 public import VerifiedLcalc.Certificate.EllipticWitness
 public import Mathlib.Data.Nat.Squarefree
@@ -146,6 +146,40 @@ end VerifiedLcalc.Certification
 namespace VerifiedLcalc
 open EllipticCurve NumberField WeierstrassCurve
 
+/-- Optional claims agree when any two supplied values are equal. -/
+def OptionalValuesAgree {α : Type*} (a b : Option α) : Prop :=
+  match a, b with
+  | some x, some y => x = y
+  | _, _ => True
+
+instance {α : Type*} [DecidableEq α] (a b : Option α) :
+    Decidable (OptionalValuesAgree a b) := by
+  cases a <;> cases b <;> dsimp [OptionalValuesAgree] <;> infer_instance
+
+/-- Single-valued local invariants supplied for the same prime must agree. -/
+def LocalReductionClaim.Compatible (a b : LocalReductionClaim) : Prop :=
+  a.prime = b.prime →
+    OptionalValuesAgree a.discriminantValuation b.discriminantValuation ∧
+    OptionalValuesAgree a.jDenominatorValuation b.jDenominatorValuation ∧
+    OptionalValuesAgree a.reductionType b.reductionType ∧
+    OptionalValuesAgree a.kodairaSymbol b.kodairaSymbol ∧
+    OptionalValuesAgree a.conductorValuation b.conductorValuation
+
+instance (a b : LocalReductionClaim) : Decidable (a.Compatible b) := by
+  unfold LocalReductionClaim.Compatible
+  infer_instance
+
+/-- Verify compatibility across every pair of supplied local rows. -/
+def localReductionClaimsAgree (rows : List LocalReductionClaim) : Bool :=
+  rows.all fun a => rows.all fun b => decide (a.Compatible b)
+
+/-- The compatibility check gives agreement for every pair of input rows. -/
+theorem localReductionClaimsAgree_correct (rows : List LocalReductionClaim)
+    (h : localReductionClaimsAgree rows = true) :
+    ∀ a ∈ rows, ∀ b ∈ rows, a.Compatible b := by
+  intro a ha b hb
+  exact of_decide_eq_true (List.all_eq_true.mp (List.all_eq_true.mp h a ha) b hb)
+
 /-- Finite checks use the actual integral equation and the reduced rational
 formula for j. A reduction code is meaningful only at a bad prime.
 The conductor exponent is checked separately against the checked modular level. -/
@@ -155,7 +189,8 @@ def LocalReductionClaim.check (row : LocalReductionClaim) (e : WeierstrassCurve 
     row.jDenominatorValuation.all (fun n =>
       padicValNat row.prime (((e.c₄ : Rat) ^ 3 / (e.Δ : Rat)).den) == n) &&
     row.reductionType.all (fun code =>
-      !goodReduction e row.prime && singularTrace e row.prime == code)
+      !goodReduction e row.prime && singularTrace e row.prime == code) &&
+    row.kodairaSymbol.all (checkKodairaCode e row.prime)
 
 /-- Optional local claims on a minimal equation. The signed reduction code is
 the trace of the singular reduction (zero for additive and ±1 for the two
@@ -181,7 +216,7 @@ theorem LocalReductionClaim.check_correct (row : LocalReductionClaim) (e : Weier
     [(e.baseChange ℚ).IsElliptic] (hm : IsGlobalMinimal (𝓞 ℚ) (e.baseChange ℚ))
     (h : row.check e = true) : row.Spec e := by
   simp only [check, Bool.and_eq_true, Option.all_eq_true, beq_iff_eq, Bool.not_eq_true'] at h
-  obtain ⟨⟨⟨hp, hd⟩, hj⟩, hr⟩ := h
+  obtain ⟨⟨⟨⟨hp, hd⟩, hj⟩, hr⟩, _⟩ := h
   have hp := (isPrime_correct _).mp hp
   let : Fact row.prime.Prime := ⟨hp⟩
   let hmin := hm.isMinimal (rationalPlace row.prime)
@@ -213,5 +248,30 @@ theorem LocalReductionClaim.check_correct (row : LocalReductionClaim) (e : Weier
       by_cases hroot : hasNodeRoot e row.prime = true
       · exact Or.inl ⟨ht.symm.trans (he.trans (ite_eq_left hroot)), hsplit.mpr hroot⟩
       · exact Or.inr ⟨ht.symm.trans (he.trans (ite_eq_right hroot)), mt hsplit.mp hroot⟩
+
+/-- Whether any row requests a specific additive Kodaira code. -/
+def hasAdditiveKodairaClaim (rows : List LocalReductionClaim) : Bool :=
+  rows.any fun row => row.kodairaSymbol.any fun code => (kodairaIIndex code).isNone
+
+/-- Exact canonical symbol for a good or multiplicative code, or exclusion of
+the multiplicative family for an additive code. -/
+def LocalReductionClaim.KodairaSpec (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
+    [(e.baseChange ℚ).IsElliptic] : Prop :=
+  ∃ hp : row.prime.Prime,
+    letI : Fact row.prime.Prime := ⟨hp⟩
+    ∀ code, row.kodairaSymbol = some code → KodairaCodeSpec (e.baseChange ℚ) row.prime code
+
+/-- Successful finite local checks certify the supported Kodaira statement. -/
+theorem LocalReductionClaim.kodaira_correct (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
+    [(e.baseChange ℚ).IsElliptic] (hn : e.Δ ≠ 0)
+    (hm : IsGlobalMinimal (𝓞 ℚ) (e.baseChange ℚ)) (h : row.check e = true) :
+    row.KodairaSpec e := by
+  obtain ⟨hp, _⟩ := row.check_correct e hm h
+  let : Fact row.prime.Prime := ⟨hp⟩
+  let := hm.isMinimal (rationalPlace row.prime)
+  refine ⟨hp, fun code hc => ?_⟩
+  have hkod := (Bool.and_eq_true_iff.mp h).2
+  rw [hc] at hkod
+  exact checkKodairaCode_correct e row.prime hn code hkod
 
 end VerifiedLcalc

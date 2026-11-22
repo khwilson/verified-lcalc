@@ -11,7 +11,8 @@ certify_ec Partial37 from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"jinv":[110592,37],"signD":1,"absD":37,
       "bad_primes":[37],"num_bad_primes":1,"semistable":true,"squarefree_disc":true,
       "local_invariants":[{"prime":37,"discriminant_valuation":1,
-        "j_denominator_valuation":1,"reduction_type":-1,"conductor_valuation":1}],
+        "j_denominator_valuation":1,"reduction_type":-1,
+        "conductor_valuation":1,"kodaira_symbol":5}],
       "conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3]}"#
 example : (Partial37.curve.baseChange ℚ).j = 110592 / 37 := Partial37.j_invariant
 
@@ -114,6 +115,34 @@ example : ¬ WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
   have := AdditiveLocal.semistable.mp h
   contradiction
 
+certify_ec KodairaGood from
+  { equation := ⟨0, 0, 1, -1, 0⟩, minimality := some ⟨[37]⟩,
+    localInvariants := some [{ prime := 3, kodairaSymbol := some 1 }] }
+
+example : (KodairaGood.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 3) = .I 0 := by
+  obtain ⟨_, h⟩ := KodairaGood.kodaira_symbols { prime := 3, kodairaSymbol := some 1 }
+    (by decide +kernel)
+  exact h 1 rfl
+
+/--
+info: KodairaAdditive: additive Kodaira family verified. Exact additive codes unverified.
+---
+info: Certified KodairaAdditive.ap_correct and KodairaAdditive.point_integral for the supplied lists
+-/
+#guard_msgs in
+certify_ec KodairaAdditive from_json_string
+  r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],"prime":3,"kodaira_symbol":2}"#
+
+example : ∀ n, (KodairaAdditive.curve.baseChange ℚ).reductionSymbol
+    (RationalLocalRing 3) ≠ .I n := by
+  obtain ⟨_, h⟩ := KodairaAdditive.kodaira_symbols { prime := 3, kodairaSymbol := some 2 }
+    (by decide +kernel)
+  exact h 2 rfl
+
+certify_ec CompatibleKodairaRows from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"minimality":[37],"prime":3,"kodaira_symbol":1,
+      "local_invariants":[{"prime":3,"kodaira_symbol":1}]}"#
+
 certify_ec TrivialCyclicStructure from
   { equation := ⟨0, 0, 1, -1, 0⟩, torsionStructure := some [],
     torsionBound := some ⟨3, 5, 1⟩ }
@@ -140,7 +169,15 @@ certify_ec NoncyclicTorsion from_json_string
 
 certify_ec SplitLocal from_json_string
   r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
-      "local_invariants":[{"prime":11,"reduction_type":1}]}"#
+      "local_invariants":[{"prime":11,"reduction_type":1,"kodaira_symbol":9}]}"#
+
+example :
+    letI : Fact (Nat.Prime 11) := ⟨by decide⟩
+    (SplitLocal.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 11) = .I 5 := by
+  let row : LocalReductionClaim :=
+    { prime := 11, reductionType := some 1, kodairaSymbol := some 9 }
+  obtain ⟨_, h⟩ := SplitLocal.kodaira_symbols row (by decide +kernel)
+  exact h 9 rfl
 
 run_cmd do
   let input ← CertifyEC.jsonInput
@@ -207,8 +244,10 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `potential_good_reduction_input_eq, `potential_good_reduction_value_valid,
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
-      `semistable, `squarefree_discriminant, `local_invariants, `claimed_semistable,
-      `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_conductor_valuations,
+      `local_invariants_agree, `local_invariants_agree_valid,
+      `semistable, `squarefree_discriminant, `local_invariants, `kodaira_symbols,
+      `claimed_semistable, `claimed_squarefree_discriminant, `claimed_local_invariants,
+      `claimed_conductor_valuations,
       `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation,
       `claimed_torsion_structure, `torsion_structure, `torsion_structure_order_consistent,
       `torsion_point_orders_consistent, `torsion_structure_divisor_consistent,
@@ -216,6 +255,25 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `IncompatibleAdditiveRows (← `(certify_ec IncompatibleAdditiveRows
+    from_json_string
+    r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],
+        "prime":3,"kodaira_symbol":2,"local_invariants":[{"prime":3,"kodaira_symbol":3}]}"#))
+  invariantRejected `IncompatibleAdditiveRowsReversed
+    (← `(certify_ec IncompatibleAdditiveRowsReversed from_json_string
+      r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],
+          "prime":3,"kodaira_symbol":3,"local_invariants":[{"prime":3,"kodaira_symbol":2}]}"#))
+  invariantRejected `AdditiveCodeAtGoodPrime (← `(certify_ec AdditiveCodeAtGoodPrime from
+    { KodairaGood.witness with localInvariants := some [{ prime := 3, kodairaSymbol := some 2 }] }))
+  invariantRejected `GoodCodeAtAdditivePrime (← `(certify_ec GoodCodeAtAdditivePrime from
+    { KodairaAdditive.witness with
+      localInvariants := some [{ prime := 3, kodairaSymbol := some 1 }] }))
+  invariantRejected `AdditiveCodeAtMultiplicativePrime
+    (← `(certify_ec AdditiveCodeAtMultiplicativePrime from
+      { SplitLocal.witness with
+        localInvariants := some [{ prime := 11, kodairaSymbol := some (-5) }] }))
+  invariantRejected `WrongMultiplicativeIndex (← `(certify_ec WrongMultiplicativeIndex from
+    { SplitLocal.witness with localInvariants := some [{ prime := 11, kodairaSymbol := some 5 }] }))
   invariantRejected `WrongAbcDecimal (← `(certify_ec WrongAbcDecimal from_json_string
     r#"{"ainvs":[0,1,0,0,4],"abc_quality":1.05,
         "abc_quality_evidence":{"error":[1,1000000],"factors":[2,2,2,2,3,3,3,5,5,7,11,11]}}"#))
@@ -334,7 +392,8 @@ run_cmd do
       minimalDiscriminantAbs := some 151552 }))
   for suffix in [`minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
-      `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation] do
+      `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation,
+      `kodaira_symbols] do
     if (← getEnv).contains (`Partial37 ++ suffix) then
       throwError "Missing arithmetic evidence generated an invariant claim"
   for name in [`BoundedTorsion, `UncheckedTorsion] do
@@ -353,7 +412,9 @@ run_cmd do
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
-  for theoremName in [`TrivialTorsion.torsion, `BoundedTorsion.torsion_bound,
+  for theoremName in [`CompatibleKodairaRows.local_invariants_agree,
+      `KodairaGood.kodaira_symbols, `KodairaAdditive.kodaira_symbols,
+      `TrivialTorsion.torsion, `BoundedTorsion.torsion_bound,
       `IntegralJ.j_integral, `NonintegralJ.j_integral,
       `PotentialGood.potential_good_reduction, `NoPotentialGood.potential_good_reduction] do
     for ax in ← liftTermElabM <| Lean.collectAxioms theoremName do
@@ -398,6 +459,9 @@ run_cmd do
     match CurveDataJson.parse ("{\"ainvs\":[0,0,1,-1,0],\"jinv\":" ++ j ++ "}") with
     | .error _ => pure ()
     | .ok _ => throwError "Malformed exact rational accepted"
+  match CurveDataJson.parse r#"{"ainvs":[0,0,0,0,1],"prime":3,"kodaira_symbol":0}"# with
+  | .error _ => pure ()
+  | .ok _ => throwError "Zero PARI Kodaira code accepted"
   match CurveDataJson.parse r#"{"ainvs":[0,0,1,-1,0],"j_integral":"false"}"# with
   | .error _ => pure ()
   | .ok _ => throwError "Non-boolean j_integral accepted"
@@ -442,7 +506,7 @@ run_cmd do
         throwError "Remove obsolete witness field {record}.{field} from the certificate inventory"
   cover ``EllipticWitness (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion)
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
-    `jDenominatorValuation, `reductionType]
+    `jDenominatorValuation, `reductionType, `kodairaSymbol]
   cover ``AbcQualityClaim #[`reported, `error, `factors]
   cover ``TorsionBoundWitness #[`firstPrime, `secondPrime, `bound]
 
@@ -458,6 +522,10 @@ example : BoundedTorsion.certificate.torsion.divisor.map
     (fun fact => (fact.evidence.firstPrime, fact.evidence.secondPrime)) = some (3, 5) := rfl
 example : BoundedTorsion.certificate.torsion.cardinality.isNone = true := rfl
 example : TrivialTorsion.certificate.torsion.cardinality.map Subtype.val = some 1 := rfl
+
+
+example : ((KodairaAdditive.certificate.arithmetic.minimalModel.get
+    (by decide +kernel)).kodaira.map LocalKodairaFact.index) = [none] := by decide +kernel
 
 example : LooseTorsionBound.certificate.torsion.cyclicStructure.isNone = true := rfl
 example : TrivialCyclicStructure.certificate.torsion.cyclicStructure.map

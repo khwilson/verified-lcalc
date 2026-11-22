@@ -49,6 +49,8 @@ structure LocalReductionClaim where
   jDenominatorValuation : Option Nat := none
   /-- Signed Frobenius trace code for bad reduction. -/
   reductionType : Option Int := none
+  /-- Claimed PARI Kodaira code. Additive codes request a family check. -/
+  kodairaSymbol : Option Int := none
   deriving Repr, DecidableEq
 
 /-- A reported abc quality and evidence for its absolute error bound. -/
