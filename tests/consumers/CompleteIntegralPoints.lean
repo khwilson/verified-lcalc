@@ -19,6 +19,15 @@ example :
     (Checked.certificate.algebraic.regulator.get (by decide +kernel)).exact_value.isSome = true :=
   rfl
 
+certify_ec SageRealLiteralRegulator from_json_string
+  r#"{
+    "ainvs":[0,0,1,0,-7],
+    "regulator":{"__RealLiteral__":0,"data":"1.000000000000000000000","prec":97}
+  }"#
+  with_proofs proofs
+
+example : SageRealLiteralRegulator.certificate.algebraic.regulator.isSome = true := by rfl
+
 theorem imported_regulator_value_is_one :
     ((Checked.certificate.algebraic.regulator.get (by decide +kernel)).exact_value.get
       (by decide +kernel)).val = 1 := rfl

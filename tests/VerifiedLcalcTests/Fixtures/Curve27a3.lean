@@ -100,7 +100,7 @@ certify_ec Checked from_json_string
   r#"{
     "ainvs":[0,0,1,0,-7],"xcoord_integral_points":[3,3],
     "num_int_pts":2,"rank":0,
-    "regulator":{"__RealLiteral__":0,"data":"1.000000000000000000000","prec":97}
+    "regulator":1
   }"#
   with_proofs proofs
 
