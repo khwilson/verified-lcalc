@@ -267,14 +267,15 @@ def certifyJson (name : Name) (text : String)
       let rankKeys := ["subject", "parameters", "rank", "coefficients", "arithmetic", "enclosure",
         "evaluator", "analytic_witness"]
       let localKeys := CurveDataJson.localReductionFields
+      let algebraicKeys := if CurveDataJson.inlineAnalyticRankField j then [] else ["rank"]
       let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points",
-        "minimality", "local_data", "gens", "ngens", "torsion_generators", "torsion_generator_orders",
+        "minimality", "local_data", "gens", "ngens", "torsion_generators",
+        "torsion_generator_orders",
         "infinite_order_points", "independent_points", "binvs", "cinvs",
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
         "j_integral", "potential_good_reduction", "torsion_bound", "torsion", "algebraic_rank",
-        "rank_bounds"] ++ (if CurveDataJson.inlineAnalyticRankField j then [] else ["rank"]) ++
-        localKeys ++ if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
+        "rank_bounds"] ++ algebraicKeys ++ localKeys ++ if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
           then ["prime"] else []
       let skipped := object.toList.filterMap fun (key, _) =>
         if known.contains key || (checkedRank && rankKeys.contains key) then none else some key
