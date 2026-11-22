@@ -36,6 +36,9 @@ example :
   obtain ⟨_, h⟩ := LMFDB.C179a1.tamagawa_numbers row (by decide +kernel) 1 rfl
   exact h (by decide +kernel)
 
+example : (LMFDB.C179a1.certificate.arithmetic.tamagawa.map fun fact =>
+    ((fact.prime : ℕ), fact.value)) = [(179, 1)] := by decide +kernel
+
 example : (LMFDB.C197a1.curve.baseChange ℚ).j = 13824000 / 197 :=
   LMFDB.C197a1.j_invariant
 example : LMFDB.C197a1.curve.Δ = 197 := LMFDB.C197a1.discriminant
@@ -156,6 +159,9 @@ run_cmd do
   check `LMFDB.C112a2 `generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.points_on_curve false
   check `LMFDB.C179a1 `tamagawa_numbers false
+  for axiomName in ← liftTermElabM (Lean.collectAxioms ``LMFDB.C179a1.certificate) do
+    unless unconditional.contains axiomName do
+      throwError "Unexpected aggregate dependency {axiomName}"
   check `LMFDB.C112a2 `torsion_generators.exact_order false
   check `LMFDB.C112a2 `dirichlet_coefficients false
   check `LMFDB.C197a1 `j_integral false
@@ -178,3 +184,57 @@ run_cmd do
     for suffix in [`analytic_rank, `algebraic_rank_lower_bound] do
       if (← getEnv).contains (curve ++ suffix) then
         throwError "Unexpected rank declaration for {curve}"
+
+private def importedCentral :=
+  Curve11.certificate.analytic.central.get (by decide +kernel)
+
+/-- The numerical payload remains independently certified on a mixed certificate. -/
+theorem imported_aggregate_central_payload :
+    EllipticCurve.CentralPayloadCorrect importedCentral.result :=
+  importedCentral.payload
+
+/-- The checked rank applies to a supplied arithmetic modular realization. -/
+theorem imported_aggregate_rank
+    (model : Modularity.ArithmeticModularRealization Curve11.curve) :
+    analyticOrderAt model.formL 1 = 0 :=
+  (Curve11.certificate.analytic.rank.get (by decide +kernel)).correct model
+
+/-- Actual central containment, instantiated at an explicit realization. -/
+theorem imported_aggregate_central_enclosure
+    (model : Modularity.ArithmeticModularRealization Curve11.curve) :
+    Curve11.result.box.Contains (Complex.ofReal (model.formL 1).re) :=
+  (importedCentral.enclosure.get (by decide +kernel)).contains model
+
+/-- Actual scaled first-derivative containment for the explicit realization. -/
+theorem imported_aggregate_derivative_enclosure
+    (model : Modularity.ArithmeticModularRealization Curve37.curve) :
+    Curve37.result.realDerivativeBounds.Contains (deriv model.formL 1).re :=
+  (((Curve37.certificate.analytic.derivative.get (by decide +kernel)).enclosure).get
+    (by decide +kernel)).contains model
+
+/-- The compiled certificate gives all integral solutions over the indexed seed's x-coordinate. -/
+theorem imported_aggregate_integral_y_fiber (y : ℤ) :
+    y ∈ (LMFDB.C112a2.certificate.algebraic.integralYFibers.get
+      (by decide +kernel)).fiber ⟨0, by decide⟩ ↔
+      LMFDB.C112a2.curve.toAffine.Equation (-2) y :=
+  (LMFDB.C112a2.certificate.algebraic.integralYFibers.get
+    (by decide +kernel)).complete _ y
+
+run_cmd do
+  let modularity := ``Assumptions.ellipticModularity
+  let legacyAxioms ← liftTermElabM <| Lean.collectAxioms ``Curve11.analytic_rank
+  unless legacyAxioms.contains modularity do
+    throwError "Expected the legacy rank to use the authorized assumption"
+  for fact in [``imported_aggregate_central_payload, ``imported_aggregate_rank,
+      ``imported_aggregate_central_enclosure, ``imported_aggregate_derivative_enclosure,
+      ``imported_aggregate_integral_y_fiber] do
+    let axioms ← liftTermElabM <| Lean.collectAxioms fact
+    for name in axioms do
+      unless [``propext, ``Classical.choice, ``Quot.sound].contains name do
+        throwError "Unexpected aggregate axiom in {fact}: {name}"
+
+example : LMFDB.C112a2.certificate.algebraic.generators.map AffineMembership.coordinates =
+    some [(0, 2)] := rfl
+
+example : LMFDB.C112a2.certificate.algebraic.torsionGeneratorOrders.map
+    TorsionGeneratorOrderFacts.orders = some [2] := rfl

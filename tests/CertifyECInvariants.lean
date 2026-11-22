@@ -179,7 +179,7 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
   set { (← get) with messages }
   unless failed do throwError "Incorrect invariant accepted: {name}"
   for suffix in [`witness, `curve, `nonsingular, `j_invariant, `discriminant,
-      `proofs, `discriminant_witness, `checked_facts,
+      `proofs, `discriminant_witness, `checked_facts, `certificate,
       `claimed_j_invariant, `claimed_j_integral, `j_integral, `j_integral_input_eq,
       `j_integral_value_valid, `claimed_discriminant, `global_minimal,
       `torsion, `torsion_bound, `claimed_torsion, `claimed_torsion_bound,
@@ -219,6 +219,9 @@ run_cmd do
     { TrivialTorsion.witness with torsionBound := some ⟨3, 5, 2⟩ }))
   invariantRejected `TorsionAtBadPrime (← `(certify_ec TorsionAtBadPrime from
     { TrivialTorsion.witness with torsionBound := some ⟨3, 37, 1⟩ }))
+  invariantRejected `ConflictingAggregateReuse (← `(certify_ec ConflictingAggregateReuse from
+    { equation := Invariants37.certificate.equation, cInvariants := some (48, 216) }
+    with_proofs Invariants37.certificate.equationFacts))
   invariantRejected `WrongProofCurve (← `(certify_ec WrongProofCurve from
     { equation := JZero.curve } with_proofs Invariants37.discriminant_witness.toProofs))
   invariantRejected `ConflictingProofValue (← `(certify_ec ConflictingProofValue from
@@ -371,3 +374,48 @@ run_cmd do
   match CurveDataJson.parse r#"{"ainvs":[0,0,1,-1,0],"anlist":[1,1]}"# with
   | .error _ => pure ()
   | .ok _ => throwError "Nonzero anlist origin accepted"
+
+-- Keep the contract exhaustive as the raw witness gains fields. A field can be
+-- an input prerequisite, rather than a direct certified conclusion.
+run_cmd do
+  let equation := #[`equation, `bInvariants, `cInvariants, `discriminant]
+  let rational := #[`discriminantSign, `jInvariant, `jIntegral]
+  let algebraic := #[`integralCoordinates, `integralFiberRoots, `generatorCoordinates,
+    `torsionGeneratorCoordinates,
+    `infiniteOrderPoints, `independentPoints]
+  let arithmetic := #[`potentialGoodReduction, `minimalDiscriminantAbs, `conductor, `rootNumber,
+    `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
+    `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData]
+  let analytic := #[`centralResult, `derivativeResult]
+  let torsion := #[`torsionBound, `torsion, `torsionGeneratorOrders]
+  let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do
+    let fields := Lean.getStructureFields (← getEnv) record
+    for field in fields do
+      unless tracked.contains field do
+        throwError "Add the checked data/proof contract for new witness field {record}.{field}"
+    for field in tracked do
+      unless fields.contains field do
+        throwError "Remove obsolete witness field {record}.{field} from the certificate inventory"
+  cover ``EllipticWitness (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion)
+  cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
+    `jDenominatorValuation, `reductionType, `tamagawaNumber]
+  cover ``TorsionBoundWitness #[`firstPrime, `secondPrime, `bound]
+
+example : EmptyProofs.certificate.equationFacts.discriminant.isNone = true := rfl
+example : JZero.certificate.equationFacts.discriminant.map Subtype.val = some (-432) := rfl
+
+example : NonintegralJ.certificate.rational.jIntegral.map Subtype.val = some false := rfl
+example : JZero.certificate.algebraic.integralYFibers = none := rfl
+example : Partial37.certificate.arithmetic.minimalModel.isNone = true := rfl
+
+example : BoundedTorsion.certificate.torsion.divisor.isSome = true := rfl
+example : BoundedTorsion.certificate.torsion.divisor.map
+    (fun fact => (fact.evidence.firstPrime, fact.evidence.secondPrime)) = some (3, 5) := rfl
+example : BoundedTorsion.certificate.torsion.cardinality.isNone = true := rfl
+example : TrivialTorsion.certificate.torsion.cardinality.map Subtype.val = some 1 := rfl
+
+
+example : GoodTamagawa.certificate.arithmetic.tamagawa.map LocalTamagawaFact.value = [1] :=
+  by decide +kernel
+
+example : TamagawaOutsideScope.certificate.arithmetic.tamagawa.length = 0 := by decide +kernel
