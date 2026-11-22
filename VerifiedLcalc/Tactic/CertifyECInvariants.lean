@@ -168,8 +168,8 @@ private def certifyTwoFactorTorsion (base : Name) (curve factors n orders : Iden
         _ = $n := by decide +kernel))
   return true
 
-/-- Recover cyclic torsion when the verified divisor matches an exact point order. -/
-private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Unit := do
+/-- Recover the torsion structure when supplied points span a subgroup of the verified size. -/
+private def certifyTorsionStructure (base : Name) (curve : Ident) : CommandElabM Unit := do
   let factors ← bindStored base `torsionStructure `torsion_structure (← `(List Nat))
   let orderName := base ++ `claimed_torsion
   let order := if (← getEnv).contains orderName then some (rootIdent orderName) else none
@@ -181,7 +181,7 @@ private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Un
     if factors.isSome then
       logInfo m!"Unverified {base} torsion_structure: supply a torsion divisor"
     return
-  let nName := base ++ `cyclic_torsion_order
+  let nName := base ++ `torsion_order_candidate
   let n := rootIdent nName
   emit (← `(def $n : Nat := $nInput))
   let candidate := rootIdent (base ++ `claimed_torsion_bound)
@@ -236,7 +236,7 @@ def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
   let hn := rootIdent (base ++ `nonsingular)
   certifyTorsionInvariants base curve
-  certifyCyclicTorsion base curve
+  certifyTorsionStructure base curve
   if let some b ← bindStored base `bInvariants `b_invariants (← `(Int × Int × Int × Int)) then
     checked (base ++ `b_invariants)
       (← `((($curve).b₂, ($curve).b₄, ($curve).b₆, ($curve).b₈) = $b))

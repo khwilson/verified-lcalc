@@ -191,7 +191,13 @@ full rational torsion subgroup. Supply the cyclic `torsion_structure` as
 additive equivalence from `ZMod n` sending 1 to that first point. The trivial
 group uses `[]` and the identity point. If the verified divisor is larger
 than the claimed order, the cyclic certificate requires tighter evidence.
-Generation and independence require separate evidence.
+A structure `[2, n]` with positive even `n` requires two supplied points of
+orders 2 and `n` in that order, and a verified divisor of `2 * n`. The
+command checks that the first point lies outside the cyclic subgroup of the
+second. The structure theorem gives an additive equivalence from
+`ZMod 2 × ZMod n` sending the coordinate generators to the supplied points.
+An order-2 point that is already a multiple of the second point fails this
+check and rolls back the certificate.
 
 The same `certify_ec` command establishes stronger facts when
 `infiniteOrderPoints` or `independentPoints` is supplied in the witness.

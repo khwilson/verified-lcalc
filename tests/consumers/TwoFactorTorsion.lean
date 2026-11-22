@@ -19,5 +19,5 @@ example (p : ℕ) :
   rw [C120b4.torsion]
   change _ ↔ p.Prime ∧ p ∣ 8
   rw [← Nat.mem_primeFactorsList (by decide : (8 : ℕ) ≠ 0)]
-  change p ∈ ([2] : List ℕ) ↔ p ∈ ([2, 2, 2] : List ℕ)
+  rw [show Nat.primeFactorsList 8 = [2, 2, 2] by decide +kernel]
   simp
