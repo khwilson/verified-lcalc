@@ -3,6 +3,8 @@ module
 public import VerifiedLcalc.EllipticCurve.Tate.AdditiveArithmetic
 public import VerifiedLcalc.EllipticCurve.BadPrimeCore
 
+/-! # Checking Frobenius traces of singular reduced models -/
+
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
 
@@ -10,9 +12,8 @@ namespace VerifiedLcalc.EllipticCurve
 theorem nodeValue_correct (e : (WeierstrassCurve ℤ)) (p n : ℕ) :
     (WeierstrassCurve.baseChange e (ZMod p)).nodePolynomial.eval (n : ZMod p) =
       (nodeValue e n : ZMod p) := by
-  simp [WeierstrassCurve.nodePolynomial_def, nodeValue, WeierstrassCurve.c₄, WeierstrassCurve.b₂, WeierstrassCurve.b₄, WeierstrassCurve.b₆,
-    WeierstrassCurve.baseChange, WeierstrassCurve.c₄, WeierstrassCurve.b₂, WeierstrassCurve.b₄,
-    WeierstrassCurve.b₆]
+  simp [WeierstrassCurve.nodePolynomial_def, nodeValue, WeierstrassCurve.baseChange,
+    WeierstrassCurve.c₄, WeierstrassCurve.b₂, WeierstrassCurve.b₄, WeierstrassCurve.b₆]
 
 /-- The root-search Boolean is equivalent to existence of a field root. -/
 theorem hasNodeRoot_correct (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime] :
@@ -43,7 +44,9 @@ theorem hasNodeRoot_iff_splits (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Pr
   · rintro ⟨x, hx⟩
     exact Polynomial.Splits.of_natDegree_eq_two hd hx
   · intro hs
-    have hn : (WeierstrassCurve.baseChange e (ZMod p)).nodePolynomial.natDegree ≠ 0 := by rw [hd]; decide
+    have hn : (WeierstrassCurve.baseChange e (ZMod p)).nodePolynomial.natDegree ≠ 0 := by
+      rw [hd]
+      decide
     exact hs.exists_eval_eq_zero (Polynomial.degree_ne_of_natDegree_ne hn)
 
 /-- Exact singular-model trace, including p=2 and p=3. The executable search
@@ -71,7 +74,7 @@ theorem singularTrace_correct (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Pri
       exact (WeierstrassCurve.frobeniusTrace_eq_one_of_splits _ hΔ hc'
         ((hasNodeRoot_iff_splits e p hc').mp hs)).symm
     · rw [ite_eq_right hs]
-      exact (WeierstrassCurve.frobeniusTrace_eq_neg_one_of_not_splits _ hΔ hc'
+      exact (WeierstrassCurve.frobeniusTrace_eq_neg_one_of_not_splits _ hΔ
         (mt (hasNodeRoot_iff_splits e p hc').mpr hs)).symm
 
 end VerifiedLcalc.EllipticCurve
