@@ -193,6 +193,7 @@ the certifier subsequently proves every resulting curve equation. -/
 def decode (j : Json) : Except String EllipticWitness := do
   let _ ← j.getObj?
   let equation ← equation j
+  let catalogueAnalyticRank ← optionalValue j "analytic_rank" nonnegativeInteger
   let mut primeCoefficients : Array (Nat × Int) := #[]
   if let some rows := optionalData j "ap" then
     for row in ← array rows 256 do
@@ -280,6 +281,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     return ({ firstPrime, secondPrime, bound } : TorsionBoundWitness)
   return { base with
     equation
+    catalogueAnalyticRank
     bInvariants
     cInvariants
     discriminant

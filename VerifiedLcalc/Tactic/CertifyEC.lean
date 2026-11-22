@@ -5,6 +5,7 @@ public import VerifiedLcalc.Tactic.CertifyECData
 public import VerifiedLcalc.Tactic.CertifyECPoints
 public import VerifiedLcalc.Tactic.CertifyECInvariants
 public import VerifiedLcalc.Tactic.CertifyECRecord
+public import VerifiedLcalc.Tactic.CertifyECCatalogueRank
 public meta import Lean
 
 /-!
@@ -237,6 +238,7 @@ def certifyFields (name : Name) (input : TSyntax `term)
   if let some result := central then certifyAnalytic base true result
   if let some result := derivative then certifyAnalytic base false result
   certifyRecord base
+  certifyCatalogueRank base
   logInfo m!"Certified {base}.ap_correct and {base}.point_integral for the supplied lists"
 
 /-- Programmatic entry point; failed components leave no declarations behind. -/
@@ -264,6 +266,7 @@ def certifyJson (name : Name) (text : String)
   if let .ok j := Json.parse text then
     if let .ok object := j.getObj? then
       let base := (← getCurrNamespace) ++ name.eraseMacroScopes
+      let checkedCatalogueRank := (← getEnv).contains (base ++ `catalogue_rank)
       let checkedRank := (← getEnv).contains (base ++ `analytic_rank)
       let rankKeys := ["subject", "parameters", "rank", "coefficients", "arithmetic", "enclosure",
         "evaluator", "analytic_witness"]
@@ -277,7 +280,8 @@ def certifyJson (name : Name) (text : String)
         localKeys ++ if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
           then ["prime"] else []
       let skipped := object.toList.filterMap fun (key, _) =>
-        if known.contains key || (checkedRank && rankKeys.contains key) then none else some key
+        if known.contains key || (checkedRank && rankKeys.contains key) ||
+            (checkedCatalogueRank && key == "analytic_rank") then none else some key
       unless skipped.isEmpty do
         logInfo m!"Unverified metadata (no claim emitted): {skipped}"
 

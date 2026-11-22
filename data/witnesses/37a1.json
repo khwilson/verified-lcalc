@@ -17,6 +17,7 @@
     "cutoff": "8"
   },
   "rank": "1",
+  "analytic_rank": 1,
   "coefficients": [
     "1",
     "-2",

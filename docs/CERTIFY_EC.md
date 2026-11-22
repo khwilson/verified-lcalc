@@ -388,3 +388,12 @@ The reusable-theorem extraction plan is in [TAUCETI_ROADMAP.md](TAUCETI_ROADMAP.
 with separate arithmetic and analytic roadmaps. Certificate metadata and
 metaprogramming stay in this project; mathematical replacements should be
 upstreamed independently, with their own proof and axiom audits.
+
+A native `analytic_rank` or Lean `catalogueAnalyticRank` is an optional
+catalogue value to compare with an independently verified order. The command
+exports `E.catalogue_rank` and `E.catalogue_analytic_rank` only after an actual
+analytic payload establishes that same order. Both are indexed by the checked
+curve and use an explicitly supplied arithmetic modular realization. A conflict
+rolls back the whole command. Missing analytic evidence leaves the reference
+value unverified. The algebraic `rank` column and the legacy rank-witness
+format's payload selector have their existing meanings.
