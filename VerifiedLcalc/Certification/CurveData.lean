@@ -4,6 +4,7 @@ public import VerifiedLcalc.EllipticCurve.MinimalArithmetic
 public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
 public import VerifiedLcalc.Certificate.EllipticWitness
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
+public import Mathlib.GroupTheory.OrderOfElement
 
 /-!
 # Exact certificates for stored elliptic-curve arithmetic data
@@ -48,6 +49,21 @@ theorem affineCoordinatesValid_sound {R : Type*} [CommRing R] [DecidableEq R]
 /-- Check precisely the supplied integer solutions, without searching for others. -/
 def integralCoordinatesValid (w : EllipticWitness) : Bool :=
   affineCoordinatesValid w.equation (w.integralCoordinates.getD [])
+
+/-- Check annihilation and the proper multiples obtained from prime divisors of the claim. -/
+def exactOrderCheck {A : Type*} [AddMonoid A] [DecidableEq A] (P : A) (n : Nat) : Bool :=
+  decide (n ≠ 0) && decide (n • P = 0) &&
+    n.primeFactorsList.all (fun p => decide ((n / p) • P ≠ 0))
+
+/-- A checked claim is the additive order in the supplied group. -/
+theorem exactOrderCheck_sound {A : Type*} [AddMonoid A] [DecidableEq A] {P : A} {n : Nat}
+    (h : exactOrderCheck P n = true) : addOrderOf P = n := by
+  obtain ⟨hpositive, hdiv⟩ := Bool.and_eq_true_iff.mp h
+  obtain ⟨hn, hzero⟩ := Bool.and_eq_true_iff.mp hpositive
+  apply addOrderOf_eq_of_nsmul_and_div_prime_nsmul (of_decide_eq_true hzero)
+  intro p hp hpn
+  exact of_decide_eq_true (List.all_eq_true.mp hdiv p
+    ((Nat.mem_primeFactorsList (of_decide_eq_true hn)).mpr ⟨hp, hpn⟩))
 
 /-- A successful finite check proves every listed value is the actual prime
 coefficient of the rational curve, with local minimality handled at bad primes. -/

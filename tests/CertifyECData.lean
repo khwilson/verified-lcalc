@@ -59,6 +59,17 @@ certify_ec TorsionGeneratorCoordinates from
 example : (TorsionGeneratorCoordinates.curve.baseChange ℚ).toAffine.Equation 5 5 :=
   TorsionGeneratorCoordinates.torsion_generators.points_on_curve _ _ (by decide +kernel)
 
+certify_ec TorsionOrderThree from_json_string
+  r#"{"ainvs":[0,0,1,0,0],"torsion_generators":[[0,0,1]],"torsion_generator_orders":[3]}"#
+example : addOrderOf (TorsionOrderThree.torsion_generators.point ⟨0, by decide⟩) = 3 :=
+  TorsionOrderThree.torsion_generators.exact_order _
+
+certify_ec TorsionOrderFour from
+  { equation := ⟨1, -1, -1, 0, 0⟩, torsionGeneratorCoordinates := some [(0, 0)],
+    torsionGeneratorOrders := some [4] }
+example : addOrderOf (TorsionOrderFour.torsion_generators.point ⟨0, by decide⟩) = 4 :=
+  TorsionOrderFour.torsion_generators.exact_order _
+
 certify_ec OnlyAP from
   { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := some [(2, -2)] }
 certify_ec OnlyPoints from
@@ -111,7 +122,10 @@ meta def expectDataRejected (name : Name) (command : Syntax) : CommandElabM Unit
   unless failed do throwError "Invalid curve data accepted: {name}"
   for suffix in [`supplied, `witness, `curve, `nonsingular, `prime_coefficients_valid,
       `ap_correct, `integral_coordinates_valid, `points_on_curve, `curve_isElliptic,
-      `point, `point_integral, `generators.point, `torsion_generators.point] do
+      `point, `point_integral, `generators.point, `torsion_generators.point,
+      `torsion_generators.orders, `torsion_generators.orders_eq, `torsion_generators.orders_length,
+      `torsion_generators.orders_in_range, `torsion_generators.orders_valid,
+      `torsion_generators.exact_order] do
     if env.contains (name ++ suffix) then
       throwError "Failed curve-data certification leaked {name ++ suffix}"
     if env.contains (name ++ `data ++ suffix) then
@@ -129,6 +143,18 @@ run_cmd do
     { Data37.witness with integralCoordinates := some [(0, 1)] }))
   expectDataRejected `InvalidWeightedPoint (← `(certify_ec InvalidWeightedPoint from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"gens":[[0,0,1]],"torsion_generators":[[1,1,1]]}"#))
+  expectDataRejected `WrongOrder (← `(certify_ec WrongOrder from
+    { TorsionOrderFour.witness with torsionGeneratorOrders := some [8] }))
+  expectDataRejected `MissingOrder (← `(certify_ec MissingOrder from
+    { TorsionOrderFour.witness with torsionGeneratorOrders := some [] }))
+  expectDataRejected `MissingTorsionPoint (← `(certify_ec MissingTorsionPoint from_json_string
+    r#"{"ainvs":[0,0,1,0,0],"torsion_generator_orders":[3]}"#))
+  expectDataRejected `ZeroOrder (← `(certify_ec ZeroOrder from
+    { TorsionOrderFour.witness with torsionGeneratorOrders := some [0] }))
+  expectDataRejected `OversizedOrder (← `(certify_ec OversizedOrder from
+    { TorsionOrderFour.witness with torsionGeneratorOrders := some [257] }))
+  expectDataRejected `MalformedOrder (← `(certify_ec MalformedOrder from_json_string
+    r#"{"ainvs":[0,0,1,0,0],"torsion_generators":[[0,0,1]],"torsion_generator_orders":[-3]}"#))
   expectDataRejected `ZeroWeight (← `(certify_ec ZeroWeight from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"gens":[[1,5,0]]}"#))
   expectDataRejected `ShortWeightedPoint (← `(certify_ec ShortWeightedPoint from_json_string
@@ -174,6 +200,8 @@ run_cmd do
   for suffix in [`generators.points_on_curve, `torsion_generators.points_on_curve] do
     if (← getEnv).contains (`OnlyAP ++ suffix) then
       throwError "Missing generator data became a theorem"
+  if (← getEnv).contains `TorsionGeneratorCoordinates.torsion_generators.exact_order then
+    throwError "Missing torsion orders became a theorem"
   if (← getEnv).contains `VerifiedLcalc.CurveDataWitness then
     throwError "The retired aggregate witness type is still present"
 
@@ -207,6 +235,14 @@ run_cmd do
       for axiomName in axioms do
         unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
           throwError "Unexpected rational-point certificate axiom: {axiomName}"
+
+run_cmd do
+  for name in [`TorsionOrderThree.torsion_generators, `TorsionOrderFour.torsion_generators] do
+    for suffix in [`orders_valid, `exact_order] do
+      let axioms ← liftTermElabM <| Lean.collectAxioms (name ++ suffix)
+      for axiomName in axioms do
+        unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+          throwError "Unexpected exact-order certificate axiom: {axiomName}"
 
 #eval show IO Unit from do
   for text in [r#"{"ainvs":[0,0,1,-1,0]}"#,
