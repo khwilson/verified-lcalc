@@ -11,7 +11,7 @@ open VerifiedLcalc MordellWeilRankExample Lean Elab Command
 
 /-- The rank-one result proves the actual rank of the rational point group. -/
 theorem imported_mordell_weil_rank :
-    Module.rank ℤ (Exact.curve.baseChange ℚ).toAffine.Point = 1 :=
+    Module.finrank ℤ (Exact.curve.baseChange ℚ).toAffine.Point = 1 :=
   (Exact.certificate.algebraic.rank.get (by decide)).property
 
 /-- The compiled public aggregate retains bounds and exact rank as typed facts. -/
@@ -29,18 +29,18 @@ theorem imported_rank_certificate_summary :
   exact ⟨rfl, rfl, rfl⟩
 
 theorem imported_rank_interval_from_certificate :
-    (1 : Cardinal) ≤ Module.rank ℤ (Exact.curve.baseChange ℚ).toAffine.Point ∧
-    Module.rank ℤ (Exact.curve.baseChange ℚ).toAffine.Point ≤ (1 : Cardinal) := by
+    (1 : Nat) ≤ Module.finrank ℤ (Exact.curve.baseChange ℚ).toAffine.Point ∧
+    Module.finrank ℤ (Exact.curve.baseChange ℚ).toAffine.Point ≤ (1 : Nat) := by
   let bounds := Exact.certificate.algebraic.rankBounds.get (by decide)
-  exact ⟨bounds.lower_le_rank, bounds.rank_le_upper⟩
+  exact ⟨bounds.lower_le_finrank, bounds.finrank_le_upper⟩
 
 theorem imported_generator_count_from_certificate :
     (Exact.certificate.algebraic.generators.get (by decide)).coordinates.length =
       (Exact.certificate.algebraic.generatorCount.get (by decide)).count :=
   (Exact.certificate.algebraic.generatorCount.get (by decide)).length_eq
 
-example : (0 : Cardinal) ≤ Module.rank ℤ (Partial.curve.baseChange ℚ).toAffine.Point ∧
-    Module.rank ℤ (Partial.curve.baseChange ℚ).toAffine.Point ≤ 2 :=
+example : (0 : Nat) ≤ Module.finrank ℤ (Partial.curve.baseChange ℚ).toAffine.Point ∧
+    Module.finrank ℤ (Partial.curve.baseChange ℚ).toAffine.Point ≤ 2 :=
   Partial.algebraic_rank_bounds
 
 example : Partial.certificate.algebraic.rankBounds.isSome := by decide
@@ -48,7 +48,7 @@ example : Partial.certificate.algebraic.rank.isNone := by decide
 
 /-- The checked infinite-order point tightens a supplied upper bound to exact rank. -/
 theorem imported_mordell_weil_rank_from_point :
-    Module.rank ℤ (FromPointAndUpper.curve.baseChange ℚ).toAffine.Point = 1 :=
+    Module.finrank ℤ (FromPointAndUpper.curve.baseChange ℚ).toAffine.Point = 1 :=
   FromPointAndUpper.algebraic_rank
 
 run_cmd do
@@ -69,8 +69,8 @@ certify_ec ReusedBounds from { equation := Exact.curve }
   with_proofs { algebraicRank := some Exact.algebraic_rank_witness }
 
 example : (ReusedBounds.certificate.algebraic.rankBounds.get (by decide)).lower ≤
-    Module.rank ℤ (ReusedBounds.curve.baseChange ℚ).toAffine.Point :=
-  (ReusedBounds.certificate.algebraic.rankBounds.get (by decide)).lower_le_rank
+    Module.finrank ℤ (ReusedBounds.curve.baseChange ℚ).toAffine.Point :=
+  (ReusedBounds.certificate.algebraic.rankBounds.get (by decide)).lower_le_finrank
 
 certify_ec RankClaimOnly from_json_string
   r#"{"ainvs":[0,0,0,-1,1],"rank":1,"rank_bounds":[0,2]}"#

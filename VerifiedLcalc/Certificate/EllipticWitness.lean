@@ -1,7 +1,7 @@
 module
 
 public import VerifiedLcalc.Certificate.IntegralXSupport
-public import VerifiedLcalc.EllipticCurve.AlgebraicRank
+public import VerifiedLcalc.Certificates.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.DerivativeCore
 public import VerifiedLcalc.EllipticCurve.Tate.WildRootCore
 
@@ -87,7 +87,8 @@ structure IsogenyEdgeClaim where
   kernelX : Option Rat := none
   deriving Repr, DecidableEq
 /-- Lean proofs accepted alongside raw claims on an integral Weierstrass equation. -/
-structure IntegralCurveProofs (curve : WeierstrassCurve ℤ) extends EllipticProofs curve where
+structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] extends EllipticProofs curve where
   /-- Proved endpoints of a Mordell–Weil rank interval on the rational curve. -/
   algebraicRank : Option (AlgebraicRankBounds (curve.baseChange ℚ)) := none
   /-- Exhaustive abscissa support for integral points on the supplied equation. -/

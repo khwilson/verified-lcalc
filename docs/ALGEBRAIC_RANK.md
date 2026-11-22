@@ -13,7 +13,7 @@ certify_ec Points37 from
 
 example : ¬ IsOfFinAddOrder Points37.infiniteOrder.point0.point :=
   Points37.infiniteOrder.point0.infinite_order
-example : (1 : Cardinal) ≤ Module.rank ℤ (Points37.curve.baseChange ℚ).toAffine.Point :=
+example : 1 ≤ Module.finrank ℤ (Points37.curve.baseChange ℚ).toAffine.Point :=
   Points37.algebraic_rank_lower_bound
 ```
 
@@ -69,7 +69,7 @@ The command defines `Rank37.algebraic.indices : List Nat` and
 The supplied proof must have type `LinearIndependent ℤ Rank37.algebraic.points`.
 It exports `Rank37.algebraic.points_independent` and the root theorem
 `Rank37.algebraic_rank_lower_bound`, stating
-`(Rank37.algebraic.indices.length : Cardinal) ≤ Module.rank ℤ E(ℚ)`.
+`Rank37.algebraic.indices.length ≤ Module.finrank ℤ E(ℚ)`.
 The kernel checks the concrete family size in `Rank37.algebraic.point_count_eq`.
 
 JSON uses `"independent_points": [1]`. The same `with_independence` clause is
@@ -95,11 +95,14 @@ rank bound. A certified Néron–Tate pairing against fixed points can supply su
 a map to real coordinates. The proof must connect the checked matrix entries
 to the actual map values; a bare matrix cannot certify a rank.
 
-The cardinal-valued rank avoids silently assuming Mordell–Weil finite
-generation. `EllipticCurve.algebraic_finrank_lower_bound` supplies the
-natural-valued version when a `Module.Finite ℤ E(ℚ)` instance is available.
-This uses the actual Mathlib point group and module rank, with no duplicate
-curve or rank definition.
+For a nonsingular elliptic curve over `ℚ`, TauCeti's
+`WeierstrassCurve.Affine.moduleFinite_point_of_numberField` instance applies
+the proved Mordell–Weil theorem and supplies finite generation of the actual
+Mathlib rational point group. Therefore `Module.finrank ℤ E(ℚ)` is the natural
+number-valued Mordell–Weil rank used by the certificate API. This does not use
+BSD, analytic ranks, or a duplicate curve or rank definition. The generic
+cardinal-valued helper remains available for contexts that do not assume
+ellipticity or finite generation.
 
 ## Remaining automation
 

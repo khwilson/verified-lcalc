@@ -21,8 +21,8 @@ example :
     (Checked.certificate.algebraic.completeIntegralPoints.get (by decide +kernel)).coordinates =
     ({(3, -5), (3, 4)} : Finset (ℤ × ℤ)) := by decide +kernel
 
-example : Module.rank ℤ (Checked.curve.baseChange ℚ).toAffine.Point = 0 :=
-  Checked.algebraic_rank
+example : Module.finrank ℤ (Checked.curve.baseChange ℚ).toAffine.Point = 0 :=
+  Checked.certificate.algebraic.rank.get (by decide +kernel) |>.property
 
 certify_ec ReuseSupport from
   { equation := Checked.curve, integralFiberRoots := some [(3, -5), (3, 4), (3, -5)],
