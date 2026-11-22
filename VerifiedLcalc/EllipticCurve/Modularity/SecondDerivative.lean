@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.EllipticCurve.Modularity.FirstDerivative
-public import VerifiedLcalc.Numerics.MellinSecondDerivative
+public import VerifiedLcalc.Numerics.MellinLogMoments
 
 /-!
 # The second derivative of the scaled central Mellin transform
@@ -35,7 +35,7 @@ theorem ModularRealization.mellin_second_derivative {e : WeierstrassCurve ℤ}
   obtain ⟨ht, hz⟩ := m.imaginaryFunction_decay
   have hi : IntegrableOn m.imaginaryFunction (Ioi 0) := by
     simpa [MellinConvergent] using m.central_mellin_convergent
-  exact Numerics.mellin_second_derivative_of_rpow hi.locallyIntegrableOn ht (by norm_num)
+  exact Numerics.mellin_iteratedDeriv_of_isBigO_rpow 2 hi.locallyIntegrableOn ht (by norm_num)
     hz (by norm_num)
 
 /-- The second moment has the same Fricke sign as the original kernel. -/

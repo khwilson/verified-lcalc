@@ -184,18 +184,17 @@ arithmetic results. The broader extraction roadmap is
 [ELLIPTIC_LOCAL_ARITHMETIC.md](roadmaps/ELLIPTIC_LOCAL_ARITHMETIC.md).
 
 
-## Second Mellin derivative and higher log moments
+## Iterated Mellin derivatives and log moments
 
-[The second derivative theorem](../VerifiedLcalc/Numerics/MellinSecondDerivative.lean)
-uses Mathlib’s `mellin_hasDerivAt_of_isBigO_rpow` twice inside the same
-strict strip. Pinned Mathlib `31ce06e` and TauCeti `e0e414c` supply the
-first derivative and Fricke functional equation. The general nth derivative
-API for log moments is still missing. TauCeti main’s `NormalizedContinuation`
-uses derivatives of the kernel in the integration variable, which give a
-different Mellin identity. Relevant open results concern Riemann zeta and
-Dirichlet L-functions.
+[The log-moment theorem](../VerifiedLcalc/Numerics/MellinLogMoments.lean) uses
+Mathlib’s `mellin_hasDerivAt_of_isBigO_rpow` and log-weighted decay in an
+induction on derivative order. Pinned Mathlib `31ce06e` and TauCeti `e0e414c`
+supply the first derivative and the Fricke functional equation. Their generic
+log-moment API lacks the arbitrary-order result. TauCeti main’s
+`NormalizedContinuation` differentiates the kernel in the integration
+variable, which gives a different Mellin identity. Related open results
+concern Riemann zeta and Dirichlet L-functions.
 
-The pure second-derivative lemma is a candidate for Mathlib’s Mellin transform
-API. Iterate the log-weighted decay on nested strips to generalize it.
-The cusp-form adapter and weight-two normalization belong with TauCeti’s
+The pure log-moment lemma is a candidate for Mathlib’s Mellin transform API.
+The cusp-form adapter and its weight-two normalization belong with TauCeti’s
 modular L-function interfaces.

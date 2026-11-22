@@ -75,10 +75,10 @@ Build in this dependency order:
 3. Relate derivatives of `L(s) = K(s) M(s)` to Mellin moments by Leibniz. If all lower derivatives vanish exactly and `K(1) ≠ 0`, the first surviving derivative only needs `K(1)` times the corresponding Mellin derivative. Prove this cancellation generically before implementing gamma-derivative interval machinery.
 4. Generalize certified tail estimates and quadrature to log powers. State dependence on derivative order, coefficient majorant and truncation explicitly. Add numerical finite witnesses only after the real/complex analysis theorem exists.
 
-The order-two analytic prerequisite is now proved.
-[`mellin_second_derivative_of_rpow`](../../VerifiedLcalc/Numerics/MellinSecondDerivative.lean)
-reuses the first derivative theorem on a slightly narrower strip for the
-log-weighted kernel. For the scaled cusp form (f(it/\sqrt{N})), the
+[`mellin_iteratedDeriv_of_isBigO_rpow`](../../VerifiedLcalc/Numerics/MellinLogMoments.lean)
+proves convergence and the log-moment formula for every order inside the
+original strict strip. The induction uses a slightly narrower strip for each
+additional log weight. For the scaled cusp form (f(it/\sqrt{N})), the
 [central split](../../VerifiedLcalc/EllipticCurve/Modularity/SecondDerivative.lean)
 gives (M''(1)=(1+\varepsilon)\int_1^\infty (\log t)^2f(it/\sqrt{N})\,dt).
 The gamma and level prefactor cancels out of the lower terms in the

@@ -17,7 +17,7 @@ example {e : WeierstrassCurve ℤ} (m : ModularRealization e) (h : m.rootNumber 
   norm_num
 
 run_cmd do
-  for declaration in [``VerifiedLcalc.Numerics.mellin_second_derivative_of_rpow,
+  for declaration in [``VerifiedLcalc.Numerics.mellin_iteratedDeriv_of_isBigO_rpow,
       ``ModularRealization.mellin_second_derivative,
       ``ModularRealization.mellin_second_derivative_upper] do
     for axiomName in ← liftTermElabM (Lean.collectAxioms declaration) do
