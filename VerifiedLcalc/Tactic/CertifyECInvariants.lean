@@ -130,33 +130,56 @@ private def certifyTorsionInvariants (base : Name) (curve : Ident) : CommandElab
   else if claim.isSome then
     logInfo m!"Unverified {base} torsion: the checked divisibility bound is not exact"
 
-/-- Check and package the discriminant through the computed or supplied proof route. -/
-private def certifyDiscriminant (base : Name) (curve : Ident)
-    (proofs : Option (TSyntax `term)) : CommandElabM Unit := do
-  let claimed ← bindStored base `discriminant `discriminant (← `(Int))
-  let proved ← if let some input := proofs then do
-    let name := base ++ `proofs
-    let facts := rootIdent name
-    emit (← `(def $facts : EllipticProofs $curve := $input))
-    let provided ← liftTermElabM <| whnf (mkProj ``EllipticProofs 0 (mkConst name))
+/-- Check one optional equation invariant and return the corresponding proved value. -/
+private def certifyProofFact (base field label : Name) (proofs : Option Ident)
+    (valueType lhs : TSyntax `term) : CommandElabM (Option (TSyntax `term)) := do
+  let claimed ← bindStored base field label valueType
+  let proved ← if let some facts := proofs then do
+    let projection := rootIdent (``EllipticProofs ++ field)
+    let selected ← `($projection $facts)
+    let provided ← liftTermElabM do
+      whnf (← Lean.Elab.Term.elabTerm selected none)
     match provided.getAppFn.constName? with
     | some ``Option.none => pure none
-    | some ``Option.some =>
-      some <$> `(($facts).discriminant.getD ⟨($curve).Δ, rfl⟩)
-    | _ => throwError "Expected closed optional discriminant proof data"
+    | some ``Option.some => some <$> `(($selected).getD ⟨$lhs, rfl⟩)
+    | _ => throwError "Expected closed optional proof data for {label}"
   else pure none
-  let d := rootIdent (base ++ `claimed_discriminant)
+  let value := rootIdent (base ++ Name.mkSimple s!"claimed_{label}")
   let some proof ← (match claimed, proved with
     | none, none => pure none
     | some _, none => some <$> `(by decide +kernel)
     | some _, some evidence => some <$> `(by exact ($evidence).property)
     | none, some evidence => do
-      emit (← `(def $d : ℤ := ($evidence).val))
-      some <$> `(($evidence).property)) | return
-  let equality := rootIdent (base ++ `discriminant)
-  checked (base ++ `discriminant) (← `(($curve).Δ = $d)) proof
-  let witness := rootIdent (base ++ `discriminant_witness)
-  emit (← `(def $witness : DiscriminantWitness ℤ := ⟨$curve, $d, $equality⟩))
+      emit (← `(def $value : $valueType := ($evidence).val))
+      some <$> `(($evidence).property)) | return none
+  let equality := rootIdent (base ++ label)
+  checked (base ++ label) (← `($lhs = $value)) proof
+  some <$> `(some ⟨$value, $equality⟩)
+
+/-- Package all supported checked equation invariants in one indexed record. -/
+private def certifyProofFacts (base : Name) (curve : Ident)
+    (input : Option (TSyntax `term)) : CommandElabM Unit := do
+  let proofs ← input.mapM fun term => do
+    let name := rootIdent (base ++ `proofs)
+    emit (← `(def $name : EllipticProofs $curve := $term))
+    pure name
+  let b ← certifyProofFact base `bInvariants `b_invariants proofs (← `(Int × Int × Int × Int))
+    (← `((($curve).b₂, ($curve).b₄, ($curve).b₆, ($curve).b₈)))
+  let c ← certifyProofFact base `cInvariants `c_invariants proofs (← `(Int × Int))
+    (← `((($curve).c₄, ($curve).c₆)))
+  let d ← certifyProofFact base `discriminant `discriminant proofs (← `(Int)) (← `(($curve).Δ))
+  if d.isSome then
+    let witness := rootIdent (base ++ `discriminant_witness)
+    let value := rootIdent (base ++ `claimed_discriminant)
+    let equality := rootIdent (base ++ `discriminant)
+    emit (← `(def $witness : DiscriminantWitness ℤ := ⟨$curve, $value, $equality⟩))
+  unless b.isNone && c.isNone && d.isNone do
+    let missing ← `(none)
+    let combined := rootIdent (base ++ `checked_facts)
+    emit (← `(def $combined : EllipticProofs $curve :=
+      { bInvariants := $(b.getD missing)
+        cInvariants := $(c.getD missing)
+        discriminant := $(d.getD missing) }))
 
 /-- Check each supplied invariant against the actual curve, not an LMFDB label. -/
 def certifyStoredInvariants (base : Name)
@@ -164,14 +187,7 @@ def certifyStoredInvariants (base : Name)
   let curve := rootIdent (base ++ `curve)
   let hn := rootIdent (base ++ `nonsingular)
   certifyTorsionInvariants base curve
-  if let some b ← bindStored base `bInvariants `b_invariants (← `(Int × Int × Int × Int)) then
-    checked (base ++ `b_invariants)
-      (← `((($curve).b₂, ($curve).b₄, ($curve).b₆, ($curve).b₈) = $b))
-      (← `(by decide +kernel))
-  if let some c ← bindStored base `cInvariants `c_invariants (← `(Int × Int)) then
-    checked (base ++ `c_invariants) (← `((($curve).c₄, ($curve).c₆) = $c))
-      (← `(by decide +kernel))
-  certifyDiscriminant base curve proofs
+  certifyProofFacts base curve proofs
   if let some s ← bindStored base `discriminantSign `discriminant_sign (← `(Int)) then
     checked (base ++ `discriminant_sign) (← `(($curve).Δ.sign = $s)) (← `(by decide +kernel))
   if let some j ← bindStored base `jInvariant `j_invariant (← `(Rat)) then
