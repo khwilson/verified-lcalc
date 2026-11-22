@@ -152,19 +152,31 @@ def cValues (j : Json) : Except String (Int × Int) := do
   unless xs.size == 2 do throw "Expected c4,c6"
   return (← integer xs[0]!, ← integer xs[1]!)
 
+/-- Decode LMFDB weighted projective triples to exact rational affine coordinates. -/
+def weightedCoordinates (j : Json) : Except String (List (Rat × Rat)) := do
+  (← array j 4096).toList.mapM fun row => do
+    let triple ← array row 3
+    unless triple.size == 3 do throw "Expected a weighted affine point triple [a,b,c]"
+    let a ← integer triple[0]!
+    let b ← integer triple[1]!
+    let c ← integer triple[2]!
+    unless c != 0 do throw "Weighted affine point denominator must be nonzero"
+    return ((a : Rat) / (c : Rat) ^ 2, (b : Rat) / (c : Rat) ^ 3)
+
 /-- Optional data fields that identify a top-level local reduction row. -/
 def localReductionFields : List String :=
-  ["discriminant_valuation", "j_denominator_valuation", "reduction_type"]
+  ["discriminant_valuation", "j_denominator_valuation", "reduction_type", "conductor_valuation"]
 
 /-- Decode the supported exact fields from one local reduction row. -/
 def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
   let prime ← nonnegativeInteger (← j.getObjVal? "prime")
   let discriminantValuation ← optionalValue j "discriminant_valuation" nonnegativeInteger
+  let conductorValuation ← optionalValue j "conductor_valuation" nonnegativeInteger
   let jDenominatorValuation ← optionalValue j "j_denominator_valuation" nonnegativeInteger
   let reductionType ← optionalValue j "reduction_type" integer
   if let some code := reductionType then
     unless code == 0 || code == 1 || code == -1 do throw "Unsupported local reduction type"
-  return { prime, discriminantValuation, jDenominatorValuation, reductionType }
+  return { prime, discriminantValuation, conductorValuation, jDenominatorValuation, reductionType }
 
 /-- Decode a local-row list and any top-level local claim. -/
 def localReductionClaims (j : Json) :
@@ -209,6 +221,8 @@ def decode (j : Json) : Except String EllipticWitness := do
       let y := (-b + Int.sqrt (b ^ 2 + 4 * c)) / 2
       integralCoordinates := (integralCoordinates.push (x, y)).push (x, -y - b)
   unless integralCoordinates.size ≤ 8192 do throw "Too many integral coordinates"
+  let generatorCoordinates ← optionalValue j "gens" weightedCoordinates
+  let torsionGeneratorCoordinates ← optionalValue j "torsion_generators" weightedCoordinates
   let numeric ← numericFields j
   let base := numeric.getD { equation }
   let primeData := if (optionalData j "ap").isSome || (optionalData j "aplist").isSome
@@ -233,6 +247,8 @@ def decode (j : Json) : Except String EllipticWitness := do
   let cInvariants ← optionalValue j "cinvs" cValues
   let discriminant ← optionalValue j "discriminant" integer
   let jInvariant ← optionalValue j "jinv" rationalValue
+  let jIntegral ← optionalValue j "j_integral" Json.getBool?
+  let potentialGoodReduction ← optionalValue j "potential_good_reduction" Json.getBool?
   let discriminantSign ← optionalValue j "signD" integer
   let minimalDiscriminantAbs ← optionalValue j "absD" nonnegativeInteger
   let conductor ← optionalValue j "conductor" nonnegativeInteger
@@ -256,6 +272,8 @@ def decode (j : Json) : Except String EllipticWitness := do
     cInvariants
     discriminant
     jInvariant
+    jIntegral
+    potentialGoodReduction
     discriminantSign
     minimalDiscriminantAbs
     conductor
@@ -268,6 +286,8 @@ def decode (j : Json) : Except String EllipticWitness := do
     localInvariants
     primeCoefficients := primeData
     integralCoordinates := pointData
+    generatorCoordinates
+    torsionGeneratorCoordinates
     infiniteOrderPoints
     independentPoints
     minimality

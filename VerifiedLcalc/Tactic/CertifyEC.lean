@@ -26,12 +26,13 @@ claim. `EllipticWitness.central` and
 
 All three forms, and `CertifyEC.certify` / `certifyAtomic`, use the same checker.
 Optional stored invariants include b/c values, equation discriminant and sign,
-j-invariant, minimal absolute discriminant, bad-prime set/count, anlist,
-conductor and global root number. Prerequisite-dependent claims without the
-required evidence are explicitly reported as unverified. See
+j-invariant and its integrality, everywhere potential good reduction, minimal absolute
+discriminant, bad-prime set/count, anlist, conductor and global root number.
+Prerequisite-dependent claims without the required evidence are reported as unverified. See
 `docs/LMFDB_INVARIANTS.md` for the exact mathematical outputs and trust boundary.
 JSON can supply `ainvs`, `ap` or `aplist`, and `integral_points` or
-`xcoord_integral_points`; unrelated metadata carries no claim. The legacy rank
+`xcoord_integral_points`, as well as weighted rational triples in `gens` and
+`torsion_generators`. Unrelated metadata carries no claim. The legacy rank
 JSON layout is decoded into the same flat record. Bare stored ranks never
 become theorems. A caller controls any computation inside a supplied Lean term;
 the certifier performs no analytic-witness search or network requests.
@@ -258,9 +259,11 @@ def certifyJson (name : Name) (text : String)
         "evaluator", "analytic_witness"]
       let localKeys := CurveDataJson.localReductionFields
       let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points",
-        "minimality", "local_data", "infinite_order_points", "independent_points", "binvs", "cinvs",
+        "minimality", "local_data", "gens", "torsion_generators",
+        "infinite_order_points", "independent_points", "binvs", "cinvs",
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
-        "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants"] ++
+        "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
+        "j_integral", "potential_good_reduction"] ++
         localKeys ++ if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
           then ["prime"] else []
       let skipped := object.toList.filterMap fun (key, _) =>

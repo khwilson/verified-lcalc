@@ -23,6 +23,8 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `binvs`, `cinvs` | `bInvariants`, `cInvariants` | Equalities with Mathlib's b₂,b₄,b₆,b₈ and c₄,c₆. These are optional equation-data extensions. |
 | `discriminant` | `discriminant` | Equality with this supplied equation's Mathlib Δ; does not assert minimality. |
 | `jinv` | `jInvariant` | Equality with Mathlib's actual rational-curve `j`. Accepts an exact numerator/positive-denominator pair, fraction string, or integer. |
+| `j_integral` | `jIntegral` | Exact JSON boolean. The exported `j_integral` theorem equates `IsLocalization.IsInteger ℤ` of Mathlib's j-invariant with the supplied flag being true. |
+| `potential_good_reduction` | `potentialGoodReduction` | Exact JSON boolean. The exported theorem equates potential good reduction at every rational prime with the supplied flag being true. |
 | `signD` | `discriminantSign` | Equality with the sign of the equation's Δ. |
 | `absD` | `minimalDiscriminantAbs` | Actual TauCeti `IsGlobalMinimal` together with the claimed absolute discriminant; requires checked `minimality`. |
 | `bad_primes` | `badPrimes` | Complete, duplicate-free prime-divisor list of the minimal discriminant, and equivalence with non-elliptic finite-field reduction; requires `minimality`. |
@@ -33,22 +35,38 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `ap` / `aplist` | `primeCoefficients` | Actual `LFunction p` coefficients with proved sufficient local minimality checks. |
 | `anlist` | `dirichletCoefficients` | Actual consecutive `LFunction n` coefficients; requires `minimality`. Native JSON starts with a₀=0, which is checked and removed; direct Lean lists start at a₁. |
 | `conductor` | `conductor` | Identification with the chosen modular realization's level; requires `minimality`, `localData`, and the existing modularity/arithmetic-compatibility axiom. |
+| Local `conductor_valuation` | `localInvariants[].conductorValuation` | Proves primality and the claimed exponent in the Mathlib factorization of the curve's checked modular level. Requires a checked `conductor` with `minimality` and `localData`. |
 | `global_root_number` | `rootNumber` | Identification with that realization's global root/Fricke sign under the same conditions. This is an explicit extension key, not the local-table `root_number`. |
 | Integral coordinates / stored x-values | `integralCoordinates` | Point membership; not completeness of the integral-point set. |
+| `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
 | Point-index requests | `infiniteOrderPoints`, `independentPoints` | Infinite order and algebraic-rank lower bounds, with an explicit independence proof for a requested family. |
 | Complete numerical payload | `centralResult`, `derivativeResult` | Existing analytic-rank-zero/one certificates under the documented modularity assumption. |
 
-All equation invariants, minimality, bad-prime, coefficient, semistability, and local reduction results have only
-standard Lean axiom dependencies. Conductor and global-root identification are
-explicitly conditional. Supplying `minimality` also exports `global_minimal`.
+`j_integral` checks whether the j-invariant is the image of an integer.
+`potential_good_reduction` uses the same denominator computation to check
+potential good reduction over the p-adic integers at every rational prime.
+Both checks work without a supplied `jinv` value or minimality evidence.
+The geometric theorem follows from TauCeti's local integral j-invariant
+criterion and its rational denominator criterion.
+[Local criterion](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/PotentialGoodReduction.lean#L438-L442)
+· [Denominator criterion](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/NumberTheory/Padics/RatCast.lean#L67-L80)
+
+Equation invariants, minimality, bad-prime, coefficient, semistability, and potential good reduction
+results use standard Lean axioms. The local discriminant and j-denominator valuations and reduction codes have the same
+dependencies. The `conductor_valuation` theorem uses the authorized modularity assumption through
+the checked level equation, as does the conductor certificate. The finite check of the supplied
+integer level is independent of that assumption. A comparison with the intrinsic Artin exponent
+or with the norm of TauCeti's algorithmic conductor ideal requires a separate theorem.
+[Algorithmic conductor ideal](https://github.com/TauCetiProject/TauCeti/pull/15468)
+
+Supplying `minimality` also exports `global_minimal`.
 None of these checks certifies an external label or database provenance.
 
-A local row has a required `prime` and optional exact integer values for
-the two valuations and the reduction code. The valuations are the exponents of
-that prime in the absolute discriminant and the reduced rational denominator
-of `j`. The reduction codes are 0 for additive, 1 for split multiplicative,
-and −1 for nonsplit multiplicative reduction. The certificate covers the supplied
-rows individually.
+A local row requires `prime`. An optional valuation gives its exponent in the absolute minimal
+discriminant, the reduced rational denominator of `j`, or the checked modular level. Conductor
+exponents may be supplied for any rational prime and are zero when that prime does not divide the
+level. The reduction codes are 0 for additive, 1 for split multiplicative, and −1 for nonsplit
+multiplicative reduction. Certificates cover each supplied row individually.
 
 `root_number` in an `ec_localdata` row is **local**, at that row's `prime`.
 It is deliberately not decoded as a global sign. The local reduction table is
@@ -67,9 +85,8 @@ missing theorem.
 
 | Group / fields | Proof work still needed |
 | --- | --- |
-| `potential_good_reduction` | Integrate TauCeti's `hasPotentialGoodReduction_iff_isInteger_j` and connect it to the finite check on the denominator of `j`. |
-| Local `conductor_valuation`, `kodaira_symbol`, `root_number`, `tamagawa_number`, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
-| `gens`, `torsion_generators`, `torsion`, `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | Normalize rational point coordinates; prove generator orders, independence, and a torsion upper bound. Membership alone does not prove subgroup order or exhaustivity. |
+| Local `kodaira_symbol`, `root_number`, `tamagawa_number`, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
+| `gens`, `torsion_generators`, `torsion`, `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | Prove generator orders, independence, generation, and a torsion upper bound. Membership alone does not prove subgroup order or exhaustivity. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Lower bounds already have the explicit independence route. Exact rank needs an upper-bound/descent certificate; integral-point counts need completeness proofs. |
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |
 | `cm`, quadratic-twist fields | Actual endomorphism/twist statements and, for a minimal twist, the required minimality comparison. A j-value lookup alone is not a CM certificate. |

@@ -2,8 +2,10 @@ module
 
 public import VerifiedLcalc.Certification.WildCertification
 public import VerifiedLcalc.EllipticCurve.Tate.LocalReduction
+public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReduction
 public import VerifiedLcalc.Certificate.EllipticWitness
 public import Mathlib.Data.Nat.Squarefree
+public import Mathlib.RingTheory.Localization.Rat
 
 /-! Bridges from exact stored invariant checks to existing Mathlib/TauCeti
 objects. Only the conductor and root-number bridges use the authorized
@@ -20,6 +22,30 @@ theorem j_invariant_of_exact_formula (e : WeierstrassCurve ℤ)
   rw [WeierstrassCurve.j_eq]
   simpa only [WeierstrassCurve.baseChange, WeierstrassCurve.map_c₄,
     WeierstrassCurve.map_Δ, eq_intCast, map_intCast, div_eq_mul_inv, mul_comm] using h
+
+/-- Compute whether the reduced denominator of the rational j-invariant is one. -/
+def jDenominatorIsOne (e : WeierstrassCurve ℤ) : Bool :=
+  (((e.c₄ : ℚ) ^ 3 / (e.Δ : ℚ)).den == 1)
+
+/-- A check on the reduced denominator certifies whether the rational j-invariant is an integer. -/
+theorem j_integral_iff_of_check (e : WeierstrassCurve ℤ) [(e.baseChange ℚ).IsElliptic]
+    (claimed : Bool) (h : jDenominatorIsOne e = claimed) :
+    IsLocalization.IsInteger ℤ (e.baseChange ℚ).j ↔ claimed = true := by
+  rw [← h, jDenominatorIsOne, beq_iff_eq, ← j_invariant_of_exact_formula e _ rfl,
+    Rat.isLocalizationIsInteger_iff]
+  constructor
+  · rintro ⟨z, hz⟩
+    rw [← hz]
+    exact Rat.den_intCast z
+  · intro hj
+    exact ⟨_, (Rat.den_eq_one_iff _).mp hj⟩
+
+/-- The same finite check also certifies potential good reduction at all rational primes. -/
+theorem potential_good_reduction_iff_of_check (e : WeierstrassCurve ℤ)
+    [(e.baseChange ℚ).IsElliptic] (claimed : Bool) (h : jDenominatorIsOne e = claimed) :
+    HasEverywherePotentialGoodReduction (e.baseChange ℚ) ↔ claimed = true := by
+  rw [hasEverywherePotentialGoodReduction_iff_j_den_eq_one, ← h, jDenominatorIsOne,
+    beq_iff_eq, j_invariant_of_exact_formula e _ rfl]
 
 /-- An absD claim includes actual global minimality, not just agreement with
 the discriminant of an arbitrary supplied equation. -/
@@ -97,6 +123,15 @@ theorem conductor_of_arithmetic_witness (e : WeierstrassCurve ℤ) (hn : e.Δ �
   exact ((arithmeticModularWitness e hn).wildLevel_eq
     (globalMinimal_of_witness e m hm) d hd).trans ((wildLevel_eq_fast e d).trans h)
 
+/-- A checked prime exponent of a natural number is its Mathlib factorization multiplicity. -/
+theorem factorization_of_prime_exponent_check (p N exponent : Nat)
+    (h : (isPrime p && padicValNat p N == exponent) = true) :
+    p.Prime ∧ N.factorization p = exponent := by
+  obtain ⟨hp, he⟩ := Bool.and_eq_true_iff.mp h
+  have hp' := (isPrime_correct p).mp hp
+  exact ⟨hp', by
+    simpa only [beq_iff_eq, Nat.padicValNat_def, Nat.multiplicity_eq_factorization hp'] using he⟩
+
 /-- Standalone Fricke/root-number identification under the authorized
 arithmetic compatibility assumption. -/
 theorem root_number_of_arithmetic_witness (e : WeierstrassCurve ℤ) (hn : e.Δ ≠ 0)
@@ -112,7 +147,8 @@ namespace VerifiedLcalc
 open EllipticCurve NumberField WeierstrassCurve
 
 /-- Finite checks use the actual integral equation and the reduced rational
-formula for j. A reduction code is meaningful only at a bad prime. -/
+formula for j. A reduction code is meaningful only at a bad prime.
+The conductor exponent is checked separately against the checked modular level. -/
 def LocalReductionClaim.check (row : LocalReductionClaim) (e : WeierstrassCurve ℤ) : Bool :=
   isPrime row.prime &&
     row.discriminantValuation.all (fun n => padicValNat row.prime e.Δ.natAbs == n) &&

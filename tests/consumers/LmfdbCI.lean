@@ -30,6 +30,12 @@ example :
 example : (LMFDB.C197a1.curve.baseChange ℚ).j = 13824000 / 197 :=
   LMFDB.C197a1.j_invariant
 example : LMFDB.C197a1.curve.Δ = 197 := LMFDB.C197a1.discriminant
+example : ¬ IsLocalization.IsInteger ℤ (LMFDB.C197a1.curve.baseChange ℚ).j :=
+  fun h => Bool.false_ne_true (LMFDB.C197a1.j_integral.mp h)
+
+example :
+    ¬ EllipticCurve.HasEverywherePotentialGoodReduction (LMFDB.C197a1.curve.baseChange ℚ) :=
+  fun h => Bool.false_ne_true (LMFDB.C197a1.potential_good_reduction.mp h)
 
 example : (LMFDB.C214a1.curve.baseChange ℚ).j = 357911 / 214 :=
   LMFDB.C214a1.j_invariant
@@ -64,6 +70,11 @@ example : LMFDB.C286f1.curve.Δ = -286 := LMFDB.C286f1.discriminant
 example : (LMFDB.C288a1.curve.baseChange ℚ).j = 1728 :=
   LMFDB.C288a1.j_invariant
 example : LMFDB.C288a1.curve.Δ = 110592 := LMFDB.C288a1.discriminant
+example : IsLocalization.IsInteger ℤ (LMFDB.C288a1.curve.baseChange ℚ).j :=
+  LMFDB.C288a1.j_integral.mpr rfl
+
+example : EllipticCurve.HasEverywherePotentialGoodReduction (LMFDB.C288a1.curve.baseChange ℚ) :=
+  LMFDB.C288a1.potential_good_reduction.mpr rfl
 
 example : (LMFDB.C291d1.curve.baseChange ℚ).j = -4096 / 291 :=
   LMFDB.C291d1.j_invariant
@@ -71,6 +82,15 @@ example : LMFDB.C291d1.curve.Δ = -291 := LMFDB.C291d1.discriminant
 
 example : LMFDB.C112a2.curve.toAffine.Equation 0 2 :=
   LMFDB.C112a2.points_on_curve 0 2 (by decide +kernel)
+
+example : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation 0 2 :=
+  LMFDB.C112a2.generators.points_on_curve 0 2 (by decide +kernel)
+
+example : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation (-2) 0 :=
+  LMFDB.C112a2.torsion_generators.points_on_curve (-2) 0 (by decide +kernel)
+
+example : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point :=
+  LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩
 
 example : LMFDB.C243a1.curve.toAffine.Equation 1 0 :=
   LMFDB.C243a1.points_on_curve 1 0 (by decide +kernel)
@@ -86,6 +106,11 @@ example :
       (1 : ℂ) = 1 :=
   Curve112.analytic_rank
 
+example :
+    (Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level.factorization 2 =
+      4 :=
+  (LMFDB.C112a2.conductor_valuation (2, 4) (by decide +kernel)).2
+
 run_cmd do
   let unconditional := [``propext, ``Classical.choice, ``Quot.sound]
   let modularity := ``Assumptions.ellipticModularity
@@ -99,7 +124,15 @@ run_cmd do
     for axiomName in dependencies do
       unless unconditional.contains axiomName || (conditional && axiomName == modularity) do
         throwError "Unexpected dependency {axiomName} in {lemmaName}"
+  check `LMFDB.C112a2 `generators.points_on_curve false
+  check `LMFDB.C112a2 `torsion_generators.points_on_curve false
   check `LMFDB.C112a2 `dirichlet_coefficients false
+  check `LMFDB.C197a1 `j_integral false
+  check `LMFDB.C288a1 `j_integral false
+  check `LMFDB.C112a2 `conductor_valuation_value_valid false
+  check `LMFDB.C112a2 `conductor_valuation true
+  check `LMFDB.C197a1 `potential_good_reduction false
+  check `LMFDB.C288a1 `potential_good_reduction false
   check `Curve112 `analytic_rank true
   for curve in [`LMFDB.C179a1, `LMFDB.C243a1] do
     for suffix in [`semistable, `squarefree_discriminant, `local_invariants] do

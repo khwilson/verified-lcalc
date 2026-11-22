@@ -20,6 +20,8 @@ structure LocalReductionClaim where
   prime : Nat
   /-- Exponent of this prime in the absolute minimal discriminant. -/
   discriminantValuation : Option Nat := none
+  /-- Exponent of this prime in the checked modular conductor. -/
+  conductorValuation : Option Nat := none
   /-- Exponent of this prime in the reduced denominator of the rational j-invariant. -/
   jDenominatorValuation : Option Nat := none
   /-- Signed Frobenius trace code for bad reduction. -/
@@ -42,6 +44,10 @@ structure EllipticWitness where
   discriminant : Option Int := none
   /-- Claimed exact rational j-invariant. -/
   jInvariant : Option Rat := none
+  /-- Whether the rational j-invariant belongs to the image of ℤ. -/
+  jIntegral : Option Bool := none
+  /-- Whether the curve has potential good reduction at every rational prime. -/
+  potentialGoodReduction : Option Bool := none
   /-- Claimed sign of the discriminant. -/
   discriminantSign : Option Int := none
   /-- LMFDB absD; certification needs a checked globally minimal model. -/
@@ -66,6 +72,10 @@ structure EllipticWitness where
   primeCoefficients : Option (List (Nat × Int)) := none
   /-- Claimed integral point coordinates on the supplied equation. -/
   integralCoordinates : Option (List (Int × Int)) := none
+  /-- Rational affine coordinates for the LMFDB generator list, checked for membership. -/
+  generatorCoordinates : Option (List (Rat × Rat)) := none
+  /-- Rational affine coordinates for the LMFDB torsion generator list, checked for membership. -/
+  torsionGeneratorCoordinates : Option (List (Rat × Rat)) := none
   /-- Indices into the supplied integral-coordinate list. -/
   infiniteOrderPoints : Option (List Nat) := none
   /-- Selected indices for a rank bound; requires a supplied independence proof. -/
@@ -81,6 +91,12 @@ structure EllipticWitness where
   deriving Repr, DecidableEq
 
 namespace EllipticWitness
+
+/-- The requested conductor exponents, keyed by their rational primes. -/
+def conductorValuations (w : EllipticWitness) : Option (List (Nat × Nat)) :=
+  let claims := (w.localInvariants.getD []).filterMap fun row =>
+    row.conductorValuation.map fun exponent => (row.prime, exponent)
+  if claims.isEmpty then none else some claims
 
 /-- Convenience constructor for a complete rank-zero candidate. -/
 def central (r : CentralResult) (m : MinimalityWitness) (d : WildData) : EllipticWitness :=
