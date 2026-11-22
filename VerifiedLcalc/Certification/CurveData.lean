@@ -69,7 +69,7 @@ theorem exactOrderCheck_sound {A : Type*} [AddMonoid A] [DecidableEq A] {P : A} 
     List.mem_range.mpr (Nat.lt_succ_of_le (Nat.le_of_dvd hpos hpn))
   have hpcheck : (isPrime p && decide (p ∣ n)) = true :=
     Bool.and_eq_true_iff.mpr ⟨(isPrime_correct p).mpr hp, decide_eq_true hpn⟩
-  exact of_decide_eq_true (by simpa only [hpcheck, if_true] using List.all_eq_true.mp hdiv p hmem)
+  exact of_decide_eq_true (by simpa only [hpcheck, ite_true] using List.all_eq_true.mp hdiv p hmem)
 
 /-- A successful finite check proves every listed value is the actual prime
 coefficient of the rational curve, with local minimality handled at bad primes. -/
