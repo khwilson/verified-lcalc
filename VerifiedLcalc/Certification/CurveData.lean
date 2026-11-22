@@ -11,8 +11,8 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
 Prime coefficients are checked against the existing finite-field trace evaluator,
 with a sufficient local minimality check at every supplied prime. Soundness gives
 the actual curve's `LFunction p`, including bad primes, without modularity.
-Integral-coordinate certificates establish membership only, on the supplied
-integral equation. They make no completeness or algebraic-rank claim.
+Coordinate certificates establish membership on the supplied integral equation
+or its rational base change.
 -/
 
 @[expose] public section
@@ -29,12 +29,25 @@ def primeCoefficientsValid (w : EllipticWitness) : Bool :=
     isPrime p && modelMinimalAt w.equation p &&
       decide (computeFrobeniusTrace w.equation p = a)
 
+/-- Check the explicit Weierstrass equation at each supplied affine pair. -/
+def affineCoordinatesValid {R : Type*} [CommRing R] [DecidableEq R]
+    (W : WeierstrassCurve R) (points : List (R × R)) : Bool :=
+  -- Polynomial evaluation in the specification is noncomputable.
+  points.all fun (x, y) =>
+    decide (y ^ 2 + W.a₁ * x * y + W.a₃ * y =
+      x ^ 3 + W.a₂ * x ^ 2 + W.a₄ * x + W.a₆)
+
+/-- Passing the finite check proves Mathlib's affine equation for every listed pair. -/
+theorem affineCoordinatesValid_sound {R : Type*} [CommRing R] [DecidableEq R]
+    (W : WeierstrassCurve R) (points : List (R × R))
+    (h : affineCoordinatesValid W points = true) (x y : R)
+    (hxy : (x, y) ∈ points) : W.toAffine.Equation x y := by
+  rw [WeierstrassCurve.Affine.equation_iff]
+  exact of_decide_eq_true (List.all_eq_true.mp h (x, y) hxy)
+
 /-- Check precisely the supplied integer solutions, without searching for others. -/
 def integralCoordinatesValid (w : EllipticWitness) : Bool :=
-  -- Polynomial.evalEval is noncomputable; equation_iff supplies this executable reflection.
-  (w.integralCoordinates.getD []).all fun (x, y) =>
-    decide (y ^ 2 + w.equation.a₁ * x * y + w.equation.a₃ * y =
-      x ^ 3 + w.equation.a₂ * x ^ 2 + w.equation.a₄ * x + w.equation.a₆)
+  affineCoordinatesValid w.equation (w.integralCoordinates.getD [])
 
 /-- A successful finite check proves every listed value is the actual prime
 coefficient of the rational curve, with local minimality handled at bad primes. -/
@@ -57,9 +70,8 @@ theorem primeCoefficientsValid_sound (w : EllipticWitness) (hn : w.equation.Δ �
 existing Mathlib affine Weierstrass equation over the integers. -/
 theorem integralCoordinatesValid_sound (w : EllipticWitness)
     (h : w.integralCoordinatesValid = true) (x y : Int)
-    (hxy : (x, y) ∈ w.integralCoordinates.getD []) : w.equation.toAffine.Equation x y := by
-  rw [WeierstrassCurve.Affine.equation_iff]
-  exact of_decide_eq_true (List.all_eq_true.mp h (x, y) hxy)
+    (hxy : (x, y) ∈ w.integralCoordinates.getD []) : w.equation.toAffine.Equation x y :=
+  affineCoordinatesValid_sound _ _ h x y hxy
 
 end EllipticWitness
 end VerifiedLcalc

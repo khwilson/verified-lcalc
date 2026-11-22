@@ -2,10 +2,11 @@ import CertifiedCurves.Data
 import CertifiedCurves.Json
 import Lean
 
+/-! # Verification and rollback tests for stored elliptic-curve data -/
+
 open Lean Elab Command VerifiedLcalc
 
 set_option maxRecDepth 100000
-set_option maxHeartbeats 10000000
 
 -- Ordinary mathematical coefficients, including split/nonsplit bad primes.
 example : (Data11.curve.baseChange ℚ).LFunction 2 = -2 :=
@@ -31,15 +32,32 @@ example : (AdditiveData.curve.baseChange ℚ).LFunction 2 = 0 :=
   AdditiveData.ap_correct 2 0 (by decide +kernel)
 
 certify_ec EmptyData from_json_string
-  "{\"schema\":\"lcalc.ec-data.v1\",\"ainvs\":[\"0\",\"0\",\"1\",\"-1\",\"0\"],\"ap\":[],\"integral_points\":[]}"
+  r#"{"schema":"lcalc.ec-data.v1","ainvs":["0","0","1","-1","0"],
+      "ap":[],"integral_points":[]}"#
 
 -- No schema, no empty sections, raw LMFDB fields and unrelated metadata.
 certify_ec RawData from_json_string
-  r#"{"ainvs":[0,0,1,-1,0],"aplist":[-2,-3,-2],"xcoord_integral_points":[-1,0,1,2,6],"lmfdb_label":"37.a1","analytic_rank":1,"unrelated":{"note":"metadata"}}"#
+  r#"{"ainvs":[0,0,1,-1,0],"aplist":[-2,-3,-2],"xcoord_integral_points":[-1,0,1,2,6],
+      "lmfdb_label":"37.a1","analytic_rank":1,"unrelated":{"note":"metadata"}}"#
 example : (RawData.curve.baseChange ℚ).LFunction 3 = -3 :=
   RawData.ap_correct 3 (-3) (by decide +kernel)
 example : RawData.curve.toAffine.Equation 6 14 :=
   RawData.points_on_curve 6 14 (by decide +kernel)
+
+-- Match the LMFDB exponent convention even when the third coordinate is negative.
+certify_ec RationalGenerators from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"gens":[[1,5,-2]],"torsion_generators":[]}"#
+example : RationalGenerators.generators.coordinates = [(1 / 4, -5 / 8)] := by decide +kernel
+example : (RationalGenerators.curve.baseChange ℚ).toAffine.Equation (1 / 4) (-5 / 8) :=
+  RationalGenerators.generators.points_on_curve _ _ (by decide +kernel)
+example : RationalGenerators.torsion_generators.coordinates = [] := rfl
+example : (RationalGenerators.curve.baseChange ℚ).toAffine.Point :=
+  RationalGenerators.generators.point ⟨0, by decide⟩
+
+certify_ec TorsionGeneratorCoordinates from
+  { equation := ⟨0, -1, 1, -10, -20⟩, torsionGeneratorCoordinates := some [(5, 5)] }
+example : (TorsionGeneratorCoordinates.curve.baseChange ℚ).toAffine.Equation 5 5 :=
+  TorsionGeneratorCoordinates.torsion_generators.points_on_curve _ _ (by decide +kernel)
 
 certify_ec OnlyAP from
   { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := some [(2, -2)] }
@@ -80,6 +98,7 @@ example : MixedJSON.certifiedRank.val = 1 := rfl
 example : (MixedJSON.curve.baseChange ℚ).LFunction 37 = -1 :=
   MixedJSON.ap_correct 37 (-1) (by decide +kernel)
 
+/-- Assert that failed arithmetic verification leaves no generated declarations. -/
 meta def expectDataRejected (name : Name) (command : Syntax) : CommandElabM Unit := do
   let savedMessages := (← get).messages
   let mut failed := false
@@ -92,7 +111,7 @@ meta def expectDataRejected (name : Name) (command : Syntax) : CommandElabM Unit
   unless failed do throwError "Invalid curve data accepted: {name}"
   for suffix in [`supplied, `witness, `curve, `nonsingular, `prime_coefficients_valid,
       `ap_correct, `integral_coordinates_valid, `points_on_curve, `curve_isElliptic,
-      `point, `point_integral] do
+      `point, `point_integral, `generators.point, `torsion_generators.point] do
     if env.contains (name ++ suffix) then
       throwError "Failed curve-data certification leaked {name ++ suffix}"
     if env.contains (name ++ `data ++ suffix) then
@@ -108,6 +127,12 @@ run_cmd do
       integralCoordinates := some [] }))
   expectDataRejected `OffCurve (← `(certify_ec OffCurve from
     { Data37.witness with integralCoordinates := some [(0, 1)] }))
+  expectDataRejected `InvalidWeightedPoint (← `(certify_ec InvalidWeightedPoint from_json_string
+    r#"{"ainvs":[0,0,1,-1,0],"gens":[[0,0,1]],"torsion_generators":[[1,1,1]]}"#))
+  expectDataRejected `ZeroWeight (← `(certify_ec ZeroWeight from_json_string
+    r#"{"ainvs":[0,0,1,-1,0],"gens":[[1,5,0]]}"#))
+  expectDataRejected `ShortWeightedPoint (← `(certify_ec ShortWeightedPoint from_json_string
+    r#"{"ainvs":[0,0,1,-1,0],"gens":[[0,0]]}"#))
   expectDataRejected `Singular (← `(certify_ec Singular from
     { equation := ⟨0, 0, 0, 0, 0⟩, primeCoefficients := some [], integralCoordinates := some [] }))
   expectDataRejected `Malformed (← `(certify_ec Malformed from_json_string "{}"))
@@ -146,6 +171,9 @@ run_cmd do
   for name in [`RawData, `OnlyAP, `OnlyPoints, `ArithmeticOnly, `NumericOnly] do
     if (← getEnv).contains (name ++ `analytic_rank) then
       throwError "A stored rank without a proof witness became a theorem"
+  for suffix in [`generators.points_on_curve, `torsion_generators.points_on_curve] do
+    if (← getEnv).contains (`OnlyAP ++ suffix) then
+      throwError "Missing generator data became a theorem"
   if (← getEnv).contains `VerifiedLcalc.CurveDataWitness then
     throwError "The retired aggregate witness type is still present"
 
@@ -171,12 +199,23 @@ run_cmd do
         unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
           throwError "Unexpected arithmetic-certificate axiom: {axiomName}"
 
+run_cmd do
+  for name in [`RationalGenerators.generators, `RationalGenerators.torsion_generators,
+      `TorsionGeneratorCoordinates.torsion_generators] do
+    for suffix in [`points_on_curve, `point] do
+      let axioms ← liftTermElabM <| Lean.collectAxioms (name ++ suffix)
+      for axiomName in axioms do
+        unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+          throwError "Unexpected rational-point certificate axiom: {axiomName}"
+
 #eval show IO Unit from do
   for text in [r#"{"ainvs":[0,0,1,-1,0]}"#,
-      r#"{"ainvs":[0,0,1,-1,0],"ap":null,"integral_points":null}"#] do
+      r#"{"ainvs":[0,0,1,-1,0],"ap":null,"integral_points":null,
+          "gens":null,"torsion_generators":null}"#] do
     match CurveDataJson.parse text with
     | .ok w =>
       unless w.primeCoefficients.isNone && w.integralCoordinates.isNone &&
+          w.generatorCoordinates.isNone && w.torsionGeneratorCoordinates.isNone &&
           w.centralResult.isNone && w.derivativeResult.isNone &&
           w.minimality.isNone && w.localData.isNone &&
           w.infiniteOrderPoints.isNone && w.independentPoints.isNone do
