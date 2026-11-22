@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Kevin H Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin H Wilson
+-/
 module
 
 public import TauCeti.AlgebraicGeometry.EllipticCurve.PointCount
