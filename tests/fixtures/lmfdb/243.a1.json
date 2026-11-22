@@ -5,6 +5,12 @@
   "absD": 243,
   "bad_primes": [3],
   "num_bad_primes": 1,
+  "semistable": false,
+  "squarefree_disc": false,
+  "local_invariants": [
+    {"prime": 3, "discriminant_valuation": 5,
+     "j_denominator_valuation": 0, "reduction_type": 0}
+  ],
   "minimality": [3, 3, 3, 3, 3],
   "discriminant": -243,
   "xcoord_integral_points": [1, 7],

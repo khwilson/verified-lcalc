@@ -16,6 +16,16 @@ example : LMFDB.C112a2.curve.Δ = -7168 := LMFDB.C112a2.discriminant
 example : (LMFDB.C179a1.curve.baseChange ℚ).j = -110592 / 179 :=
   LMFDB.C179a1.j_invariant
 example : LMFDB.C179a1.curve.Δ = -179 := LMFDB.C179a1.discriminant
+example : WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
+    (LMFDB.C179a1.curve.baseChange ℚ) :=
+  LMFDB.C179a1.semistable.mpr rfl
+example : Squarefree LMFDB.C179a1.curve.Δ.natAbs :=
+  LMFDB.C179a1.squarefree_discriminant.mpr rfl
+example :
+    LocalReductionClaim.Spec
+      { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
+        reductionType := some 1 } LMFDB.C179a1.curve :=
+  LMFDB.C179a1.local_invariants _ (by decide +kernel)
 
 example : (LMFDB.C197a1.curve.baseChange ℚ).j = 13824000 / 197 :=
   LMFDB.C197a1.j_invariant
@@ -28,6 +38,16 @@ example : LMFDB.C214a1.curve.Δ = -214 := LMFDB.C214a1.discriminant
 example : (LMFDB.C243a1.curve.baseChange ℚ).j = 0 :=
   LMFDB.C243a1.j_invariant
 example : LMFDB.C243a1.curve.Δ = -243 := LMFDB.C243a1.discriminant
+example : ¬ WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
+    (LMFDB.C243a1.curve.baseChange ℚ) :=
+  fun h => by cases LMFDB.C243a1.semistable.mp h
+example : ¬ Squarefree LMFDB.C243a1.curve.Δ.natAbs :=
+  fun h => by cases LMFDB.C243a1.squarefree_discriminant.mp h
+example :
+    LocalReductionClaim.Spec
+      { prime := 3, discriminantValuation := some 5, jDenominatorValuation := some 0,
+        reductionType := some 0 } LMFDB.C243a1.curve :=
+  LMFDB.C243a1.local_invariants _ (by decide +kernel)
 
 example : (LMFDB.C254a1.curve.baseChange ℚ).j = 15438249 / 1016 :=
   LMFDB.C254a1.j_invariant
@@ -81,6 +101,9 @@ run_cmd do
         throwError "Unexpected dependency {axiomName} in {lemmaName}"
   check `LMFDB.C112a2 `dirichlet_coefficients false
   check `Curve112 `analytic_rank true
+  for curve in [`LMFDB.C179a1, `LMFDB.C243a1] do
+    for suffix in [`semistable, `squarefree_discriminant, `local_invariants] do
+      check curve suffix false
   for curve in [`LMFDB.C112a2, `LMFDB.C179a1, `LMFDB.C197a1, `LMFDB.C214a1, `LMFDB.C243a1,
       `LMFDB.C254a1, `LMFDB.C275a1, `LMFDB.C286f1, `LMFDB.C288a1, `LMFDB.C291d1] do
     for suffix in [`j_invariant, `discriminant, `discriminant_sign, `minimal_discriminant_abs,

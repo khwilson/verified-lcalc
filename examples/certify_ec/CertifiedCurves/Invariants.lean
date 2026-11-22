@@ -1,11 +1,11 @@
 module
 public import VerifiedLcalc.Tactic.CertifyEC
+
+/-! # Invariant certificates for 37.a1 -/
+
 @[expose] public section
 
 open VerifiedLcalc VerifiedLcalc.EllipticCurve
-
-set_option maxRecDepth 100000
-set_option maxHeartbeats 10000000
 
 -- Exact LMFDB 37.a1 data, with supplied arithmetic evidence but no rank search.
 certify_ec Invariants37 from
@@ -18,6 +18,11 @@ certify_ec Invariants37 from
     minimalDiscriminantAbs := some 37
     badPrimes := some [37]
     numBadPrimes := some 1
+    semistable := some true
+    squarefreeDiscriminant := some true
+    localInvariants := some [
+      { prime := 37, discriminantValuation := some 1, jDenominatorValuation := some 1,
+        reductionType := some (-1) }]
     conductor := some 37
     rootNumber := some (-1)
     dirichletCoefficients := some [1, -2, -3, 2, -2, 6, -1, 0]
