@@ -80,7 +80,8 @@ theorem mulEquivProdOfDisjointSubgroups (H K : Subgroup G)
     rw [Nat.card_prod]
     exact Nat.le_of_dvd hprod hbound
   let multiplication := H.subtype.coprod K.subtype
-  have hinjective : Function.Injective multiplication := Subgroup.mul_injective_of_disjoint hdisjoint
+  have hinjective : Function.Injective multiplication :=
+    Subgroup.mul_injective_of_disjoint hdisjoint
   let e : H × K ≃* G := MulEquiv.ofBijective multiplication
     (hinjective.bijective_of_nat_card_le hle)
   refine ⟨e, ?_⟩
