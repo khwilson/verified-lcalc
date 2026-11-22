@@ -57,8 +57,10 @@ theorem checked {curve : WeierstrassCurve ℤ}
   have hqg : EllipticCurve.goodReduction curve facts.evidence.secondPrime = true :=
     (EllipticCurve.goodReduction_correct curve _).mpr
       (isUnit_iff_ne_zero.mp facts.secondGoodReduction.isUnit)
-  have hgcd : Nat.gcd (EllipticCurve.computePointCount curve facts.evidence.firstPrime)
-      (EllipticCurve.computePointCount curve facts.evidence.secondPrime) = facts.evidence.bound := by
+  have hgcd : Nat.gcd
+      (EllipticCurve.computePointCount curve facts.evidence.firstPrime)
+      (EllipticCurve.computePointCount curve facts.evidence.secondPrime) =
+      facts.evidence.bound := by
     simpa only [← EllipticCurve.computePointCount_correct] using facts.pointCountGcd
   have hbound := bne_iff_ne.mpr (Nat.ne_of_gt facts.valid.2)
   simp [EllipticCurve.checkTorsionBound, hp, hp₂, hpg, hq, hq₂, hqg, hgcd, hbound]
