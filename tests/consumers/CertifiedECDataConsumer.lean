@@ -1,6 +1,7 @@
 import CertifiedCurves.Data
 
 /-! # Reuse the compiled arithmetic certificates for 37.a1 -/
+
 theorem imported_ap_bad_prime : (Data37.curve.baseChange ℚ).LFunction 37 = -1 :=
   Data37.ap_correct 37 (-1) (by decide +kernel)
 
@@ -20,8 +21,5 @@ run_cmd do
     for axiomName in ← liftTermElabM <| Lean.collectAxioms name do
       unless standard.contains axiomName do
         throwError "Unexpected axiom {axiomName} in {name}"
-
-#print axioms imported_ap_bad_prime
-#print axioms imported_integral_point
 
 example : Data37.certificate.algebraic.integralPoints.isSome = true := rfl

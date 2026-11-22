@@ -180,8 +180,6 @@ run_cmd do
     { TrivialTorsion.witness with torsionBound := some ⟨3, 5, 2⟩ }))
   invariantRejected `TorsionAtBadPrime (← `(certify_ec TorsionAtBadPrime from
     { TrivialTorsion.witness with torsionBound := some ⟨3, 37, 1⟩ }))
-
-
   invariantRejected `ConflictingAggregateReuse (← `(certify_ec ConflictingAggregateReuse from
     { equation := Invariants37.certificate.equation, cInvariants := some (48, 216) }
     with_proofs Invariants37.certificate.equationFacts))
@@ -340,7 +338,6 @@ run_cmd do
 -- Keep the contract exhaustive as the raw witness gains fields. A field can be
 -- an input prerequisite, rather than a direct certified conclusion.
 run_cmd do
-  let fields := Lean.getStructureFields (← getEnv) ``EllipticWitness
   let equation := #[`equation, `bInvariants, `cInvariants, `discriminant]
   let rational := #[`discriminantSign, `jInvariant, `jIntegral]
   let algebraic := #[`integralCoordinates, `generatorCoordinates, `torsionGeneratorCoordinates,
@@ -350,13 +347,18 @@ run_cmd do
     `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData]
   let analytic := #[`centralResult, `derivativeResult]
   let torsion := #[`torsionBound, `torsion, `torsionGeneratorOrders]
-  let tracked := equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion
-  for field in fields do
-    unless tracked.contains field do
-      throwError "Add the checked data/proof contract for new witness field {field}"
-  for field in tracked do
-    unless fields.contains field do
-      throwError "Remove the obsolete witness field {field} from the certificate inventory"
+  let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do
+    let fields := Lean.getStructureFields (← getEnv) record
+    for field in fields do
+      unless tracked.contains field do
+        throwError "Add the checked data/proof contract for new witness field {record}.{field}"
+    for field in tracked do
+      unless fields.contains field do
+        throwError "Remove obsolete witness field {record}.{field} from the certificate inventory"
+  cover ``EllipticWitness (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion)
+  cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
+    `jDenominatorValuation, `reductionType]
+  cover ``TorsionBoundWitness #[`firstPrime, `secondPrime, `bound]
 
 example : EmptyProofs.certificate.equationFacts.discriminant.isNone = true := rfl
 example : JZero.certificate.equationFacts.discriminant.map Subtype.val = some (-432) := rfl
