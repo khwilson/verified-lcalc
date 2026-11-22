@@ -135,8 +135,7 @@ missing theorem.
 | Group / fields | Proof work still needed |
 | --- | --- |
 | Specific additive `kodaira_symbol`, local `root_number`, other `tamagawa_number` branches, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
-| General `torsion_structure` beyond cyclic groups and factors `[2, n]` | Prove the generator relations and match the generated subgroup order to the verified full torsion cardinality. |
-| `intrinsic_torsion` | Prove the required torsion pairing statement. |
+| Tighter `torsion_structure` bounds and `intrinsic_torsion` | Construct tight bounds for the rational torsion group or prove the required torsion pairing statement. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Lower bounds already have the explicit independence route. Exact rank needs an upper-bound/descent certificate; integral-point counts need completeness proofs. |
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |
 | `cm`, quadratic-twist fields | Actual endomorphism/twist statements and, for a minimal twist, the required minimality comparison. A j-value lookup alone is not a CM certificate. |
@@ -146,6 +145,8 @@ missing theorem.
 | Galois-image, adelic, nonmaximal-prime, Serre, Iwasawa, and torsion-growth data | The relevant representations, fields, group images, and completeness proofs. |
 | Labels, ordering/index fields, hashes | Catalogue/provenance metadata; not mathematical identity certificates. |
 
-The checked rational torsion outputs cover cyclic groups and two-factor
-structures `[2, n]`. Higher invariant-factor decompositions remain an
-integration target.
+Mazur's classification restricts rational elliptic-curve torsion over `ℚ` to
+cyclic groups or groups of the form `ℤ/2ℤ × ℤ/2mℤ`. The checked outputs cover
+both shapes when witnesses are supplied; higher invariant-factor
+decompositions are not an integration target. Remaining torsion work includes
+constructing tight bounds and verifying `intrinsic_torsion`.
