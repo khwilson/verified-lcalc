@@ -1,8 +1,16 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.NumericalRank
 public import VerifiedLcalc.CertificateSoundness
+public import VerifiedLcalc.Certificates.AnalyticEvidence
 public import Mathlib.Tactic.Linarith
+
+/-! Soundness theorems for numerical derivative observations. -/
 
 @[expose] public section
 
@@ -21,12 +29,7 @@ theorem Box.withinCutoff_sound {b : Box} {eps : Rat} {z : ℂ}
 
 namespace NumericalRanks
 
-/-- Rigorous numerical conclusion. There is deliberately no assertion of exact
-vanishing or analytic order in this definition. -/
-def SmallDerivatives (f : ℂ → ℂ) (center : ℂ) (n : Nat) (eps : Rat) : Prop :=
-  ∀ k < n, |(iteratedDeriv k f center).re| ≤ (eps : ℝ) ∧
-    |(iteratedDeriv k f center).im| ≤ (eps : ℝ)
-
+/-- Every enclosed derivative within a cutoff satisfies its coordinatewise bound. -/
 theorem enclosures_small (bs : List Box) (a : Nat → ℂ) (eps : Rat)
     (he : Encloses bs a)
     (hs : ∀ b ∈ bs, b.withinCutoff eps = true) :
@@ -41,15 +44,7 @@ theorem enclosures_small (bs : List Box) (a : Nat → ℂ) (eps : Rat)
       exact ih (fun j => a (j + 1)) he.2
         (fun b hb => hs b (by simp [hb])) k (by simpa using hk)
 
-/-- The same subject interpretation and true-derivative enclosure obligations
-as exact certificates. The numerical policy cannot replace these proofs. -/
-structure Evidence (expected : Request) (artifact : Artifact) where
-  function : ℂ → ℂ
-  denotes : expected.computation.subject.Denotes function
-  analytic : AnalyticAt ℂ function (expected.computation.subject.center : ℂ)
-  enclosures : Encloses artifact.derivativeBoxes
-    (fun k => iteratedDeriv k function (expected.computation.subject.center : ℂ))
-
+/-- The finite checker and analytic evidence imply coordinatewise smallness. -/
 theorem check_sound {expected : Request} {artifact : Artifact}
     (evidence : Evidence expected artifact) (h : check expected artifact = true) :
     SmallDerivatives evidence.function (expected.computation.subject.center : ℂ)
@@ -57,13 +52,6 @@ theorem check_sound {expected : Request} {artifact : Artifact}
   obtain ⟨_, _, _, _, _, hlen, hs⟩ := (check_correct _ _).mp h
   rw [← hlen]
   exact enclosures_small _ _ _ evidence.enclosures hs
-
-/-- An explicitly hypothetical separation principle. It is NOT a theorem about
-elliptic L-functions, and is never installed as a Lean axiom. A future arithmetic
-vanishing theorem may discharge it for the particular function and derivatives. -/
-def ExactVanishingHypothesis (f : ℂ → ℂ) (center : ℂ) (n : Nat) (eps : Rat) : Prop :=
-  ∀ k < n, (|(iteratedDeriv k f center).re| ≤ (eps : ℝ) ∧
-    |(iteratedDeriv k f center).im| ≤ (eps : ℝ)) → iteratedDeriv k f center = 0
 
 /-- A genuine analytic-rank lower bound, conditional on the displayed additional
 mathematical hypothesis. The smallness certificate alone cannot prove it. -/

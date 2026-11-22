@@ -1,8 +1,13 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import Std
 public import Init.Data.Rat
-public import VerifiedLcalc.Certificates.Enclosures
+public import VerifiedLcalc.Certificates.Scan
 
 /-! A conservative rank search on exact rational rectangles. No floating point
 or tolerance test is used. A rectangle containing zero is inconclusive unless
@@ -10,13 +15,6 @@ it is the singleton zero. -/
 
 @[expose] public section
 namespace VerifiedLcalc
-
-/-- Finite evidence for the first nonzero derivative: all earlier boxes are
-singleton zero, and the selected box excludes zero. -/
-inductive Witness : List Box → Nat → Prop
-  | here {b bs} : b.valid = true → b.excludesZero = true → Witness (b :: bs) 0
-  | next {b bs n} : b.valid = true → b.isZero = true → Witness bs n →
-      Witness (b :: bs) (n + 1)
 
 /-- Search only as far as the supplied boxes. `none` means insufficient evidence
 (including exhaustion or malformed bounds), never a claim of infinite rank. -/
@@ -52,23 +50,28 @@ theorem scan_correct (bs : List Box) (n : Nat) :
         · simp
     · simp
 
-/-- Proof-carrying output of the executable core. -/
-structure Certificate (bs : List Box) where
-  /-- First derivative index whose exact box excludes zero. -/
-  rank : Nat
-  /-- The finite scan returned this rank. -/
-  computed : scan bs = some rank
-  /-- The scan result yields a proof witness for the supplied boxes. -/
-  sound : Witness bs rank
+/-- Every mathematical witness is accepted by the executable scan. -/
+theorem witness_scan {bs : List Box} {n : Nat} (h : Witness bs n) :
+    scan bs = some n := by
+  induction h with
+  | here hv hn => simp [scan, hv, hn]
+  | @next b bs n hv hz h ih =>
+    obtain ⟨hrl, hrh, hil, hih⟩ := b.isZero_correct.mp hz
+    simp [scan, hv, hz, ih, Box.excludesZero, hrl, hrh, hil, hih]
+
+/-- The raw certificate stores a mathematical witness. This compatibility
+theorem exposes the historical executable projection. -/
+theorem Certificate.computed {bs : List Box} (c : Certificate bs) :
+    scan bs = some c.rank := witness_scan c.sound
 
 /-- A result is constructed only after checking the exact search equation. -/
 def certify (bs : List Box) : Option (Certificate bs) :=
   match h : scan bs with
   | none => none
-  | some n => some ⟨n, h, scan_correct bs n h⟩
+  | some n => some ⟨n, scan_correct bs n h⟩
 
 theorem certify_correct (bs : List Box) (c : Certificate bs)
     (_h : certify bs = some c) : scan bs = some c.rank ∧ Witness bs c.rank :=
-  ⟨c.computed, c.sound⟩
+  ⟨Certificate.computed c, c.sound⟩
 
 end VerifiedLcalc

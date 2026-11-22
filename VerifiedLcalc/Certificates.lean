@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.Certificates.DegreeTwoIsogeny
@@ -10,6 +15,12 @@ public import VerifiedLcalc.Certificates.PrecisionPolicy
 public import VerifiedLcalc.Certificates.Transcripts
 public import VerifiedLcalc.Certificates.NumericalData
 public import VerifiedLcalc.Certificates.NumericalContracts
+public import VerifiedLcalc.Certificates.Scan
+public import VerifiedLcalc.Certificates.AnalyticEnclosures
+public import VerifiedLcalc.Certificates.AnalyticRank
+public import VerifiedLcalc.Certificates.Artifacts
+public import VerifiedLcalc.Certificates.NumericalRanks
+public import VerifiedLcalc.Certificates.AnalyticEvidence
 public import VerifiedLcalc.Certificates.CurveWitness
 public import VerifiedLcalc.Certificates.RationalInvariants
 public import VerifiedLcalc.Certificates.PointFacts

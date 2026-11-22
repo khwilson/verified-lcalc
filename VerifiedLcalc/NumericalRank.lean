@@ -1,6 +1,12 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.Certificate
+public import VerifiedLcalc.Certificates.NumericalRanks
 public import VerifiedLcalc.Precision
 
 /-! # Exact checks for numerical rank observations -/
@@ -9,27 +15,7 @@ public import VerifiedLcalc.Precision
 
 namespace VerifiedLcalc.NumericalRanks
 
-/-- Separate identity for threshold observations of raw iterated derivatives.
-Version 1 fixes coordinatewise comparison and the half-bit cutoff rule. -/
-structure Request where
-  /-- Exact computation whose derivatives are classified. -/
-  computation : Artifacts.Request
-  /-- Precision policy that determines the cutoff. -/
-  policy : PrecisionPolicy := globalPrecision
-  deriving Repr, DecidableEq
-
-/-- `numericalLowerBound = n` means derivatives 0 through n-1 pass the
-cutoff test. It does not assert that any of them is exactly zero. -/
-structure Artifact where
-  /-- Numerical classification request answered by this artifact. -/
-  request : Request
-  /-- Number of consecutive derivative boxes claimed to lie within the cutoff. -/
-  numericalLowerBound : Nat
-  /-- Supplied derivative enclosures in ascending order. -/
-  derivativeBoxes : List Box
-  deriving Repr, DecidableEq
-
-/-- The structural and cutoff conditions for accepting a numerical observation. -/
+/-- Historical checker contract, expressed through exact Boolean cutoff checks. -/
 def Accepts (expected : Request) (artifact : Artifact) : Prop :=
   artifact.request = expected ∧
   expected.computation.formatVersion = 1 ∧
@@ -39,31 +25,39 @@ def Accepts (expected : Request) (artifact : Artifact) : Prop :=
   artifact.derivativeBoxes.length = artifact.numericalLowerBound ∧
   ∀ b ∈ artifact.derivativeBoxes, b.withinCutoff expected.policy.cutoff = true
 
-instance (expected : Request) (artifact : Artifact) : Decidable (Accepts expected artifact) := by
+instance (expected : Request) (artifact : Artifact) :
+    Decidable (Accepts expected artifact) := by
   unfold Accepts
   infer_instance
 
-/-- Check the request identity, resource bounds, and every derivative enclosure. -/
+theorem accepts_iff_cutoffAccepts (expected : Request) (artifact : Artifact) :
+    Accepts expected artifact ↔ CutoffAccepts expected artifact := by
+  simp [Accepts, CutoffAccepts, Box.withinCutoff_correct, Box.WithinCutoff]
+
+/-- Check the request identity, resource bounds, and each derivative enclosure. -/
 def check (expected : Request) (artifact : Artifact) : Bool :=
   decide (Accepts expected artifact)
 
 theorem check_correct (expected : Request) (artifact : Artifact) :
     check expected artifact = true ↔ Accepts expected artifact := by simp [check]
 
+/-- A supplied request is retained exactly on success. -/
 theorem check_request_eq {expected : Request} {artifact : Artifact}
     (h : check expected artifact = true) : artifact.request = expected :=
   ((check_correct _ _).mp h).1
 
-/-- A numerical observation with a proof that its finite check passed. -/
-structure Checked (expected : Request) where
-  /-- Artifact that passed the finite check. -/
-  artifact : Artifact
-  /-- Evidence that the artifact passed for the expected request. -/
-  accepted : check expected artifact = true
+/-- Historical projection: the pure contract still implies a successful check. -/
+theorem Checked.accepted {expected : Request} (c : Checked expected) :
+    check expected c.artifact = true :=
+  (check_correct _ _).mpr
+    ((accepts_iff_cutoffAccepts _ _).mpr c.contract)
 
 /-- Return an observation together with evidence when its finite check passes. -/
 def validate (expected : Request) (artifact : Artifact) : Option (Checked expected) :=
-  if h : check expected artifact = true then some ⟨artifact, h⟩ else none
+  if h : check expected artifact = true then
+    some ⟨artifact,
+      (accepts_iff_cutoffAccepts _ _).mp ((check_correct _ _).mp h)⟩
+  else none
 
 theorem validate_correct {expected : Request} {artifact : Artifact} {c : Checked expected}
     (h : validate expected artifact = some c) :

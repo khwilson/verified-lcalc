@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
 public import VerifiedLcalc.NumericalRankSoundness
 public import Mathlib.Analysis.Complex.CauchyIntegral
+
+/-! Opt-in modular interpretations of exact and numerical certificate evidence. -/
 
 @[expose] public section
 
@@ -12,6 +19,7 @@ open Modularity EllipticCurve
 /-- Opt-in elliptic evidence. The continuation comes from the modularity axiom;
 actual derivative enclosures must still be proved by the numerical backend. -/
 structure AssumedExactEvidence (expected : Artifacts.Request) (artifact : Artifacts.Artifact) where
+  /-- Integral equation whose modular realization interprets the checked artifact. -/
   equation : (WeierstrassCurve ℤ)
   nonsingular : equation.Δ ≠ 0
   subject : expected.subject = .ellipticCurve equation .arithmetic
@@ -28,8 +36,11 @@ theorem check_assumed_exact_sound {expected : Artifacts.Request} {artifact : Art
     ((modularWitness e.equation e.nonsingular).formL_differentiable.analyticAt 1)
     e.enclosures ((Artifacts.check_correct _ _).mp h).2.2.2.2
 
+/-- Evidence interpreting finite numerical checks as enclosures of derivatives
+of the L-function for an explicit arithmetic modular realization. -/
 structure AssumedNumericalEvidence (expected : NumericalRanks.Request)
     (artifact : NumericalRanks.Artifact) where
+  /-- Integral equation whose modular realization interprets the checked payload. -/
   equation : (WeierstrassCurve ℤ)
   nonsingular : equation.Δ ≠ 0
   subject : expected.computation.subject = .ellipticCurve equation .arithmetic

@@ -26,6 +26,12 @@ construct or verify their evidence.
 | `MinimalityWitness`, `TateWitness`, `WildData` | `VerifiedLcalc.Certificates.Transcripts` | Finite arithmetic transcript data. Rechecking and geometric/local compatibility remain in the reduction and Tate cores. |
 | `CentralResult`, `DerivativeResult` | `VerifiedLcalc.Certificates.NumericalData` | Raw numerical outputs, including equation, normalization inputs, coefficient prefix, precision, integral/quadrature enclosure and tail. |
 | `CentralPayloadCorrect`, `DerivativePayloadCorrect` | `VerifiedLcalc.Certificates.NumericalContracts` | Exact predicates relating payloads to the specified central and first-derivative formulae. Evaluators and their correctness proofs remain in the existing implementation modules. |
+| `Witness`, `Certificate` | `VerifiedLcalc.Certificates.Scan` | A typed finite proof that earlier boxes are singleton zero and the selected box excludes zero. The executable scan remains in the legacy module. |
+| `Box.Contains`, `Encloses` | `VerifiedLcalc.Certificates.AnalyticEnclosures` | Exact real and imaginary interval membership for supplied complex values; analytic derivative enclosures remain proof obligations. |
+| `AnalyticCertificate` | `VerifiedLcalc.Certificates.AnalyticRank` | A witnessed rank tied to the same derivative boxes and the analytic order theorem. |
+| `Artifacts.{Normalization,Subject,Settings,BuildIdentity,Request,Artifact,WitnessAccepts,Checked}` | `VerifiedLcalc.Certificates.Artifacts` | Raw request and artifact data plus a pure witness-based acceptance contract. Search and Boolean checking remain in the singular compatibility module. |
+| `NumericalRanks.{Request,Artifact,CutoffAccepts,Checked}` | `VerifiedLcalc.Certificates.NumericalRanks` | Raw threshold-observation data and its exact rational cutoff contract. |
+| `Artifacts.{Subject.Denotes,AnalyticEvidence}`, `NumericalRanks.{SmallDerivatives,Evidence,ExactVanishingHypothesis}` | `VerifiedLcalc.Certificates.AnalyticEvidence` | Mathematical function, derivative-enclosure, and conditional exact-vanishing obligations, independent of the evaluator. |
 | `DiscriminantWitness`, `EllipticProofs` | `VerifiedLcalc.Certificates.CurveWitness` | Use Mathlib's `WeierstrassCurve` discriminant and invariant expressions, with equality proofs indexed by the supplied equation. |
 | `AbcQualityClaim` | `VerifiedLcalc.Certificates.CurveWitness` | Raw submitted rational report, error, and factor list; no checking algorithm is part of the record. |
 | `RationalInvariantFacts` | `VerifiedLcalc.Certificates.RationalInvariants` | Sign, rational j-invariant, and integer-localization predicate are stated directly for the integral equation or its rational base change. |
@@ -35,10 +41,11 @@ construct or verify their evidence.
 | `GeneratorCountFacts` | `VerifiedLcalc.Certificates.PointFacts` | The claimed count equals the length of the supplied coordinate list; it makes no generation claim. |
 | `IntegralYFiberFacts` | `VerifiedLcalc.Certificates.PointFacts` | Each finite fiber is exactly the set of integer y-coordinates satisfying the supplied Weierstrass equation at its indexed x-coordinate. |
 
-`VerifiedLcalc.Certificate.IntegralXSupport` remains an import-only compatibility
-module. Existing singular import paths continue to expose migrated records for
-compatibility. `tests/consumers/CertificateContracts.lean` imports the plural
-umbrella, checks these public declarations, and rejects accidental imports of
-the corresponding checker and evaluator modules.
+Existing singular import paths continue to expose migrated records and
+historical `.computed`/`.accepted` projections for compatibility.
+`tests/consumers/CertificateContracts.lean` imports the plural umbrella, checks
+the public declarations, and rejects accidental imports of checker and
+evaluator modules. `tests/consumers/CertificateCompatibility.lean` checks the
+legacy projections through the singular imports.
 `VerifiedLcalc.Certificate.EllipticWitness` reexports the moved curve witness
 declarations for existing import paths.

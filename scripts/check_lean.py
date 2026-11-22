@@ -27,6 +27,7 @@ AUDITS = (
     "tests/consumers/Additive.lean",
     "tests/consumers/Wild.lean",
     "tests/consumers/CertificateContracts.lean",
+    "tests/consumers/CertificateCompatibility.lean",
     "tests/consumers/TorsionFacts.lean",
     "tests/consumers/TorsionBoundCompatibility.lean",
     "tests/consumers/CurveWitnessCompatibility.lean",
@@ -98,6 +99,7 @@ def main() -> None:
         "tests/consumers/LowRankBSD.lean",
         "tests/consumers/LowRankBSDDefaultAbsent.lean",
         "tests/consumers/CompleteIntegralPoints.lean",
+        "tests/consumers/CertificateCompatibility.lean",
         "tests/consumers/SpecialLValue.lean",
         "tests/consumers/SpecialValueContract.lean",
     ):
