@@ -3,12 +3,13 @@ module
 public import VerifiedLcalc.Certification.DegreeTwoIsogeny
 public import VerifiedLcalc.Certification.CurveData
 public import VerifiedLcalc.Certification.IntegralPointCount
+public import VerifiedLcalc.Certification.TorsionBoundFacts
 public import VerifiedLcalc.Certificate.ArithmeticFacts
+public import VerifiedLcalc.Certificates.TorsionFacts
 public import VerifiedLcalc.Certification.AbcQuality
 public import VerifiedLcalc.Certificate.AnalyticFacts
 public import VerifiedLcalc.Certificates.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.PointIndependence
-public import VerifiedLcalc.EllipticCurve.TorsionBound
 public import Mathlib.GroupTheory.Torsion
 public import Mathlib.Data.Nat.Factors
 
@@ -169,93 +170,6 @@ structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).
   /-- An exact algebraic Mordell–Weil rank, when the checked interval is a singleton. -/
   rank : Option { n : ℕ //
     Module.finrank ℤ (curve.baseChange ℚ).toAffine.Point = n } := none
-
-/-- A verified positive multiple of the whole torsion order
-and an optional consistent raw claim. -/
-structure TorsionDivisorFacts (curve : WeierstrassCurve ℤ) where
-  /-- The odd primes and divisor supplied to the reduction check. -/
-  evidence : TorsionBoundWitness
-  /-- The stated divisor is the verified gcd of the two good-reduction point counts. -/
-  checked : EllipticCurve.checkTorsionBound curve evidence.firstPrime evidence.secondPrime
-    evidence.bound = true
-  /-- The full torsion order divides this positive value. -/
-  valid : Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) ∣
-    evidence.bound ∧ 0 < evidence.bound
-  /-- A supplied count consistent with the bound. -/
-  consistentClaim : Option { n : ℕ // 0 < n ∧ n ∣ evidence.bound } := none
-
-/-- The checked positive multiple of the full torsion order. -/
-def TorsionDivisorFacts.bound {curve : WeierstrassCurve ℤ}
-    (facts : TorsionDivisorFacts curve) : ℕ :=
-  facts.evidence.bound
-
-/-- Checked invariant factors and a generator-preserving equivalence for cyclic torsion. -/
-structure CyclicTorsionFacts (curve : WeierstrassCurve ℤ) where
-  /-- The supplied invariant factors. -/
-  factors : List ℕ
-  /-- The order of the whole cyclic group. -/
-  order : ℕ
-  /-- The selected rational point, or the identity for trivial torsion. -/
-  generator : (curve.baseChange ℚ).toAffine.Point
-  /-- The canonical factors and an equivalence sending one to the selected point. -/
-  structure_eq : factors = (if order = 1 then [] else [order]) ∧
-    ∃ e : ZMod order ≃+ AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point,
-      (e 1 : (curve.baseChange ℚ).toAffine.Point) = generator
-
-/-- A checked two-factor presentation of the full rational torsion subgroup. -/
-structure TwoFactorTorsionFacts (curve : WeierstrassCurve ℤ) where
-  /-- The order of the second supplied generator; the first factor has order two. -/
-  secondOrder : ℕ
-  /-- The second generator has positive exact order, so this is not a sentinel case. -/
-  secondOrder_pos : 0 < secondOrder
-  /-- The second invariant factor is divisible by the first factor. -/
-  first_factor_dvd_second : 2 ∣ secondOrder
-  /-- The order-two rational point in the supplied invariant-factor ordering. -/
-  firstGenerator : (curve.baseChange ℚ).toAffine.Point
-  /-- The rational point whose order is `secondOrder`. -/
-  secondGenerator : (curve.baseChange ℚ).toAffine.Point
-  /-- The actual additive equivalence onto Mathlib's full torsion subgroup. -/
-  equivalence : ZMod 2 × ZMod secondOrder ≃+
-    AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point
-  /-- The first coordinate generator maps to `firstGenerator`. -/
-  maps_first : (equivalence (1, 0) : (curve.baseChange ℚ).toAffine.Point) = firstGenerator
-  /-- The second coordinate generator maps to `secondGenerator`. -/
-  maps_second : (equivalence (0, 1) : (curve.baseChange ℚ).toAffine.Point) = secondGenerator
-  /-- The equivalence certifies the full subgroup cardinality. -/
-  cardinality : Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) =
-    2 * secondOrder
-
-/-- The normalized invariant factors of a checked two-factor presentation. -/
-def TwoFactorTorsionFacts.invariantFactors {curve : WeierstrassCurve ℤ}
-    (facts : TwoFactorTorsionFacts curve) : List ℕ := [2, facts.secondOrder]
-
-/-- The order of the full rational torsion subgroup in a two-factor presentation. -/
-def TwoFactorTorsionFacts.order {curve : WeierstrassCurve ℤ}
-    (facts : TwoFactorTorsionFacts curve) : ℕ := 2 * facts.secondOrder
-
-/-- Exact distinct prime support of a finite rational torsion subgroup. -/
-structure TorsionPrimeSupportFacts (curve : WeierstrassCurve ℤ) where
-  /-- The distinct prime divisors of the exact group order. -/
-  primes : List ℕ
-  /-- Each prime appears at most once. -/
-  nodup : primes.Nodup
-  /-- The list contains exactly the prime divisors of the full subgroup order. -/
-  exact_support : ∀ p, p ∈ primes ↔ p.Prime ∧
-    p ∣ Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point)
-
-/-- Partial divisibility bounds and exact cardinality assertions for the torsion subgroup. -/
-structure TorsionFacts (curve : WeierstrassCurve ℤ) where
-  /-- Evidence that the full torsion order divides a checked positive bound. -/
-  divisor : Option (TorsionDivisorFacts curve) := none
-  /-- The exact cardinality of the whole torsion subgroup when determined. -/
-  cardinality : Option { n : ℕ //
-    Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) = n } := none
-  /-- The checked cyclic structure, if requested and determined. -/
-  cyclicStructure : Option (CyclicTorsionFacts curve) := none
-  /-- The checked `[2, n]` structure and generator-preserving equivalence, if determined. -/
-  twoFactorStructure : Option (TwoFactorTorsionFacts curve) := none
-  /-- Exact distinct prime support, only when the full torsion cardinality is known. -/
-  primeSupport : Option (TorsionPrimeSupportFacts curve) := none
 
 /-- The family-indexed certificate exported by the verification command. -/
 structure EllipticCertificate (curve : WeierstrassCurve ℤ)
