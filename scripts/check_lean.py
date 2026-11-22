@@ -20,6 +20,7 @@ AUDITS = (
     "AuditIntervalComponents.lean",
     "tests/VerifiedLcalcTests/Fixtures/Cubic.lean",
     "tests/consumers/Cubic.lean",
+    "tests/consumers/TorsionBound.lean",
     "tests/consumers/Additive.lean",
     "tests/consumers/Wild.lean",
 )
