@@ -24,6 +24,10 @@ structure DiscriminantWitness (R : Type*) [CommRing R] where
 
 /-- Optional proved facts about one fixed Weierstrass equation. -/
 structure EllipticProofs {R : Type*} [CommRing R] (curve : WeierstrassCurve R) where
+  /-- The ordered tuple of b₂, b₄, b₆ and b₈ with a proof about the equation. -/
+  bInvariants : Option { b : R × R × R × R // (curve.b₂, curve.b₄, curve.b₆, curve.b₈) = b } := none
+  /-- The ordered pair of c₄ and c₆ with a proof about the equation. -/
+  cInvariants : Option { c : R × R // (curve.c₄, curve.c₆) = c } := none
   /-- A discriminant value with a proof about the indexed equation. -/
   discriminant : Option { d : R // curve.Δ = d } := none
 

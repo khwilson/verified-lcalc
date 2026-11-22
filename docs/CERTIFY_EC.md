@@ -96,7 +96,16 @@ that equation. It can also be constructed as
 A raw `discriminant` claim and the supplied value must agree when both are
 present. The certifier audits the proof dependencies and rejects a mismatched
 attachment atomically. A successful raw Lean or JSON claim also exports
-`Name.discriminant_witness`.
+`Name.discriminant_witness`. The checked b-invariants, c-invariants, and
+discriminant are available together as `Name.checked_facts` when at least one
+is supplied. Both the raw data and the attachment can supply entries:
+
+```lean
+certify_ec WithTuples from
+  { equation := exampleDelta.curve, bInvariants := some (0, -2, 1, -1) }
+  with_proofs
+    { exampleDelta.toProofs with cInvariants := some ⟨(48, -216), by decide +kernel⟩ }
+```
 
 The same attachment works after `from_json` and `from_json_string`.
 Use `with_independence` after `with_proofs` when supplying both. Additional

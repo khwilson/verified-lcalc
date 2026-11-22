@@ -120,6 +120,8 @@ certify_ec EmptyProofs from
 run_cmd do
   if (← getEnv).contains `EmptyProofs.discriminant_witness then
     throwError "An absent proved discriminant generated a witness"
+  if (← getEnv).contains `EmptyProofs.checked_facts then
+    throwError "An empty attachment generated a checked collection"
   let axs ← liftTermElabM <| Lean.collectAxioms ``forbiddenDelta
   unless axs.contains ``Assumptions.ellipticModularity do
     throwError "The forbidden proof fixture lost its axiom dependency"
@@ -135,7 +137,7 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
   set { (← get) with messages }
   unless failed do throwError "Incorrect invariant accepted: {name}"
   for suffix in [`witness, `curve, `nonsingular, `j_invariant, `discriminant,
-      `proofs, `discriminant_witness,
+      `proofs, `discriminant_witness, `checked_facts,
       `claimed_j_invariant, `claimed_j_integral, `j_integral, `j_integral_input_eq,
       `j_integral_value_valid, `claimed_discriminant, `global_minimal,
       `claimed_potential_good_reduction, `potential_good_reduction,
@@ -148,6 +150,9 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `ConflictingBProof (← `(certify_ec ConflictingBProof from
+    { equation := Invariants37.curve, bInvariants := some (0, 0, 0, 0) }
+    with_proofs Invariants37.checked_facts))
   invariantRejected `WrongProofCurve (← `(certify_ec WrongProofCurve from
     { equation := JZero.curve } with_proofs Invariants37.discriminant_witness.toProofs))
   invariantRejected `ConflictingProofValue (← `(certify_ec ConflictingProofValue from
