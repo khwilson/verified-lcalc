@@ -182,3 +182,19 @@ then replace local imports with the accepted upstream APIs. Modular realizations
 checked derivative enclosures and certification remain separate from these local
 arithmetic results. The broader extraction roadmap is
 [ELLIPTIC_LOCAL_ARITHMETIC.md](roadmaps/ELLIPTIC_LOCAL_ARITHMETIC.md).
+
+
+## Iterated Mellin derivatives and log moments
+
+[The log-moment theorem](../VerifiedLcalc/Numerics/MellinLogMoments.lean) uses
+Mathlib’s `mellin_hasDerivAt_of_isBigO_rpow` and log-weighted decay in an
+induction on derivative order. Pinned Mathlib `31ce06e` and TauCeti `e0e414c`
+supply the first derivative and the Fricke functional equation. Their generic
+log-moment API lacks the arbitrary-order result. TauCeti main’s
+`NormalizedContinuation` differentiates the kernel in the integration
+variable, which gives a different Mellin identity. Related open results
+concern Riemann zeta and Dirichlet L-functions.
+
+The pure log-moment lemma is a candidate for Mathlib’s Mellin transform API.
+The cusp-form adapter and its weight-two normalization belong with TauCeti’s
+modular L-function interfaces.
