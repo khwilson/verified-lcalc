@@ -10,3 +10,5 @@ theorem imported_integral_point :
 
 #print axioms imported_ap_bad_prime
 #print axioms imported_integral_point
+
+example : Data37.certificate.algebraic.integralPoints.isSome = true := rfl

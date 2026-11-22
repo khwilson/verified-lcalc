@@ -140,7 +140,7 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
   set { (← get) with messages }
   unless failed do throwError "Incorrect invariant accepted: {name}"
   for suffix in [`witness, `curve, `nonsingular, `j_invariant, `discriminant,
-      `proofs, `discriminant_witness, `checked_facts,
+      `proofs, `discriminant_witness, `checked_facts, `certificate,
       `claimed_j_invariant, `claimed_j_integral, `j_integral, `j_integral_input_eq,
       `j_integral_value_valid, `claimed_discriminant, `global_minimal,
       `claimed_potential_good_reduction, `potential_good_reduction,
@@ -153,6 +153,9 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `ConflictingAggregateReuse (← `(certify_ec ConflictingAggregateReuse from
+    { equation := Invariants37.certificate.equation, cInvariants := some (48, 216) }
+    with_proofs Invariants37.certificate.equationFacts))
   invariantRejected `ConflictingBProof (← `(certify_ec ConflictingBProof from
     { equation := Invariants37.curve, bInvariants := some (0, 0, 0, 0) }
     with_proofs Invariants37.checked_facts))
@@ -300,3 +303,29 @@ run_cmd do
   match CurveDataJson.parse r#"{"ainvs":[0,0,1,-1,0],"anlist":[1,1]}"# with
   | .error _ => pure ()
   | .ok _ => throwError "Nonzero anlist origin accepted"
+
+-- Keep the contract exhaustive as the raw witness gains fields. A field can be
+-- an input prerequisite, rather than a direct certified conclusion.
+run_cmd do
+  let fields := Lean.getStructureFields (← getEnv) ``EllipticWitness
+  let equation := #[`equation, `bInvariants, `cInvariants, `discriminant]
+  let rational := #[`discriminantSign, `jInvariant, `jIntegral]
+  let algebraic := #[`integralCoordinates, `generatorCoordinates, `torsionGeneratorCoordinates,
+    `infiniteOrderPoints, `independentPoints]
+  let arithmetic := #[`potentialGoodReduction, `minimalDiscriminantAbs, `conductor, `rootNumber,
+    `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
+    `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData]
+  let analytic := #[`centralResult, `derivativeResult]
+  let tracked := equation ++ rational ++ algebraic ++ arithmetic ++ analytic
+  for field in fields do
+    unless tracked.contains field do
+      throwError "Add the checked data/proof contract for new witness field {field}"
+  for field in tracked do
+    unless fields.contains field do
+      throwError "Remove the obsolete witness field {field} from the certificate inventory"
+
+example : EmptyProofs.certificate.equationFacts.discriminant.isNone = true := rfl
+example : JZero.certificate.equationFacts.discriminant.map Subtype.val = some (-432) := rfl
+
+example : NonintegralJ.certificate.rational.jIntegral.map Subtype.val = some false := rfl
+example : Partial37.certificate.arithmetic.minimalModel.isNone = true := rfl

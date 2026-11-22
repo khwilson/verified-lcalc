@@ -1,4 +1,5 @@
 import CertifiedCurves.Invariants
+import Lean
 
 /-! Reuse invariant certificates from a compiled certificate module. -/
 
@@ -38,3 +39,40 @@ example : ProofCarrying37.checked_facts.discriminant.map Subtype.val = some 37 :
 example : Invariants37.checked_facts.bInvariants.isSome = true := rfl
 example : Invariants37.checked_facts.cInvariants.isSome = true := rfl
 example : Invariants37.checked_facts.discriminant.isSome = true := rfl
+
+/-- A newly compiled finite projection of a certificate that also checked a modular conductor. -/
+theorem imported_aggregate_discriminant :
+    Invariants37.curve.Δ = (Invariants37.certificate.equationFacts.discriminant.getD
+      ⟨Invariants37.curve.Δ, rfl⟩).val :=
+  (Invariants37.certificate.equationFacts.discriminant.getD ⟨Invariants37.curve.Δ, rfl⟩).property
+
+/-- The conductor projection takes an explicit realization of the same curve. -/
+theorem imported_aggregate_conductor
+    (model : VerifiedLcalc.Modularity.ArithmeticModularRealization Invariants37.curve) :
+    model.level = 37 :=
+  (Invariants37.certificate.arithmetic.modular.conductor.get (by decide +kernel)).property model
+
+open Lean Elab Command in
+run_cmd do
+  let modularity := ``VerifiedLcalc.Assumptions.ellipticModularity
+  let conductorAxioms ← liftTermElabM <| Lean.collectAxioms ``Invariants37.conductor
+  unless conductorAxioms.contains modularity do
+    throwError "The mixed certificate lacks its expected modularity-dependent conductor"
+  for fact in [``imported_aggregate_discriminant, ``imported_aggregate_conductor] do
+    let finiteAxioms ← liftTermElabM <| Lean.collectAxioms fact
+    for name in finiteAxioms do
+      unless [``propext, ``Classical.choice, ``Quot.sound].contains name do
+        throwError "Unexpected aggregate axiom in {fact}: {name}"
+
+example : Invariants37.certificate.rational.jInvariant.map Subtype.val = some (110592 / 37) := rfl
+example : Invariants37.certificate.rational.discriminantSign.map Subtype.val = some 1 := rfl
+example : ProofCarrying37.certificate.equationFacts.discriminant.map Subtype.val = some 37 := rfl
+
+certify_ec ReusedAggregateFacts from
+  { equation := Invariants37.certificate.equation, cInvariants := some (48, -216) }
+  with_proofs Invariants37.certificate.equationFacts
+
+example : ReusedAggregateFacts.certificate.equationFacts.bInvariants.map Subtype.val =
+    some (0, -2, 1, -1) := rfl
+example : ReusedAggregateFacts.certificate.equationFacts.cInvariants.map Subtype.val =
+    some (48, -216) := rfl

@@ -147,3 +147,31 @@ run_cmd do
     for suffix in [`analytic_rank, `algebraic_rank_lower_bound] do
       if (← getEnv).contains (curve ++ suffix) then
         throwError "Unexpected rank declaration for {curve}"
+
+private def importedCentral :=
+  Curve11.certificate.analytic.central.get (by decide +kernel)
+
+/-- The numerical payload remains independently certified on a mixed certificate. -/
+theorem imported_aggregate_central_payload :
+    EllipticCurve.CentralPayloadCorrect importedCentral.result :=
+  importedCentral.payload
+
+/-- The checked rank applies to a supplied arithmetic modular realization. -/
+theorem imported_aggregate_rank
+    (model : Modularity.ArithmeticModularRealization Curve11.curve) :
+    analyticOrderAt model.formL 1 = 0 :=
+  (Curve11.certificate.analytic.rank.get (by decide +kernel)).correct model
+
+run_cmd do
+  let modularity := ``Assumptions.ellipticModularity
+  let legacyAxioms ← liftTermElabM <| Lean.collectAxioms ``Curve11.analytic_rank
+  unless legacyAxioms.contains modularity do
+    throwError "Expected the legacy rank to use the authorized assumption"
+  for fact in [``imported_aggregate_central_payload, ``imported_aggregate_rank] do
+    let axioms ← liftTermElabM <| Lean.collectAxioms fact
+    for name in axioms do
+      unless [``propext, ``Classical.choice, ``Quot.sound].contains name do
+        throwError "Unexpected analytic aggregate axiom in {fact}: {name}"
+
+example : LMFDB.C112a2.certificate.algebraic.generators.map AffineMembership.coordinates =
+    some [(0, 2)] := rfl
