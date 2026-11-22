@@ -2,20 +2,25 @@ module
 
 public import VerifiedLcalc.EllipticCurve.Tate.TameCore
 
+/-! # Integer witnesses for additive Tate reduction at the wild primes -/
+
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
 open Artifacts
 
+/-- Check the specified prime-power divisibilities of the Weierstrass coefficients. -/
 def TateWeights (e : (WeierstrassCurve ℤ)) (p n1 n2 n3 n4 n6 : Nat) : Prop :=
   ((p : ℤ) ^ n1 ∣ e.a₁) ∧ ((p : ℤ) ^ n2 ∣ e.a₂) ∧ ((p : ℤ) ^ n3 ∣ e.a₃) ∧
     ((p : ℤ) ^ n4 ∣ e.a₄) ∧ ((p : ℤ) ^ n6 ∣ e.a₆)
   deriving Decidable
 
+/-- Test whether the supplied residue is a repeated root of a monic cubic. -/
 def cubicRepeated (p : Nat) (a b c x : Int) : Prop :=
   (x^3+a*x^2+b*x+c) % (p : Int) = 0 ∧
     (3*x^2+2*a*x+b) % (p : Int) = 0
   deriving Decidable
 
+/-- Test whether the supplied residue is a repeated root of a quadratic. -/
 def quadraticRepeated (p : Nat) (a b c x : Int) : Prop :=
   (a*x^2+b*x+c) % (p : Int) = 0 ∧ (2*a*x+b) % (p : Int) = 0
   deriving Decidable
@@ -26,6 +31,7 @@ def cubicSeparable (p : Nat) (a b c : Int) : Prop :=
   ∀ x ∈ List.range p, ¬ cubicRepeated p a b c x
   deriving Decidable
 
+/-- Check that the quadratic has no repeated root in the prime residue field. -/
 def quadraticSeparable (p : Nat) (a b c : Int) : Prop :=
   ∀ x ∈ List.range p, ¬ quadraticRepeated p a b c x
   deriving Decidable
@@ -47,20 +53,25 @@ def StarChain (p : Nat) (e : (WeierstrassCurve ℤ)) (oddStage : Bool) (k : Nat)
     if oddStage then
       ((p : ℤ) ^ k ∣ e.a₃) ∧ ((p : ℤ) ^ (2*k) ∣ e.a₆) ∧
         quadraticRepeated p 1 (e.a₃ / (p : Int)^k) (-(e.a₆ / (p : Int)^(2*k))) x ∧
-        StarChain p ((⟨1, 0, 0, (x*(p : Int)^k)⟩ : WeierstrassCurve.VariableChange ℤ) • e) false k xs
+        StarChain p
+          ((⟨1, 0, 0, x * (p : Int) ^ k⟩ : WeierstrassCurve.VariableChange ℤ) • e) false k xs
     else
       ((p : ℤ) ^ (k+1) ∣ e.a₄) ∧ ((p : ℤ) ^ (2*k+1) ∣ e.a₆) ∧
         quadraticRepeated p (e.a₂ / p) (e.a₄ / (p : Int)^(k+1))
           (e.a₆ / (p : Int)^(2*k+1)) x ∧
-        StarChain p ((⟨1, (x*(p : Int)^k), 0, 0⟩ : WeierstrassCurve.VariableChange ℤ) • e) true (k+1) xs
+        StarChain p
+          ((⟨1, x * (p : Int) ^ k, 0, 0⟩ : WeierstrassCurve.VariableChange ℤ) • e) true (k + 1) xs
 
+/-- Decide the declarative star-chain conditions by recursion on the listed roots. -/
 def decStarChain (p : Nat) (e : (WeierstrassCurve ℤ)) (oddStage : Bool) (k : Nat)
     (xs : List Int) : Decidable (StarChain p e oddStage k xs) :=
   match xs with
   | [] => by unfold StarChain; split <;> infer_instance
   | x :: xs => by
-    letI := decStarChain p ((⟨1, 0, 0, (x*(p : Int)^k)⟩ : WeierstrassCurve.VariableChange ℤ) • e) false k xs
-    letI := decStarChain p ((⟨1, (x*(p : Int)^k), 0, 0⟩ : WeierstrassCurve.VariableChange ℤ) • e) true (k+1) xs
+    letI := decStarChain p
+      ((⟨1, 0, 0, x * (p : Int) ^ k⟩ : WeierstrassCurve.VariableChange ℤ) • e) false k xs
+    letI := decStarChain p
+      ((⟨1, x * (p : Int) ^ k, 0, 0⟩ : WeierstrassCurve.VariableChange ℤ) • e) true (k + 1) xs
     unfold StarChain
     split <;> infer_instance
 
@@ -70,13 +81,21 @@ instance (p : Nat) (e : (WeierstrassCurve ℤ)) (oddStage : Bool) (k : Nat) (xs 
 /-- A finite Tate reduction transcript. Codes: II=2, III=3, IV=4,
 I0*=-1, IV*=-4, III*=-3, II*=-2, I_n*=-(4+n). -/
 structure TateWitness where
+  /-- Initial horizontal translation. -/
   r : Int
+  /-- Initial shear in the y-coordinate. -/
   s : Int
+  /-- Initial vertical translation. -/
   t : Int
+  /-- Vertical translation parameter at the start of the starred cases. -/
   starT : Int := 0
+  /-- Candidate repeated root of the cubic. -/
   cubicRoot : Int := 0
+  /-- Candidate repeated root of the quadratic. -/
   quadraticRoot : Int := 0
+  /-- Repeated roots checked in the starred blow-up sequence. -/
   chain : List Int := []
+  /-- Integer code for the proposed Kodaira symbol. -/
   kodaira : Int
   deriving Repr, DecidableEq
 
@@ -113,11 +132,16 @@ def TateWitness.Path (w : TateWitness) (e : (WeierstrassCurve ℤ)) (p : Nat) : 
             if w.kodaira = -4 then
               quadraticSeparable p 1 (c.a₃/(p : Int)^2) (-(c.a₆/(p : Int)^4))
             else quadraticRepeated p 1 (c.a₃/(p : Int)^2) (-(c.a₆/(p : Int)^4)) w.quadraticRoot ∧
-              let d := ((⟨1, 0, 0, (w.quadraticRoot*(p : Int)^2)⟩ : WeierstrassCurve.VariableChange ℤ) • c)
+              let d :=
+                (⟨1, 0, 0, w.quadraticRoot * (p : Int) ^ 2⟩ : WeierstrassCurve.VariableChange ℤ) • c
               TateWeights d p 1 2 3 3 5 ∧
               if w.kodaira = -3 then ¬ ((p : ℤ) ^ 4 ∣ d.a₄)
               else w.kodaira = -2 ∧ ((p : ℤ) ^ 4 ∣ d.a₄) ∧ ¬ ((p : ℤ) ^ 6 ∣ d.a₆)
-  deriving Decidable
+
+instance (w : TateWitness) (e : WeierstrassCurve ℤ) (p : Nat) :
+    Decidable (w.Path e p) := by
+  unfold TateWitness.Path
+  infer_instance
 
 /-- A checked classification of a nonsingular additive minimal input at 2 or 3.
 Minimality itself is supplied separately by the existing arithmetic proofs. -/
@@ -138,22 +162,27 @@ def starChainCandidate (p : Nat) (e : (WeierstrassCurve ℤ)) (oddStage : Bool) 
     match (List.range p).find? (fun (x : Nat) => decide (quadraticRepeated p a b c x)) with
     | none => return []
     | some x =>
-      let e' := if oddStage then ((⟨1, 0, 0, (x*(p : Int)^k)⟩ : WeierstrassCurve.VariableChange ℤ) • e)
-        else ((⟨1, (x*(p : Int)^k), 0, 0⟩ : WeierstrassCurve.VariableChange ℤ) • e)
+      let e' := if oddStage then
+          (⟨1, 0, 0, x * (p : Int) ^ k⟩ : WeierstrassCurve.VariableChange ℤ) • e
+        else
+          (⟨1, x * (p : Int) ^ k, 0, 0⟩ : WeierstrassCurve.VariableChange ℤ) • e
       let xs ← starChainCandidate p e' (!oddStage) (if oddStage then k else k+1) fuel
       return (x : Int) :: xs
 
+/-- Search for candidate translations and a Kodaira code. -/
 def tateCandidate (e : (WeierstrassCurve ℤ)) (p : Nat) : Option TateWitness := do
   let triples := (List.range p).flatMap fun (r : Nat) => (List.range p).flatMap fun (s : Nat) =>
     (List.range p).map fun (t : Nat) => ((r : Int), (s : Int), (t : Int))
-  let (r,s,t) ← triples.find? fun (r,s,t) => decide (TateWeights ((⟨1, r, s, t⟩ : WeierstrassCurve.VariableChange ℤ) • e) p 1 1 1 1 1)
+  let (r, s, t) ← triples.find? fun (r, s, t) =>
+    decide (TateWeights ((⟨1, r, s, t⟩ : WeierstrassCurve.VariableChange ℤ) • e) p 1 1 1 1 1)
   let a := ((⟨1, r, s, t⟩ : WeierstrassCurve.VariableChange ℤ) • e)
   let base : TateWitness := ⟨r,s,t,0,0,0,[],2⟩
   if ¬ ((p : ℤ) ^ 2 ∣ a.a₆) then return base
   if ¬ ((p : ℤ) ^ 3 ∣ (a.b₈)) then return {base with kodaira := 3}
   if ¬ ((p : ℤ) ^ 3 ∣ (a.b₆)) then return {base with kodaira := 4}
   let st ← (List.range p).find? fun (st : Nat) =>
-    decide (TateWeights ((⟨1, 0, 0, (st*(p : Int))⟩ : WeierstrassCurve.VariableChange ℤ) • a) p 1 1 2 2 3)
+    decide (TateWeights
+      ((⟨1, 0, 0, st * (p : Int)⟩ : WeierstrassCurve.VariableChange ℤ) • a) p 1 1 2 2 3)
   let b := ((⟨1, 0, 0, (st*(p : Int))⟩ : WeierstrassCurve.VariableChange ℤ) • a)
   let aa := b.a₂ / p
   let bb := b.a₄/(p : Int)^2
@@ -174,6 +203,7 @@ def tateCandidate (e : (WeierstrassCurve ℤ)) (p : Nat) : Option TateWitness :=
       let d := ((⟨1, 0, 0, (y*(p : Int)^2)⟩ : WeierstrassCurve.VariableChange ℤ) • c)
       return {base with quadraticRoot := y, kodaira := if ¬ ((p : ℤ) ^ 4 ∣ d.a₄) then -3 else -2}
 
+/-- Return a candidate only after checking the full finite transcript. -/
 def tateWitness? (e : (WeierstrassCurve ℤ)) (p : Nat) : Option TateWitness := do
   if p != 2 && p != 3 then none else do
     let w ← tateCandidate e p
@@ -190,9 +220,8 @@ theorem tateWitness?_sound (e : (WeierstrassCurve ℤ)) (p : Nat) (w : TateWitne
     | none => simp [hc] at h
     | some v =>
       by_cases hv : v.Valid e p
-      · simp [hc, hv] at h
-        cases h
-        exact hv
+      · have hw : v = w := by simpa [hc, hv] using h
+        exact hw ▸ hv
       · simp [hc, hv] at h
 
 end VerifiedLcalc.EllipticCurve

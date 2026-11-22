@@ -3,7 +3,7 @@ module
 public import VerifiedLcalc.EllipticCurve.MinimalArithmetic
 public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
 public import VerifiedLcalc.Certificate.EllipticWitness
-public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
+public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
 
 /-!
 # Exact certificates for stored elliptic-curve arithmetic data
@@ -16,7 +16,6 @@ or its rational base change.
 -/
 
 @[expose] public section
-
 
 namespace VerifiedLcalc
 open EllipticCurve

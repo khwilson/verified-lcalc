@@ -1,37 +1,35 @@
 # Build and cache
 
-The workspace configuration uses `../mathlib4` to reuse its artifacts. Its
-reviewed revision is `3440367ed1804626334f13a3a534a9cbb3385a59`. Since a local
-path dependency does not lock its contents, verify that revision and local
-changes before treating a run as reproducible:
+Both Lake configurations import TauCeti from its published
+[`v4.37.0-rc1` tag](https://github.com/TauCetiProject/TauCeti/tree/e0e414ce57522ba17560057ad0d7f2edab91bf0c).
+The lockfile pins that revision, `e0e414ce57522ba17560057ad0d7f2edab91bf0c`,
+and the matching [upstream Mathlib revision](https://github.com/leanprover-community/mathlib4/tree/31ce06eaadf4a200c0e1407c5f10953cf606b8f8).
+Lake manages both source checkouts in `.lake/packages` using Lean `v4.37.0-rc1`.
 
-```sh
-git -C ../mathlib4 rev-parse HEAD
-git -C ../mathlib4 diff --exit-code
-```
+Keep both Lake configurations, the manifest and the toolchain aligned when
+updating a dependency. Historical reports retain their recorded dependency
+revisions. A new benchmark records the actual Mathlib Git checkout selected by
+its Lake configuration.
 
-For a standalone project, replace the `[[require]]` block in `lakefile.toml` with:
+The two dependencies publish separate caches. In a Bash shell at the repository
+root, load the TauCeti revision map, then fetch the Mathlib modules used by our
+sources and by their TauCeti imports.
 
-```toml
-[[require]]
-name = "mathlib"
-git = "https://github.com/leanprover-community/mathlib4.git"
-rev = "3440367ed1804626334f13a3a534a9cbb3385a59"
-```
-
-Then run `lake update`. Preserve the generated `lake-manifest.json`, which also
-pins transitive dependencies. The `lean-toolchain` file pins the compiler.
-
-Fetch targeted mathlib cache artifacts before building proofs:
-
-```sh
-MATHLIB_CACHE_DIR=/private/tmp/verified-lcalc-mathlib-cache lake exe cache get Mathlib.Analysis.Complex.Basic Mathlib.Analysis.Analytic.Order Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
+```bash
+export LAKE_CONFIG="$PWD/scripts/tauceti-cache.toml"
+export LAKE_CACHE_DIR="$PWD/.lake/cache"
+export LAKE_ARTIFACT_CACHE=true LAKE_RESTORE_ARTIFACTS=true
+export MATHLIB_CACHE_DIR="${TMPDIR:-/tmp}/verified-lcalc-mathlib-cache"
+lake cache get --package=TauCeti --service=tauceti-public \
+  --repo=TauCetiProject/TauCeti --rev=e0e414ce57522ba17560057ad0d7f2edab91bf0c --mappings-only
+python3 scripts/mathlib_cache_roots.py > .lake/mathlib-cache-roots
+xargs lake exe cache get < .lake/mathlib-cache-roots
 lake build
 ```
 
-Use a writable cache directory; the sandbox cannot write the user's default
-`~/.cache/mathlib`. Cache misses for this mathlib development revision may still
-need source compilation. Do not start concurrent builds of shared dependencies.
+Keep those environment variables set for subsequent Lake commands so direct
+Lean replays can read the restored files. Use one Lake build owner per checkout.
+The [Lean CI workflow](../.github/workflows/lean.yml) verifies the procedure on Linux.
 Integral curve inputs now use Mathlib's `WeierstrassCurve ℤ` directly, so the
 computation core imports its canonical basic-curve definition. Keep analytic
 proof imports out of standalone computation entry points where practical;
@@ -47,9 +45,7 @@ for request identity, proof obligations, and the distinction between importing
 trusted compiled artifacts and checking their source again.
 
 
-For the local certificate examples use `make certificates` (or
-`lake -f lakefile.certificates.lean build CertifiedCurves`). The alternative Lake
-configuration tracks JSON input files. For a standalone checkout, update its
-`require mathlib from "../mathlib4"` to the same pinned dependency as the main
-configuration, then preserve the resolved manifest. Retired generated batch
-modules are not required or imported by this build.
+For the local certificate examples use `make certificates` or
+`lake -f lakefile.certificates.lean build CertifiedCurves`. The alternative
+Lake configuration uses the same pinned Mathlib dependency and tracks JSON
+input files for the examples and test fixtures.

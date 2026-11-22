@@ -4,7 +4,10 @@ Audit date: 2026-11-19. This is a proposal for mathematical upstream work, not a
 
 ## Evidence and reproducibility
 
-The source audit used these versions:
+The 2026-11-19 source audit used the versions below. See the
+[build guide](BUILD.md) for active dependencies and the
+[EC/Q coverage roadmap](roadmaps/LMFDB_Q_CERTIFICATION.md) for the later
+TauCeti declaration review.
 
 | Source | Inspected revision | Scope and limitation |
 | --- | --- | --- |

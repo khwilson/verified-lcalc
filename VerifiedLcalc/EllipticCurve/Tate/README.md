@@ -26,8 +26,5 @@ For TauCeti integration, separate generic DVR and finite-field theorems from
 this project's integral-input adapters and witness infrastructure. The roadmap
 lists prerequisites and acceptance criteria. The GPL attribution and license
 notice in `WildRootCore` must accompany the root-number table implementation;
-its licensing is separate from the Apache-licensed TauCeti ports.
-
-The existing TauCeti minimal-model and local-polynomial ports remain under
-`VerifiedLcalc/Upstream/TauCeti/`, with their original provenance. This directory
-contains project work and does not imply it has already been accepted upstream.
+the imported TauCeti minimal-model and local-polynomial modules are Apache-licensed.
+See the [build guide](../../../docs/BUILD.md) for the upstream revision.

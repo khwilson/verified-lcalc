@@ -171,8 +171,9 @@ run_cmd do
   for name in [`RawData, `OnlyAP, `OnlyPoints, `ArithmeticOnly, `NumericOnly] do
     if (← getEnv).contains (name ++ `analytic_rank) then
       throwError "A stored rank without a proof witness became a theorem"
-  if (← getEnv).contains `OnlyAP.generators.points_on_curve then
-    throwError "Missing generator data became a theorem"
+  for suffix in [`generators.points_on_curve, `torsion_generators.points_on_curve] do
+    if (← getEnv).contains (`OnlyAP ++ suffix) then
+      throwError "Missing generator data became a theorem"
   if (← getEnv).contains `VerifiedLcalc.CurveDataWitness then
     throwError "The retired aggregate witness type is still present"
 
@@ -209,10 +210,12 @@ run_cmd do
 
 #eval show IO Unit from do
   for text in [r#"{"ainvs":[0,0,1,-1,0]}"#,
-      r#"{"ainvs":[0,0,1,-1,0],"ap":null,"integral_points":null}"#] do
+      r#"{"ainvs":[0,0,1,-1,0],"ap":null,"integral_points":null,
+          "gens":null,"torsion_generators":null}"#] do
     match CurveDataJson.parse text with
     | .ok w =>
       unless w.primeCoefficients.isNone && w.integralCoordinates.isNone &&
+          w.generatorCoordinates.isNone && w.torsionGeneratorCoordinates.isNone &&
           w.centralResult.isNone && w.derivativeResult.isNone &&
           w.minimality.isNone && w.localData.isNone &&
           w.infiniteOrderPoints.isNone && w.independentPoints.isNone do

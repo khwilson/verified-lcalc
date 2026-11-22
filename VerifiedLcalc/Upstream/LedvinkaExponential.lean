@@ -14,7 +14,7 @@ public import Mathlib.Analysis.Complex.Exponential
 public import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Rational
 
 /-!
-# Exponential enclosures for interval_dyadic_real
+# Fixed-point bounds for the exponential of a dyadic number
 
 The scalar computation uses range reduction, fixed-point Taylor evaluation, and rounded repeated
 squaring. It computes a lower approximation and an error bound together, rather than evaluating
@@ -930,7 +930,7 @@ private theorem exp_compute_bounds (num exponent working reduction squarings pre
     (Real.exp_pos _).le hi.1 hi.2
   have he : Real.exp (if negative then -u else u) ^ (2 ^ squarings) =
       Real.exp (if negative then -(2 ^ squarings * u) else 2 ^ squarings * u) := by
-    rw [← Real.exp_nat_mul]
+    rw [← Real.exp_natCast_mul]
     cases negative <;> simp
   rw [he] at hsq
   have ho := exp_round_out prec working
@@ -995,7 +995,7 @@ private theorem exp_large_negative (prec : ℕ) {x : ℝ} (hx : (prec : ℝ) ≤
   have htwo : (2 : ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
   have hexp : (2 : ℝ) ^ prec ≤ Real.exp x := by
     apply (pow_le_pow_left₀ (by norm_num) htwo prec).trans
-    rw [← Real.exp_nat_mul, mul_one]
+    rw [← Real.exp_natCast_mul, mul_one]
     exact Real.exp_le_exp.mpr hx
   rw [Real.exp_neg, ← div_eq_mul_inv, div_le_one (Real.exp_pos _)]
   exact hexp
@@ -1189,40 +1189,5 @@ theorem expBounds_bounds (x : Dyadic) (prec : ℕ) :
       exact h.1
     · rw [le_div_iff₀ (by positivity), mul_comm]
       exact h.2
-
-/-- Enclose the exponential of a dyadic interval using monotonicity, with finite endpoints rounded
-outward to the `2⁻prec` grid. An infinite lower endpoint contributes zero. -/
-def exp (I : Interval Dyadic) (prec : ℕ) : Interval Dyadic :=
-  match I.lb, I.ub with
-  | some lb, some ub =>
-    if lb = ub then
-      let (lb, ub) := expBounds lb prec
-      Interval.Icc lb ub
-    else Interval.Icc (expBounds lb prec).1 (expBounds ub prec).2
-  | some lb, ⊤ => Interval.Ici (expBounds lb prec).1
-  | ⊥, some ub => Interval.Icc 0 (expBounds ub prec).2
-  | ⊥, ⊤ => Interval.Ici 0
-
-@[inclusion_op interval_dyadic_real]
-theorem exp_mem {x : ℝ} {I : Interval Dyadic} (hx : x ∈ I) (prec : ℕ) :
-    Real.exp x ∈ exp I prec := by
-  rw [mem_iff_mem_map] at hx ⊢
-  rcases I with ⟨_ | lb, _ | ub⟩
-  · simpa [exp, Interval.Ici, Interval.map, Dyadic.toReal] using (Real.exp_pos x).le
-  · apply Interval.mem_map_Icc Dyadic.toReal
-    · simpa [Dyadic.toReal] using (Real.exp_pos x).le
-    · exact (Real.exp_le_exp.mpr (Interval.le_map_ub Dyadic.toReal hx)).trans
-        (expBounds_bounds ub prec).2
-  · exact ⟨WithBot.coe_le_coe.mpr ((expBounds_bounds lb prec).1.trans
-      (Real.exp_le_exp.mpr (Interval.map_lb_le Dyadic.toReal hx))), le_top⟩
-  · have hl := (expBounds_bounds lb prec).1.trans
-      (Real.exp_le_exp.mpr (Interval.map_lb_le Dyadic.toReal hx))
-    have hu := (Real.exp_le_exp.mpr (Interval.le_map_ub Dyadic.toReal hx)).trans
-      (expBounds_bounds ub prec).2
-    simp only [exp]
-    split_ifs with h
-    · subst ub
-      exact Interval.mem_map_Icc Dyadic.toReal hl hu
-    · exact Interval.mem_map_Icc Dyadic.toReal hl hu
 
 end Inclusion.IntervalDyadicReal

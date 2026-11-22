@@ -4,12 +4,15 @@ public import VerifiedLcalc.Scan
 public import VerifiedLcalc.Precision
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
 
+/-! # Structural checks for numerical certificate artifacts -/
+
 @[expose] public section
 
 deriving instance Repr, DecidableEq for WeierstrassCurve
 
 namespace VerifiedLcalc.Artifacts
 
+/-- Normalization of the elliptic-curve L-function. -/
 inductive Normalization
   | arithmetic
   | unitary
@@ -38,34 +41,48 @@ theorem Subject.center_correct (s : Subject) :
 
 /-- Resource choices are part of a computation request, not numerical theorems. -/
 structure Settings where
+  /-- Requested numerical precision in bits. -/
   precisionBits : Nat := globalPrecision.precisionBits
+  /-- Maximum number of series terms in the request. -/
   termLimit : Nat
+  /-- Largest requested derivative order. -/
   maxDerivative : Nat
   deriving Repr, DecidableEq
 
 /-- Dependency identifiers must be supplied by the build. Equality of metadata
 is not a proof that an artifact was built from these sources. -/
 structure BuildIdentity where
+  /-- Lean toolchain identity supplied by the build. -/
   leanToolchain : String
+  /-- Mathlib revision supplied by the build. -/
   mathlibRevision : String
+  /-- Identifier for the numerical producer. -/
   producerRevision : String
+  /-- Identifier for the certificate checker. -/
   checkerRevision : String
   deriving Repr, DecidableEq
 
 /-- Complete structural identity for future cache lookups. Hashing, storage, and
 remote artifact authentication are deliberately outside this interface. -/
 structure Request where
+  /-- Version of the certificate format. -/
   formatVersion : Nat
+  /-- Mathematical object and normalization for the computation. -/
   subject : Subject
+  /-- Numerical resource choices for the computation. -/
   settings : Settings
+  /-- Dependency and tool identifiers for this request. -/
   build : BuildIdentity
   deriving Repr, DecidableEq
 
 /-- Serializable evidence data. Enclosure proofs are supplied separately in the
 analytic layer. Untrusted boxes by themselves never prove an analytic rank. -/
 structure Artifact where
+  /-- Exact request this artifact answers. -/
   request : Request
+  /-- Proposed vanishing order. -/
   rank : Nat
+  /-- Supplied enclosures for derivatives in ascending order. -/
   derivativeBoxes : List Box
   deriving Repr, DecidableEq
 
@@ -77,7 +94,10 @@ def Accepts (expected : Request) (artifact : Artifact) : Prop :=
   artifact.rank ≤ expected.settings.maxDerivative ∧
   artifact.derivativeBoxes.length = artifact.rank + 1 ∧
   scan artifact.derivativeBoxes = some artifact.rank
-  deriving Decidable
+
+instance (expected : Request) (artifact : Artifact) : Decidable (Accepts expected artifact) := by
+  unfold Accepts
+  infer_instance
 
 /-- Check identity, supported format, resource boundary, and the finite witness. -/
 def check (expected : Request) (artifact : Artifact) : Bool :=
@@ -95,7 +115,9 @@ theorem check_request_eq {expected : Request} {artifact : Artifact}
 /-- A successful finite payload check. This is not yet an analytic certificate;
 `CertificateSoundness` additionally requires proved analytic evidence. -/
 structure Checked (expected : Request) where
+  /-- Artifact that passed the finite check. -/
   artifact : Artifact
+  /-- Proof that the artifact passed the check against the expected request. -/
   accepted : check expected artifact = true
 
 /-- Recheck an artifact on retrieval; a cache miss or failed check is explicit. -/

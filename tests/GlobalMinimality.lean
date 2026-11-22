@@ -2,6 +2,8 @@ import VerifiedLcalc.EllipticCurve.GlobalMinimality
 import VerifiedLcalcTests.Arithmetic.ReductionExamples
 import Lean
 
+/-! # Exact global and local minimality checks and their axiom dependencies -/
+
 open Lean Elab Command NumberField WeierstrassCurve
 open VerifiedLcalc.EllipticCurve VerifiedLcalc.EllipticCurve.ReductionExamples
 
@@ -18,13 +20,13 @@ example : IsMinimal (Localization.AtPrime (rationalPlace 3).asIdeal)
     (C32_a4.equation.baseChange ℚ) :=
   localization_minimal_of_witness _ C32_a4.witness C32_a4.witness_valid 3
 
--- Neither the upstream interfaces nor the new witness proofs may depend on
--- the optional modularity axiom or a localization/completion comparison axiom.
+-- The canonical valuation theorem and the witness proofs must use only standard
+-- Lean axioms, independently of modularity and localization/completion comparisons.
 run_cmd do
   for name in [``WeierstrassCurve.isGlobalMinimal_iff,
       ``WeierstrassCurve.IsGlobalMinimal.isMinimal,
       ``WeierstrassCurve.IsGlobalMinimal.of_forall_isMinimal,
-      ``IsDedekindDomain.HeightOneSpectrum.integers_valuation_localizationAtPrime,
+      ``IsDedekindDomain.HeightOneSpectrum.integers_valuation_of_isLocalizationAtPrime,
       ``MinimalityWitness.minimalAt_of_dvd,
       ``localization_minimal_of_discriminant_not_dvd,
       ``modelMinimalAt_localization,
