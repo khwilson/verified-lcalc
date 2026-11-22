@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from scripts.benchmark_certify_ec import LAKE, ROOT, digest
+from scripts.benchmark_certify_ec import LAKE, ROOT, digest, mathlib_revision
 
 
 def captured(args: list[str]) -> str:
@@ -337,6 +337,7 @@ def main() -> None:
         parser.error(str(error))
     producer = ROOT / "benchmarks/ProduceECWitnesses.lean"
     validator = ROOT / "benchmarks/ValidateEC.lean"
+    mathlib = mathlib_revision()
     identity = {
         "source_sha256": digest(source),
         "references_sha256": digest(references_path) if references_path else None,
@@ -344,9 +345,7 @@ def main() -> None:
         "module_prefix": args.module_prefix,
         "consumer_modules": args.consumer_modules,
         "workers": args.workers,
-        "mathlib_revision": captured(
-            ["git", "-C", str(ROOT.parent / "mathlib4"), "rev-parse", "HEAD"]
-        ),
+        "mathlib_revision": mathlib,
         "actual_lean_version": captured(["lean", "--version"]),
         "count": args.count,
         "batch_size": args.batch_size,
@@ -369,9 +368,7 @@ def main() -> None:
         "schema": "verified-lcalc.dataset-benchmark.v2",
         "identity": identity,
         "git_revision": captured(["git", "rev-parse", "HEAD"]),
-        "mathlib_revision": captured(
-            ["git", "-C", str(ROOT.parent / "mathlib4"), "rev-parse", "HEAD"]
-        ),
+        "mathlib_revision": mathlib,
         "platform": platform.platform(),
         "work_directory": str(work.relative_to(ROOT)),
         "selection": "First count source rows, without rank filtering",

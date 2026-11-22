@@ -1,9 +1,11 @@
 module
 
 public import VerifiedLcalc.EllipticCurve.Correctness
-public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.LFunction.Basic
+public import TauCeti.AlgebraicGeometry.EllipticCurve.LFunction.Basic
 public import Mathlib.NumberTheory.ModularForms.LFunction
 public import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
+
+/-! # Modular realizations and their L-functions -/
 
 @[expose] public section
 
@@ -17,9 +19,11 @@ def SemistableModel (equation : (WeierstrassCurve ℤ)) : Prop :=
   Int.gcd (equation.Δ) equation.c₄ = 1
   deriving Decidable
 
+/-- The product of the primes in the discriminant of a semistable model. -/
 noncomputable def semistableLevel (equation : (WeierstrassCurve ℤ)) : Nat :=
   ∏ p ∈ (equation.Δ).natAbs.primeFactors, p
 
+/-- The product of the local signs at the bad primes and the real-place sign. -/
 noncomputable def semistableSign (equation : (WeierstrassCurve ℤ)) : Int :=
   -(∏ p ∈ (equation.Δ).natAbs.primeFactors,
     if hp : p.Prime then
@@ -31,17 +35,25 @@ noncomputable def semistableSign (equation : (WeierstrassCurve ℤ)) : Int :=
 forms and q-expansions. The level and Fricke sign are existential, not arbitrary
 supplied inputs. This package does not assume a numerical evaluation formula. -/
 structure ModularRealization (equation : (WeierstrassCurve ℤ)) where
+  /-- Level of the supplied cusp form. -/
   level : Nat
+  /-- Positivity of the level used in the Mellin normalization. -/
   positiveLevel : 0 < level
+  /-- Root number of the supplied modular realization. -/
   rootNumber : Int
+  /-- The root number is a sign. -/
   rootNumberSign : rootNumber = 1 ∨ rootNumber = -1
+  /-- Supplied weight-two cusp form at the stated level. -/
   form : CuspForm (CongruenceSubgroup.Gamma0 level : Subgroup (GL (Fin 2) ℝ)) 2
+  /-- Fourier coefficients agree with the arithmetic curve coefficients. -/
   coefficients : ∀ n : Nat, (UpperHalfPlane.qExpansion 1 form).coeff n =
     ((WeierstrassCurve.baseChange equation ℚ).LFunction n : ℂ)
+  /-- Fricke identity on the positive imaginary axis. -/
   frickeImaginaryAxis : ∀ t : ℝ, 0 < t →
     form (UpperHalfPlane.ofComplex (Complex.I * ((1 / t) / Real.sqrt level))) =
       (rootNumber : ℂ) * (t : ℂ) ^ 2 *
         form (UpperHalfPlane.ofComplex (Complex.I * (t / Real.sqrt level)))
+  /-- Prime coefficients agree with the good-reduction Frobenius traces. -/
   goodPrimeCoefficients : ∀ (p : Nat) (hp : p.Prime),
     letI : Fact p.Prime := ⟨hp⟩
     (equation.baseChange (ZMod p)).Δ ≠ 0 →
@@ -67,7 +79,7 @@ theorem ModularRealization.goodPrimeCoefficients_computed {e : WeierstrassCurve 
     (m : ModularRealization e) (p : ℕ) (hp : p.Prime)
     (hg : goodReduction e p = true) :
     (UpperHalfPlane.qExpansion 1 m.form).coeff p = (computeFrobeniusTrace e p : ℂ) := by
-  letI : Fact p.Prime := ⟨hp⟩
+  let : Fact p.Prime := ⟨hp⟩
   have h := m.goodPrimeCoefficients p hp ((goodReduction_correct e p).mp hg)
   simpa only [← computeFrobeniusTrace_correct e p] using h
 
@@ -82,7 +94,7 @@ noncomputable def ModularRealization.formL {equation : (WeierstrassCurve ℤ)}
 modularity axiom is needed to prove this general implication. -/
 theorem ModularRealization.formL_differentiable {equation : (WeierstrassCurve ℤ)}
     (m : ModularRealization equation) : Differentiable ℂ m.formL := by
-  letI : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
+  let : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
   exact CuspForm.differentiable_L (by decide : (0 : ℤ) < 2) m.form
 
 
@@ -93,7 +105,7 @@ theorem ModularRealization.formL_hasSum {equation : (WeierstrassCurve ℤ)}
     (m : ModularRealization equation) (s : ℂ) (hs : 2 < s.re) :
     HasSum (fun n : Nat => ((WeierstrassCurve.baseChange equation ℚ).LFunction n : ℂ) / (n : ℂ) ^ s)
       (m.formL s) := by
-  letI : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
+  let : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
   have h := CuspForm.hasSum_L (by decide : (0 : ℤ) < 2) m.form
     (by norm_num; exact hs)
   simpa [m.coefficients, ModularRealization.formL] using h

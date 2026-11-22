@@ -1,7 +1,7 @@
 module
 
-public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.DivisionPolynomial.Torsion.Discriminant
-public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
+public import TauCeti.AlgebraicGeometry.EllipticCurve.DivisionPolynomial.Torsion.Discriminant
+public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
 public import VerifiedLcalc.EllipticCurve.AlgebraicRank
 
 /-!

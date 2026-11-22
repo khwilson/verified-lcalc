@@ -69,14 +69,14 @@ in an upstream proposal.
 
 Status: the canonical `WeierstrassCurve.IsGlobalMinimal` predicate and its
 introduction/elimination interface are now imported from the pinned TauCeti
-`GlobalMinimalModel.lean` excerpt. The project-specific `GloballyMinimalInput`
+`GlobalMinimalModel.lean` module. The project-specific `GloballyMinimalInput`
 definition is removed. Conductor/sign compatibility uses
 `IsGlobalMinimal (𝓞 ℚ) (e.baseChange ℚ)` directly, with the usual ellipticity
 instance.
 
 `EllipticCurve/GlobalMinimality.lean` proves every checked minimality criterion
 over the localization itself, using TauCeti's fraction-field/DVR instances and
-`integers_valuation_localizationAtPrime`. Every validated witness therefore
+`integers_valuation_of_isLocalizationAtPrime`. Every validated witness therefore
 proves canonical global minimality at all height-one primes. The existing
 completion-minimality theorem separately supplies the numerical coefficient
 bridge. Shared finite factorization evidence is proved once. No comparison

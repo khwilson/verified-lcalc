@@ -2,10 +2,13 @@ module
 
 public import VerifiedLcalc.Analytic
 public import VerifiedLcalc.Upstream.LedvinkaExponential
+public import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 public import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Rational
-public meta import VerifiedLcalc.Upstream.LedvinkaExponential
+public meta import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 public meta import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Tactic
 public meta import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Rational
+
+/-! # Kernel-checked examples of Mathlib interval tactics -/
 
 @[expose] public section
 namespace VerifiedLcalc.Numerics
