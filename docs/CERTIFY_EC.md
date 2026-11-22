@@ -191,6 +191,10 @@ full rational torsion subgroup. Supply the cyclic `torsion_structure` as
 additive equivalence from `ZMod n` sending 1 to that first point. The trivial
 group uses `[]` and the identity point. If the verified divisor is larger
 than the claimed order, the cyclic certificate requires tighter evidence.
+Invariant factors must be greater than one and each must divide every later
+factor. Their product must agree with the claimed cardinality and divide the
+verified upper divisor when those claims are supplied. Each checked point
+order must divide the last factor, or one for the empty list.
 Generation and independence require separate evidence.
 
 The same `certify_ec` command establishes stronger facts when

@@ -128,14 +128,33 @@ private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Un
     | some order, _ => pure (some (order : TSyntax `term))
     | none, some factors => some <$> `(($factors).prod)
     | none, none => pure none) | return
+  let nName := base ++ `cyclic_torsion_order
+  let n := rootIdent nName
+  emit (← `(def $n : Nat := $nInput))
+  if let some ofOrder := order then
+    if let some factors := factors then
+      checked (base ++ `torsion_structure_order_consistent)
+        (← `(($factors).prod = $ofOrder)) (← `(by decide +kernel))
+  let exponent ← if let some factors := factors then do
+    checked (base ++ `torsion_structure_normalized)
+      (← `((($factors).all (fun factor => decide (1 < factor)) = true) ∧
+        ($factors).Pairwise (fun a b => a ∣ b))) (← `(by decide +kernel))
+    `(($factors).getLastD 1)
+  else `($n)
+  let ordersName := base ++ `torsion_generators.orders
+  if (← getEnv).contains ordersName then
+    let orders := rootIdent ordersName
+    checked (base ++ `torsion_point_orders_consistent)
+      (← `(($orders).all (fun order => decide (order ∣ $exponent)) = true))
+      (← `(by decide +kernel))
   unless (← getEnv).contains (base ++ `torsion_bound) do
     if factors.isSome then
       logInfo m!"Unverified {base} torsion_structure: supply a torsion divisor"
     return
-  let nName := base ++ `cyclic_torsion_order
-  let n := rootIdent nName
-  emit (← `(def $n : Nat := $nInput))
   let candidate := rootIdent (base ++ `claimed_torsion_bound)
+  if factors.isSome then
+    checked (base ++ `torsion_structure_divisor_consistent)
+      (← `(0 < $n ∧ $n ∣ ($candidate).bound)) (← `(by decide +kernel))
   let equalBound ← liftTermElabM do
     let claimedBound ← Lean.Elab.Term.elabTerm (← `(($candidate).bound)) (some (mkConst ``Nat))
     Meta.isDefEq (mkConst nName) claimedBound
