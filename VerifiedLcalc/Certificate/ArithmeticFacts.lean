@@ -46,7 +46,7 @@ structure LocalKodairaFact (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ
     | none => ∀ n, (curve.baseChange ℚ).reductionSymbol (RationalLocalRing (prime : ℕ)) ≠ .I n
 
 /-- Retain only checked symbols or additive-family information from the supplied rows. -/
-@[expose] noncomputable def checkedKodairaFacts (curve : WeierstrassCurve ℤ)
+@[expose] def checkedKodairaFacts (curve : WeierstrassCurve ℤ)
     [(curve.baseChange ℚ).IsElliptic] (rows : List LocalReductionClaim)
     (h : ∀ row ∈ rows, row.KodairaSpec curve) : List (LocalKodairaFact curve) :=
   rows.attach.filterMap fun row =>
