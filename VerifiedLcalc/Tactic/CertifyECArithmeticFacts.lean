@@ -86,7 +86,7 @@ private def minimalModelFactsTerm (base : Name) (curve : Ident) : CommandElabM (
       intro row hr
       obtain ⟨input, hinput, hEq⟩ := List.mem_map.mp hr
       subst row
-      exact ⟨rfl, rfl, $hrows input hinput⟩⟩)
+      exact ⟨rfl, rfl, rfl, $hrows input hinput⟩⟩)
   else `(none)
   let kodaira ← if env.contains (base ++ `kodaira_symbols) then
     `(checkedKodairaFacts $curve $(rootIdent (base ++ `claimed_local_invariants))
@@ -106,6 +106,11 @@ private def minimalModelFactsTerm (base : Name) (curve : Ident) : CommandElabM (
 def arithmeticFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `term) := do
   let witness := rootIdent (base ++ `witness)
   let minimalModel ← minimalModelFactsTerm base curve
+  let env ← getEnv
+  let tamagawa ← if env.contains (base ++ `tamagawa_numbers) then
+    `(checkedTamagawaFacts $curve $(rootIdent (base ++ `claimed_local_invariants))
+      $(rootIdent (base ++ `tamagawa_numbers)))
+  else `([])
   let localData ← simpleArithmeticFact base `localData `local_data_valid
   let pgr ← simpleArithmeticFact base `claimed_potential_good_reduction `potential_good_reduction
   let ap ← if (← optionalInput (base ++ `witness) `primeCoefficients).isSome then
@@ -115,6 +120,7 @@ def arithmeticFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `t
   let modular ← modularFactsTerm base curve
   `(({
     minimalModel := $minimalModel
+    tamagawa := $tamagawa
     localData := $localData
     potentialGoodReduction := $pgr
     primeCoefficients := $ap

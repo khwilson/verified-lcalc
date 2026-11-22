@@ -172,6 +172,19 @@ count adapter here. Include `p = 3` and require good reduction of the supplied
 equation. The ramification condition excludes the prime `2` from this full
 torsion specialization.
 
+## TC-10 — completed Tamagawa factors from rational local data
+
+The pinned release defines `tamagawaNumberAt` on the completed field and
+compares it with `tateLocalIndex` on a checked terminal model. Good reduction
+and `I₁` both contribute one. For larger multiplicative indices, the terminal
+comparison gives `n` in the split case and `gcd(2,n)` in the nonsplit case.
+The rational witness adapter still needs to transport its verified splitting
+through the residue-field identification and then through the normalized
+terminal model. For specific additive factors, connect finite row evidence
+to the relevant `IsTateTerminal` and residue-polynomial hypotheses.
+[Terminal comparison](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Local.lean#L144-L162)
+· [Split and nonsplit indices](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/LocalIndex.lean#L469-L486)
+
 ## Submission and validation
 
 TC-01, TC-02, TC-03 and TC-08 have compiled source rather than proposed axioms.

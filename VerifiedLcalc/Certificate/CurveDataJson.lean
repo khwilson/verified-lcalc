@@ -166,7 +166,7 @@ def weightedCoordinates (j : Json) : Except String (List (Rat × Rat)) := do
 /-- Optional data fields that identify a top-level local reduction row. -/
 def localReductionFields : List String :=
   ["discriminant_valuation", "j_denominator_valuation", "reduction_type", "conductor_valuation",
-    "kodaira_symbol"]
+    "kodaira_symbol", "tamagawa_number"]
 
 /-- Decode the supported exact fields from one local reduction row. -/
 def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
@@ -180,9 +180,10 @@ def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
   let kodairaSymbol ← optionalValue j "kodaira_symbol" integer
   if let some code := kodairaSymbol then
     unless code != 0 do throw "Zero is not a PARI Kodaira code"
+  let tamagawaNumber ← optionalValue j "tamagawa_number" nonnegativeInteger
   return {
     prime, discriminantValuation, conductorValuation, jDenominatorValuation
-    reductionType, kodairaSymbol }
+    reductionType, kodairaSymbol, tamagawaNumber }
 
 /-- Decode a local-row list and any top-level local claim. -/
 def localReductionClaims (j : Json) :

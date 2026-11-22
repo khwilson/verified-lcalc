@@ -18,9 +18,11 @@ from [the existing witness](../../../data/witnesses/112a2.json). The wild transc
 and 288.a1 were computed with Lean's `wildData?` before being supplied to the verifier.
 The 179.a1 and 243.a1 fixtures also supply semistability, squarefreeness, and the local
 discriminant valuation, j-denominator valuation, and reduction code from the snapshot.
+The consumer checks the split multiplicative row at 179 and the additive row at 3.
+The 179.a1 row also supplies the local Tamagawa factor 1 from the snapshot.
+The compiled consumer checks the intrinsic factor in the completed field.
 The 179.a1 row also supplies PARI Kodaira code 5 from the snapshot.
-The consumer checks its canonical `I₁` symbol, the split multiplicative row at 179,
-and the additive reduction row at 3 on 243.a1.
+The consumer checks its canonical `I₁` symbol.
 The Lean consumer checks the finite theorems and checks the modularity dependency
 on conductor and root-number theorems. The matrix inputs contain no rank data. Its consumer also reuses the separate, already
 checked analytic-rank-one witness for 112.a2 on the same integral equation.

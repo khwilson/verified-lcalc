@@ -49,6 +49,8 @@ structure LocalReductionClaim where
   jDenominatorValuation : Option Nat := none
   /-- Signed Frobenius trace code for bad reduction. -/
   reductionType : Option Int := none
+  /-- Claimed intrinsic local component-group order. -/
+  tamagawaNumber : Option Nat := none
   /-- Claimed PARI Kodaira code. Additive codes request a family check. -/
   kodairaSymbol : Option Int := none
   deriving Repr, DecidableEq

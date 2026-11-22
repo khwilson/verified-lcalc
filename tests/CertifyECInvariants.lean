@@ -115,6 +115,29 @@ example : ¬ WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
   have := AdditiveLocal.semistable.mp h
   contradiction
 
+certify_ec GoodTamagawa from
+  { equation := ⟨0, 0, 8, -16, 0⟩,
+    localInvariants := some [{ prime := 3, tamagawaNumber := some 1 }] }
+
+example : (GoodTamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 3) = 1 := by
+  obtain ⟨_, h⟩ := GoodTamagawa.tamagawa_numbers { prime := 3, tamagawaNumber := some 1 }
+    (by decide +kernel) 1 rfl
+  exact h (by decide +kernel)
+
+/--
+info: TamagawaOutsideScope: Tamagawa claims outside good or I₁ reduction are unverified.
+---
+info: Certified TamagawaOutsideScope.ap_correct and TamagawaOutsideScope.point_integral
+for the supplied lists
+-/
+#guard_msgs (whitespace := lax) in
+certify_ec TamagawaOutsideScope from_json_string
+  r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],"prime":11,"tamagawa_number":5}"#
+
+certify_ec CompatibleTamagawaRows from_json_string
+  r#"{"ainvs":[0,0,8,-16,0],"prime":3,"tamagawa_number":1,
+      "local_invariants":[{"prime":3,"tamagawa_number":1}]}"#
+
 certify_ec KodairaGood from
   { equation := ⟨0, 0, 1, -1, 0⟩, minimality := some ⟨[37]⟩,
     localInvariants := some [{ prime := 3, kodairaSymbol := some 1 }] }
@@ -245,9 +268,9 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
       `local_invariants_agree, `local_invariants_agree_valid,
-      `semistable, `squarefree_discriminant, `local_invariants, `kodaira_symbols,
-      `claimed_semistable, `claimed_squarefree_discriminant, `claimed_local_invariants,
-      `claimed_conductor_valuations,
+      `semistable, `squarefree_discriminant, `local_invariants, `tamagawa_numbers, `kodaira_symbols,
+      `tamagawa_values_valid, `claimed_semistable,
+      `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_conductor_valuations,
       `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation,
       `claimed_torsion_structure, `torsion_structure, `torsion_structure_order_consistent,
       `torsion_point_orders_consistent, `torsion_structure_divisor_consistent,
@@ -255,6 +278,17 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `IncompatibleTamagawaRows (← `(certify_ec IncompatibleTamagawaRows
+    from_json_string
+    r#"{"ainvs":[0,0,8,-16,0],"prime":2,"tamagawa_number":1,
+        "local_invariants":[{"prime":2,"tamagawa_number":2}]}"#))
+  invariantRejected `IncompatibleTamagawaRowsReversed
+    (← `(certify_ec IncompatibleTamagawaRowsReversed from_json_string
+      r#"{"ainvs":[0,0,8,-16,0],"prime":2,"tamagawa_number":2,
+          "local_invariants":[{"prime":2,"tamagawa_number":1}]}"#))
+  invariantRejected `WrongTamagawa (← `(certify_ec WrongTamagawa from
+    { GoodTamagawa.witness with
+      localInvariants := some [{ prime := 3, tamagawaNumber := some 2 }] }))
   invariantRejected `IncompatibleAdditiveRows (← `(certify_ec IncompatibleAdditiveRows
     from_json_string
     r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],
@@ -396,6 +430,8 @@ run_cmd do
       `kodaira_symbols] do
     if (← getEnv).contains (`Partial37 ++ suffix) then
       throwError "Missing arithmetic evidence generated an invariant claim"
+  if (← getEnv).contains `GoodTamagawa.global_minimal then
+    throwError "Local Tamagawa verification unexpectedly required global minimality"
   for name in [`BoundedTorsion, `UncheckedTorsion] do
     if (← getEnv).contains (name ++ `torsion) then
       throwError "Unproved torsion order generated a theorem"
@@ -412,7 +448,9 @@ run_cmd do
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
-  for theoremName in [`CompatibleKodairaRows.local_invariants_agree,
+  for theoremName in [`CompatibleTamagawaRows.local_invariants_agree,
+      `GoodTamagawa.tamagawa_numbers,
+      `CompatibleKodairaRows.local_invariants_agree,
       `KodairaGood.kodaira_symbols, `KodairaAdditive.kodaira_symbols,
       `TrivialTorsion.torsion, `BoundedTorsion.torsion_bound,
       `IntegralJ.j_integral, `NonintegralJ.j_integral,
@@ -506,7 +544,7 @@ run_cmd do
         throwError "Remove obsolete witness field {record}.{field} from the certificate inventory"
   cover ``EllipticWitness (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion)
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
-    `jDenominatorValuation, `reductionType, `kodairaSymbol]
+    `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol]
   cover ``AbcQualityClaim #[`reported, `error, `factors]
   cover ``TorsionBoundWitness #[`firstPrime, `secondPrime, `bound]
 
@@ -523,6 +561,11 @@ example : BoundedTorsion.certificate.torsion.divisor.map
 example : BoundedTorsion.certificate.torsion.cardinality.isNone = true := rfl
 example : TrivialTorsion.certificate.torsion.cardinality.map Subtype.val = some 1 := rfl
 
+
+example : GoodTamagawa.certificate.arithmetic.tamagawa.map LocalTamagawaFact.value = [1] :=
+  by decide +kernel
+
+example : TamagawaOutsideScope.certificate.arithmetic.tamagawa.length = 0 := by decide +kernel
 
 example : ((KodairaAdditive.certificate.arithmetic.minimalModel.get
     (by decide +kernel)).kodaira.map LocalKodairaFact.index) = [none] := by decide +kernel

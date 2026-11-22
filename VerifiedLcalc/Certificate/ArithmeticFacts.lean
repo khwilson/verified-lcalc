@@ -32,6 +32,28 @@ structure ModularArithmeticFacts (curve : WeierstrassCurve ℤ) where
     ∀ M : Modularity.ArithmeticModularRealization curve,
       ∀ row ∈ rows, row.1.Prime ∧ M.level.factorization row.1 = row.2 } := none
 
+/-- An intrinsic local Tamagawa factor with its completed-field equality. -/
+structure LocalTamagawaFact (curve : WeierstrassCurve ℤ) where
+  /-- The prime at which the factor was checked. -/
+  prime : Nat.Primes
+  /-- The verified local factor. -/
+  value : ℕ
+  /-- The factor agrees with the intrinsic local invariant of this curve. -/
+  correct :
+    letI : Fact (prime : ℕ).Prime := ⟨prime.property⟩
+    (curve.baseChange ℚ).tamagawaNumberAt (rationalPlace (prime : ℕ)) = value
+
+/-- Retain exactly the supplied factors for which an intrinsic equality is available. -/
+@[expose] def checkedTamagawaFacts (curve : WeierstrassCurve ℤ)
+    (rows : List LocalReductionClaim)
+    (h : ∀ row ∈ rows, row.TamagawaSpec curve) : List (LocalTamagawaFact curve) :=
+  rows.attach.filterMap fun row =>
+    match hc : row.val.tamagawaNumber, hs : supportsTamagawaOne curve row.val.prime with
+    | some value, true =>
+      let proof := h row.val row.property value hc
+      some ⟨⟨row.val.prime, Classical.choose proof⟩, value, Classical.choose_spec proof hs⟩
+    | _, _ => none
+
 /-- An exact multiplicative-family index, or a proof of additive reduction at this prime. -/
 structure LocalKodairaFact (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
   /-- The prime at which the reduction symbol was checked. -/
@@ -80,7 +102,8 @@ structure MinimalModelArithmeticFacts (curve : WeierstrassCurve ℤ)
   numBadPrimes : Option { n : ℕ // curve.Δ.natAbs.primeFactors.card = n } := none
   /-- Checked local rows. Level exponents belong to the modular subrecord. -/
   localRows : Option { rows : List LocalReductionClaim // ∀ row ∈ rows,
-    row.conductorValuation = none ∧ row.kodairaSymbol = none ∧ row.Spec curve } := none
+    row.conductorValuation = none ∧ row.kodairaSymbol = none ∧
+      row.tamagawaNumber = none ∧ row.Spec curve } := none
   /-- Checked canonical Kodaira facts at the supplied primes. -/
   kodaira : List (LocalKodairaFact curve) := []
 
@@ -89,6 +112,8 @@ structure ArithmeticFacts (curve : WeierstrassCurve ℤ)
     [(curve.baseChange ℚ).IsElliptic] where
   /-- The global minimality proof and all facts that refer to this minimal model. -/
   minimalModel : Option (MinimalModelArithmeticFacts curve) := none
+  /-- Supplied and checked intrinsic local factors, independent of global minimality. -/
+  tamagawa : List (LocalTamagawaFact curve) := []
   /-- Validity of the supplied finite arithmetic transcripts. -/
   localData : Option { d : WildData // d.Valid curve } := none
   /-- Whether the curve has potential good reduction at every rational prime. -/
