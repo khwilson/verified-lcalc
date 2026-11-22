@@ -1,6 +1,8 @@
 import VerifiedLcalc.Certification.LowRankBSD
 import VerifiedLcalcTests.Fixtures.AssumedCurve11Central
 
+/-! # Opt-in low-rank implication consumer -/
+
 open VerifiedLcalc
 open VerifiedLcalc.EllipticCurve
 open VerifiedLcalc.Modularity

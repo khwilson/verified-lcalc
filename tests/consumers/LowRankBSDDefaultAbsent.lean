@@ -1,9 +1,11 @@
 import VerifiedLcalc
 import Lean
 
+/-! # Default import isolation check -/
+
 open Lean Elab Command
 
-/-! The default public import does not activate the temporary implication. -/
+-- The default public import does not activate the temporary implication.
 run_cmd do
   for name in [
       `VerifiedLcalc.Assumptions.analyticOrder_le_one_implies_finrank,
