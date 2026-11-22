@@ -13,8 +13,8 @@ such a map. The map's linearity and its values must be proved; supplying an
 unrelated matrix of approximate heights is insufficient.
 
 The linear algebra is Mathlib's determinant criterion, restriction of scalars,
-and reflection of independence along a linear map. No additional height or
-finite-generation assumptions enter this implication.
+and reflection of independence along a linear map. The elliptic-curve rank
+bound uses TauCeti's proved Mordell–Weil finite-generation instance.
 -/
 
 @[expose] public section
@@ -30,13 +30,24 @@ theorem independent_of_separating_matrix {G K : Type*} [AddCommGroup G]
   apply LinearIndependent.of_comp separate
   exact (Matrix.linearIndependent_cols_of_det_ne_zero hdet).restrict_scalars' ℤ
 
-/-- The same exact matrix certificate gives a lower bound on algebraic rank. -/
+/-- The same exact matrix certificate gives a lower bound on Mordell–Weil rank. -/
 theorem algebraic_rank_lower_bound_of_separating_matrix
+    {W : WeierstrassCurve ℚ} [W.toAffine.IsElliptic]
+    {K : Type*} [Field K] [CharZero K] {n : Nat}
+    (points : Fin n → W.toAffine.Point)
+    (separate : W.toAffine.Point →ₗ[ℤ] (Fin n → K))
+    (hdet : (Matrix.of fun i j => separate (points j) i).det ≠ 0) :
+    n ≤ Module.finrank ℤ W.toAffine.Point :=
+  algebraic_rank_lower_bound points (independent_of_separating_matrix points separate hdet)
+
+/-- Cardinal-valued compatibility result without ellipticity or finite generation. -/
+theorem algebraic_cardinal_rank_lower_bound_of_separating_matrix
     {W : WeierstrassCurve ℚ} {K : Type*} [Field K] [CharZero K] {n : Nat}
     (points : Fin n → W.toAffine.Point)
     (separate : W.toAffine.Point →ₗ[ℤ] (Fin n → K))
     (hdet : (Matrix.of fun i j => separate (points j) i).det ≠ 0) :
     (n : Cardinal) ≤ Module.rank ℤ W.toAffine.Point :=
-  algebraic_rank_lower_bound points (independent_of_separating_matrix points separate hdet)
+  algebraic_cardinal_rank_lower_bound points
+    (independent_of_separating_matrix points separate hdet)
 
 end VerifiedLcalc.EllipticCurve

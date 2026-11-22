@@ -19,8 +19,11 @@ namespace MordellWeilRankExample
 
 /-- The rank proof is TauCeti's worked two-descent for this exact equation. -/
 def exactBounds : AlgebraicRankBounds (curveX3SubXAddOne.baseChange ℚ) :=
-  .ofRankEq 1 <| by
-    rw [← Module.finrank_eq_rank, finrank_point_curveX3SubXAddOne]
+  .ofFinrankEq 1 finrank_point_curveX3SubXAddOne
+
+/-- Existing cardinal-rank proofs still enter through the compatibility constructor. -/
+def cardinalCompatibilityBounds : AlgebraicRankBounds (curveX3SubXAddOne.baseChange ℚ) :=
+  .ofRankEq 1 (by rw [← Module.finrank_eq_rank, finrank_point_curveX3SubXAddOne])
 
 /-- The singleton interval is supplied as a proof attachment for the integral equation. -/
 def exactProofs : IntegralCurveProofs curveX3SubXAddOne where

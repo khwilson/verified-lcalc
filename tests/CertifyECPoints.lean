@@ -1,10 +1,9 @@
 import CertifiedCurves.Direct
 import Lean
 
-open Lean Elab Command VerifiedLcalc VerifiedLcalc.EllipticCurve
+/-! # Test point and independence certificate checks -/
 
-set_option maxRecDepth 100000
-set_option maxHeartbeats 10000000
+open Lean Elab Command VerifiedLcalc VerifiedLcalc.EllipticCurve
 
 -- Exact computational checks; failure of this sufficient test is inconclusive.
 example : infiniteOrderCheck DirectPoints.curve 6 14 = true := by decide +kernel
@@ -17,8 +16,9 @@ example : LinearIndependent ℤ (fun i : Fin 2 => Pi.single i (1 : ℚ)) := by
     (LinearMap.id : (Fin 2 → ℚ) →ₗ[ℤ] (Fin 2 → ℚ))
   norm_num [Matrix.det_fin_two, Pi.single_apply]
 
-example : ¬ IsOfFinAddOrder DirectPoints.infiniteOrder.point0.point := DirectPoints.infiniteOrder.point0.infinite_order
-example : (1 : Cardinal) ≤ Module.rank ℤ (DirectPoints.curve.baseChange ℚ).toAffine.Point :=
+example : ¬ IsOfFinAddOrder DirectPoints.infiniteOrder.point0.point :=
+  DirectPoints.infiniteOrder.point0.infinite_order
+example : 1 ≤ Module.finrank ℤ (DirectPoints.curve.baseChange ℚ).toAffine.Point :=
   DirectPoints.algebraic_rank_lower_bound
 
 example : DirectPoints.witness.infiniteOrderPoints = some DirectPoints.infinite_order_indices :=
@@ -31,7 +31,10 @@ certify_ec EmptyFamily from
   with_independence (by exact linearIndependent_empty_type)
 
 certify_ec JSONFamily from_json_string
-  r#"{"ainvs":[0,0,1,-1,0],"integral_points":[[6,14]],"infinite_order_points":[0],"independent_points":[0]}"#
+  r#"{
+    "ainvs":[0,0,1,-1,0],"integral_points":[[6,14]],
+    "infinite_order_points":[0],"independent_points":[0]
+  }"#
   with_independence (by
     apply LinearIndependent.of_subsingleton' (0 : Fin 1)
     intro a ha
@@ -43,7 +46,7 @@ certify_ec JSONFamily from_json_string
     exact JSONFamily.infiniteOrder.point0.infinite_order
       (isOfFinAddOrder_iff_zsmul_eq_zero.mpr ⟨a, hn, hp⟩))
 
-example : (1 : Cardinal) ≤ Module.rank ℤ (JSONFamily.curve.baseChange ℚ).toAffine.Point :=
+example : 1 ≤ Module.finrank ℤ (JSONFamily.curve.baseChange ℚ).toAffine.Point :=
   JSONFamily.algebraic_rank_lower_bound
 
 run_cmd do
@@ -139,7 +142,8 @@ run_cmd do
   for name in [``infiniteOrderCheck_sound, ``algebraic_rank_lower_bound,
       ``algebraic_finrank_lower_bound, ``independent_singleton_of_infinite_order,
       ``independent_of_separating_matrix, ``algebraic_rank_lower_bound_of_separating_matrix,
-      `DirectPoints.infiniteOrder.point0.infinite_order, `DirectPoints.infiniteOrder.point0.algebraic_rank_lower_bound,
+      `DirectPoints.infiniteOrder.point0.infinite_order,
+      `DirectPoints.infiniteOrder.point0.algebraic_rank_lower_bound,
       `DirectPoints.algebraic.points_independent, `DirectPoints.algebraic_rank_lower_bound,
       `ScopedPoints.Order.infiniteOrder.point0.infinite_order,
       `MultipleOrders.infiniteOrder.point1.infinite_order,
@@ -149,9 +153,9 @@ run_cmd do
       unless [``propext, ``Classical.choice, ``Quot.sound].contains ax do
         throwError "Unexpected point/rank certificate axiom: {ax}"
 
-#eval show IO Unit from do
+run_cmd do
   for indices in ["[-1]", "[8192]", "[1.5]"] do
     let text := "{\"ainvs\":[0,0,1,-1,0],\"infinite_order_points\":" ++ indices ++ "}"
     match CurveDataJson.parse text with
     | .error _ => pure ()
-    | .ok _ => throw (IO.userError "Invalid point indices accepted")
+    | .ok _ => throwError "Invalid point indices accepted"
