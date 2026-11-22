@@ -6,9 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import Mathlib.Algebra.Field.ZMod
-public import Mathlib.Data.ZMod.Basic
 public import Mathlib.GroupTheory.Torsion
-public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Basic
 public import TauCeti.AlgebraicGeometry.EllipticCurve.PointCount
 
 /-! # Public torsion certificate data -/
