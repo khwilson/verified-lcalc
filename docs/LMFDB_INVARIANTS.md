@@ -27,6 +27,9 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `absD` | `minimalDiscriminantAbs` | Actual TauCeti `IsGlobalMinimal` together with the claimed absolute discriminant; requires checked `minimality`. |
 | `bad_primes` | `badPrimes` | Complete, duplicate-free prime-divisor list of the minimal discriminant, and equivalence with non-elliptic finite-field reduction; requires `minimality`. |
 | `num_bad_primes` | `numBadPrimes` | Cardinality of Mathlib's prime-factor set of the minimal discriminant; requires `minimality`. |
+| `semistable` | `semistable` | Equivalence with TauCeti's `WeierstrassCurve.IsSemistable` over the ring of integers of ℚ, using the checked `minimality`. |
+| `squarefree_disc` | `squarefreeDiscriminant` | Equivalence with Mathlib's `Squarefree` on the absolute minimal discriminant, using the checked `minimality`. |
+| `local_invariants` or a top-level local row | `localInvariants` | Checks each supplied prime and any supplied `discriminant_valuation`, `j_denominator_valuation` or `reduction_type` against the minimal equation, using the checked `minimality`. |
 | `ap` / `aplist` | `primeCoefficients` | Actual `LFunction p` coefficients with proved sufficient local minimality checks. |
 | `anlist` | `dirichletCoefficients` | Actual consecutive `LFunction n` coefficients; requires `minimality`. Native JSON starts with a₀=0, which is checked and removed; direct Lean lists start at a₁. |
 | `conductor` | `conductor` | Identification with the chosen modular realization's level; requires `minimality`, `localData`, and the existing modularity/arithmetic-compatibility axiom. |
@@ -35,10 +38,17 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | Point-index requests | `infiniteOrderPoints`, `independentPoints` | Infinite order and algebraic-rank lower bounds, with an explicit independence proof for a requested family. |
 | Complete numerical payload | `centralResult`, `derivativeResult` | Existing analytic-rank-zero/one certificates under the documented modularity assumption. |
 
-All equation invariants, minimality, bad-prime, and coefficient results have only
+All equation invariants, minimality, bad-prime, coefficient, semistability, and local reduction results have only
 standard Lean axiom dependencies. Conductor and global-root identification are
 explicitly conditional. Supplying `minimality` also exports `global_minimal`.
 None of these checks certifies an external label or database provenance.
+
+A local row has a required `prime` and optional exact integer values for
+the two valuations and the reduction code. The valuations are the exponents of
+that prime in the absolute discriminant and the reduced rational denominator
+of `j`. The reduction codes are 0 for additive, 1 for split multiplicative,
+and −1 for nonsplit multiplicative reduction. The certificate covers the supplied
+rows individually.
 
 `root_number` in an `ec_localdata` row is **local**, at that row's `prime`.
 It is deliberately not decoded as a global sign. The local reduction table is
@@ -57,8 +67,8 @@ missing theorem.
 
 | Group / fields | Proof work still needed |
 | --- | --- |
-| `semistable`, `squarefree_disc`, `potential_good_reduction` | Connect finite arithmetic criteria to the canonical reduction predicates; use TauCeti's semistability API rather than introduce another predicate. |
-| Local `conductor_valuation`, `discriminant_valuation`, `j_denominator_valuation`, `kodaira_symbol`, `reduction_type`, `root_number`, `tamagawa_number`, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
+| `potential_good_reduction` | Integrate TauCeti's `hasPotentialGoodReduction_iff_isInteger_j` and connect it to the finite check on the denominator of `j`. |
+| Local `conductor_valuation`, `kodaira_symbol`, `root_number`, `tamagawa_number`, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
 | `gens`, `torsion_generators`, `torsion`, `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | Normalize rational point coordinates; prove generator orders, independence, and a torsion upper bound. Membership alone does not prove subgroup order or exhaustivity. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Lower bounds already have the explicit independence route. Exact rank needs an upper-bound/descent certificate; integral-point counts need completeness proofs. |
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |
@@ -69,5 +79,5 @@ missing theorem.
 | Galois-image, adelic, nonmaximal-prime, Serre, Iwasawa, and torsion-growth data | The relevant representations, fields, group images, and completeness proofs. |
 | Labels, ordering/index fields, hashes | Catalogue/provenance metadata; not mathematical identity certificates. |
 
-The next arithmetic integration targets are canonical semistability and local
-reduction fields, followed by rational torsion-point certificates and upper bounds.
+The next arithmetic integration targets include rational torsion-point certificates
+and torsion upper bounds.

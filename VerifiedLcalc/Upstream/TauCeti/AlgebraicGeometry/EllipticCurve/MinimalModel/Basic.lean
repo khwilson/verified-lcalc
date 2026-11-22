@@ -7,6 +7,8 @@ module
 
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Reduction
 
+/-! Selected TauCeti minimal-model and reduction comparison lemmas. -/
+
 public section
 
 namespace WeierstrassCurve
@@ -66,8 +68,8 @@ theorem valuation_Δ_le_of_isMinimal_smul {W₁ W₂ : WeierstrassCurve K} [hm :
     valuation K (maximalIdeal R) W₂.Δ ≤ valuation K (maximalIdeal R) W₁.Δ := by
   have hint : IsIntegral R (D • W₁) := by rw [hD]; infer_instance
   have h : valuation_Δ_aux R (D • W₁) ≤ valuation_Δ_aux R ((1 : VariableChange K) • W₁) :=
-    (le_total (valuation_Δ_aux R ((1 : VariableChange K) • W₁)) (valuation_Δ_aux R (D • W₁))).elim
-      (hm.val_Δ_maximal.2 hint) id
+    (le_total (valuation_Δ_aux R ((1 : VariableChange K) • W₁))
+      (valuation_Δ_aux R (D • W₁))).elim (hm.val_Δ_maximal.2 hint) id
   rw [hD, one_smul] at h
   rw [← valuation_Δ_aux_eq_of_isIntegral R W₂, ← valuation_Δ_aux_eq_of_isIntegral R W₁,
     Subtype.coe_le_coe]
@@ -80,8 +82,8 @@ holds. -/
 theorem valuation_Δ_eq_of_isMinimal_smul {W₁ W₂ : WeierstrassCurve K} [IsMinimal R W₁]
     [IsMinimal R W₂] (D : VariableChange K) (hD : D • W₁ = W₂) :
     valuation K (maximalIdeal R) W₂.Δ = valuation K (maximalIdeal R) W₁.Δ :=
-  -- Antisymmetry: `D` carries `W₁` to `W₂` and `D⁻¹` carries `W₂` back, and by minimality neither
-  -- direction can increase the valuation.
+  -- Antisymmetry: `D` carries `W₁` to `W₂` and `D⁻¹` carries `W₂` back. By minimality
+  -- neither direction can increase the valuation.
   le_antisymm (valuation_Δ_le_of_isMinimal_smul R D hD)
     (valuation_Δ_le_of_isMinimal_smul R D⁻¹ (by rw [← hD, inv_smul_smul]))
 
@@ -140,6 +142,24 @@ theorem valuation_u_eq_one_of_isMinimal_smul {W₁ W₂ : WeierstrassCurve K} [I
     rw [inv_pow] at h1
     exact inv_eq_one.mp h1
   exact (pow_eq_one_iff_of_nonneg zero_le (by norm_num)).mp h12
+
+/-- **Two minimal models of an elliptic curve related by a change of variables have the same `c₄`
+valuation**, since the change of variables scales `c₄` by `u⁻⁴` with `v (u) = 1`. -/
+theorem valuation_c₄_eq_of_isMinimal_smul {W₁ W₂ : WeierstrassCurve K} [IsMinimal R W₁]
+    [IsMinimal R W₂] [W₁.IsElliptic] (D : VariableChange K) (hD : D • W₁ = W₂) :
+    valuation K (maximalIdeal R) W₂.c₄ = valuation K (maximalIdeal R) W₁.c₄ := by
+  rw [← hD, variableChange_c₄, map_mul, map_pow, Units.val_inv_eq_inv_val, map_inv₀,
+    valuation_u_eq_one_of_isMinimal_smul R D hD]
+  simp
+
+/-- **Additive reduction is an isomorphism invariant of minimal models.** Two minimal models of an
+elliptic curve related by a change of variables have the same valuations of `Δ` and of `c₄`, so
+they have additive reduction together. -/
+theorem hasAdditiveReduction_iff_of_isMinimal_smul {W₁ W₂ : WeierstrassCurve K} [IsMinimal R W₁]
+    [IsMinimal R W₂] [W₁.IsElliptic] (D : VariableChange K) (hD : D • W₁ = W₂) :
+    W₂.HasAdditiveReduction R ↔ W₁.HasAdditiveReduction R := by
+  simp only [hasAdditiveReduction_iff, valuation_Δ_eq_of_isMinimal_smul R D hD,
+    valuation_c₄_eq_of_isMinimal_smul R D hD, ‹IsMinimal R W₁›, ‹IsMinimal R W₂›, true_and]
 
 namespace VariableChange
 
