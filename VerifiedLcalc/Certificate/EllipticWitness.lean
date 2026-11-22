@@ -102,6 +102,8 @@ structure EllipticWitness where
   generatorCoordinates : Option (List (Rat × Rat)) := none
   /-- Rational affine coordinates for the LMFDB torsion generator list, checked for membership. -/
   torsionGeneratorCoordinates : Option (List (Rat × Rat)) := none
+  /-- Claimed exact additive orders, in the same order as the torsion coordinates. -/
+  torsionGeneratorOrders : Option (List Nat) := none
   /-- Indices into the supplied integral-coordinate list. -/
   infiniteOrderPoints : Option (List Nat) := none
   /-- Selected indices for a rank bound; requires a supplied independence proof. -/

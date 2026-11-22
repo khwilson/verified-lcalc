@@ -235,6 +235,8 @@ def decode (j : Json) : Except String EllipticWitness := do
   unless integralCoordinates.size ≤ 8192 do throw "Too many integral coordinates"
   let generatorCoordinates ← optionalValue j "gens" weightedCoordinates
   let torsionGeneratorCoordinates ← optionalValue j "torsion_generators" weightedCoordinates
+  let torsionGeneratorOrders ← optionalValue j "torsion_generator_orders" fun value => do
+    (← array value 4096).toList.mapM nonnegativeInteger
   let numeric ← numericFields j
   let base := numeric.getD { equation }
   let primeData := if (optionalData j "ap").isSome || (optionalData j "aplist").isSome
@@ -312,6 +314,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     integralCoordinates := pointData
     generatorCoordinates
     torsionGeneratorCoordinates
+    torsionGeneratorOrders
     infiniteOrderPoints
     independentPoints
     minimality
