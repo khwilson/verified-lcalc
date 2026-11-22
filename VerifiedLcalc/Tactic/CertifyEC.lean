@@ -58,8 +58,12 @@ for every input. `Name.curve` and `Name.nonsingular` identify its integral model
 The arithmetic theorems `prime_coefficients_valid`, `ap_correct`,
 `integral_coordinates_valid`, and `points_on_curve` quantify over the supplied
 lists (`getD []` when absent). `point i` and `point_integral i` construct the
-corresponding rational points in TauCeti's `curve.integralPoints`. Neither list
-certifies completeness or algebraic rank.
+corresponding rational points in TauCeti's `curve.integralPoints`.
+The `xcoord_integral_points` JSON list or the Lean `integralFiberRoots` field
+also produces `integral_fiber_roots`, `integral_y_fiber i` and
+`integral_y_fiber_complete i y`. They enumerate all integral y-coordinates at
+each indexed x. A coincident root counts once in the fiber. This certifies no
+exhaustivity over x or algebraic rank.
 
 When supplied, minimality and local data produce their named definitions,
 `minimality_eq` / `local_data_eq`, and `minimality_valid` / `local_data_valid`.

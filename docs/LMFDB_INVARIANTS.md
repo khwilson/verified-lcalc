@@ -37,7 +37,8 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `conductor` | `conductor` | Identification with the chosen modular realization's level; requires `minimality`, `localData`, and the existing modularity/arithmetic-compatibility axiom. |
 | Local `conductor_valuation` | `localInvariants[].conductorValuation` | Proves primality and the claimed exponent in the Mathlib factorization of the curve's checked modular level. Requires a checked `conductor` with `minimality` and `localData`. |
 | `global_root_number` | `rootNumber` | Identification with that realization's global root/Fricke sign under the same conditions. This is an explicit extension key, not the local-table `root_number`. |
-| Integral coordinates / stored x-values | `integralCoordinates` | Point membership; not completeness of the integral-point set. |
+| `integral_points` | `integralCoordinates` | Point membership on the supplied equation. |
+| `xcoord_integral_points` | `integralFiberRoots` | Complete finite y-fibers at the listed x-values, with a double root represented once. The theorem makes no claim over other x-values. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
 | `torsion_generator_orders` | `torsionGeneratorOrders` | Project-specific list giving an exact additive order for each supplied torsion generator point. |
 | Cyclic `torsion_structure` | `torsionStructure` | An additive equivalence onto the full rational torsion subgroup when the verified divisor matches the order of the first torsion point. |
