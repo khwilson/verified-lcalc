@@ -3,7 +3,9 @@ module
 public import VerifiedLcalc.EllipticCurve.MinimalArithmetic
 public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
 public import VerifiedLcalc.Certificate.EllipticWitness
+public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Formula.Chord
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
+public import Mathlib.GroupTheory.OrderOfElement
 
 /-!
 # Exact certificates for stored elliptic-curve arithmetic data
@@ -49,6 +51,21 @@ theorem affineCoordinatesValid_sound {R : Type*} [CommRing R] [DecidableEq R]
 def integralCoordinatesValid (w : EllipticWitness) : Bool :=
   affineCoordinatesValid w.equation (w.integralCoordinates.getD [])
 
+/-- Check annihilation and the proper multiples obtained from prime divisors of the claim. -/
+def exactOrderCheck {A : Type*} [AddMonoid A] [DecidableEq A] (P : A) (n : Nat) : Bool :=
+  decide (n ≠ 0) && decide (n • P = 0) &&
+    n.primeFactorsList.all (fun p => decide ((n / p) • P ≠ 0))
+
+/-- A checked claim is the additive order in the supplied group. -/
+theorem exactOrderCheck_sound {A : Type*} [AddMonoid A] [DecidableEq A] {P : A} {n : Nat}
+    (h : exactOrderCheck P n = true) : addOrderOf P = n := by
+  obtain ⟨hpositive, hdiv⟩ := Bool.and_eq_true_iff.mp h
+  obtain ⟨hn, hzero⟩ := Bool.and_eq_true_iff.mp hpositive
+  apply addOrderOf_eq_of_nsmul_and_div_prime_nsmul (of_decide_eq_true hzero)
+  intro p hp hpn
+  exact of_decide_eq_true (List.all_eq_true.mp hdiv p
+    ((Nat.mem_primeFactorsList (of_decide_eq_true hn)).mpr ⟨hp, hpn⟩))
+
 /-- A successful finite check proves every listed value is the actual prime
 coefficient of the rational curve, with local minimality handled at bad primes. -/
 theorem primeCoefficientsValid_sound (w : EllipticWitness) (hn : w.equation.Δ ≠ 0)
@@ -72,6 +89,25 @@ theorem integralCoordinatesValid_sound (w : EllipticWitness)
     (h : w.integralCoordinatesValid = true) (x y : Int)
     (hxy : (x, y) ∈ w.integralCoordinates.getD []) : w.equation.toAffine.Equation x y :=
   affineCoordinatesValid_sound _ _ h x y hxy
+
+/-- The two candidate integral y-coordinates over x, counted once when they coincide. -/
+def integralYFiber (W : WeierstrassCurve ℤ) (x y₀ : ℤ) : Finset ℤ :=
+  {y₀, W.toAffine.negY x y₀}
+
+/-- A single checked root determines the full integer fiber over its x-coordinate. -/
+theorem mem_integralYFiber_iff {W : WeierstrassCurve ℤ} {x y₀ : ℤ}
+    (h₀ : W.toAffine.Equation x y₀) (y : ℤ) :
+    y ∈ integralYFiber W x y₀ ↔ W.toAffine.Equation x y := by
+  simp only [integralYFiber, Finset.mem_insert, Finset.mem_singleton]
+  constructor
+  · rintro (rfl | rfl)
+    · exact h₀
+    · exact (WeierstrassCurve.Affine.equation_neg (W' := W.toAffine) x y₀).mpr h₀
+  · intro hy
+    have hprod : (y - y₀) * (y - W.toAffine.negY x y₀) = 0 := by
+      simpa only [sub_self, zero_mul] using
+        WeierstrassCurve.Affine.Y_sub_Y_mul_Y_sub_negY_eq hy h₀
+    simpa only [sub_eq_zero] using mul_eq_zero.mp hprod
 
 end EllipticWitness
 end VerifiedLcalc

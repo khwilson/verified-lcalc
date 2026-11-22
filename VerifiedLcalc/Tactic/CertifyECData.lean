@@ -26,11 +26,11 @@ list. It includes bad primes where the local minimality checker succeeds.
 
 `Name.point i` constructs the rational point for an index into the supplied
 integer-coordinate list; `Name.point_integral i` proves membership in TauCeti's
-`curve.integralPoints`. These are membership certificates, not completeness or
-algebraic-rank certificates. Every generated theorem is audited against standard
-Lean axioms only. Failure rolls back the entire command. Compile the containing
-module to obtain importable `.olean` declarations; use a `public section` when
-exporting through Lean's `module` syntax.
+`curve.integralPoints`. A supplied fiber root also gives `Name.integral_y_fiber i`
+and an exact enumeration theorem at the stored x. Every generated theorem is
+audited against standard Lean axioms only. Failure rolls back the entire command.
+Compile the containing module to obtain importable `.olean` declarations. When
+using Lean's `module` syntax, export them in a `public section`.
 -/
 
 public meta section
@@ -58,6 +58,63 @@ private def certifyRationalCoordinates (base field : Name) (curve witness : TSyn
   CertifyEC.emit (← `(def $point (i : Fin ($coords).length) :
       (($curve).baseChange ℚ).toAffine.Point :=
     .mk ($onCurve (($coords)[i]).1 (($coords)[i]).2 (List.getElem_mem i.isLt))))
+
+/-- Check one root per supplied x and export its exact integral fiber. -/
+private def certifyIntegralFibers (base : Name) (curve witness : TSyntax `term) :
+    CommandElabM Unit := do
+  let some input ← CertifyEC.optionalInput (base ++ `witness) `integralFiberRoots | return
+  let roots := CertifyEC.rootIdent (base ++ `integral_fiber_roots)
+  CertifyEC.emit (← `(def $roots : List (Int × Int) := $input))
+  CertifyEC.checked (base ++ `integral_fiber_roots_eq)
+    (← `(($witness).integralFiberRoots = some $roots)) (← `(by rfl))
+  let valid := CertifyEC.rootIdent (base ++ `integral_fiber_roots_valid)
+  CertifyEC.checked (base ++ `integral_fiber_roots_valid)
+    (← `(EllipticWitness.affineCoordinatesValid $curve $roots = true)) (← `(by decide +kernel))
+  let fiber := CertifyEC.rootIdent (base ++ `integral_y_fiber)
+  CertifyEC.emit (← `(def $fiber (i : Fin ($roots).length) : Finset Int :=
+    EllipticWitness.integralYFiber $curve (($roots)[i]).1 (($roots)[i]).2))
+  CertifyEC.checked (base ++ `integral_y_fiber_complete)
+    (← `(∀ (i : Fin ($roots).length) (y : Int),
+      y ∈ $fiber i ↔ ($curve).toAffine.Equation (($roots)[i]).1 y))
+    (← `(by
+      intro i y
+      exact EllipticWitness.mem_integralYFiber_iff
+        (EllipticWitness.affineCoordinatesValid_sound $curve $roots $valid _ _
+          (List.getElem_mem i.isLt)) y))
+
+/-- Check exact orders of the already constructed rational points. -/
+private def certifyTorsionOrders (base : Name) (witness : TSyntax `term) : CommandElabM Unit := do
+  let some input ← CertifyEC.optionalInput (base ++ `witness) `torsionGeneratorOrders | return
+  let torsion := base ++ `torsion_generators
+  unless (← getEnv).contains (torsion ++ `point) do
+    throwError "Provide torsion generator coordinates with their claimed orders"
+  let point := CertifyEC.rootIdent (torsion ++ `point)
+  let coords := CertifyEC.rootIdent (torsion ++ `coordinates)
+  let orders := CertifyEC.rootIdent (torsion ++ `orders)
+  CertifyEC.emit (← `(def $orders : List Nat := $input))
+  CertifyEC.checked (torsion ++ `orders_eq)
+    (← `(($witness).torsionGeneratorOrders = some $orders)) (← `(by rfl))
+  let hlen := CertifyEC.rootIdent (torsion ++ `orders_length)
+  CertifyEC.checked (torsion ++ `orders_length)
+    (← `(($orders).length = ($coords).length)) (← `(by decide +kernel))
+  try
+    CertifyEC.checked (torsion ++ `orders_in_range)
+      (← `(($orders).all (fun n => decide (0 < n ∧ n ≤ 256)) = true)) (← `(by decide +kernel))
+  catch _ =>
+    throwError "Torsion generator orders must be between 1 and 256"
+  let hcheck := CertifyEC.rootIdent (torsion ++ `orders_valid)
+  CertifyEC.checked (torsion ++ `orders_valid)
+    (← `((List.finRange ($coords).length).all (fun i =>
+      EllipticWitness.exactOrderCheck ($point i) (($orders).get (Fin.cast ($hlen).symm i))) =
+      true))
+    (← `(by decide +kernel))
+  CertifyEC.checked (torsion ++ `exact_order)
+    (← `(∀ i : Fin ($coords).length,
+      addOrderOf ($point i) = ($orders).get (Fin.cast ($hlen).symm i)))
+    (← `(by
+      intro i
+      exact EllipticWitness.exactOrderCheck_sound
+        (List.all_eq_true.mp $hcheck i (List.mem_finRange i))))
 
 /-- Check supplied arithmetic data and export ordinary definitions and theorems. -/
 def certify (name : Name) (input : TSyntax `term) (announce := true) : CommandElabM Unit := do
@@ -99,8 +156,10 @@ def certify (name : Name) (input : TSyntax `term) (announce := true) : CommandEl
     (← `(∀ i : Fin (($w).integralCoordinates.getD []).length,
       $point i ∈ ($curve).integralPoints))
     (← `(by intro i; exact WeierstrassCurve.pointOfIntegralSolution_mem _ _ _ _))
+  certifyIntegralFibers base curve w
   certifyRationalCoordinates (base ++ `generators) `generatorCoordinates curve w
   certifyRationalCoordinates (base ++ `torsion_generators) `torsionGeneratorCoordinates curve w
+  certifyTorsionOrders base w
   if announce then
     logInfo m!"Certified {base}.ap_correct and {base}.point_integral (arithmetic only)"
 
