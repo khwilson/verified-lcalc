@@ -22,7 +22,8 @@ example : Nat.card (AddCommGroup.torsion (TrivialTorsion.curve.baseChange ℚ).t
   TrivialTorsion.torsion
 
 certify_ec BoundedTorsion from_json_string
-  r#"{"ainvs":[0,1,0,0,4],"torsion":2,"torsion_bound":{"first_prime":3,"second_prime":5,"bound":2}}"#
+  r#"{"ainvs":[0,1,0,0,4],"torsion":2,
+      "torsion_bound":{"first_prime":3,"second_prime":5,"bound":2}}"#
 
 example : Nat.card (AddCommGroup.torsion (BoundedTorsion.curve.baseChange ℚ).toAffine.Point) ∣ 2 :=
   BoundedTorsion.torsion_bound.1
