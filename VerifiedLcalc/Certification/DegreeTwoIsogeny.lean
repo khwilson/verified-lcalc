@@ -5,6 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
+public import VerifiedLcalc.Certificates.DegreeTwoIsogeny
 public import Mathlib.GroupTheory.SpecificGroups.Cyclic.Subgroup
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.Velu.Isogeny
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.VariableChange
@@ -15,23 +16,6 @@ public section
 
 namespace VerifiedLcalc
 open TauCeti WeierstrassCurve
-
-/-- A degree-two edge between the specified rational equations, with its minimum-degree proof. -/
-structure DegreeTwoIsogenyFact (source target : WeierstrassCurve ℤ) where
-  /-- Nonsingularity of the rational source curve. -/
-  source_elliptic : (source.baseChange ℚ).IsElliptic
-  /-- Nonsingularity of the rational target curve. -/
-  target_elliptic : (target.baseChange ℚ).IsElliptic
-  /-- Rational isogeny between the two supplied equations. -/
-  isogeny : Isogeny (source.baseChange ℚ).toAffine (target.baseChange ℚ).toAffine
-  /-- The exhibited isogeny has degree two. -/
-  degree_eq : isogeny.degree = 2
-  /-- The rational kernel has both points and has cardinality two. -/
-  kernel_card : letI := source_elliptic
-    Nat.card isogeny.ker = 2
-  /-- Every rational isogeny between these equations has degree at least two. -/
-  degree_le : ∀ φ : Isogeny (source.baseChange ℚ).toAffine (target.baseChange ℚ).toAffine,
-    2 ≤ φ.degree
 
 /-- Distinct j-invariants rule out a degree-one rational isogeny. -/
 theorem two_le_degree_of_j_ne {W V : WeierstrassCurve ℚ} [W.IsElliptic] [V.IsElliptic]
@@ -84,14 +68,5 @@ theorem DegreeTwoIsogenyFact.kernel_cyclic {source target : WeierstrassCurve ℤ
     IsAddCyclic fact.isogeny.ker := by
   let _ : Fact (Nat.Prime 2) := ⟨by decide⟩
   exact isAddCyclic_of_prime_card fact.kernel_card
-
-/-- Two is the attained minimum of all rational isogeny degrees in this direction. -/
-theorem DegreeTwoIsogenyFact.isLeast_degree {source target : WeierstrassCurve ℤ}
-    (fact : DegreeTwoIsogenyFact source target) :
-    IsLeast (Set.range fun φ :
-      Isogeny (source.baseChange ℚ).toAffine (target.baseChange ℚ).toAffine => φ.degree) 2 := by
-  refine ⟨⟨fact.isogeny, fact.degree_eq⟩, ?_⟩
-  rintro _ ⟨φ, rfl⟩
-  exact fact.degree_le φ
 
 end VerifiedLcalc
