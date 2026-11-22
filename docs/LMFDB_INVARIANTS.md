@@ -48,23 +48,22 @@ over a discrete valuation ring and its fraction field.
 [Upstream local criterion](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/PotentialGoodReduction.lean#L438-L442)
 · [Geometric integration and dependency audit](https://github.com/khwilson/verified-lcalc/issues/7)
 
-All equation invariants, minimality, bad-prime, coefficient, semistability, and local reduction results have only
-standard Lean axiom dependencies. Conductor and global-root identification are
-explicitly conditional. The local `conductor_valuation` theorem shares this boundary through the
-checked level equation. The finite exponent check uses the Mathlib natural-number factorization
-of that level. A comparison with the intrinsic Artin exponent or with the norm of TauCeti's
-algorithmic conductor ideal requires a separate theorem.
+Equation invariants, minimality, bad-prime, coefficient, and semistability results use standard
+Lean axioms. The local discriminant and j-denominator valuations and reduction codes have the same
+dependencies. The `conductor_valuation` theorem uses the authorized modularity assumption through
+the checked level equation, as does the conductor certificate. The finite check of the supplied
+integer level is independent of that assumption. A comparison with the intrinsic Artin exponent
+or with the norm of TauCeti's algorithmic conductor ideal requires a separate theorem.
 [Algorithmic conductor ideal](https://github.com/TauCetiProject/TauCeti/pull/15468)
 
 Supplying `minimality` also exports `global_minimal`.
 None of these checks certifies an external label or database provenance.
 
-A local row has a required `prime` and optional exact integer values for
-the two valuations and the reduction code. The valuations are the exponents of
-that prime in the absolute discriminant and the reduced rational denominator
-of `j`. The reduction codes are 0 for additive, 1 for split multiplicative,
-and −1 for nonsplit multiplicative reduction. The certificate covers the supplied
-rows individually.
+A local row requires `prime`. An optional valuation gives its exponent in the absolute minimal
+discriminant, the reduced rational denominator of `j`, or the checked modular level. Conductor
+exponents may be supplied for any rational prime and are zero when that prime does not divide the
+level. The reduction codes are 0 for additive, 1 for split multiplicative, and −1 for nonsplit
+multiplicative reduction. Certificates cover each supplied row individually.
 
 `root_number` in an `ec_localdata` row is **local**, at that row's `prime`.
 It is deliberately not decoded as a global sign. The local reduction table is
