@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.Certificate
 public import VerifiedLcalc.Analytic
 public import VerifiedLcalc.Certificates.AnalyticEvidence
+
+/-! Soundness theorems for finite analytic artifacts. -/
 
 @[expose] public section
 
@@ -16,7 +23,7 @@ theorem check_sound {expected : Request} {artifact : Artifact}
     analyticOrderAt evidence.function (expected.subject.center : ℂ) = artifact.rank := by
   have hc := (check_correct _ _).mp h
   exact scan_analyticOrderAt evidence.analytic evidence.enclosures
-    (witness_scan hc.2.2.2.2)
+    hc.2.2.2.2
 
 /-- In the currently supported interpretation, acceptance yields the concrete
 monomial's analytic order, rather than the order of an arbitrarily chosen f. -/

@@ -1,7 +1,13 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
-public import VerifiedLcalc.Certificates.AnalyticEnclosures
+public import VerifiedLcalc.Certificates.Scan
 public import Mathlib.Analysis.Analytic.Order
+public import Mathlib.Analysis.Complex.Basic
 
 /-! Typed analytic rank statements for an ordered list of derivative boxes. -/
 

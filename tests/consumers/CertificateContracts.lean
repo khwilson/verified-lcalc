@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 import VerifiedLcalc.Certificates
 import Lean
 
@@ -23,9 +28,9 @@ open VerifiedLcalc Lean Elab Command
 #check Box.Contains
 #check Encloses
 #check AnalyticCertificate
-#check Artifacts.Accepts
+#check Artifacts.WitnessAccepts
 #check Artifacts.Checked
-#check NumericalRanks.Accepts
+#check NumericalRanks.CutoffAccepts
 #check NumericalRanks.Checked
 #check Artifacts.AnalyticEvidence
 #check NumericalRanks.Evidence

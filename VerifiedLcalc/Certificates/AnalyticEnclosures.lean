@@ -1,8 +1,14 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.Certificates.Scan
-public import Mathlib.Analysis.Complex.Basic
-public import Mathlib.Data.Rat.Cast.Order
+public import Mathlib.Basic.Complex.Basic
+
+import Mathlib.Data.Rat.Cast.Order
 
 import Mathlib.Tactic
 

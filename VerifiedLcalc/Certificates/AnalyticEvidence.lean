@@ -1,8 +1,14 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
-public import VerifiedLcalc.Certificates.AnalyticRank
+public import VerifiedLcalc.Certificates.AnalyticEnclosures
 public import VerifiedLcalc.Certificates.NumericalRanks
-public import Mathlib.Analysis.Analytic.Order
+public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
+public import Mathlib.Analysis.Complex.Basic
 
 /-! Proof obligations relating supplied boxes to the mathematical function. -/
 

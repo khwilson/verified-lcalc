@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.Certificates.Scan
@@ -85,7 +90,7 @@ structure Artifact where
 
 /-- Mathematical acceptance contract. The finite rank is witnessed directly
 by the supplied boxes, independently of the executable scan. -/
-def Accepts (expected : Request) (artifact : Artifact) : Prop :=
+def WitnessAccepts (expected : Request) (artifact : Artifact) : Prop :=
   artifact.request = expected ∧
   expected.formatVersion = 1 ∧
   artifact.rank ≤ expected.settings.maxDerivative ∧
@@ -97,6 +102,6 @@ structure Checked (expected : Request) where
   /-- Artifact that passed the mathematical contract. -/
   artifact : Artifact
   /-- Proof that its request and boxes satisfy the expected contract. -/
-  contract : Accepts expected artifact
+  contract : WitnessAccepts expected artifact
 
 end VerifiedLcalc.Artifacts

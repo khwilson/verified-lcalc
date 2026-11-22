@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 import VerifiedLcalc.Analytic
 import VerifiedLcalc.Certificate
 import VerifiedLcalc.NumericalRank

@@ -1,10 +1,18 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.Scan
 public import VerifiedLcalc.Certificates.AnalyticRank
+public import VerifiedLcalc.Certificates.AnalyticEnclosures
 public import Mathlib.Analysis.Analytic.Order
 public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Data.Rat.Cast.Order
+
+/-! # Analytic orders from exact derivative enclosures -/
 
 @[expose] public section
 

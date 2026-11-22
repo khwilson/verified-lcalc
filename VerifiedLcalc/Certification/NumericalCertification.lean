@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
 public import VerifiedLcalc.NumericalRankSoundness
 public import Mathlib.Analysis.Complex.CauchyIntegral
+
+/-! Opt-in modular interpretations of exact and numerical certificate evidence. -/
 
 @[expose] public section
 
@@ -26,7 +33,7 @@ theorem check_assumed_exact_sound {expected : Artifacts.Request} {artifact : Art
     analyticOrderAt (modularWitness e.equation e.nonsingular).formL 1 = artifact.rank := by
   exact scan_analyticOrderAt
     ((modularWitness e.equation e.nonsingular).formL_differentiable.analyticAt 1)
-    e.enclosures (witness_scan ((Artifacts.check_correct _ _).mp h).2.2.2.2)
+    e.enclosures ((Artifacts.check_correct _ _).mp h).2.2.2.2
 
 structure AssumedNumericalEvidence (expected : NumericalRanks.Request)
     (artifact : NumericalRanks.Artifact) where
@@ -45,10 +52,7 @@ theorem check_assumed_numerical_sound {expected : NumericalRanks.Request}
       artifact.numericalLowerBound expected.policy.cutoff := by
   obtain ⟨_, _, _, _, _, hlen, hs⟩ := (NumericalRanks.check_correct _ _).mp h
   rw [← hlen]
-  apply NumericalRanks.enclosures_small _ _ _ e.enclosures
-  intro b hb
-  apply (Box.withinCutoff_correct b expected.policy.cutoff).mpr
-  simpa [Box.WithinCutoff] using hs b hb
+  exact NumericalRanks.enclosures_small _ _ _ e.enclosures hs
 
 /-- Any numerical-to-exact upgrade additionally depends on this explicit
 vanishing hypothesis; it is not a consequence of the modularity axiom. -/

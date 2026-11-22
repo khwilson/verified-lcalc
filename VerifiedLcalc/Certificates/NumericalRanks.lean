@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.Certificates.Artifacts
@@ -30,7 +35,7 @@ structure Artifact where
   deriving Repr, DecidableEq
 
 /-- Mathematical acceptance conditions for one numerical observation. -/
-def Accepts (expected : Request) (artifact : Artifact) : Prop :=
+def CutoffAccepts (expected : Request) (artifact : Artifact) : Prop :=
   artifact.request = expected ∧
   expected.computation.formatVersion = 1 ∧
   2 ≤ expected.policy.precisionBits ∧
@@ -44,6 +49,6 @@ structure Checked (expected : Request) where
   /-- Artifact that passed the mathematical acceptance conditions. -/
   artifact : Artifact
   /-- Proof that request, bound, and boxes satisfy the expected conditions. -/
-  contract : Accepts expected artifact
+  contract : CutoffAccepts expected artifact
 
 end VerifiedLcalc.NumericalRanks

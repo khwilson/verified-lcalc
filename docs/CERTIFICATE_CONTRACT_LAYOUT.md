@@ -22,8 +22,8 @@ The umbrella imports only contract modules.
 | `Witness`, `Certificate` | `VerifiedLcalc.Certificates.Scan` | A typed finite proof that earlier boxes are singleton zero and the selected box excludes zero. The executable scan remains in the legacy module. |
 | `Box.Contains`, `Encloses` | `VerifiedLcalc.Certificates.AnalyticEnclosures` | Exact real and imaginary interval membership for supplied complex values; analytic derivative enclosures remain proof obligations. |
 | `AnalyticCertificate` | `VerifiedLcalc.Certificates.AnalyticRank` | A witnessed rank tied to the same derivative boxes and the analytic order theorem. |
-| `Artifacts.{Normalization,Subject,Settings,BuildIdentity,Request,Artifact,Accepts,Checked}` | `VerifiedLcalc.Certificates.Artifacts` | Raw request and artifact data plus a pure witness-based acceptance contract. Search and Boolean checking remain in the singular compatibility module. |
-| `NumericalRanks.{Request,Artifact,Accepts,Checked}` | `VerifiedLcalc.Certificates.NumericalRanks` | Raw threshold-observation data and its exact rational cutoff contract. |
+| `Artifacts.{Normalization,Subject,Settings,BuildIdentity,Request,Artifact,WitnessAccepts,Checked}` | `VerifiedLcalc.Certificates.Artifacts` | Raw request and artifact data plus a pure witness-based acceptance contract. Search and Boolean checking remain in the singular compatibility module. |
+| `NumericalRanks.{Request,Artifact,CutoffAccepts,Checked}` | `VerifiedLcalc.Certificates.NumericalRanks` | Raw threshold-observation data and its exact rational cutoff contract. |
 | `Artifacts.{Subject.Denotes,AnalyticEvidence}`, `NumericalRanks.{SmallDerivatives,Evidence,ExactVanishingHypothesis}` | `VerifiedLcalc.Certificates.AnalyticEvidence` | Mathematical function, derivative-enclosure, and conditional exact-vanishing obligations, independent of the evaluator. |
 
 Existing singular import paths continue to expose migrated records and

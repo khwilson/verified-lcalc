@@ -1,9 +1,16 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.NumericalRank
 public import VerifiedLcalc.CertificateSoundness
 public import VerifiedLcalc.Certificates.AnalyticEvidence
 public import Mathlib.Tactic.Linarith
+
+/-! Soundness theorems for numerical derivative observations. -/
 
 @[expose] public section
 
@@ -44,10 +51,7 @@ theorem check_sound {expected : Request} {artifact : Artifact}
       artifact.numericalLowerBound expected.policy.cutoff := by
   obtain ⟨_, _, _, _, _, hlen, hs⟩ := (check_correct _ _).mp h
   rw [← hlen]
-  apply enclosures_small _ _ _ evidence.enclosures
-  intro b hb
-  apply (Box.withinCutoff_correct b expected.policy.cutoff).mpr
-  simpa [Box.WithinCutoff] using hs b hb
+  exact enclosures_small _ _ _ evidence.enclosures hs
 
 /-- A genuine analytic-rank lower bound, conditional on the displayed additional
 mathematical hypothesis. The smallness certificate alone cannot prove it. -/
