@@ -27,6 +27,10 @@ The umbrella imports only contract modules.
 | `AbcQualityClaim` | `VerifiedLcalc.Certificates.CurveWitness` | Raw submitted rational report, error, and factor list; no checking algorithm is part of the record. |
 | `RationalInvariantFacts` | `VerifiedLcalc.Certificates.RationalInvariants` | Sign, rational j-invariant, and integer-localization predicate are stated directly for the integral equation or its rational base change. |
 | `AbcQualityFacts` | `VerifiedLcalc.Certificates.RationalInvariants` | Refers to TauCeti's `WeierstrassCurve.abcQuality`, exact reduced abc-product factorization, and prime factors. The checker-success boolean remains in the `Certification.CheckedAbcQualityFacts` backend companion because the exact error enclosure does not imply the backend's particular interval test succeeded. |
+| `AffineMembership`, `InfiniteOrderPointFact`, `IndependentPointFacts` | `VerifiedLcalc.Certificates.PointFacts` | Membership is the actual affine Weierstrass equation; rational points lift through TauCeti's `pointOfIntegralSolution`; infinite order and integer linear independence refer to those points. |
+| `TorsionGeneratorOrderFacts` | `VerifiedLcalc.Certificates.PointFacts` | Exact additive orders of the submitted points, indexed by Mathlib's `addOrderOf`. |
+| `GeneratorCountFacts` | `VerifiedLcalc.Certificates.PointFacts` | The claimed count equals the length of the supplied coordinate list; it makes no generation claim. |
+| `IntegralYFiberFacts` | `VerifiedLcalc.Certificates.PointFacts` | Each finite fiber is exactly the set of integer y-coordinates satisfying the supplied Weierstrass equation at its indexed x-coordinate. |
 
 `VerifiedLcalc.Certificate.IntegralXSupport` remains an import-only compatibility
 module. Existing singular import paths continue to expose migrated records for

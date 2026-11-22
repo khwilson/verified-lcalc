@@ -11,5 +11,6 @@ public import VerifiedLcalc.Certificates.NumericalData
 public import VerifiedLcalc.Certificates.NumericalContracts
 public import VerifiedLcalc.Certificates.CurveWitness
 public import VerifiedLcalc.Certificates.RationalInvariants
+public import VerifiedLcalc.Certificates.PointFacts
 
 /-! # Mathematical certificate contracts -/
