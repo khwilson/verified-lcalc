@@ -2,6 +2,7 @@ module
 
 public import TauCeti.AlgebraicGeometry.EllipticCurve.LocalPolynomial
 public import TauCeti.AlgebraicGeometry.EllipticCurve.MinimalModel.Basic
+import TauCeti.AlgebraicGeometry.EllipticCurve.IntegralModel
 
 /-! # Local Euler factors of supplied minimal equations -/
 
@@ -30,21 +31,11 @@ theorem reduction_eq_variableChange (W : WeierstrassCurve R)
     [WeierstrassCurve.IsMinimal R (W.baseChange K)] [(W.baseChange K).IsElliptic] :
     ∃ C : WeierstrassCurve.VariableChange (IsLocalRing.ResidueField R),
       ((W.baseChange K).minimal R).reduction R = C • W.map (IsLocalRing.residue R) := by
-  let U := W.baseChange K
-  obtain ⟨D, hD⟩ := WeierstrassCurve.exists_smul_eq_minimal R U
-  obtain ⟨u, hu⟩ :=
-    WeierstrassCurve.VariableChange.exists_unit_algebraMap_eq_u_of_isMinimal_smul R D hD
-  obtain ⟨C, hC⟩ := WeierstrassCurve.variableChange_integral_of_u_integral hD hu
-  have hm : (C • W).baseChange K = U.minimal R := by
-    rw [WeierstrassCurve.baseChange, ← WeierstrassCurve.map_variableChange]
-    change C.baseChange K • U = U.minimal R
-    rw [hC]
-    exact hD
-  have hi : (U.minimal R).integralModel R = C • W := by
-    apply WeierstrassCurve.map_injective (IsFractionRing.injective R K)
-    exact (WeierstrassCurve.baseChange_integralModel_eq R (U.minimal R)).trans hm.symm
-  refine ⟨C.map (IsLocalRing.residue R), ?_⟩
-  rw [WeierstrassCurve.reduction, hi, ← WeierstrassCurve.map_variableChange]
+  obtain ⟨D, hD⟩ := WeierstrassCurve.exists_smul_eq_minimal R (W.baseChange K)
+  obtain ⟨C, hC⟩ := WeierstrassCurve.exists_smul_reduction_eq_of_isMinimal_smul R D hD
+  have hred : (W.baseChange K).reduction R = W.map (IsLocalRing.residue R) := by
+    rw [WeierstrassCurve.reduction, WeierstrassCurve.integralModel_baseChange_self]
+  exact ⟨C, by simpa only [hred] using hC.symm⟩
 
 open scoped Classical in
 /-- The local polynomial can be read from any supplied integral minimal
