@@ -92,6 +92,16 @@ example : (GoodTamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 3)
     (by decide +kernel) 1 rfl
   exact h (by decide +kernel)
 
+/--
+info: TamagawaOutsideScope: Tamagawa claims outside good or I₁ reduction are unverified.
+---
+info: Certified TamagawaOutsideScope.ap_correct and TamagawaOutsideScope.point_integral
+for the supplied lists
+-/
+#guard_msgs (whitespace := lax) in
+certify_ec TamagawaOutsideScope from_json_string
+  r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],"prime":11,"tamagawa_number":5}"#
+
 certify_ec SplitLocal from_json_string
   r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
       "local_invariants":[{"prime":11,"reduction_type":1}]}"#
@@ -191,6 +201,8 @@ run_cmd do
       `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation] do
     if (← getEnv).contains (`Partial37 ++ suffix) then
       throwError "Missing arithmetic evidence generated an invariant claim"
+  if (← getEnv).contains `GoodTamagawa.global_minimal then
+    throwError "Local Tamagawa verification unexpectedly required global minimality"
   if (← getEnv).contains `NoPotentialGood.j_integral then
     throwError "An omitted j_integral claim generated a theorem"
   if (← getEnv).contains `IntegralJ.potential_good_reduction then

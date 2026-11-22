@@ -32,6 +32,7 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `semistable` | `semistable` | Equivalence with TauCeti's `WeierstrassCurve.IsSemistable` over the ring of integers of ℚ, using the checked `minimality`. |
 | `squarefree_disc` | `squarefreeDiscriminant` | Equivalence with Mathlib's `Squarefree` on the absolute minimal discriminant, using the checked `minimality`. |
 | `local_invariants` or a top-level local row | `localInvariants` | Checks each supplied prime and any supplied `discriminant_valuation`, `j_denominator_valuation` or `reduction_type` against the minimal equation, using the checked `minimality`. |
+| `tamagawa_number` | `localInvariants` row field `tamagawaNumber` | Exact intrinsic Tamagawa number at a prime of good or `I₁` reduction. A local test proves minimality at that prime. |
 | `ap` / `aplist` | `primeCoefficients` | Actual `LFunction p` coefficients with proved sufficient local minimality checks. |
 | `anlist` | `dirichletCoefficients` | Actual consecutive `LFunction n` coefficients; requires `minimality`. Native JSON starts with a₀=0, which is checked and removed; direct Lean lists start at a₁. |
 | `conductor` | `conductor` | Identification with the chosen modular realization's level; requires `minimality`, `localData`, and the existing modularity/arithmetic-compatibility axiom. |
@@ -68,6 +69,12 @@ exponents may be supplied for any rational prime and are zero when that prime do
 level. The reduction codes are 0 for additive, 1 for split multiplicative, and −1 for nonsplit
 multiplicative reduction. Certificates cover each supplied row individually.
 
+`tamagawa_number` currently verifies the value one for good reduction and
+multiplicative reduction of index one. The equality concerns TauCeti's
+`tamagawaNumberAt` over the completed field. The checker needs no global
+minimality witness for this field. A claim outside this scope is reported
+as unverified. [Completed Tamagawa factor](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Product.lean#L47-L87)
+
 `root_number` in an `ec_localdata` row is **local**, at that row's `prime`.
 It is deliberately not decoded as a global sign. The local reduction table is
 not the same data format as the supplied checked Tate transcripts in `localData`.
@@ -85,7 +92,7 @@ missing theorem.
 
 | Group / fields | Proof work still needed |
 | --- | --- |
-| Local `kodaira_symbol`, `root_number`, `tamagawa_number`, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
+| Local `kodaira_symbol`, `root_number`, other `tamagawa_number` branches, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
 | `gens`, `torsion_generators`, `torsion`, `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | Prove generator orders, independence, generation, and a torsion upper bound. Membership alone does not prove subgroup order or exhaustivity. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Lower bounds already have the explicit independence route. Exact rank needs an upper-bound/descent certificate; integral-point counts need completeness proofs. |
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |

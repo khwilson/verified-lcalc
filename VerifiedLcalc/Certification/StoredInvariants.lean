@@ -244,4 +244,9 @@ theorem LocalReductionClaim.tamagawa_correct (row : LocalReductionClaim) (e : We
 def hasUnsupportedTamagawaClaim (e : WeierstrassCurve ℤ) (rows : List LocalReductionClaim) : Bool :=
   rows.any fun row => row.tamagawaNumber.isSome && !supportsTamagawaOne e row.prime
 
+/-- Whether any supplied local valuation or reduction type requires a checked minimal model. -/
+def hasMinimalityDependentLocalClaim (rows : List LocalReductionClaim) : Bool :=
+  rows.any fun row => row.discriminantValuation.isSome || row.jDenominatorValuation.isSome ||
+    row.reductionType.isSome
+
 end VerifiedLcalc

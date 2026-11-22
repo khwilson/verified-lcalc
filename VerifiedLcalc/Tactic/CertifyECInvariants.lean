@@ -74,7 +74,11 @@ private def certifyReductionInvariants (base : Name) (curve m hm : Ident)
           exact LocalReductionClaim.check_correct row $curve $hglobal
             (List.all_eq_true.mp $hv row hrow)))
     else
-      logInfo m!"Unverified {base} local_invariants: supply minimality evidence"
+      let needsMinimality := mkApp (mkConst ``hasMinimalityDependentLocalClaim)
+        (mkConst (base ++ `claimed_local_invariants))
+      let needsMinimality ← liftTermElabM <| whnf needsMinimality
+      if needsMinimality.isConstOf ``Bool.true then
+        logInfo m!"Unverified {base} local_invariants: supply minimality evidence"
 
 private def certifyConductorValuations (base : Name) (curve hn : Ident)
     (checkedConductor : Option Ident) : CommandElabM Unit := do

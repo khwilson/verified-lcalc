@@ -9,9 +9,9 @@ public import VerifiedLcalc.EllipticCurve.Tate.AdditiveArithmetic
 public import VerifiedLcalc.EllipticCurve.Tate.LocalReduction
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Tamagawa.Product
 public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Curve
-import TauCeti.AlgebraicGeometry.EllipticCurve.MinimalModel.AdicCompletion
 import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.LocalIndex
 import TauCeti.NumberTheory.LocalField.Henselian
+import TauCeti.RingTheory.DedekindDomain.AdicCompletionExtension
 
 /-! # Intrinsic Tamagawa numbers of rational curves
 
@@ -52,15 +52,35 @@ private theorem hasGoodReduction_completed (e : WeierstrassCurve ℤ) (p : ℕ)
   have hv : (IsDiscreteValuationRing.maximalIdeal R).valuation _ W.Δ = 1 := by
     rw [v.valuation_maximalIdeal_adicCompletionIntegers, hΔ]
     exact completion_valuation_of_not_dvd p e.Δ hd
-  exact ⟨isMinimal_of_valuation_Δ_eq_one R W hv, hv⟩
+  let := isMinimal_of_valuation_Δ_eq_one R W hv
+  exact ⟨hv⟩
+
+private theorem tamagawaNumberAt_adicValued (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime] :
+    (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) =
+      ((e.baseChange ℚ).baseChange ((rationalPlace p).adicCompletion ℚ)).tamagawaNumber
+        (Valued.v : Valuation ((rationalPlace p).adicCompletion ℚ) (WithZero (Multiplicative ℤ))) := by
+  let v := rationalPlace p
+  let F := v.adicCompletion ℚ
+  let V : Valuation F (WithZero (Multiplicative ℤ)) := Valued.v
+  let W := (e.baseChange ℚ).baseChange F
+  rw [tamagawaNumberAt_def]
+  convert W.tamagawaNumber_congr (ValuativeRel.valuation F)
+    (ValuativeRel.isEquiv (ValuativeRel.valuation F) V) using 2
+  dsimp only [W, WeierstrassCurve.baseChange]
+  exact congrArg (fun f : ℚ →+* F => (e.baseChange ℚ).map f) (Subsingleton.elim _ _)
 
 /-- The intrinsic local Tamagawa number is one at a good prime of the
 checked model. The point-group index is taken over the completion. -/
 theorem tamagawaNumberAt_eq_one_of_good_prime (e : WeierstrassCurve ℤ) (p : ℕ)
     [Fact p.Prime] (hd : ¬ (p : ℤ) ∣ e.Δ) :
     (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = 1 := by
-  have := hasGoodReduction_completed e p hd
-  exact (e.baseChange ℚ).tamagawaNumberAt_eq_one_of_hasGoodReduction (rationalPlace p)
+  let v := rationalPlace p
+  let F := v.adicCompletion ℚ
+  let V : Valuation F (WithZero (Multiplicative ℤ)) := Valued.v
+  let W := (e.baseChange ℚ).baseChange F
+  let : W.HasGoodReduction V.valuationSubring := hasGoodReduction_completed e p hd
+  rw [tamagawaNumberAt_adicValued]
+  exact W.tamagawaNumber_eq_one_of_hasGoodReduction V
 
 private theorem completedSymbol_eq_I_one (e : WeierstrassCurve ℤ) (p : ℕ)
     [Fact p.Prime] [(e.baseChange ℚ).IsElliptic]
@@ -81,17 +101,19 @@ private theorem completedSymbol_eq_I_one (e : WeierstrassCurve ℤ) (p : ℕ)
   have hcval : (IsDiscreteValuationRing.maximalIdeal R).valuation _ W.c₄ = 1 := by
     rw [v.valuation_maximalIdeal_adicCompletionIntegers, hc₄]
     exact completion_valuation_of_not_dvd p e.c₄ hc
+  let := isMinimal_of_valuation_c₄_eq_one R W hcval
   have hmul : W.HasMultiplicativeReduction R := by
-    refine ⟨isMinimal_of_valuation_c₄_eq_one R W hcval, ?_, hcval⟩
+    refine ⟨?_, hcval⟩
     rw [v.valuation_maximalIdeal_adicCompletionIntegers, hΔ, hval]
+    rw [← WithZero.exp_zero]
     exact WithZero.exp_lt_exp.mpr (by decide)
   have hminval := W.valuation_Δ_eq_exp_neg_of_isMinimal_smul R 1 (one_smul _ _)
   rw [v.valuation_maximalIdeal_adicCompletionIntegers, hΔ, hval] at hminval
   have hn : W.localMinimalDiscriminantValuation R = 1 := by
     exact_mod_cast neg_injective (WithZero.exp_injective hminval.symm)
+  change W.reductionSymbol R = .I 1
   rw [W.reductionSymbol_eq_I_of_hasMultiplicativeReduction (R := R), hn]
 
-open ValuativeRel in
 /-- At multiplicative reduction with discriminant valuation one, the
 intrinsic Tamagawa number is one in both splitting cases. -/
 theorem tamagawaNumberAt_eq_one_of_multiplicative_index_one (e : WeierstrassCurve ℤ) (p : ℕ)
@@ -101,18 +123,24 @@ theorem tamagawaNumberAt_eq_one_of_multiplicative_index_one (e : WeierstrassCurv
     (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = 1 := by
   let v := rationalPlace p
   let F := v.adicCompletion ℚ
-  let V := valuation F
+  let V : Valuation F (WithZero (Multiplicative ℤ)) := Valued.v
   let R := V.valuationSubring
   let W := (e.baseChange ℚ).baseChange F
-  let : HenselianLocalRing R := inferInstanceAs (HenselianLocalRing 𝒪[F])
-  let : Finite (IsLocalRing.ResidueField R) := inferInstanceAs (Finite 𝓀[F])
+  let : IsAdicComplete (IsLocalRing.maximalIdeal R) R :=
+    (v.isAdic_maximalIdeal_adicCompletionIntegers (K := ℚ)).isAdicComplete_iff.mpr
+      ⟨inferInstance, inferInstance⟩
+  let : Finite (IsLocalRing.ResidueField R) := by
+    change Finite (IsLocalRing.ResidueField (v.adicCompletionIntegers ℚ))
+    infer_instance
   have hsymbol : W.reductionSymbol R = .I 1 := completedSymbol_eq_I_one e p hd hd₂ hc
   obtain ⟨C, D, ϖ, _, hD, hϖ, hterminal⟩ :=
     (W.reductionSymbol_eq_iff (R := R)).mp hsymbol
   have hspan : IsLocalRing.maximalIdeal R = Ideal.span {ϖ} :=
     (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).mp hϖ
+  let : (C.baseChange F).IsElliptic := hD ▸ inferInstanceAs (D • W).IsElliptic
   have hlocal := (C.baseChange F).tamagawaNumber_eq_tateLocalIndex V hspan
     (by simpa only [integralModel_baseChange_self] using hterminal)
+  rw [tamagawaNumberAt_adicValued]
   change W.tamagawaNumber V = 1
   rw [← W.tamagawaNumber_smul V D, hD, hlocal, integralModel_baseChange_self,
     tateLocalIndex_I_one]
