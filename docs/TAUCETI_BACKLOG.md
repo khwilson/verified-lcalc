@@ -224,6 +224,33 @@ ellipticity of source and target and `source.j ≠ target.j`; its conclusion
 applies to each isogeny between their affine models. Keep the field and model
 assumptions explicit, and do not claim a lower bound without the j-inequality.
 
+## TC-13 — full rational torsion as two independent cyclic factors
+
+Status: proved in the generic additive-group theorem
+[`TwoFactorTorsion.lean`](../VerifiedLcalc/EllipticCurve/TwoFactorTorsion.lean)
+and used by `certify_ec` for exact rational two-factor structures. For an
+additive commutative group `A`, a point `P` of exact order two, a point `Q` of
+positive exact order `n`, `P ∉ AddSubgroup.zmultiples Q`, and
+`Nat.card (AddCommGroup.torsion A) ∣ 2 * n`, the theorem constructs an additive
+equivalence `ZMod 2 × ZMod n ≃+ AddCommGroup.torsion A` carrying `(1,0)` to `P`
+and `(0,1)` to `Q`. The positive order rules out the infinite-cardinality
+sentinel; the subgroup-separation hypothesis rules out a dependent order-two
+point. TauCeti's full torsion reduction theorem supplies the upper divisor from
+two odd good-reduction primes.
+
+Proposed upstream API: a generic Mathlib theorem for this finite abelian group
+presentation, separated from the project-specific finite `outsideCyclicCheck`
+and elliptic-curve adapter. Preserve the exact-order, nonmembership, positive
+order and full-cardinality-divisibility hypotheses. The certificate exports a
+concrete additive equivalence rather than only its existence proposition.
+Exact torsion prime support is computed with Mathlib's
+`Nat.primeFactorsList`; it is emitted only when exact subgroup cardinality is
+proved, including the empty support for cardinality one.
+
+TauCeti's open full-two-torsion result (`#44716`) proves a scaled Legendre
+normal form from a four-element doubling kernel; it does not give this
+generator-preserving equivalence for the full rational torsion subgroup.
+
 ## Submission and validation
 
 TC-01, TC-02, TC-03 and TC-08 have compiled source rather than proposed axioms.

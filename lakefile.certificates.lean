@@ -51,6 +51,10 @@ input_file witness_tests_fixtures_lmfdb_291_d1 where
   path := "tests/fixtures/lmfdb/291.d1.json"
   text := true
 
+input_file torsionFixture120b4 where
+  path := "tests/fixtures/torsion/120.b4.json"
+  text := true
+
 lean_lib VerifiedLcalcTests where
   srcDir := "tests"
   needs := #[
@@ -63,7 +67,8 @@ lean_lib VerifiedLcalcTests where
     `@/witness_tests_fixtures_lmfdb_275_a1,
     `@/witness_tests_fixtures_lmfdb_286_f1,
     `@/witness_tests_fixtures_lmfdb_288_a1,
-    `@/witness_tests_fixtures_lmfdb_291_d1]
+    `@/witness_tests_fixtures_lmfdb_291_d1,
+    `@/torsionFixture120b4]
 
 input_file witness_data_witnesses_11a1 where
   path := "data/witnesses/11a1.json"

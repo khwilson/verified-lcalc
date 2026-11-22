@@ -283,8 +283,8 @@ def certifyJson (name : Name) (text : String)
       let algebraicKeys := if CurveDataJson.inlineAnalyticRankField j then [] else ["rank"]
       let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points",
         "minimality", "local_data", "gens", "ngens", "torsion_generators",
-        "torsion_generator_orders",
-        "torsion_structure", "rank_bounds", "algebraic_rank", "infinite_order_points",
+        "torsion_generator_orders", "torsion_structure", "torsion_primes", "rank_bounds",
+        "algebraic_rank", "infinite_order_points",
         "independent_points", "binvs", "cinvs",
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",

@@ -133,8 +133,14 @@ ranks conditional on an explicit realization. The `torsion` field can carry a
 verified positive multiple of the full subgroup order, a consistent supplied
 count, and an exact cardinality when determined.
 
-The `torsion.cyclicStructure` projection gives the checked factors, order,
-and rational generator together with a generator-preserving equivalence.
+The `torsion.cyclicStructure` projection gives the checked cyclic factors,
+order, and rational generator. For factors `[2, n]`,
+`torsion.twoFactorStructure` holds the actual `AddEquiv` from
+`ZMod 2 × ZMod n` onto Mathlib's full torsion subgroup, with proofs that the
+coordinate generators map to the supplied rational points. When an exact full
+torsion order is proved, `torsion.primeSupport` gives the distinct prime list,
+its nodup proof, and a theorem characterizing its members by primality and
+divisibility of the subgroup cardinality.
 
 The `rational.abcQuality` projection holds the exact reported value and error,
 the validated factorization, and the certified bound on the actual quality.
@@ -311,6 +317,25 @@ full rational torsion subgroup. Supply the cyclic `torsion_structure` as
 additive equivalence from `ZMod n` sending 1 to that first point. The trivial
 group uses `[]` and the identity point. If the verified bound is larger
 than the claimed order, the cyclic certificate requires tighter evidence.
+A structure `[2, n]` with positive even `n` requires two supplied points of
+orders 2 and `n` in that order, and a verified divisor of `2 * n`. The
+command checks that the first point lies outside the cyclic subgroup of the
+second. The structure theorem gives an additive equivalence from
+`ZMod 2 × ZMod n` sending the coordinate generators to the supplied points.
+An order-2 point that is already a multiple of the second point fails this
+check and rolls back the certificate.
+
+The checked fixture for LMFDB 120.b4 has equation `[0,1,0,-20,0]`, two-factor
+structure `[2,4]`, and point coordinates `(0,0)` and `(-2,6)`. Its compiled
+consumer uses the stored equivalence directly and proves the full subgroup has
+cardinality 8 and prime support `[2]`.
+
+The optional native JSON field `torsion_primes` must list the distinct primes
+in ascending order. The checker compares it with the canonical
+`Nat.primeFactorsList` support. A bound on the torsion cardinality alone cannot
+certify prime support; the command leaves it unverified until an exact
+cardinality is established.
+
 Invariant factors must be greater than one and each must divide every later
 factor. Their product must agree with the claimed cardinality and divide the
 verified divisibility bound when those claims are supplied. Each checked point
