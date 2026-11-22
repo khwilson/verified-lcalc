@@ -28,7 +28,7 @@ example :
   LMFDB.C179a1.local_invariants _ (by decide +kernel)
 
 example :
-    letI : Fact (Nat.Prime 179) := ⟨by decide⟩
+    letI : Fact (Nat.Prime 179) := ⟨by decide +kernel⟩
     (LMFDB.C179a1.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 179) = .I 1 := by
   let row : LocalReductionClaim :=
     { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
