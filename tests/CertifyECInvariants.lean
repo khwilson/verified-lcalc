@@ -136,7 +136,8 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
       `semistable, `squarefree_discriminant, `local_invariants, `kodaira_symbols,
-      `claimed_semistable, `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_conductor_valuations,
+      `claimed_semistable, `claimed_squarefree_discriminant, `claimed_local_invariants,
+      `claimed_conductor_valuations,
       `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation] do
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 

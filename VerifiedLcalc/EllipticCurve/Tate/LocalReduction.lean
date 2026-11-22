@@ -30,11 +30,6 @@ private noncomputable def residueFieldEquivZMod (p : ℕ) [Fact p.Prime] :
   rw [rationalPlace_norm p] at f
   exact f
 
-/-- The residue field of the rational local ring is finite. -/
-instance rationalLocalResidueFinite (p : Nat) [Fact p.Prime] :
-    Finite (IsLocalRing.ResidueField (RationalLocalRing p)) :=
-  Finite.of_equiv (ZMod p) (residueFieldEquivZMod p).symm.toEquiv
-
 private theorem int_valuation_eq_one_iff (p : ℕ) [Fact p.Prime] (n : ℤ) :
     valuation ℚ (IsDiscreteValuationRing.maximalIdeal (RationalLocalRing p)) (n : ℚ) = 1 ↔
       ¬ (p : ℤ) ∣ n := by
