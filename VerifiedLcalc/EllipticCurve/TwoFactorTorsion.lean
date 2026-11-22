@@ -1,7 +1,9 @@
 module
 
-public import Mathlib.GroupTheory.SpecificGroups.Cyclic
 public import Mathlib.GroupTheory.Torsion
+import Mathlib.GroupTheory.SpecificGroups.Cyclic
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.TypeStar
 
 /-!
 # Torsion from independent cyclic subgroups of orders two and n
@@ -21,7 +23,9 @@ def outsideCyclicCheckMul {G : Type*} [Monoid G] [DecidableEq G]
     (P Q : G) (n : ℕ) : Bool :=
   (List.range n).all (fun k => decide (Q ^ k ≠ P))
 
-variable {G : Type*} [CommGroup G] {P Q : G} {n : ℕ}
+section CyclicSubgroups
+
+variable {G : Type*} [Group G] {P Q : G} {n : ℕ}
 
 /-- A checked finite power search proves multiplicative subgroup nonmembership. -/
 @[to_additive outsideCyclicCheck_sound]
@@ -52,6 +56,10 @@ private theorem disjoint_zpowers_of_order_two (hP : orderOf P = 2)
   · simpa only [pow_zero] using hkp.symm
   · have hpx : P = x := by simpa only [pow_one] using hkp
     exact (hout (hpx.symm ▸ hxQ)).elim
+
+end CyclicSubgroups
+
+variable {G : Type*} [CommGroup G] {P Q : G} {n : ℕ}
 
 set_option linter.style.haveILetI false in
 /-- Split a finite commutative group from two disjoint finite subgroups whose

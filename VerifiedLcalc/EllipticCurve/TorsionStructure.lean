@@ -1,7 +1,8 @@
 module
 
-public import Mathlib.GroupTheory.SpecificGroups.Cyclic
 public import Mathlib.GroupTheory.Torsion
+import Mathlib.GroupTheory.SpecificGroups.Cyclic
+import Mathlib.Tactic.TypeStar
 
 /-!
 # Exact cyclic torsion from a point order and an upper divisor
