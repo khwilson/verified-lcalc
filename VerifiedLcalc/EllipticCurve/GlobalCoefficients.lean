@@ -3,8 +3,10 @@ module
 public import VerifiedLcalc.EllipticCurve.EulerProduct
 public import VerifiedLcalc.EllipticCurve.RationalPrimes
 public import VerifiedLcalc.EllipticCurve.TauCeti
-public import VerifiedLcalc.Upstream.TauCeti.RingTheory.DedekindDomain.AdicValuation.Completion
+public import TauCeti.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Mathlib.Data.ZMod.QuotientRing
+
+/-! # Local and global coefficients at rational primes -/
 
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
@@ -29,8 +31,9 @@ theorem rationalPlace_norm (p : ℕ) [Fact p.Prime] : (rationalPlace p).asIdeal.
   rw [← RationalPrimes.norm_integerPlace]
   have hi : RationalPrimes.integerPlace (rationalPlace p) =
       ({ asIdeal := Ideal.span {(p : ℤ)}
-         isPrime := (Ideal.span_singleton_prime (by exact_mod_cast (Fact.out : p.Prime).ne_zero)).mpr
-           (Int.prime_iff_natAbs_prime.mpr (by simpa using (Fact.out : p.Prime)))
+         isPrime :=
+           (Ideal.span_singleton_prime (by exact_mod_cast (Fact.out : p.Prime).ne_zero)).mpr
+             (Int.prime_iff_natAbs_prime.mpr (by simpa using (Fact.out : p.Prime)))
          ne_bot := by simp [(Fact.out : p.Prime).ne_zero] } : HeightOneSpectrum ℤ) := by
     exact Equiv.apply_symm_apply _ _
   rw [hi]

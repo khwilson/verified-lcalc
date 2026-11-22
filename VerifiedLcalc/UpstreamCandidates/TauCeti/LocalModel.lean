@@ -1,8 +1,10 @@
 module
 
-public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.LocalPolynomial
-public import Mathlib.RingTheory.Valuation.Integers
-public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.MinimalModel.Basic
+public import TauCeti.AlgebraicGeometry.EllipticCurve.LocalPolynomial
+public import TauCeti.AlgebraicGeometry.EllipticCurve.MinimalModel.Basic
+import TauCeti.AlgebraicGeometry.EllipticCurve.IntegralModel
+
+/-! # Local Euler factors of supplied minimal equations -/
 
 @[expose] public section
 namespace WeierstrassCurve
@@ -15,31 +17,13 @@ variable {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
 /-- A smooth integral equation is minimal: its discriminant already has the
 largest valuation possible for an integral equation. -/
 theorem isMinimal_of_unit_discriminant (W : WeierstrassCurve R) (h : IsUnit W.Δ) :
-    WeierstrassCurve.IsMinimal R (W.baseChange K) := by
-  let U := W.baseChange K
-  let : WeierstrassCurve.IsIntegral R U := ⟨⟨W, rfl⟩⟩
-  have hΔ : valuation K (maximalIdeal R) U.Δ = 1 := by
-    rw [show U.Δ = algebraMap R K W.Δ by simp [U, WeierstrassCurve.baseChange]]
-    exact Valuation.Integers.one_of_isUnit' h (fun x => valuation_le_one _ _)
-  refine ⟨⟨by simpa using (inferInstance : WeierstrassCurve.IsIntegral R U), ?_⟩⟩
-  intro C hC _
-  simp only [one_smul, ← Subtype.coe_le_coe]
-  change (WeierstrassCurve.valuation_Δ_aux R (C • U) : WithZero (Multiplicative ℤ)) ≤
-    (WeierstrassCurve.valuation_Δ_aux R U : WithZero (Multiplicative ℤ))
-  rw [WeierstrassCurve.valuation_Δ_aux_eq_of_isIntegral R (C • U),
-    WeierstrassCurve.valuation_Δ_aux_eq_of_isIntegral R U, hΔ]
-  simpa only [WeierstrassCurve.valuation_Δ_aux_eq_of_isIntegral R (C • U)] using
-    (WeierstrassCurve.valuation_Δ_aux R (C • U)).property
+    WeierstrassCurve.IsMinimal R (W.baseChange K) :=
+  isMinimal_baseChange_of_isUnit_Δ_or_isUnit_c₄ R W (.inl h)
 
 /-- Either unit discriminant or unit c4 is enough for local minimality. -/
 theorem isMinimal_of_unit_invariants (W : WeierstrassCurve R)
-    (h : IsUnit W.Δ ∨ IsUnit W.c₄) : WeierstrassCurve.IsMinimal R (W.baseChange K) := by
-  rcases h with h | h
-  · exact isMinimal_of_unit_discriminant W h
-  · let : WeierstrassCurve.IsIntegral R (W.baseChange K) := ⟨⟨W, rfl⟩⟩
-    apply WeierstrassCurve.isMinimal_of_valuation_c₄_eq_one R (W.baseChange K)
-    rw [show (W.baseChange K).c₄ = algebraMap R K W.c₄ by simp [WeierstrassCurve.baseChange]]
-    exact Valuation.Integers.one_of_isUnit' h (fun x => valuation_le_one _ _)
+    (h : IsUnit W.Δ ∨ IsUnit W.c₄) : WeierstrassCurve.IsMinimal R (W.baseChange K) :=
+  isMinimal_baseChange_of_isUnit_Δ_or_isUnit_c₄ R W h
 
 /-- Two minimal equations reduce to models related by an actual invertible
 residue-field variable change. This includes singular reductions. -/
@@ -47,20 +31,11 @@ theorem reduction_eq_variableChange (W : WeierstrassCurve R)
     [WeierstrassCurve.IsMinimal R (W.baseChange K)] [(W.baseChange K).IsElliptic] :
     ∃ C : WeierstrassCurve.VariableChange (IsLocalRing.ResidueField R),
       ((W.baseChange K).minimal R).reduction R = C • W.map (IsLocalRing.residue R) := by
-  let U := W.baseChange K
-  obtain ⟨D, hD⟩ := WeierstrassCurve.exists_smul_eq_minimal R U
-  obtain ⟨u, hu⟩ := WeierstrassCurve.VariableChange.exists_unit_algebraMap_eq_u_of_isMinimal_smul R D hD
-  obtain ⟨C, hC⟩ := WeierstrassCurve.variableChange_integral_of_u_integral hD hu
-  have hm : (C • W).baseChange K = U.minimal R := by
-    rw [WeierstrassCurve.baseChange, ← WeierstrassCurve.map_variableChange]
-    change C.baseChange K • U = U.minimal R
-    rw [hC]
-    exact hD
-  have hi : (U.minimal R).integralModel R = C • W := by
-    apply WeierstrassCurve.map_injective (IsFractionRing.injective R K)
-    exact (WeierstrassCurve.baseChange_integralModel_eq R (U.minimal R)).trans hm.symm
-  refine ⟨C.map (IsLocalRing.residue R), ?_⟩
-  rw [WeierstrassCurve.reduction, hi, ← WeierstrassCurve.map_variableChange]
+  obtain ⟨D, hD⟩ := WeierstrassCurve.exists_smul_eq_minimal R (W.baseChange K)
+  obtain ⟨C, hC⟩ := WeierstrassCurve.exists_smul_reduction_eq_of_isMinimal_smul R D hD
+  have hred : (W.baseChange K).reduction R = W.map (IsLocalRing.residue R) := by
+    rw [WeierstrassCurve.reduction, WeierstrassCurve.integralModel_baseChange_self]
+  exact ⟨C, by simpa only [hred] using hC.symm⟩
 
 open scoped Classical in
 /-- The local polynomial can be read from any supplied integral minimal

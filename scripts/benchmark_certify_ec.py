@@ -56,6 +56,24 @@ def captured(args: list[str]) -> str:
     return subprocess.check_output(args, cwd=ROOT, text=True).strip()
 
 
+def mathlib_revision() -> str:
+    """Read the Git revision of the Mathlib checkout in Lake's source search path."""
+    source_path = captured([*LAKE, "env", "printenv", "LEAN_SRC_PATH"])
+    for entry in source_path.split(os.pathsep):
+        checkout = (ROOT / entry).resolve()
+        if not (checkout / "Mathlib.lean").is_file():
+            continue
+        top, revision = captured(
+            ["git", "-C", str(checkout), "rev-parse", "--show-toplevel", "HEAD"]
+        ).splitlines()
+        if Path(top).resolve() != checkout:
+            raise RuntimeError(
+                f"Mathlib source directory is not a checkout root: {checkout}"
+            )
+        return revision
+    raise RuntimeError("Lake did not resolve a Mathlib source checkout")
+
+
 def run(args: list[str], log: Path, env: dict[str, str] | None = None) -> Sample:
     before = resource.getrusage(resource.RUSAGE_CHILDREN)
     started = time.perf_counter()
@@ -146,9 +164,7 @@ def main() -> None:
         "repetitions": args.repetitions,
         "launcher": args.launcher,
         "toolchain": (ROOT / "lean-toolchain").read_text().strip(),
-        "mathlib_revision": captured(
-            ["git", "-C", str(ROOT.parent / "mathlib4"), "rev-parse", "HEAD"]
-        ),
+        "mathlib_revision": mathlib_revision(),
         "git_revision": captured(["git", "rev-parse", "HEAD"]),
         "git_diff_sha256": hashlib.sha256(
             captured(["git", "diff"]).encode()

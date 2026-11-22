@@ -1,19 +1,18 @@
 import CertifiedCurves.Invariants
 import Lean
 
-/-!
-# Stored invariant certificates
-
-Check exact input decoding, theorem output, and atomic rejection of invalid witnesses.
--/
+/-! Regression tests for stored invariant checks through `certify_ec`. -/
 
 open Lean Elab Command VerifiedLcalc VerifiedLcalc.EllipticCurve
 
 -- Native LMFDB rational pairs, canonical strings, exact integer literals, and
 -- partial data all feed the same witness. Missing prerequisites emit no claim.
 certify_ec Partial37 from_json_string
-  r#"{"ainvs":[0,0,1,-1,0],"jinv":[110592,37],"signD":1,"absD":37,"bad_primes":[37],
-    "num_bad_primes":1,"conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3]}"#
+  r#"{"ainvs":[0,0,1,-1,0],"jinv":[110592,37],"signD":1,"absD":37,
+      "bad_primes":[37],"num_bad_primes":1,"semistable":true,"squarefree_disc":true,
+      "local_invariants":[{"prime":37,"discriminant_valuation":1,
+        "j_denominator_valuation":1,"reduction_type":-1}],
+      "conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3]}"#
 example : (Partial37.curve.baseChange ℚ).j = 110592 / 37 := Partial37.j_invariant
 
 certify_ec JZero from_json_string
@@ -37,22 +36,40 @@ certify_ec J1728 from_json_string
 -- A local table's root_number must never become a global-root claim.
 certify_ec LocalSignMetadata from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"prime":37,"root_number":1,"minimality":[37],
-    "local_data":{"at_two":null,"at_three":null}}"#
+      "local_data":{"at_two":null,"at_three":null}}"#
 example : LocalSignMetadata.witness.rootNumber = none := rfl
 
 certify_ec JSON37 from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"jinv":["110592","37"],"binvs":[0,-2,1,-1],"cinvs":[48,-216],
-    "absD":37,"bad_primes":[37],"num_bad_primes":1,"conductor":37,"global_root_number":-1,
-    "anlist":[0,1,-2,-3,2,-2,6,-1,0],"minimality":[37],
-    "local_data":{"at_two":null,"at_three":null}}"#
+      "absD":37,"bad_primes":[37],"num_bad_primes":1,"semistable":true,"squarefree_disc":true,
+      "local_invariants":[{"prime":37,"discriminant_valuation":1,
+        "j_denominator_valuation":1,"reduction_type":-1}],
+      "conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3,2,-2,6,-1,0],
+      "minimality":[37],"local_data":{"at_two":null,"at_three":null}}"#
 example : JSON37.curve.Δ.natAbs = 37 := JSON37.minimal_discriminant_abs.2
+
+example : WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
+    (JSON37.curve.baseChange ℚ) := JSON37.semistable.mpr rfl
+
+certify_ec AdditiveLocal from_json_string
+  r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],"semistable":false,
+      "squarefree_disc":false,"prime":3,"discriminant_valuation":3,
+      "j_denominator_valuation":0,"reduction_type":0}"#
+
+example : ¬ WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
+    (AdditiveLocal.curve.baseChange ℚ) := fun h => by
+  have := AdditiveLocal.semistable.mp h
+  contradiction
+
+certify_ec SplitLocal from_json_string
+  r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
+      "local_invariants":[{"prime":11,"reduction_type":1}]}"#
 
 run_cmd do
   let input ← CertifyEC.jsonInput
     r#"{"ainvs":[0,0,1,-1,0],"jinv":[110592,37]}"#
   CertifyEC.certifyAtomic `ProgrammaticInvariant input
 
-/-- Check an expected failure and ensure it leaves no declarations behind. -/
 meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit := do
   let messages := (← get).messages
   let mut failed := false
@@ -67,7 +84,9 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `claimed_j_invariant, `claimed_j_integral, `j_integral, `j_integral_input_eq,
       `j_integral_value_valid, `claimed_discriminant, `global_minimal,
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
-      `bad_primes, `bad_reduction_primes, `num_bad_primes] do
+      `bad_primes, `bad_reduction_primes, `num_bad_primes,
+      `semistable, `squarefree_discriminant, `local_invariants, `claimed_semistable,
+      `claimed_squarefree_discriminant, `claimed_local_invariants] do
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
@@ -93,6 +112,22 @@ run_cmd do
     { Invariants37.witness with badPrimes := some [37, 37] }))
   invariantRejected `WrongBadCount (← `(certify_ec WrongBadCount from
     { Invariants37.witness with numBadPrimes := some 2 }))
+  invariantRejected `WrongSemistability (← `(certify_ec WrongSemistability from
+    { Invariants37.witness with semistable := some false }))
+  invariantRejected `WrongSquarefree (← `(certify_ec WrongSquarefree from
+    { Invariants37.witness with squarefreeDiscriminant := some false }))
+  invariantRejected `WrongLocalValuation (← `(certify_ec WrongLocalValuation from
+    { Invariants37.witness with localInvariants := some [
+        { prime := 37, discriminantValuation := some 0 }] }))
+  invariantRejected `WrongLocalJValuation (← `(certify_ec WrongLocalJValuation from
+    { Invariants37.witness with localInvariants := some [
+        { prime := 37, jDenominatorValuation := some 0 }] }))
+  invariantRejected `WrongLocalReduction (← `(certify_ec WrongLocalReduction from
+    { Invariants37.witness with localInvariants := some [
+        { prime := 37, reductionType := some 1 }] }))
+  invariantRejected `CompositeLocalPrime (← `(certify_ec CompositeLocalPrime from
+    { Invariants37.witness with localInvariants := some [
+        { prime := 4, discriminantValuation := some 0 }] }))
   invariantRejected `WrongConductor (← `(certify_ec WrongConductor from
     { Invariants37.witness with conductor := some 1 }))
   invariantRejected `WrongRootNumber (← `(certify_ec WrongRootNumber from
@@ -102,10 +137,11 @@ run_cmd do
   -- Scaling the equation scales its discriminant; it must not be passed off
   -- as a globally minimal model for an absD certificate.
   invariantRejected `NonminimalAbsD (← `(certify_ec NonminimalAbsD from
-    { equation := ⟨0, 0, 8, -16, 0⟩, minimality := some ⟨[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 37]⟩,
+    { equation := ⟨0, 0, 8, -16, 0⟩, minimality := some ⟨[2,2,2,2,2,2,2,2,2,2,2,2,37]⟩,
       minimalDiscriminantAbs := some 151552 }))
   for suffix in [`minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
-      `bad_primes, `bad_reduction_primes, `num_bad_primes] do
+      `bad_primes, `bad_reduction_primes, `num_bad_primes,
+      `semistable, `squarefree_discriminant, `local_invariants] do
     if (← getEnv).contains (`Partial37 ++ suffix) then
       throwError "Missing arithmetic evidence generated an invariant claim"
   for suffix in [`j_integral, `potential_good_reduction] do
@@ -125,7 +161,8 @@ run_cmd do
         throwError "Stored arithmetic invariants generated an unsupported rank claim"
     for suffix in [`b_invariants, `c_invariants, `j_invariant, `minimal_discriminant_abs,
         `global_minimal, `dirichlet_coefficients, `bad_primes,
-        `bad_reduction_primes, `num_bad_primes] do
+        `bad_reduction_primes, `num_bad_primes, `semistable, `squarefree_discriminant,
+        `local_invariants] do
       for ax in ← liftTermElabM <| Lean.collectAxioms (name ++ suffix) do
         unless standard.contains ax do throwError "Unexpected invariant axiom: {ax}"
     for suffix in [`conductor, `root_number] do
@@ -135,6 +172,14 @@ run_cmd do
       for ax in axioms do
         unless standard.contains ax || ax == ``VerifiedLcalc.Assumptions.ellipticModularity do
           throwError "Unexpected conditional invariant axiom: {ax}"
+
+run_cmd do
+  let standard := [``propext, ``Classical.choice, ``Quot.sound]
+  let additiveFields := [`semistable, `squarefree_discriminant, `local_invariants]
+  for (name, fields) in [(`AdditiveLocal, additiveFields), (`SplitLocal, [`local_invariants])] do
+    for field in fields do
+      for ax in ← liftTermElabM <| Lean.collectAxioms (name ++ field) do
+        unless standard.contains ax do throwError "Unexpected local invariant axiom: {ax}"
 
 run_cmd do
   for j in ["[1,0]", "[1,-1]", "[1,2,3]", "0.5", "\"0.5\""] do
