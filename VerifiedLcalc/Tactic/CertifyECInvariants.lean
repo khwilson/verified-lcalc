@@ -250,21 +250,65 @@ private def certifyTorsionStructure (base : Name) (curve : Ident) : CommandElabM
           (e 1 : (($curve).baseChange ℚ).toAffine.Point) = $point))
       (← `(⟨$hf, exists_torsion_addEquiv_of_order_dvd ($bound).2 $horder ($bound).1⟩))
 
+/-- Check one optional equation invariant and return the corresponding proved value. -/
+private def certifyProofFact (base field label : Name) (proofs : Option Ident)
+    (valueType lhs : TSyntax `term) : CommandElabM (Option (TSyntax `term)) := do
+  let claimed ← bindStored base field label valueType
+  let proved ← if let some facts := proofs then do
+    let projection := rootIdent (``EllipticProofs ++ field)
+    let selected ← `($projection $facts)
+    let provided ← liftTermElabM do
+      whnf (← Lean.Elab.Term.elabTerm selected none)
+    match provided.getAppFn.constName? with
+    | some ``Option.none => pure none
+    | some ``Option.some => some <$> `(($selected).getD ⟨$lhs, rfl⟩)
+    | _ => throwError "Expected closed optional proof data for {label}"
+  else pure none
+  let value := rootIdent (base ++ Name.mkSimple s!"claimed_{label}")
+  let some proof ← (match claimed, proved with
+    | none, none => pure none
+    | some _, none => some <$> `(by decide +kernel)
+    | some _, some evidence => some <$> `(by exact ($evidence).property)
+    | none, some evidence => do
+      emit (← `(def $value : $valueType := ($evidence).val))
+      some <$> `(($evidence).property)) | return none
+  let equality := rootIdent (base ++ label)
+  checked (base ++ label) (← `($lhs = $value)) proof
+  some <$> `(some ⟨$value, $equality⟩)
+
+/-- Package all supported checked equation invariants in one indexed record. -/
+private def certifyProofFacts (base : Name) (curve : Ident)
+    (input : Option (TSyntax `term)) : CommandElabM Unit := do
+  let proofs ← input.mapM fun term => do
+    let name := rootIdent (base ++ `proofs)
+    emit (← `(def $name : EllipticProofs $curve := $term))
+    pure name
+  let b ← certifyProofFact base `bInvariants `b_invariants proofs (← `(Int × Int × Int × Int))
+    (← `((($curve).b₂, ($curve).b₄, ($curve).b₆, ($curve).b₈)))
+  let c ← certifyProofFact base `cInvariants `c_invariants proofs (← `(Int × Int))
+    (← `((($curve).c₄, ($curve).c₆)))
+  let d ← certifyProofFact base `discriminant `discriminant proofs (← `(Int)) (← `(($curve).Δ))
+  if d.isSome then
+    let witness := rootIdent (base ++ `discriminant_witness)
+    let value := rootIdent (base ++ `claimed_discriminant)
+    let equality := rootIdent (base ++ `discriminant)
+    emit (← `(def $witness : DiscriminantWitness ℤ := ⟨$curve, $value, $equality⟩))
+  unless b.isNone && c.isNone && d.isNone do
+    let missing ← `(none)
+    let combined := rootIdent (base ++ `checked_facts)
+    emit (← `(def $combined : EllipticProofs $curve :=
+      { bInvariants := $(b.getD missing)
+        cInvariants := $(c.getD missing)
+        discriminant := $(d.getD missing) }))
+
 /-- Check each supplied invariant against the actual curve, not an LMFDB label. -/
-def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
+def certifyStoredInvariants (base : Name)
+    (proofs : Option (TSyntax `term) := none) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
   let hn := rootIdent (base ++ `nonsingular)
   certifyTorsionInvariants base curve
   certifyTorsionStructure base curve
-  if let some b ← bindStored base `bInvariants `b_invariants (← `(Int × Int × Int × Int)) then
-    checked (base ++ `b_invariants)
-      (← `((($curve).b₂, ($curve).b₄, ($curve).b₆, ($curve).b₈) = $b))
-      (← `(by decide +kernel))
-  if let some c ← bindStored base `cInvariants `c_invariants (← `(Int × Int)) then
-    checked (base ++ `c_invariants) (← `((($curve).c₄, ($curve).c₆) = $c))
-      (← `(by decide +kernel))
-  if let some d ← bindStored base `discriminant `discriminant (← `(Int)) then
-    checked (base ++ `discriminant) (← `(($curve).Δ = $d)) (← `(by decide +kernel))
+  certifyProofFacts base curve proofs
   if let some s ← bindStored base `discriminantSign `discriminant_sign (← `(Int)) then
     checked (base ++ `discriminant_sign) (← `(($curve).Δ.sign = $s)) (← `(by decide +kernel))
   if let some j ← bindStored base `jInvariant `j_invariant (← `(Rat)) then

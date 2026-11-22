@@ -132,6 +132,43 @@ run_cmd do
     r#"{"ainvs":[0,0,1,-1,0],"jinv":[110592,37]}"#
   CertifyEC.certifyAtomic `ProgrammaticInvariant input
 
+example {R : Type*} [CommRing R] (curve : WeierstrassCurve R) (d : R)
+    (h : curve.Δ = d) :
+    (DiscriminantWitness.toProofs ⟨curve, d, h⟩).discriminant = some ⟨d, h⟩ := rfl
+
+example {R : Type*} [CommRing R] (curve : WeierstrassCurve R) (d : R) (h : curve.Δ = d) :
+    ({ discriminant := some ⟨d, h⟩ } : EllipticProofs curve).discriminant = some ⟨d, h⟩ := rfl
+
+private theorem forbiddenDelta : Invariants37.curve.Δ = 37 :=
+  (fun _ : Assumptions.GeneralEllipticModularity => Invariants37.discriminant)
+    Assumptions.ellipticModularity
+
+private def forbiddenFacts : EllipticProofs Invariants37.curve :=
+  { discriminant := some ⟨37, forbiddenDelta⟩ }
+
+example : JZero.discriminant_witness.curve.Δ = -432 :=
+  JZero.discriminant_witness.discriminant_eq
+
+certify_ec ComposedProofs from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"discriminant":37,"independent_points":[]}"#
+  with_proofs Invariants37.discriminant_witness.toProofs
+  with_independence (by exact linearIndependent_empty_type)
+
+example : ComposedProofs.curve.Δ = 37 := ComposedProofs.discriminant
+
+certify_ec EmptyProofs from
+  { equation := Invariants37.curve }
+  with_proofs ({} : EllipticProofs Invariants37.curve)
+
+run_cmd do
+  if (← getEnv).contains `EmptyProofs.discriminant_witness then
+    throwError "An absent proved discriminant generated a witness"
+  if (← getEnv).contains `EmptyProofs.checked_facts then
+    throwError "An empty attachment generated a checked collection"
+  let axs ← liftTermElabM <| Lean.collectAxioms ``forbiddenDelta
+  unless axs.contains ``Assumptions.ellipticModularity do
+    throwError "The forbidden proof fixture lost its axiom dependency"
+
 meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit := do
   let messages := (← get).messages
   let mut failed := false
@@ -143,6 +180,7 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
   set { (← get) with messages }
   unless failed do throwError "Incorrect invariant accepted: {name}"
   for suffix in [`witness, `curve, `nonsingular, `j_invariant, `discriminant,
+      `proofs, `discriminant_witness, `checked_facts,
       `claimed_j_invariant, `claimed_j_integral, `j_integral, `j_integral_input_eq,
       `j_integral_value_valid, `claimed_discriminant, `global_minimal,
       `torsion, `torsion_bound, `claimed_torsion, `claimed_torsion_bound,
@@ -161,6 +199,9 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `ConflictingBProof (← `(certify_ec ConflictingBProof from
+    { equation := Invariants37.curve, bInvariants := some (0, 0, 0, 0) }
+    with_proofs Invariants37.checked_facts))
   invariantRejected `WrongTorsion (← `(certify_ec WrongTorsion from
     { TrivialTorsion.witness with torsion := some 2 }))
   invariantRejected `InconsistentTorsion (← `(certify_ec InconsistentTorsion from
@@ -169,6 +210,13 @@ run_cmd do
     { TrivialTorsion.witness with torsionBound := some ⟨3, 5, 2⟩ }))
   invariantRejected `TorsionAtBadPrime (← `(certify_ec TorsionAtBadPrime from
     { TrivialTorsion.witness with torsionBound := some ⟨3, 37, 1⟩ }))
+  invariantRejected `WrongProofCurve (← `(certify_ec WrongProofCurve from
+    { equation := JZero.curve } with_proofs Invariants37.discriminant_witness.toProofs))
+  invariantRejected `ConflictingProofValue (← `(certify_ec ConflictingProofValue from
+    { equation := Invariants37.curve, discriminant := some 36 }
+    with_proofs Invariants37.discriminant_witness.toProofs))
+  invariantRejected `ForbiddenProof (← `(certify_ec ForbiddenProof from
+    { equation := Invariants37.curve } with_proofs forbiddenFacts))
   invariantRejected `WrongJ (← `(certify_ec WrongJ from
     { Invariants37.witness with jInvariant := some 0 }))
   invariantRejected `WrongIntegralJ (← `(certify_ec WrongIntegralJ from_json_string
