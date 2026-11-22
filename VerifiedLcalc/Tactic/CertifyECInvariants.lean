@@ -85,6 +85,14 @@ def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
       (← `((($curve).c₄ : Rat) ^ 3 / (($curve).Δ : Rat) = $j)) (← `(by decide +kernel))
     checked (base ++ `j_invariant) (← `((($curve).baseChange ℚ).j = $j))
       (← `(Certification.j_invariant_of_exact_formula $curve $j $hv))
+  if let some integral ← bindStored base `jIntegral `j_integral (← `(Bool)) then
+    let hv := rootIdent (base ++ `j_integral_value_valid)
+    checked (base ++ `j_integral_value_valid)
+      (← `((((($curve).c₄ : ℚ) ^ 3 / (($curve).Δ : ℚ)).den == 1) = $integral))
+      (← `(by decide +kernel))
+    checked (base ++ `j_integral)
+      (← `(IsLocalization.IsInteger ℤ (($curve).baseChange ℚ).j ↔ $integral = true))
+      (← `(Certification.j_integral_iff_of_check $curve $integral $hv))
   let hasMinimality := (← optionalInput (base ++ `witness) `minimality).isSome
   let hasLocalData := (← optionalInput (base ++ `witness) `localData).isSome
   let m := rootIdent (base ++ `minimality)

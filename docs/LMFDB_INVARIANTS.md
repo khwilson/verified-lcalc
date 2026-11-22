@@ -23,6 +23,7 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `binvs`, `cinvs` | `bInvariants`, `cInvariants` | Equalities with Mathlib's b₂,b₄,b₆,b₈ and c₄,c₆. These are optional equation-data extensions. |
 | `discriminant` | `discriminant` | Equality with this supplied equation's Mathlib Δ; does not assert minimality. |
 | `jinv` | `jInvariant` | Equality with Mathlib's actual rational-curve `j`. Accepts an exact numerator/positive-denominator pair, fraction string, or integer. |
+| `j_integral` | `jIntegral` | Exact JSON boolean. The exported `j_integral` theorem equates `IsLocalization.IsInteger ℤ` of Mathlib's j-invariant with the supplied flag being true. |
 | `signD` | `discriminantSign` | Equality with the sign of the equation's Δ. |
 | `absD` | `minimalDiscriminantAbs` | Actual TauCeti `IsGlobalMinimal` together with the claimed absolute discriminant; requires checked `minimality`. |
 | `bad_primes` | `badPrimes` | Complete, duplicate-free prime-divisor list of the minimal discriminant, and equivalence with non-elliptic finite-field reduction; requires `minimality`. |
@@ -37,6 +38,14 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | Integral coordinates / stored x-values | `integralCoordinates` | Point membership; not completeness of the integral-point set. |
 | Point-index requests | `infiniteOrderPoints`, `independentPoints` | Infinite order and algebraic-rank lower bounds, with an explicit independence proof for a requested family. |
 | Complete numerical payload | `centralResult`, `derivativeResult` | Existing analytic-rank-zero/one certificates under the documented modularity assumption. |
+
+`j_integral` is a project-specific input key. With `true` it proves the j-invariant is the image
+of an integer. With `false` it proves the negation. It checks the actual curve even when no
+`jinv` value is supplied. The geometric `potential_good_reduction` field remains unverified. The pinned TauCeti
+release gives the criterion `WeierstrassCurve.hasPotentialGoodReduction_iff_isInteger_j`
+over a discrete valuation ring and its fraction field.
+[Upstream local criterion](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/PotentialGoodReduction.lean#L438-L442)
+· [Geometric integration and dependency audit](https://github.com/khwilson/verified-lcalc/issues/7)
 
 All equation invariants, minimality, bad-prime, coefficient, semistability, and local reduction results have only
 standard Lean axiom dependencies. Conductor and global-root identification are
