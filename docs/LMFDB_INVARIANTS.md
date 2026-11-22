@@ -50,7 +50,9 @@ complete list `factors` of prime factors of the reduced abc product, repeated
 with multiplicity. The checker proves
 `|curve.abcQuality h - reported| ≤ error` using exact dyadic log bounds.
 It rejects evidence at j = 0 or 1728, where the quality is undefined.
-A bare decimal remains metadata. Direct Lean input uses `AbcQualityClaim`.
+The logarithms are enclosed at 64 bits. A tighter error request can fail
+when those enclosures cannot establish it. A bare decimal remains metadata.
+Direct Lean input uses `AbcQualityClaim`.
 [LMFDB definition](https://www.lmfdb.org/knowledge/show/ec.q.abc_quality)
 
 `j_integral` checks whether the j-invariant is the image of an integer.
