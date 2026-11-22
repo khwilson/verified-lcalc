@@ -17,12 +17,12 @@ variable {R : Type*} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
 largest valuation possible for an integral equation. -/
 theorem isMinimal_of_unit_discriminant (W : WeierstrassCurve R) (h : IsUnit W.Δ) :
     WeierstrassCurve.IsMinimal R (W.baseChange K) :=
-  isMinimal_baseChange_of_isUnit_Δ_or_isUnit_c₄ W (.inl h)
+  isMinimal_baseChange_of_isUnit_Δ_or_isUnit_c₄ R W (.inl h)
 
 /-- Either unit discriminant or unit c4 is enough for local minimality. -/
 theorem isMinimal_of_unit_invariants (W : WeierstrassCurve R)
     (h : IsUnit W.Δ ∨ IsUnit W.c₄) : WeierstrassCurve.IsMinimal R (W.baseChange K) :=
-  isMinimal_baseChange_of_isUnit_Δ_or_isUnit_c₄ W h
+  isMinimal_baseChange_of_isUnit_Δ_or_isUnit_c₄ R W h
 
 /-- Two minimal equations reduce to models related by an actual invertible
 residue-field variable change. This includes singular reductions. -/

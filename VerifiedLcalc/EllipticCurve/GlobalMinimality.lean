@@ -23,7 +23,7 @@ private theorem integral_at_localization (e : WeierstrassCurve ℤ) (p : ℕ) [F
 private theorem rationalPlace_valuation_integers (p : ℕ) [Fact p.Prime] :
     ((rationalPlace p).valuation ℚ).Integers (Localization.AtPrime (rationalPlace p).asIdeal) :=
   (rationalPlace p).integers_valuation_of_isLocalizationAtPrime
-    (Localization.AtPrime (rationalPlace p).asIdeal)
+    (Localization.AtPrime (rationalPlace p).asIdeal) (K := ℚ)
 
 /-- The discriminant criterion proves minimality directly over the canonical
 localization, independently of completion-minimality comparisons. -/
