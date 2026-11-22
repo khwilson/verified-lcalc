@@ -49,6 +49,14 @@
   test libraries, replays cubic source/import tests, and runs arithmetic,
   numerical, general-modularity and axiom audits. Run `make check test` for the
   Python tooling. Do not run concurrent builds against shared dependencies.
+- Every newly checked fact must be accessible as typed data and its exact
+  proof through `Name.certificate`. Reuse indexed records and existing
+  theorems. Add the raw field to the certificate coverage inventory and test
+  an imported consumer. Use optional fields for absent evidence and a
+  membership or bound type for partial evidence.
+- Keep realization-dependent facts parameterized over explicit realizations.
+  The aggregate itself and new finite downstream projection theorems must
+  pass the standard Lean axiom audit on a mixed certificate.
 - Fixed curve proofs and consumers live under `tests/VerifiedLcalcTests/` and
   `tests/consumers/`. Production modules must not import `VerifiedLcalcTests`.
 - The registry/volunteer service, generated proof corpora, cached-key tables,

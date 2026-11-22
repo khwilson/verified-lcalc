@@ -5,6 +5,7 @@ public import VerifiedLcalc.Tactic.CertifyECData
 public import VerifiedLcalc.Tactic.CertifyECPoints
 public import VerifiedLcalc.Tactic.CertifyECInvariants
 public import VerifiedLcalc.Tactic.CertifyECIsogeny
+public import VerifiedLcalc.Tactic.CertifyECRecord
 public meta import Lean
 
 /-!
@@ -238,6 +239,7 @@ def certifyFields (name : Name) (input : TSyntax `term)
   certifyIsogenyEdge base isogeny
   if let some result := central then certifyAnalytic base true result
   if let some result := derivative then certifyAnalytic base false result
+  certifyRecord base
   logInfo m!"Certified {base}.ap_correct and {base}.point_integral for the supplied lists"
 
 /-- Programmatic entry point; failed components leave no declarations behind. -/

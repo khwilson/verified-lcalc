@@ -114,6 +114,32 @@ record can carry an `EllipticProofs curve` and
 `c₄Value : {a : R // curve.c₄ = a}` side by side, and pass its
 first field to the current command.
 
+## Use the checked certificate
+
+Each successful command exports `Name.certificate` indexed by its integral
+Weierstrass equation. Its `equationFacts` and `rational` fields hold exact
+invariants. The `algebraic` field holds membership of supplied points, complete
+integral y-fibers above specified x-coordinates, individual point orders, an
+independent family, and a proved rank lower bound. The `arithmetic` field
+exposes finite reduction facts and separate conditional results. To use a conditional arithmetic result, supply
+an explicit `ArithmeticModularRealization` of the equation. The `analytic`
+field keeps checked numerical payloads and separately gives enclosures and
+ranks conditional on an explicit realization. The `torsion` field can carry a
+verified positive multiple of the full subgroup order, a consistent supplied
+count, and an exact cardinality when determined.
+
+For example, the following reads an invariant from a compiled certificate
+using its exact proof. The default handles a missing value using the equation.
+
+```lean
+example : E.curve.Δ =
+    (E.certificate.equationFacts.discriminant.getD ⟨E.curve.Δ, rfl⟩).val :=
+  (E.certificate.equationFacts.discriminant.getD ⟨E.curve.Δ, rfl⟩).property
+```
+
+Use `E.certificate.equationFacts` as the `with_proofs` attachment when the
+next certificate checks the same integral equation.
+
 ## Import checked theorems
 
 Build the examples and their compiled certificates from the project root.
@@ -374,7 +400,8 @@ target. Use the proof attachment for other rational transports.
 
 The command exports `E.degree_two_isogeny` indexed by both equations and
 `E.isogeny_minimum_degree` about the degrees of all rational isogenies in
-this direction. The exhibited map has a two-element cyclic rational kernel.
+this direction. `E.certificate.isogeny` pairs the checked target with the
+same typed edge. The exhibited map has a two-element cyclic rational kernel.
 A source or target label supplied alongside the equations is provenance.
 The fixture checks the edge 112.a2 → 112.a1 in the
 [LMFDB 112.a class](https://www.lmfdb.org/EllipticCurve/Q/112/a/).
