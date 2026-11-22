@@ -27,7 +27,7 @@ def AlgebraicRankBounds.ofFinrankEq {W : WeierstrassCurve ℚ} [W.toAffine.IsEll
   ⟨n, n, h.ge, h.le⟩
 
 /-- Compatibility constructor for existing proofs stated using `Module.rank`.
-Mordell–Weil finite generation converts the cardinal equality to `finrank`. -/
+Mathlib converts any cardinal rank equal to a natural to `finrank`. -/
 def AlgebraicRankBounds.ofRankEq {W : WeierstrassCurve ℚ} [W.toAffine.IsElliptic]
     (n : ℕ) (h : Module.rank ℤ W.toAffine.Point = (n : Cardinal)) :
     AlgebraicRankBounds W := by
