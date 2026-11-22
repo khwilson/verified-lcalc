@@ -96,6 +96,9 @@ example {R : Type*} [CommRing R] (curve : WeierstrassCurve R) (d : R)
     (h : curve.Δ = d) :
     (DiscriminantWitness.toProofs ⟨curve, d, h⟩).discriminant = some ⟨d, h⟩ := rfl
 
+example {R : Type*} [CommRing R] (curve : WeierstrassCurve R) (d : R) (h : curve.Δ = d) :
+    ({ discriminant := some ⟨d, h⟩ } : EllipticProofs curve).discriminant = some ⟨d, h⟩ := rfl
+
 private theorem forbiddenDelta : Invariants37.curve.Δ = 37 :=
   (fun _ : Assumptions.GeneralEllipticModularity => Invariants37.discriminant)
     Assumptions.ellipticModularity
