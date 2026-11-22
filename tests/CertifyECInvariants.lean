@@ -11,7 +11,8 @@ certify_ec Partial37 from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"jinv":[110592,37],"signD":1,"absD":37,
       "bad_primes":[37],"num_bad_primes":1,"semistable":true,"squarefree_disc":true,
       "local_invariants":[{"prime":37,"discriminant_valuation":1,
-        "j_denominator_valuation":1,"reduction_type":-1,"conductor_valuation":1}],
+        "j_denominator_valuation":1,"reduction_type":-1,
+        "conductor_valuation":1,"kodaira_symbol":5}],
       "conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3]}"#
 example : (Partial37.curve.baseChange ℚ).j = 110592 / 37 := Partial37.j_invariant
 
@@ -214,7 +215,8 @@ run_cmd do
       minimalDiscriminantAbs := some 151552 }))
   for suffix in [`minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
-      `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation] do
+      `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation,
+      `kodaira_symbols] do
     if (← getEnv).contains (`Partial37 ++ suffix) then
       throwError "Missing arithmetic evidence generated an invariant claim"
   if (← getEnv).contains `NoPotentialGood.j_integral then
