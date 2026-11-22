@@ -105,7 +105,7 @@ private def certifyTorsionInvariants (base : Name) (curve : Ident) : CommandElab
       (← `(0 < $value ∧ $value ∣ ($evidence).bound)) (← `(by decide +kernel))
   let bound := mkApp (mkConst ``TorsionBoundWitness.bound)
     (mkConst (base ++ `claimed_torsion_bound))
-  let some n ← liftTermElabM <| (evalNat (← whnf bound)).run
+  let some n ← (liftTermElabM do (evalNat (← whnf bound)).run)
     | throwError "Expected a closed rational torsion bound"
   if n == 1 then
     let value ← match claim with
