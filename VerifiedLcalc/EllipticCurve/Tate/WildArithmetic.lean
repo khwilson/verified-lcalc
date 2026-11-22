@@ -5,7 +5,6 @@ public import VerifiedLcalc.EllipticCurve.Tate.InvariantMinimality
 public import Mathlib.NumberTheory.LegendreSymbol.ZModChar
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
-open Artifacts
 
 theorem cubicRepeated_correct (p : Nat) (a b c x : Int) :
     cubicRepeated p a b c x ↔

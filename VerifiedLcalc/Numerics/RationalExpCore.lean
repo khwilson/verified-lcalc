@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Scan
+public import VerifiedLcalc.Certificates.Enclosures
 public import VerifiedLcalc.Upstream.LedvinkaExponentialCore
 
 @[expose] public section

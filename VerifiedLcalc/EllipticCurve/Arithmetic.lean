@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certificate
+public import VerifiedLcalc.Certificates.WeierstrassInstances
 public import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCountOdd
 public import Mathlib.Data.ZMod.Basic
 public import Mathlib.Data.Nat.Prime.Defs
@@ -8,8 +8,6 @@ public import Mathlib.Data.Nat.Prime.Defs
 @[expose] public section
 
 namespace VerifiedLcalc.EllipticCurve
-open Artifacts
-
 /-- Use Euler's criterion at odd primes and the shared finite-ring enumeration
 otherwise. Modulus zero retains the unsupported sentinel convention. -/
 def computePointCount (e : WeierstrassCurve ℤ) (p : Nat) : Nat :=
@@ -23,7 +21,7 @@ def computePointCount (e : WeierstrassCurve ℤ) (p : Nat) : Nat :=
 /-- Evaluate the shared finite-ring trace. Correctness against TauCeti's
 field-valued mathematical definition is proved for prime moduli. -/
 def computeFrobeniusTrace (e : WeierstrassCurve ℤ) (p : Nat) : Int :=
-  if hp : p = 0 then 0 else
+  if _hp : p = 0 then 0 else
     (p : Int) + 1 - computePointCount e p
 
 /-- Reflect Mathlib's decidable primality predicate into the executable API. -/

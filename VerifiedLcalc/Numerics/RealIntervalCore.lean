@@ -1,10 +1,9 @@
 module
 public import VerifiedLcalc.Numerics.RationalExpCore
+public import VerifiedLcalc.Certificates.Enclosures
 @[expose] public section
 namespace VerifiedLcalc.Numerics
 open Inclusion.IntervalDyadicReal
-abbrev RealInterval := Rat × Rat
-
 def roundInterval (bits : Nat) (i : RealInterval) : RealInterval :=
   ((i.1.toDyadic bits).toRat, -(((-i.2).toDyadic bits).toRat))
 def intervalAdd (i j : RealInterval) : RealInterval := (i.1+j.1, i.2+j.2)

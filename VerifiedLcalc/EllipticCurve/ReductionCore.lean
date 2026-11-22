@@ -1,6 +1,7 @@
 module
 
 public import VerifiedLcalc.EllipticCurve.CoefficientCore
+public import VerifiedLcalc.Certificates.Transcripts
 
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
@@ -32,12 +33,6 @@ def invariantMinimalAt (e : (WeierstrassCurve ℤ)) (p : Nat) : Bool :=
 
 def modelMinimalAt (e : (WeierstrassCurve ℤ)) (p : Nat) : Bool :=
   discriminantMinimalAt e p || twoAdicC4MinimalAt e p || invariantMinimalAt e p
-
-/-- A finite, explicit factorization witness. Primes outside this list are good.
-Both the factorization and the minimality checks are rechecked in the kernel. -/
-structure MinimalityWitness where
-  primes : List Nat
-  deriving Repr, DecidableEq
 
 /-- A prime factorization with repetition, plus minimality checks at its primes.
 The producer may supply any list; the kernel validates every assertion. -/

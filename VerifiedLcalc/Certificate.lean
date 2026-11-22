@@ -2,13 +2,11 @@ module
 
 public import VerifiedLcalc.Scan
 public import VerifiedLcalc.Precision
-public import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
+public import VerifiedLcalc.Certificates.WeierstrassInstances
 
 /-! # Structural checks for numerical certificate artifacts -/
 
 @[expose] public section
-
-deriving instance Repr, DecidableEq for WeierstrassCurve
 
 namespace VerifiedLcalc.Artifacts
 

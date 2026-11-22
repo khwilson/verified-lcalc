@@ -2,6 +2,7 @@ module
 
 public import Std
 public import Init.Data.Rat
+public import VerifiedLcalc.Certificates.Enclosures
 
 @[expose] public section
 
@@ -9,38 +10,6 @@ public import Init.Data.Rat
 or tolerance test is used. A rectangle containing zero is inconclusive unless
 it is the singleton zero. -/
 namespace VerifiedLcalc
-
-/-- Closed rectangle in Rat². Invalid bounds are rejected by `valid`. -/
-structure Box where
-  reLo : Rat
-  reHi : Rat
-  imLo : Rat
-  imHi : Rat
-  deriving Repr, DecidableEq
-
-/-- Bounds are ordered. -/
-def Box.valid (b : Box) : Bool :=
-  decide (b.reLo ≤ b.reHi ∧ b.imLo ≤ b.imHi)
-
-/-- The rectangle is exactly the singleton zero. -/
-def Box.isZero (b : Box) : Bool :=
-  decide (b.reLo = 0 ∧ b.reHi = 0 ∧ b.imLo = 0 ∧ b.imHi = 0)
-
-/-- At least one coordinate interval strictly excludes zero. -/
-def Box.excludesZero (b : Box) : Bool :=
-  decide (0 < b.reLo ∨ b.reHi < 0 ∨ 0 < b.imLo ∨ b.imHi < 0)
-
-theorem Box.valid_correct (b : Box) :
-    b.valid = true ↔ b.reLo ≤ b.reHi ∧ b.imLo ≤ b.imHi := by
-  simp [valid]
-
-theorem Box.isZero_correct (b : Box) :
-    b.isZero = true ↔ b.reLo = 0 ∧ b.reHi = 0 ∧ b.imLo = 0 ∧ b.imHi = 0 := by
-  simp [isZero]
-
-theorem Box.excludesZero_correct (b : Box) :
-    b.excludesZero = true ↔ 0 < b.reLo ∨ b.reHi < 0 ∨ 0 < b.imLo ∨ b.imHi < 0 := by
-  simp [excludesZero]
 
 /-- Finite evidence for the first nonzero derivative: all earlier boxes are
 singleton zero, and the selected box excludes zero. -/
