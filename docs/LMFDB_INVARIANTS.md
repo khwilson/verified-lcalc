@@ -1,5 +1,7 @@
 # LMFDB invariants through `certify_ec`
 
+The [EC/Q coverage roadmap](roadmaps/LMFDB_Q_CERTIFICATION.md) inventories the related LMFDB tables and specifies the reusable theorem and checker work for each remaining field.
+
 `certify_ec` remains the sole public interface. Each optional witness field
 requests a check against the represented curve. Missing fields make no claim.
 For a recognized field whose required arithmetic evidence is absent, the command
