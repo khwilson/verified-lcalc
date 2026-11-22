@@ -18,4 +18,5 @@ public import VerifiedLcalcTests.Arithmetic.Monomial
 public import VerifiedLcalcTests.Arithmetic.Numerics
 public import VerifiedLcalcTests.Arithmetic.ReductionExamples
 public import VerifiedLcalcTests.Arithmetic.TameExamples
+public import VerifiedLcalcTests.Arithmetic.TorsionBound
 public import VerifiedLcalcTests.Arithmetic.WildExamples

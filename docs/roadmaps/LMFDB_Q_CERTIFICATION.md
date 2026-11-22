@@ -114,10 +114,17 @@ closure, and wild regression cases.
 
 ## Mordell–Weil and integral points
 
-**M1 · Full rational torsion.** For each supplied good prime p and prime
-power ℓᵏ with ℓ ≠ p, specialize TauCeti's
-`card_torsionBy_dvd_card_reduction` to a certified point count. Combine
-valuations across primes to obtain a global order bound, discharging each
+**M1 · Full rational torsion.** The [odd-prime specialization](../../VerifiedLcalc/EllipticCurve/TorsionBound.lean)
+proves that the full rational torsion order divides each certified point count
+at an odd prime of good reduction. It applies pinned TauCeti's
+[`card_torsion_dvd_card_reduction`](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Point/TorsionReduction.lean#L269-L282)
+using the ramification bound for odd primes over ℚ. The gcd at 3 and 5
+certifies the exact trivial torsion subgroup of 37.a1.
+
+When reduction only gives prime-to-residue torsion injectivity, specialize
+TauCeti's
+`card_torsionBy_dvd_card_reduction` to a certified point count for each supplied
+good prime p and prime power ℓᵏ with ℓ ≠ p. Combine valuations across primes to obtain a global order bound, discharging each
 residue-characteristic exception. Given explicit generators $P_i$, prove
 `AddEquiv` from the product of cyclic groups of the claimed invariant factors
 onto the rational torsion subgroup. Verify the homomorphism, exact orders and
