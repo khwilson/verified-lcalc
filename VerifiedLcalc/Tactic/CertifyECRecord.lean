@@ -134,8 +134,13 @@ private def torsionFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
     let n ← literalSyntax value
     `(some ⟨$n, $(rootIdent exactName)⟩)
   else `(none)
+  let cyclic ← if (← getEnv).contains (base ++ `torsion_structure) then
+    `(some ⟨$(rootIdent (base ++ `claimed_torsion_structure)),
+      $(rootIdent (base ++ `cyclic_torsion_order)),
+      $(rootIdent (base ++ `cyclic_torsion_generator)), $(rootIdent (base ++ `torsion_structure))⟩)
+  else `(none)
   `({ divisor := some ⟨$evidence, $checkedBound, $valid, $consistent⟩,
-      cardinality := $exactCardinality })
+      cardinality := $exactCardinality, cyclicStructure := $cyclic })
 
 /-- Emit the indexed public certificate with a standard-axiom dependency audit. -/
 def certifyRecord (base : Name) : CommandElabM Unit := do

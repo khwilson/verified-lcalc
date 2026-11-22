@@ -1,5 +1,9 @@
 module
+
 public import VerifiedLcalc.EllipticCurve.Modularity.Fourier
+
+/-! # The first central derivative of a modular realization -/
+
 @[expose] public section
 namespace VerifiedLcalc.Modularity
 open Set MeasureTheory Filter Asymptotics
@@ -15,14 +19,12 @@ private theorem scaled_rpow_bound (f : ℝ → ℂ) (c r : ℝ) (hc : 0 < c)
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
   exact (Real.mul_rpow hc.le ht.le).symm
 
-/-- Differentiating the genuine scaled Mellin transform at the center.
-No modularity axiom occurs: a supplied realization is the only curve input. -/
-theorem ModularRealization.mellin_first_derivative {e : (WeierstrassCurve ℤ)}
+/-- The scaled cusp-form kernel has strict Mellin decay margins around the center. -/
+theorem ModularRealization.imaginaryFunction_decay {e : WeierstrassCurve ℤ}
     (m : ModularRealization e) :
-    MellinConvergent (fun t => Real.log t • m.imaginaryFunction t) 1 ∧
-    HasDerivAt (mellin m.imaginaryFunction)
-      (mellin (fun t => Real.log t • m.imaginaryFunction t) 1) 1 := by
-  letI : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
+    m.imaginaryFunction =O[atTop] (fun t : ℝ => t ^ (-2 : ℝ)) ∧
+      m.imaginaryFunction =O[𝓝[>] 0] (fun t : ℝ => t ^ (-0 : ℝ)) := by
+  let : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
   let c : ℝ := (Real.sqrt m.level)⁻¹
   have hc : 0 < c := inv_pos.mpr (Real.sqrt_pos.mpr (by exact_mod_cast m.positiveLevel))
   let f : ℝ → ℂ := (ModularForm.weakFEPair (by decide : (0 : ℤ) < 2) m.form).f
@@ -48,6 +50,16 @@ theorem ModularRealization.mellin_first_derivative {e : (WeierstrassCurve ℤ)}
       |>.comp_tendsto hct
     rw [hefun]
     simpa only [f, Function.comp_def, neg_zero, Real.rpow_zero] using h
+  exact ⟨ht, hz⟩
+
+/-- Differentiating the genuine scaled Mellin transform at the center.
+No modularity axiom occurs: a supplied realization is the only curve input. -/
+theorem ModularRealization.mellin_first_derivative {e : (WeierstrassCurve ℤ)}
+    (m : ModularRealization e) :
+    MellinConvergent (fun t => Real.log t • m.imaginaryFunction t) 1 ∧
+    HasDerivAt (mellin m.imaginaryFunction)
+      (mellin (fun t => Real.log t • m.imaginaryFunction t) 1) 1 := by
+  obtain ⟨ht, hz⟩ := m.imaginaryFunction_decay
   have hi : IntegrableOn m.imaginaryFunction (Ioi 0) := by
     simpa [MellinConvergent] using m.central_mellin_convergent
   exact mellin_hasDerivAt_of_isBigO_rpow hi.locallyIntegrableOn ht (by norm_num) hz (by norm_num)
@@ -68,26 +80,27 @@ theorem ModularRealization.mellin_log_upper {e : (WeierstrassCurve ℤ)}
     simp only [Int.cast_neg, Int.cast_one] at h
     dsimp [g]
     simp only [one_div] at h
-    simp only [one_div, Real.log_inv, Complex.real_smul, Complex.ofReal_neg]
+    simp only [one_div, Real.log_inv, Complex.ofReal_neg]
     rw [h]
     ring
   have hs := Numerics.mellin_one_split g 1 m.mellin_first_derivative.1 hfe
   simpa [g, mellin, one_add_one_eq_two, integral_indicator, Measure.restrict_restrict,
-    measurableSet_Ioi, inter_eq_self_of_subset_right (Ioi_subset_Ioi (by norm_num : (0 : ℝ) ≤ 1))] using hs
+    measurableSet_Ioi, inter_eq_self_of_subset_right
+      (Ioi_subset_Ioi (by norm_num : (0 : ℝ) ≤ 1))] using hs
 
 /-- L(s) in terms of the scaled Mellin transform in a neighborhood of 1. -/
 theorem ModularRealization.formL_scaled_mellin {e : (WeierstrassCurve ℤ)}
     (m : ModularRealization e) (s : ℂ) (hs : s ≠ 0) :
     m.formL s = ((Real.sqrt m.level : ℂ)^(-s) * (2*(Complex.Gammaℂ s)⁻¹)) *
       mellin m.imaginaryFunction s := by
-  letI : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
+  let : NeZero m.level := ⟨Nat.ne_of_gt m.positiveLevel⟩
   have hpos : 0 < Real.sqrt (m.level : ℝ) :=
     Real.sqrt_pos.mpr (by exact_mod_cast m.positiveLevel)
   have hscale := mellin_comp_mul_right m.imaginaryFunction s hpos
   have hf : (fun t : ℝ => m.imaginaryFunction (t*Real.sqrt m.level)) =
       (fun t : ℝ => m.form (UpperHalfPlane.ofComplex (Complex.I*t))) := by
     funext t
-    simp [ModularRealization.imaginaryFunction, Complex.ofReal_mul, Complex.ofReal_div,
+    simp [ModularRealization.imaginaryFunction, Complex.ofReal_mul,
       mul_div_cancel_right₀ _ (show (Real.sqrt m.level : ℂ) ≠ 0 by exact_mod_cast hpos.ne')]
   rw [hf] at hscale
   rw [ModularRealization.formL, ModularForm.L_apply_of_ne_zero _ _ hs,
@@ -104,7 +117,9 @@ theorem ModularRealization.deriv_one_re_integral {e : (WeierstrassCurve ℤ)}
       ∫ t : ℝ in Ioi 1, Real.log t * (m.imaginaryFunction t).re := by
   let K : ℂ → ℂ := fun s => (Real.sqrt m.level : ℂ)^(-s) * (2*(Complex.Gammaℂ s)⁻¹)
   have hsqrt : (Real.sqrt m.level : ℂ) ≠ 0 := by
-    exact_mod_cast (Real.sqrt_pos.mpr (by exact_mod_cast m.positiveLevel) : 0 < Real.sqrt (m.level : ℝ)).ne'
+    have hpos : 0 < Real.sqrt (m.level : ℝ) :=
+      Real.sqrt_pos.mpr (by exact_mod_cast m.positiveLevel)
+    exact_mod_cast hpos.ne'
   have hK : DifferentiableAt ℂ K 1 := by
     dsimp [K]
     exact ((differentiableAt_id.neg).const_cpow (Or.inl hsqrt)).mul
@@ -113,7 +128,8 @@ theorem ModularRealization.deriv_one_re_integral {e : (WeierstrassCurve ℤ)}
     rw [Numerics.mellin_one_split m.imaginaryFunction m.rootNumber m.central_mellin_convergent]
     · simp [hw]
     · intro t ht
-      simpa [ModularRealization.imaginaryFunction, Complex.ofReal_div] using m.frickeImaginaryAxis t ht
+      simpa [ModularRealization.imaginaryFunction, Complex.ofReal_div] using
+        m.frickeImaginaryAxis t ht
   have hh := hK.hasDerivAt.mul m.mellin_first_derivative.2
   have hEq : (fun s => K s*mellin m.imaginaryFunction s) =ᶠ[𝓝 (1 : ℂ)] m.formL := by
     filter_upwards [eventually_ne_nhds (by norm_num : (1 : ℂ) ≠ 0)] with s hs

@@ -75,6 +75,17 @@ Build in this dependency order:
 3. Relate derivatives of `L(s) = K(s) M(s)` to Mellin moments by Leibniz. If all lower derivatives vanish exactly and `K(1) ≠ 0`, the first surviving derivative only needs `K(1)` times the corresponding Mellin derivative. Prove this cancellation generically before implementing gamma-derivative interval machinery.
 4. Generalize certified tail estimates and quadrature to log powers. State dependence on derivative order, coefficient majorant and truncation explicitly. Add numerical finite witnesses only after the real/complex analysis theorem exists.
 
+[`mellin_iteratedDeriv_of_isBigO_rpow`](../../VerifiedLcalc/Numerics/MellinLogMoments.lean)
+proves convergence and the log-moment formula for every order inside the
+original strict strip. The induction uses a slightly narrower strip for each
+additional log weight. For the scaled cusp form (f(it/\sqrt{N})), the
+[central split](../../VerifiedLcalc/EllipticCurve/Modularity/SecondDerivative.lean)
+gives (M''(1)=(1+\varepsilon)\int_1^\infty (\log t)^2f(it/\sqrt{N})\,dt).
+The gamma and level prefactor cancels out of the lower terms in the
+second-derivative product rule only when (M(1)=M'(1)=0) exactly.
+The factor at the center is (2\pi/\sqrt{N}). The leading Taylor
+coefficient is the corresponding raw derivative divided by (2!).
+
 [DerivativeTail](../../VerifiedLcalc/Numerics/DerivativeTail.lean) currently provides `fourier_tail_pointwise` and `derivative_tail_error` for the first log moment using the weak cubic coefficient bound. This is an initial theorem family, not a general arbitrary-derivative backend. [ExponentialIntegral](../../VerifiedLcalc/Numerics/ExponentialIntegral.lean) contains reusable integral and dominated-series lemmas; move genuinely general parts to Mathlib and the modular quantitative corollaries to TauCeti.
 
 Acceptance: an explicit error bound for each requested order; interval enclosures prove statements about actual `iteratedDeriv` in the arithmetic L-normalization; no appeal to LMFDB reference ranks; no exact equality inferred from containment in a small interval. Higher-order tails may be expensive even when the elliptic equation is small.
