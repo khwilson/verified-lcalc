@@ -155,6 +155,23 @@ ambient ring and minimality hypotheses, audit standard axioms, and test supplied
 minimal models including singular reductions. These results do not prove the
 localization/completion bridge in TC-04.
 
+## TC-09 — full torsion reduction at odd rational primes
+
+Status: specialization proved in
+[`TorsionBound.lean`](../VerifiedLcalc/EllipticCurve/TorsionBound.lean).
+Candidate upstream API: for an odd prime `p` and any prime `q`, the integer
+`q` lies outside the ideal power `(p)^(q - 1)` in ℤ. Consequently, at
+good reduction of an integral rational model at `p`, the order of the entire
+rational torsion subgroup divides the cardinality of the reduced point group
+over `ZMod p`.
+
+Reuse pinned TauCeti's
+[`card_torsion_dvd_card_reduction`](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Point/TorsionReduction.lean#L269-L282)
+and its integral reduction comparison. Keep the executable project-specific
+count adapter here. Include `p = 3` and require good reduction of the supplied
+equation. The ramification condition excludes the prime `2` from this full
+torsion specialization.
+
 ## Submission and validation
 
 TC-01, TC-02, TC-03 and TC-08 have compiled source rather than proposed axioms.
