@@ -69,6 +69,42 @@ existing transparent definitions. The command reduces the outer witness
 constructor and verifies all resulting data. It does not automatically fill in
 missing coefficients, precision, transcripts, or bounds.
 
+## Attach an exact proof in Lean
+
+An ordinary Lean caller can build a `DiscriminantWitness R` over a commutative
+ring. The record carries the equation, the proposed value, and its proof.
+
+```lean
+open VerifiedLcalc
+
+def exampleDelta : DiscriminantWitness ℤ where
+  curve := ⟨0, 0, 1, -1, 0⟩
+  discriminant := 37
+  discriminant_eq := by decide +kernel
+
+certify_ec E from { equation := exampleDelta.curve }
+  with_proofs exampleDelta.toProofs
+
+example : E.discriminant_witness.curve.Δ = 37 :=
+  E.discriminant_witness.discriminant_eq
+```
+
+The attachment is an `EllipticProofs` record indexed by the exact integral
+equation. Its optional discriminant field carries a value with a proof about
+that equation. It can also be constructed as
+`{ discriminant := some ⟨d, hd⟩ } : EllipticProofs curve`.
+A raw `discriminant` claim and the supplied value must agree when both are
+present. The certifier audits the proof dependencies and rejects a mismatched
+attachment atomically. A successful raw Lean or JSON claim also exports
+`Name.discriminant_witness`.
+
+The same attachment works after `from_json` and `from_json_string`.
+Use `with_independence` after `with_proofs` when supplying both. Additional
+proof-carrying facts can use the same index. For example, a downstream Lean
+record can carry an `EllipticProofs curve` and
+`jValue : {q : ℚ // (curve.baseChange ℚ).j = q}` side by side, and pass its
+first field to the current command.
+
 ## Import checked theorems
 
 Build the examples and their compiled certificates from the project root.
