@@ -130,8 +130,37 @@ private def certifyTorsionInvariants (base : Name) (curve : Ident) : CommandElab
   else if claim.isSome then
     logInfo m!"Unverified {base} torsion: the checked divisibility bound is not exact"
 
+/-- Check and package the discriminant through the computed or supplied proof route. -/
+private def certifyDiscriminant (base : Name) (curve : Ident)
+    (proofs : Option (TSyntax `term)) : CommandElabM Unit := do
+  let claimed ← bindStored base `discriminant `discriminant (← `(Int))
+  let proved ← if let some input := proofs then do
+    let name := base ++ `proofs
+    let facts := rootIdent name
+    emit (← `(def $facts : EllipticProofs $curve := $input))
+    let provided ← liftTermElabM <| whnf (mkProj ``EllipticProofs 0 (mkConst name))
+    match provided.getAppFn.constName? with
+    | some ``Option.none => pure none
+    | some ``Option.some =>
+      some <$> `(($facts).discriminant.getD ⟨($curve).Δ, rfl⟩)
+    | _ => throwError "Expected closed optional discriminant proof data"
+  else pure none
+  let d := rootIdent (base ++ `claimed_discriminant)
+  let some proof ← (match claimed, proved with
+    | none, none => pure none
+    | some _, none => some <$> `(by decide +kernel)
+    | some _, some evidence => some <$> `(by exact ($evidence).property)
+    | none, some evidence => do
+      emit (← `(def $d : ℤ := ($evidence).val))
+      some <$> `(($evidence).property)) | return
+  let equality := rootIdent (base ++ `discriminant)
+  checked (base ++ `discriminant) (← `(($curve).Δ = $d)) proof
+  let witness := rootIdent (base ++ `discriminant_witness)
+  emit (← `(def $witness : DiscriminantWitness ℤ := ⟨$curve, $d, $equality⟩))
+
 /-- Check each supplied invariant against the actual curve, not an LMFDB label. -/
-def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
+def certifyStoredInvariants (base : Name)
+    (proofs : Option (TSyntax `term) := none) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
   let hn := rootIdent (base ++ `nonsingular)
   certifyTorsionInvariants base curve
@@ -142,8 +171,7 @@ def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
   if let some c ← bindStored base `cInvariants `c_invariants (← `(Int × Int)) then
     checked (base ++ `c_invariants) (← `((($curve).c₄, ($curve).c₆) = $c))
       (← `(by decide +kernel))
-  if let some d ← bindStored base `discriminant `discriminant (← `(Int)) then
-    checked (base ++ `discriminant) (← `(($curve).Δ = $d)) (← `(by decide +kernel))
+  certifyDiscriminant base curve proofs
   if let some s ← bindStored base `discriminantSign `discriminant_sign (← `(Int)) then
     checked (base ++ `discriminant_sign) (← `(($curve).Δ.sign = $s)) (← `(by decide +kernel))
   if let some j ← bindStored base `jInvariant `j_invariant (← `(Rat)) then

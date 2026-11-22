@@ -31,3 +31,10 @@ certify_ec Invariants37 from
 
 example : (Invariants37.curve.baseChange ℚ).j = 110592 / 37 := Invariants37.j_invariant
 example : Invariants37.curve.Δ = 37 := Invariants37.discriminant
+
+certify_ec ProofCarrying37 from
+  { equation := Invariants37.curve }
+  with_proofs Invariants37.discriminant_witness.toProofs
+
+certify_ec FileProofCarrying37 from_json "../../../data/curve-data/37a1.json"
+  with_proofs Invariants37.discriminant_witness.toProofs

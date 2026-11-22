@@ -21,3 +21,10 @@ theorem imported_squarefree_discriminant : Squarefree Invariants37.curve.Δ.natA
 theorem imported_local_invariants (row : VerifiedLcalc.LocalReductionClaim)
     (h : row ∈ Invariants37.claimed_local_invariants) :
     row.Spec Invariants37.curve := Invariants37.local_invariants row h
+
+example : VerifiedLcalc.DiscriminantWitness ℤ := ProofCarrying37.discriminant_witness
+
+example : ProofCarrying37.discriminant_witness.curve.Δ = 37 :=
+  ProofCarrying37.discriminant_witness.discriminant_eq
+
+example : FileProofCarrying37.curve.Δ = 37 := FileProofCarrying37.discriminant
