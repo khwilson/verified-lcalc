@@ -2,6 +2,7 @@
   "ainvs": [0, 0, 1, -5, 4],
   "jinv": [13824000, 197],
   "j_integral": false,
+  "potential_good_reduction": false,
   "signD": 1,
   "absD": 197,
   "bad_primes": [197],

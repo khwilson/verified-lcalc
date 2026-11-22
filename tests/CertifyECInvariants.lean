@@ -26,9 +26,17 @@ certify_ec NonintegralJ from_json_string
 example : ¬ IsLocalization.IsInteger ℤ (NonintegralJ.curve.baseChange ℚ).j :=
   fun h => Bool.false_ne_true (NonintegralJ.j_integral.mp h)
 
-certify_ec GeometricMetadata from_json_string
-  r#"{"ainvs":[0,0,1,-1,0],"potential_good_reduction":true}"#
-example : GeometricMetadata.witness.jIntegral = none := rfl
+certify_ec PotentialGood from
+  { equation := ⟨0, 0, 0, 0, 1⟩, potentialGoodReduction := some true }
+example : EllipticCurve.HasEverywherePotentialGoodReduction (PotentialGood.curve.baseChange ℚ) :=
+  PotentialGood.potential_good_reduction.mpr rfl
+
+certify_ec NoPotentialGood from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"potential_good_reduction":false}"#
+example :
+    ¬ EllipticCurve.HasEverywherePotentialGoodReduction (NoPotentialGood.curve.baseChange ℚ) :=
+  fun h => Bool.false_ne_true (NoPotentialGood.potential_good_reduction.mp h)
+example : NoPotentialGood.witness.jIntegral = none := rfl
 
 certify_ec J1728 from_json_string
   r#"{"ainvs":[0,0,0,-1,0],"jinv":"1728/1","binvs":[0,-2,0,-1],"cinvs":[48,0]}"#
@@ -97,6 +105,8 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
   for suffix in [`witness, `curve, `nonsingular, `j_invariant, `discriminant,
       `claimed_j_invariant, `claimed_j_integral, `j_integral, `j_integral_input_eq,
       `j_integral_value_valid, `claimed_discriminant, `global_minimal,
+      `claimed_potential_good_reduction, `potential_good_reduction,
+      `potential_good_reduction_input_eq, `potential_good_reduction_value_valid,
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
       `semistable, `squarefree_discriminant, `local_invariants, `claimed_semistable,
@@ -111,6 +121,10 @@ run_cmd do
     r#"{"ainvs":[0,0,1,-1,0],"j_integral":true}"#))
   invariantRejected `WrongNonintegralJ (← `(certify_ec WrongNonintegralJ from
     { IntegralJ.witness with jIntegral := some false }))
+  invariantRejected `WrongPotentialGood (← `(certify_ec WrongPotentialGood from_json_string
+    r#"{"ainvs":[0,0,1,-1,0],"potential_good_reduction":true}"#))
+  invariantRejected `WrongNoPotentialGood (← `(certify_ec WrongNoPotentialGood from
+    { PotentialGood.witness with potentialGoodReduction := some false }))
   invariantRejected `WrongDiscriminant (← `(certify_ec WrongDiscriminant from
     { Invariants37.witness with discriminant := some (-37) }))
   invariantRejected `WrongB (← `(certify_ec WrongB from
@@ -165,17 +179,19 @@ run_cmd do
       `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation] do
     if (← getEnv).contains (`Partial37 ++ suffix) then
       throwError "Missing arithmetic evidence generated an invariant claim"
-  for suffix in [`j_integral, `potential_good_reduction] do
-    if (← getEnv).contains (`GeometricMetadata ++ suffix) then
-      throwError "Geometric metadata generated an unsupported theorem"
+  if (← getEnv).contains `NoPotentialGood.j_integral then
+    throwError "An omitted j_integral claim generated a theorem"
+  if (← getEnv).contains `IntegralJ.potential_good_reduction then
+    throwError "An omitted potential_good_reduction claim generated a theorem"
   if (← getEnv).contains `LocalSignMetadata.root_number then
     throwError "Local root metadata became a global sign theorem"
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
-  for theoremName in [`IntegralJ.j_integral, `NonintegralJ.j_integral] do
+  for theoremName in [`IntegralJ.j_integral, `NonintegralJ.j_integral,
+      `PotentialGood.potential_good_reduction, `NoPotentialGood.potential_good_reduction] do
     for ax in ← liftTermElabM <| Lean.collectAxioms theoremName do
-      unless standard.contains ax do throwError "Unexpected j-integrality axiom: {ax}"
+      unless standard.contains ax do throwError "Unexpected j-invariant check axiom: {ax}"
   for name in [`Invariants37, `JSON37] do
     for rankName in [`analytic_rank, `algebraic_rank_lower_bound] do
       if (← getEnv).contains (name ++ rankName) then
@@ -230,6 +246,9 @@ run_cmd do
   match CurveDataJson.parse raw with
   | .error _ => pure ()
   | .ok _ => throwError "Oversized conductor valuation row list accepted"
+  match CurveDataJson.parse r#"{"ainvs":[0,0,1,-1,0],"potential_good_reduction":0}"# with
+  | .error _ => pure ()
+  | .ok _ => throwError "Non-boolean potential_good_reduction accepted"
   match CurveDataJson.parse r#"{"ainvs":[0,0,1,-1,0],"anlist":[1,1]}"# with
   | .error _ => pure ()
   | .ok _ => throwError "Nonzero anlist origin accepted"
