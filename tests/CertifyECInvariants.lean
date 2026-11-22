@@ -175,7 +175,6 @@ run_cmd do
     { TrivialTorsion.witness with torsionBound := some ⟨3, 5, 2⟩ }))
   invariantRejected `TorsionAtBadPrime (← `(certify_ec TorsionAtBadPrime from
     { TrivialTorsion.witness with torsionBound := some ⟨3, 37, 1⟩ }))
-
   invariantRejected `WrongProofCurve (← `(certify_ec WrongProofCurve from
     { equation := JZero.curve } with_proofs Invariants37.discriminant_witness.toProofs))
   invariantRejected `ConflictingProofValue (← `(certify_ec ConflictingProofValue from
