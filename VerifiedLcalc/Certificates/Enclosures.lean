@@ -1,6 +1,6 @@
 module
 
-public import Init.Data.Rat
+public import Init
 
 /-! Primitive exact enclosures stored by certificate payloads. -/
 

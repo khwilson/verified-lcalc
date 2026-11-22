@@ -1,10 +1,8 @@
 module
 
-public import VerifiedLcalc.Certificates.NumericalData
 public import VerifiedLcalc.EllipticCurve.CoefficientCore
 public import VerifiedLcalc.EllipticCurve.CentralDefinitions
 public import VerifiedLcalc.EllipticCurve.DerivativeDefinitions
-public import VerifiedLcalc.Numerics.RationalExpCore
 
 /-! Exact payload predicates that connect raw numerical records to their
 specified coefficient and interval pipelines. -/

@@ -1,6 +1,6 @@
 module
 
-public import Init.Data.Rat
+public import Init
 
 /-! Immutable precision configuration shared by numerical certificates. -/
 
