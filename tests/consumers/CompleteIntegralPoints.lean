@@ -17,7 +17,8 @@ example : Checked.certificate.algebraic.completeIntegralPoints.isSome = true := 
 example : Checked.certificate.algebraic.integralYFibers.isSome = true := by rfl
 example : Checked.certificate.algebraic.rank.isSome = true := by rfl
 
-example : (Checked.certificate.algebraic.completeIntegralPoints.get (by decide +kernel)).coordinates =
+example :
+    (Checked.certificate.algebraic.completeIntegralPoints.get (by decide +kernel)).coordinates =
     ({(3, -5), (3, 4)} : Finset (ℤ × ℤ)) := by decide +kernel
 
 example : Module.rank ℤ (Checked.curve.baseChange ℚ).toAffine.Point = 0 :=
