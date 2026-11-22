@@ -81,16 +81,16 @@ lake -f lakefile.certificates.lean env lean tests/consumers/CertifiedECConsumer.
 lake -f lakefile.certificates.lean env lean tests/CertifyEC.lean
 ```
 
-The alternative Lake configuration reuses the same pinned mathlib and existing
-build caches. Its certificate and test libraries use Lake's `needs` field to track
-their JSON input directories. Rebuilding with Lake after a JSON edit rechecks
-the affected certificates before a consumer imports them.
+Both Lake configurations use the same pinned dependencies and caches. The
+certificate examples and the LMFDB test fixtures list their required JSON
+files as Lake inputs. Rebuilding with Lake after an edit rechecks the affected
+certificates before a consumer imports them. Missing or renamed required files
+fail the build.
 
-In your own package, declare the witnesses as an `input_file` or `input_dir`
-target and include its package target key in the certificate library's `needs`
-array, for example ``needs := #[`@/witnesses]``. Lean's file reads in `from_json`
-run during elaboration. Lake uses the declared inputs to decide when elaboration
-must run again.
+In your own package, declare each required witness as an `input_file` target
+and include its package target key in the certificate library's `needs` array,
+for example ``needs := #[`@/witness]``. Lean reads the JSON during elaboration,
+and Lake uses the declared file dependencies to decide when to repeat it.
 
 After compiling, another file simply imports the module:
 
