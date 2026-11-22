@@ -45,9 +45,9 @@ theorem localPolynomial_eq_computed (e : (WeierstrassCurve ℤ)) (p : ℕ)
       simp [hz]
   by_cases hgood : goodReduction e p = true
   · rw [W.localPolynomial_eq_of_hasGoodReduction R (hg.mpr hgood), ht, hc]
-    simp [computePrimePowerCoefficient, hgood]
+    simp [hgood]
   · rw [W.localPolynomial_eq_of_not_hasGoodReduction R (mt hg.mp hgood), ht]
-    simp [computePrimePowerCoefficient, hgood]
+    simp [hgood]
 
 omit [Finite (IsLocalRing.ResidueField R)] in
 /-- The proved recurrence is the actual mathlib inverse local polynomial,
