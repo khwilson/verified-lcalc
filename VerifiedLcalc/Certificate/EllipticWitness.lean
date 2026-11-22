@@ -47,6 +47,16 @@ structure LocalReductionClaim where
   reductionType : Option Int := none
   deriving Repr, DecidableEq
 
+/-- Two proposed odd primes of good reduction and the gcd of their point counts. -/
+structure TorsionBoundWitness where
+  /-- First proposed prime of good reduction. -/
+  firstPrime : Nat
+  /-- Second proposed prime of good reduction. -/
+  secondPrime : Nat
+  /-- Claimed positive gcd of the two reduced point counts. -/
+  bound : Nat
+  deriving Repr, DecidableEq
+
 /-- The single input record for elliptic-curve certification. `none` means that
 no data of that kind was supplied; `some []` is an explicitly supplied empty
 list, not a claim of completeness. Numerical results are rank candidates;
@@ -87,6 +97,10 @@ structure EllipticWitness where
   squarefreeDiscriminant : Option Bool := none
   /-- Local reduction claims at the supplied primes. -/
   localInvariants : Option (List LocalReductionClaim) := none
+  /-- Reduction evidence bounding the order of the full rational torsion subgroup. -/
+  torsionBound : Option TorsionBoundWitness := none
+  /-- Claimed exact order of the full rational torsion subgroup. -/
+  torsion : Option Nat := none
   /-- Claims for individual prime-indexed L-function coefficients. -/
   primeCoefficients : Option (List (Nat × Int)) := none
   /-- Claimed integral point coordinates on the supplied equation. -/
