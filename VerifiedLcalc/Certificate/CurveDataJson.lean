@@ -180,7 +180,8 @@ def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
   let kodairaSymbol ← optionalValue j "kodaira_symbol" integer
   if let some code := kodairaSymbol then
     unless code != 0 do throw "Zero is not a PARI Kodaira code"
-  return { prime, discriminantValuation, conductorValuation, jDenominatorValuation,
+  return {
+    prime, discriminantValuation, conductorValuation, jDenominatorValuation
     reductionType, kodairaSymbol }
 
 /-- Decode a local-row list and any top-level local claim. -/

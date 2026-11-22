@@ -5,6 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
+public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import VerifiedLcalc.EllipticCurve.Tate.AdditiveArithmetic
 public import VerifiedLcalc.EllipticCurve.Tate.LocalReduction
 public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Curve
@@ -48,10 +49,10 @@ private theorem discriminantValuation_eq (e : WeierstrassCurve ℤ) (p : Nat)
   have hnabs := Int.natAbs_ne_zero.mpr hn
   have hdiv : (p : Int) ^ n ∣ e.Δ := by
     rw [← Nat.cast_pow, Int.natCast_dvd]
-    exact (multiplicity_dvd_iff_le hnabs).mpr le_rfl
+    exact (multiplicity_dvd_iff_le hnabs).mpr (by simp only [n, Nat.padicValNat_def, le_refl])
   have hnext : ¬ (p : Int) ^ (n + 1) ∣ e.Δ := by
     rw [← Nat.cast_pow, Int.natCast_dvd]
-    exact pow_succ_multiplicity_not_dvd hnabs
+    simpa only [n, Nat.padicValNat_def] using (pow_succ_multiplicity_not_dvd (p := p) hnabs)
   have hv := completion_intCast_valuation_eq p n e.Δ hdiv hnext
   rw [completion_intCast_valuation] at hv
   have hvaluation := W.valuation_Δ_eq_exp_neg_of_isMinimal_smul R 1 (one_smul _ _)
@@ -88,12 +89,12 @@ theorem checkKodairaCode_correct (e : WeierstrassCurve ℤ) (p : Nat) [Fact p.Pr
   have hf := (beq_iff_eq.mp (Bool.and_eq_true_iff.mp h).2)
   unfold KodairaCodeSpec
   by_cases hadd : modelReduction e p = .additive
-  · rw [if_pos hadd] at hf
+  · rw [ite_eq_left hadd] at hf
     rw [hf]
-    exact (W.forall_reductionSymbol_ne_I_iff R).mpr (ha.mpr hadd)
-  · rw [if_neg hadd] at hf
+    exact (W.forall_reductionSymbol_ne_I_iff (R := R)).mpr (ha.mpr hadd)
+  · rw [ite_eq_right hadd] at hf
     rw [hf]
-    exact (W.reductionSymbol_eq_I_iff R _).mpr
+    exact (W.reductionSymbol_eq_I_iff (R := R) _).mpr
       ⟨fun hAdd => hadd (ha.mp hAdd), discriminantValuation_eq e p hn⟩
 
 end VerifiedLcalc.EllipticCurve

@@ -232,7 +232,8 @@ theorem LocalReductionClaim.kodaira_correct (row : LocalReductionClaim) (e : Wei
   let : Fact row.prime.Prime := ⟨hp⟩
   let := hm.isMinimal (rationalPlace row.prime)
   refine ⟨hp, fun code hc => ?_⟩
-  have hkod := (Option.all_eq_true.mp (Bool.and_eq_true_iff.mp h).2) code hc
+  have hkod := (Bool.and_eq_true_iff.mp h).2
+  rw [hc] at hkod
   exact checkKodairaCode_correct e row.prime hn code hkod
 
 end VerifiedLcalc
