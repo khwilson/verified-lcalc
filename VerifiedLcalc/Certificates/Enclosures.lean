@@ -30,6 +30,12 @@ def Box.isZero (b : Box) : Bool :=
 def Box.excludesZero (b : Box) : Bool :=
   decide (0 < b.reLo ∨ b.reHi < 0 ∨ 0 < b.imLo ∨ b.imHi < 0)
 
+/-- Exact predicate that a valid closed rectangle lies within the coordinatewise
+cutoff. -/
+def Box.WithinCutoff (b : Box) (eps : Rat) : Prop :=
+  0 ≤ eps ∧ b.reLo ≤ b.reHi ∧ b.imLo ≤ b.imHi ∧
+    -eps ≤ b.reLo ∧ b.reHi ≤ eps ∧ -eps ≤ b.imLo ∧ b.imHi ≤ eps
+
 theorem Box.valid_correct (b : Box) :
     b.valid = true ↔ b.reLo ≤ b.reHi ∧ b.imLo ≤ b.imHi := by
   simp [valid]

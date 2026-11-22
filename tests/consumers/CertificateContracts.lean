@@ -18,6 +18,19 @@ open VerifiedLcalc Lean Elab Command
 #check EllipticCurve.CentralPayloadCorrect
 #check EllipticCurve.DerivativePayloadCorrect
 #check EllipticCurve.AlgebraicRankBounds
+#check Witness
+#check Certificate
+#check Box.Contains
+#check Encloses
+#check AnalyticCertificate
+#check Artifacts.Accepts
+#check Artifacts.Checked
+#check NumericalRanks.Accepts
+#check NumericalRanks.Checked
+#check Artifacts.AnalyticEvidence
+#check NumericalRanks.Evidence
+#check NumericalRanks.SmallDerivatives
+#check NumericalRanks.ExactVanishingHypothesis
 
 section MordellWeilInstance
 variable {W : WeierstrassCurve ℚ} [W.toAffine.IsElliptic]
@@ -35,7 +48,10 @@ run_cmd do
     `VerifiedLcalc.Certification.IntegralPointCount,
     `VerifiedLcalc.Certification.DegreeTwoIsogeny,
     `VerifiedLcalc.Certification.DegreeTwoIsogenyRaw,
+    `VerifiedLcalc.Analytic,
     `VerifiedLcalc.Scan,
+    `VerifiedLcalc.CertificateSoundness,
+    `VerifiedLcalc.NumericalRankSoundness,
     `VerifiedLcalc.Precision,
     `VerifiedLcalc.Certificate,
     `VerifiedLcalc.EllipticCurve.CentralCore,

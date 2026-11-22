@@ -19,9 +19,16 @@ The umbrella imports only contract modules.
 | `MinimalityWitness`, `TateWitness`, `WildData` | `VerifiedLcalc.Certificates.Transcripts` | Finite arithmetic transcript data. Rechecking and geometric/local compatibility remain in the reduction and Tate cores. |
 | `CentralResult`, `DerivativeResult` | `VerifiedLcalc.Certificates.NumericalData` | Raw numerical outputs, including equation, normalization inputs, coefficient prefix, precision, integral/quadrature enclosure and tail. |
 | `CentralPayloadCorrect`, `DerivativePayloadCorrect` | `VerifiedLcalc.Certificates.NumericalContracts` | Exact predicates relating payloads to the specified central and first-derivative formulae. Evaluators and their correctness proofs remain in the existing implementation modules. |
+| `Witness`, `Certificate` | `VerifiedLcalc.Certificates.Scan` | A typed finite proof that earlier boxes are singleton zero and the selected box excludes zero. The executable scan remains in the legacy module. |
+| `Box.Contains`, `Encloses` | `VerifiedLcalc.Certificates.AnalyticEnclosures` | Exact real and imaginary interval membership for supplied complex values; analytic derivative enclosures remain proof obligations. |
+| `AnalyticCertificate` | `VerifiedLcalc.Certificates.AnalyticRank` | A witnessed rank tied to the same derivative boxes and the analytic order theorem. |
+| `Artifacts.{Normalization,Subject,Settings,BuildIdentity,Request,Artifact,Accepts,Checked}` | `VerifiedLcalc.Certificates.Artifacts` | Raw request and artifact data plus a pure witness-based acceptance contract. Search and Boolean checking remain in the singular compatibility module. |
+| `NumericalRanks.{Request,Artifact,Accepts,Checked}` | `VerifiedLcalc.Certificates.NumericalRanks` | Raw threshold-observation data and its exact rational cutoff contract. |
+| `Artifacts.{Subject.Denotes,AnalyticEvidence}`, `NumericalRanks.{SmallDerivatives,Evidence,ExactVanishingHypothesis}` | `VerifiedLcalc.Certificates.AnalyticEvidence` | Mathematical function, derivative-enclosure, and conditional exact-vanishing obligations, independent of the evaluator. |
 
-`VerifiedLcalc.Certificate.IntegralXSupport` remains an import-only compatibility
-module. Existing singular import paths continue to expose migrated records for
-compatibility. `tests/consumers/CertificateContracts.lean` imports the plural
-umbrella, checks these public declarations, and rejects accidental imports of
-the corresponding checker and evaluator modules.
+Existing singular import paths continue to expose migrated records and
+historical `.computed`/`.accepted` projections for compatibility.
+`tests/consumers/CertificateContracts.lean` imports the plural umbrella, checks
+the public declarations, and rejects accidental imports of checker and
+evaluator modules. `tests/consumers/CertificateCompatibility.lean` checks the
+legacy projections through the singular imports.

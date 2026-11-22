@@ -17,7 +17,7 @@ def artifact : Artifacts.Artifact :=
 theorem checked : Artifacts.check cubicRequest artifact = true := by decide
 
 theorem certified_computation : scan artifact.derivativeBoxes = some artifact.rank :=
-  ((Artifacts.check_correct _ _).mp checked).2.2.2.2
+  witness_scan ((Artifacts.check_correct _ _).mp checked).2.2.2.2
 
 def evidence : Artifacts.AnalyticEvidence cubicRequest artifact :=
   { function := fun z : ℂ => z ^ 3

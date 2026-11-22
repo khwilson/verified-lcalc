@@ -26,6 +26,7 @@ AUDITS = (
     "tests/consumers/Additive.lean",
     "tests/consumers/Wild.lean",
     "tests/consumers/CertificateContracts.lean",
+    "tests/consumers/CertificateCompatibility.lean",
     "tests/consumers/RawCertificateData.lean",
     "tests/OrderCheckGenerality.lean",
     "tests/CyclicTorsionStructure.lean",
@@ -92,6 +93,7 @@ def main() -> None:
         "tests/consumers/TwoFactorTorsion.lean",
         "tests/consumers/MordellWeilRank.lean",
         "tests/consumers/CompleteIntegralPoints.lean",
+        "tests/consumers/CertificateCompatibility.lean",
     ):
         run(["lake", "-f", "lakefile.certificates.lean", "env", "lean", source])
     for source in AUDITS:
