@@ -8,8 +8,6 @@ module
 public import VerifiedLcalc.Assumptions.LowRankBSD
 public import VerifiedLcalc.Certificate.AnalyticFacts
 
-set_option linter.style.haveILetI false
-
 /-!
 # Opt-in rank-zero and rank-one consequences
 
@@ -17,6 +15,10 @@ These wrappers consume an exact analytic-rank fact for the same equation and
 an explicit arithmetic modular realization. They are deliberately outside the
 default certification imports.
 -/
+
+-- The rational ellipticity instance is derived locally from the explicit
+-- nonsingularity proof, so `letI` is needed to elaborate `Module.finrank`.
+set_option linter.style.haveILetI false
 
 @[expose] public section
 
