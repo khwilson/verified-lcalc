@@ -80,6 +80,9 @@ example : (LMFDB.C291d1.curve.baseChange ℚ).j = -4096 / 291 :=
   LMFDB.C291d1.j_invariant
 example : LMFDB.C291d1.curve.Δ = -291 := LMFDB.C291d1.discriminant
 
+example : LMFDB.C112a2.generators.coordinates.length = 1 :=
+  LMFDB.C112a2.generators.count_valid
+
 example : LMFDB.C112a2.integral_y_fiber ⟨0, by decide⟩ = ({0} : Finset ℤ) := by
   decide +kernel
 
@@ -144,6 +147,7 @@ run_cmd do
       unless unconditional.contains axiomName || (conditional && axiomName == modularity) do
         throwError "Unexpected dependency {axiomName} in {lemmaName}"
   check `LMFDB.C112a2 `integral_y_fiber_complete false
+  check `LMFDB.C112a2 `generators.count_valid false
   check `LMFDB.C112a2 `generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.exact_order false

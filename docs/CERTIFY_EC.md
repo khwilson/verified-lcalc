@@ -184,7 +184,10 @@ with `c ≠ 0` and decode to `(a/c², b/c³)` in ℚ. The corresponding direct
 Lean fields `generatorCoordinates` and `torsionGeneratorCoordinates` take
 exact affine pairs. Each supplied list exports `coordinates`, `points_on_curve`
 and `point i` under `Name.generators` or `Name.torsion_generators`. These establish
-membership on the rational curve.
+membership on the rational curve. The optional `ngens` claim
+(`generatorCount` in Lean) verifies the length of the supplied `gens` list
+and exports `Name.generators.count_valid`. A claim with no list remains
+unverified.
 
 To check individual torsion orders, supply the project-specific JSON field
 `torsion_generator_orders` or the Lean field `torsionGeneratorOrders`.

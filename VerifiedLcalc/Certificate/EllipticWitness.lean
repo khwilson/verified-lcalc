@@ -90,6 +90,8 @@ structure EllipticWitness where
   integralFiberRoots : Option (List (Int × Int)) := none
   /-- Rational affine coordinates for the LMFDB generator list, checked for membership. -/
   generatorCoordinates : Option (List (Rat × Rat)) := none
+  /-- Claimed length of the supplied generator coordinate list. -/
+  generatorCount : Option Nat := none
   /-- Rational affine coordinates for the LMFDB torsion generator list, checked for membership. -/
   torsionGeneratorCoordinates : Option (List (Rat × Rat)) := none
   /-- Claimed exact additive orders, in the same order as the torsion coordinates. -/
