@@ -2,6 +2,7 @@ module
 
 public import VerifiedLcalc.Certification.StoredInvariants
 public import VerifiedLcalc.EllipticCurve.TorsionBound
+public import VerifiedLcalc.EllipticCurve.TorsionStructure
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public meta import Lean
 
@@ -149,8 +150,88 @@ private def certifyTorsionInvariants (base : Name) (curve : Ident) : CommandElab
         have h₁ : ($evidence).bound = 1 := by decide +kernel
         have hdiv : $htorsion ∣ 1 := h₁ ▸ ($hbound).1
         exact (Nat.dvd_one.mp hdiv).trans (by decide +kernel)))
-  else if claim.isSome then
-    logInfo m!"Unverified {base} torsion: the checked divisibility bound is not exact"
+
+/-- Recover cyclic torsion when the verified bound matches an exact point order. -/
+private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Unit := do
+  let factors ← bindStored base `torsionStructure `torsion_structure (← `(List Nat))
+  let orderName := base ++ `claimed_torsion
+  let order := if (← getEnv).contains orderName then some (rootIdent orderName) else none
+  let some nInput ← (match order, factors with
+    | some order, _ => pure (some (order : TSyntax `term))
+    | none, some factors => some <$> `(($factors).prod)
+    | none, none => pure none) | return
+  let nName := base ++ `cyclic_torsion_order
+  let n := rootIdent nName
+  emit (← `(def $n : Nat := $nInput))
+  if let some ofOrder := order then
+    if let some factors := factors then
+      checked (base ++ `torsion_structure_order_consistent)
+        (← `(($factors).prod = $ofOrder)) (← `(by decide +kernel))
+  let exponent ← if let some factors := factors then do
+    checked (base ++ `torsion_structure_normalized)
+      (← `((($factors).all (fun factor => decide (1 < factor)) = true) ∧
+        ($factors).Pairwise (fun a b => a ∣ b))) (← `(by decide +kernel))
+    `(($factors).getLastD 1)
+  else `($n)
+  let ordersName := base ++ `torsion_generators.orders
+  if (← getEnv).contains ordersName then
+    let orders := rootIdent ordersName
+    checked (base ++ `torsion_point_orders_consistent)
+      (← `(($orders).all (fun order => decide (order ∣ $exponent)) = true))
+      (← `(by decide +kernel))
+  unless (← getEnv).contains (base ++ `torsion_bound) do
+    if factors.isSome then
+      logInfo m!"Unverified {base} torsion_structure: supply a checked torsion bound"
+    return
+  let candidate := rootIdent (base ++ `claimed_torsion_bound)
+  if factors.isSome then
+    checked (base ++ `torsion_structure_divisor_consistent)
+      (← `(0 < $n ∧ $n ∣ ($candidate).bound)) (← `(by decide +kernel))
+  let equalBound ← liftTermElabM do
+    let claimedBound ← Lean.Elab.Term.elabTerm (← `(($candidate).bound)) (some (mkConst ``Nat))
+    Meta.isDefEq (mkConst nName) claimedBound
+  unless equalBound do
+    logInfo m!"Unverified {base} cyclic torsion: the verified bound must match the claimed order"
+    return
+  let trivial ← liftTermElabM <| Meta.isDefEq (mkConst nName) (mkNatLit 1)
+  let pointOrder := base ++ `torsion_generators.exact_order
+  unless trivial do
+    unless (← getEnv).contains pointOrder do
+      logInfo m!"Unverified {base} cyclic torsion: supply the exact order of the first point"
+      return
+    let orders := rootIdent (base ++ `torsion_generators.orders)
+    let hasGeneratorOrder ← liftTermElabM do
+      let observed ← Lean.Elab.Term.elabTerm (← `(($orders).head?)) none
+      let expected ← Lean.Elab.Term.elabTerm (← `(some $n)) none
+      Meta.isDefEq observed expected
+    unless hasGeneratorOrder do
+      logInfo m!"Unverified {base} cyclic torsion: first point order must match the claimed order"
+      return
+  if let some factors := factors then
+    checked (base ++ `torsion_structure_claim_valid)
+      (← `($factors = if $n = 1 then [] else [$n])) (← `(by decide +kernel))
+  let torsionType ← `(AddCommGroup.torsion (($curve).baseChange ℚ).toAffine.Point)
+  let bound := rootIdent (base ++ `torsion_bound)
+  let (point, orderProof) ← if trivial then
+    pure (← `((0 : (($curve).baseChange ℚ).toAffine.Point)), ← `(addOrderOf_zero))
+  else
+    let first := rootIdent (base ++ `torsion_generators.point)
+    let exactOrder := rootIdent pointOrder
+    pure (← `($first ⟨0, by decide +kernel⟩), ← `($exactOrder ⟨0, by decide +kernel⟩))
+  let horder := rootIdent (base ++ `cyclic_torsion_order_valid)
+  checked (base ++ `cyclic_torsion_order_valid) (← `(addOrderOf $point = $n)) orderProof
+  unless (← getEnv).contains (base ++ `torsion) do
+    checked (base ++ `torsion) (← `(Nat.card $torsionType = $n))
+      (← `(torsion_card_eq_of_order_dvd ($bound).2 $horder ($bound).1))
+  if let some factors := factors then
+    let generator := rootIdent (base ++ `cyclic_torsion_generator)
+    emit (← `(def $generator : (($curve).baseChange ℚ).toAffine.Point := $point))
+    let hf := rootIdent (base ++ `torsion_structure_claim_valid)
+    checked (base ++ `torsion_structure)
+      (← `($factors = (if $n = 1 then [] else [$n]) ∧
+        ∃ e : ZMod $n ≃+ $torsionType,
+          (e 1 : (($curve).baseChange ℚ).toAffine.Point) = $generator))
+      (← `(⟨$hf, exists_torsion_addEquiv_of_order_dvd ($bound).2 $horder ($bound).1⟩))
 
 /-- Check one optional equation invariant and return the corresponding proved value. -/
 private def certifyProofFact (base field label : Name) (proofs : Option Ident)
@@ -209,6 +290,7 @@ def certifyStoredInvariants (base : Name)
   let curve := rootIdent (base ++ `curve)
   let hn := rootIdent (base ++ `nonsingular)
   certifyTorsionInvariants base curve
+  certifyCyclicTorsion base curve
   certifyProofFacts base curve proofs
   if let some s ← bindStored base `discriminantSign `discriminant_sign (← `(Int)) then
     checked (base ++ `discriminant_sign) (← `(($curve).Δ.sign = $s)) (← `(by decide +kernel))

@@ -151,6 +151,19 @@ def TorsionDivisorFacts.bound {curve : WeierstrassCurve ℤ}
     (facts : TorsionDivisorFacts curve) : ℕ :=
   facts.evidence.bound
 
+/-- Checked invariant factors and a generator-preserving equivalence for cyclic torsion. -/
+structure CyclicTorsionFacts (curve : WeierstrassCurve ℤ) where
+  /-- The supplied invariant factors. -/
+  factors : List ℕ
+  /-- The order of the whole cyclic group. -/
+  order : ℕ
+  /-- The selected rational point, or the identity for trivial torsion. -/
+  generator : (curve.baseChange ℚ).toAffine.Point
+  /-- The canonical factors and an equivalence sending one to the selected point. -/
+  structure_eq : factors = (if order = 1 then [] else [order]) ∧
+    ∃ e : ZMod order ≃+ AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point,
+      (e 1 : (curve.baseChange ℚ).toAffine.Point) = generator
+
 /-- Partial divisibility bounds and exact cardinality assertions for the torsion subgroup. -/
 structure TorsionFacts (curve : WeierstrassCurve ℤ) where
   /-- Evidence that the full torsion order divides a checked positive bound. -/
@@ -158,6 +171,8 @@ structure TorsionFacts (curve : WeierstrassCurve ℤ) where
   /-- The exact cardinality of the whole torsion subgroup when determined. -/
   cardinality : Option { n : ℕ //
     Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) = n } := none
+  /-- The checked cyclic structure, if requested and determined. -/
+  cyclicStructure : Option (CyclicTorsionFacts curve) := none
 
 /-- The family-indexed certificate exported by the verification command. -/
 structure EllipticCertificate (curve : WeierstrassCurve ℤ)

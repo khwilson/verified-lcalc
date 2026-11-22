@@ -30,4 +30,6 @@ checked analytic-rank-one witness for 112.a2 on the same integral equation.
 The 112.a2 fixture also includes the point triples from the
 [LMFDB Mordell–Weil generators table](https://www.lmfdb.org/EllipticCurve/Q/112/a/2#Mordell-Weil_generators).
 The fixture also requests exact additive order 2 for the supplied torsion point.
+The counts at the supplied good primes 3 and 5 verify a divisor of 2, which
+proves the stored order and cyclic structure.
 The consumer checks membership in the rational curve for points from both lists.

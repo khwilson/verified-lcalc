@@ -151,6 +151,30 @@ certify_ec CompatibleKodairaRows from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"minimality":[37],"prime":3,"kodaira_symbol":1,
       "local_invariants":[{"prime":3,"kodaira_symbol":1}]}"#
 
+certify_ec TrivialCyclicStructure from
+  { equation := ⟨0, 0, 1, -1, 0⟩, torsionStructure := some [],
+    torsionBound := some ⟨3, 5, 1⟩ }
+example : Nonempty (ZMod 1 ≃+ AddCommGroup.torsion
+    (TrivialCyclicStructure.curve.baseChange ℚ).toAffine.Point) := by
+  obtain ⟨equiv, -⟩ := TrivialCyclicStructure.torsion_structure.2
+  exact ⟨equiv⟩
+
+certify_ec AssertedTorsionOnly from_json_string
+  r#"{"ainvs":[0,1,0,0,4],"torsion":2,"torsion_structure":[2]}"#
+
+certify_ec LooseTorsionBound from_json_string
+  r#"{"ainvs":[0,1,0,0,4],"torsion":2,"torsion_structure":[2],
+      "torsion_generators":[[-2,0,1]],"torsion_generator_orders":[2],
+      "torsion_bound":{"first_prime":3,"second_prime":11,"bound":6}}"#
+example :
+    Nat.card (AddCommGroup.torsion (LooseTorsionBound.curve.baseChange ℚ).toAffine.Point) ∣ 6 :=
+  LooseTorsionBound.torsion_bound.1
+
+certify_ec NoncyclicTorsion from_json_string
+  r#"{"ainvs":[0,0,0,-1,0],"torsion":4,"torsion_structure":[2,2],
+      "torsion_generators":[[0,0,1],[-1,0,1]],"torsion_generator_orders":[2,2],
+      "torsion_bound":{"first_prime":3,"second_prime":5,"bound":4}}"#
+
 certify_ec SplitLocal from_json_string
   r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
       "local_invariants":[{"prime":11,"reduction_type":1,"kodaira_symbol":9}]}"#
@@ -230,7 +254,10 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `semistable, `squarefree_discriminant, `local_invariants, `tamagawa_numbers, `kodaira_symbols,
       `tamagawa_values_valid, `claimed_semistable,
       `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_conductor_valuations,
-      `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation] do
+      `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation,
+      `claimed_torsion_structure, `torsion_structure, `torsion_structure_order_consistent,
+      `torsion_point_orders_consistent, `torsion_structure_divisor_consistent,
+      `torsion_structure_normalized] do
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
@@ -295,6 +322,26 @@ run_cmd do
     r#"{"ainvs":[0,0,1,-1,0],"potential_good_reduction":true}"#))
   invariantRejected `WrongNoPotentialGood (← `(certify_ec WrongNoPotentialGood from
     { PotentialGood.witness with potentialGoodReduction := some false }))
+  invariantRejected `TorsionCountBelowPointOrder (← `(certify_ec TorsionCountBelowPointOrder
+    from_json_string
+    r#"{"ainvs":[0,1,0,0,4],"torsion":1,
+        "torsion_generators":[[-2,0,1]],"torsion_generator_orders":[2],
+        "torsion_bound":{"first_prime":3,"second_prime":5,"bound":2}}"#))
+  invariantRejected `StructureCountMismatch (← `(certify_ec StructureCountMismatch
+    from_json_string r#"{"ainvs":[0,1,0,0,4],"torsion":4,"torsion_structure":[2]}"#))
+  invariantRejected `StructureAboveDivisor (← `(certify_ec StructureAboveDivisor
+    from_json_string r#"{"ainvs":[0,1,0,0,4],"torsion_structure":[4],
+        "torsion_bound":{"first_prime":3,"second_prime":5,"bound":2}}"#))
+  invariantRejected `OrderAboveStructureExponent (← `(certify_ec OrderAboveStructureExponent from
+    { equation := ⟨1, -1, -1, 0, 0⟩, torsionGeneratorCoordinates := some [(0, 0)],
+      torsionGeneratorOrders := some [4], torsion := some 4, torsionStructure := some [2, 2],
+      torsionBound := some ⟨5, 13, 8⟩ }))
+  invariantRejected `WrongCyclicStructure (← `(certify_ec WrongCyclicStructure from
+    { equation := ⟨1, -1, -1, 0, 0⟩, torsionGeneratorCoordinates := some [(0, 0)],
+      torsionGeneratorOrders := some [4], torsion := some 4, torsionStructure := some [2, 2],
+      torsionBound := some ⟨3, 5, 4⟩ }))
+  invariantRejected `TorsionAtTwo (← `(certify_ec TorsionAtTwo from
+    { TrivialTorsion.witness with torsionBound := some ⟨2, 5, 1⟩ }))
   invariantRejected `WrongDiscriminant (← `(certify_ec WrongDiscriminant from
     { Invariants37.witness with discriminant := some (-37) }))
   invariantRejected `WrongB (← `(certify_ec WrongB from
@@ -359,6 +406,10 @@ run_cmd do
     throwError "An omitted j_integral claim generated a theorem"
   if (← getEnv).contains `IntegralJ.potential_good_reduction then
     throwError "An omitted potential_good_reduction claim generated a theorem"
+  for suffix in [`torsion, `torsion_structure] do
+    for name in [`AssertedTorsionOnly, `LooseTorsionBound, `NoncyclicTorsion] do
+      if (← getEnv).contains (name ++ suffix) then
+        throwError "Insufficient torsion evidence generated a claim"
   if (← getEnv).contains `LocalSignMetadata.root_number then
     throwError "Local root metadata became a global sign theorem"
 
@@ -449,7 +500,7 @@ run_cmd do
     `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
     `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData]
   let analytic := #[`centralResult, `derivativeResult]
-  let torsion := #[`torsionBound, `torsion, `torsionGeneratorOrders]
+  let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionGeneratorOrders]
   let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do
     let fields := Lean.getStructureFields (← getEnv) record
     for field in fields do
@@ -484,3 +535,7 @@ example : TamagawaOutsideScope.certificate.arithmetic.tamagawa.length = 0 := by 
 
 example : ((KodairaAdditive.certificate.arithmetic.minimalModel.get
     (by decide +kernel)).kodaira.map LocalKodairaFact.index) = [none] := by decide +kernel
+
+example : LooseTorsionBound.certificate.torsion.cyclicStructure.isNone = true := rfl
+example : TrivialCyclicStructure.certificate.torsion.cyclicStructure.map
+    CyclicTorsionFacts.factors = some [] := rfl

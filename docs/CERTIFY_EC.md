@@ -128,6 +128,9 @@ ranks conditional on an explicit realization. The `torsion` field can carry a
 verified positive multiple of the full subgroup order, a consistent supplied
 count, and an exact cardinality when determined.
 
+The `torsion.cyclicStructure` projection gives the checked factors, order,
+and rational generator together with a generator-preserving equivalence.
+
 For example, the following reads an invariant from a compiled certificate
 using its exact proof. The default handles a missing value using the equation.
 
@@ -265,6 +268,17 @@ from 1 to 256 are accepted for checking. The command exports
 a theorem about Mathlib’s `addOrderOf`. An incorrect order, mismatched list
 length, or missing coordinate list rejects the whole certificate. The
 default when no orders are supplied is membership checking alone.
+With a verified `torsion_bound` and the matching exact order of the first
+torsion point, the LMFDB `torsion` claim certifies the cardinality of the
+full rational torsion subgroup. Supply the cyclic `torsion_structure` as
+`[n]` for a nontrivial group of order `n`. The structure theorem gives an
+additive equivalence from `ZMod n` sending 1 to that first point. The trivial
+group uses `[]` and the identity point. If the verified bound is larger
+than the claimed order, the cyclic certificate requires tighter evidence.
+Invariant factors must be greater than one and each must divide every later
+factor. Their product must agree with the claimed cardinality and divide the
+verified divisibility bound when those claims are supplied. Each checked point
+order must divide the last factor, or one for the empty list.
 Generation and independence require separate evidence.
 
 The same `certify_ec` command establishes stronger facts when
