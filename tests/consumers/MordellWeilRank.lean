@@ -75,12 +75,14 @@ private meta def expectRankRejected (name : Name) (command : Syntax) : CommandEl
       throwError "Rejected rank evidence leaked {name ++ suffix}"
 
 run_cmd do
-  expectRankRejected `WrongClaim (← `(certify_ec WrongClaim from_json_string
-    r#"{"ainvs":[0,0,0,-1,1],"rank":2}"#" with_proofs exactProofs))
-  expectRankRejected `WrongBounds (← `(certify_ec WrongBounds from_json_string
-    r#"{"ainvs":[0,0,0,-1,1],"rank_bounds":[2,3]}"#" with_proofs exactProofs))
-  expectRankRejected `WrongEquation (← `(certify_ec WrongEquation from_json_string
-    r#"{"ainvs":[0,0,0,-1,2],"rank":1}"#" with_proofs exactProofs))
+  expectRankRejected `WrongClaim (← `(certify_ec WrongClaim from
+    { equation := TauCeti.WorkedExamples.curveX3SubXAddOne, algebraicRank := some 2 }
+    with_proofs exactProofs))
+  expectRankRejected `WrongBounds (← `(certify_ec WrongBounds from
+    { equation := TauCeti.WorkedExamples.curveX3SubXAddOne, algebraicRankBounds := some (2, 3) }
+    with_proofs exactProofs))
+  expectRankRejected `WrongEquation (← `(certify_ec WrongEquation from
+    { equation := ⟨0, 0, 0, -1, 2⟩, algebraicRank := some 1 } with_proofs exactProofs))
   expectRankRejected `RawReversedBounds (← `(certify_ec RawReversedBounds from_json_string
     r#"{"ainvs":[0,0,0,-1,1],"rank_bounds":[2,1]}"#))
   expectRankRejected `RawRankOutsideBounds (← `(certify_ec RawRankOutsideBounds from_json_string

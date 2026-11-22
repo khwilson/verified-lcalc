@@ -107,7 +107,7 @@ def certifyProofAttachment (base : Name) (input : Option (TSyntax `term)) :
     emit (← `(def $name : IntegralCurveProofs $curve := by
       first
       | exact $raw
-      | exact ⟨$raw, none⟩))
+      | exact { toEllipticProofs := $raw }))
     pure name
   certifyRankClaims base curve attachment
   attachment.mapM fun facts => `(($facts).toEllipticProofs)
