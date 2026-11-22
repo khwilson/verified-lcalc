@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -12,6 +13,38 @@ from scripts.benchmark_ec_dataset import (
     reference_ranks,
     selected_inputs,
 )
+
+
+@pytest.mark.parametrize("source_entry", ["../math lib", ".lake/packages/mathlib"])
+def test_mathlib_provenance_uses_resolved_checkout(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    source_entry: str,
+) -> None:
+    import scripts.benchmark_certify_ec as benchmark
+
+    root = tmp_path / "project"
+    root.mkdir()
+    checkout = (root / source_entry).resolve()
+    checkout.mkdir(parents=True)
+    (checkout / "Mathlib.lean").touch()
+    monkeypatch.setattr(benchmark, "ROOT", root)
+
+    def capture(args: list[str]) -> str:
+        if args == [*benchmark.LAKE, "env", "printenv", "LEAN_SRC_PATH"]:
+            return os.pathsep.join(["examples", source_entry, source_entry])
+        assert args == [
+            "git",
+            "-C",
+            str(checkout),
+            "rev-parse",
+            "--show-toplevel",
+            "HEAD",
+        ]
+        return f"{checkout}\n{'a' * 40}"
+
+    monkeypatch.setattr(benchmark, "captured", capture)
+    assert benchmark.mathlib_revision() == "a" * 40
 
 
 def test_sql_and_legacy_inputs_do_not_expose_reference_ranks(tmp_path: Path) -> None:

@@ -84,9 +84,24 @@
       "revision": "d01c9825761c7e6168457c383458afa8668196a7",
       "sha256": "64396868736b78c5552035782de3a3ec02180631cf1756094c0185a76b9bf43f",
       "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/Basic.lean",
-      "ported_sha256": "c0deb15fb1dd61649ebb37c4a9fac7cbded9644da438fa632c9c597652318154",
-      "excerpt": "Declarations through VariableChange.exists_unit_algebraMap_eq_u_of_isMinimal_smul. Omit unused TauCeti imports and subsequent split-reduction invariance declarations; proof bodies unchanged.",
-      "additional_attribution": "VerifiedLcalc/Upstream/TauCeti/NOTICE.md"
+      "ported_sha256": "e01c81e17511c042f89cab1437b285cc78ffcf6a90bfc4d27d341e73aafa60c3",
+      "excerpt": "Declarations through VariableChange.exists_unit_algebraMap_eq_u_of_isMinimal_smul. Omit unused TauCeti imports and subsequent split-reduction invariance declarations; one proof reformatted.",
+      "additional_attribution": "VerifiedLcalc/Upstream/TauCeti/NOTICE.md",
+      "additional_excerpts": [
+        {
+          "revision": "b608709b45f23ccda55703d572b0adb1fdec30fd",
+          "sha256": "f6cc49c376dbf88c4789afe0d5da8cc70574da42336bc8ec6a328ce22bdbf360",
+          "excerpt": "Add valuation_c₄_eq_of_isMinimal_smul and hasAdditiveReduction_iff_of_isMinimal_smul with unchanged proof bodies."
+        }
+      ]
+    },
+    {
+      "source": "TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/Semistable.lean",
+      "revision": "b608709b45f23ccda55703d572b0adb1fdec30fd",
+      "sha256": "1e25e1325ee178d7d9c82bc416d024e109e32ed18fb27d12e3519d1497e91934",
+      "destination": "VerifiedLcalc/Upstream/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/Semistable.lean",
+      "excerpt": "Select IsSemistable and isSemistable_iff. Omit unused imports and other declarations, and shorten the docstring.",
+      "ported_sha256": "ba489203593ecf2a81e5d5b5f46ec1141754aca4cf9dab1ad1ff403e1f31caca"
     },
     {
       "source": "TauCeti/RingTheory/Localization/AtPrime.lean",

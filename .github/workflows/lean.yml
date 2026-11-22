@@ -10,6 +10,11 @@ jobs:
     name: Lean certificates and lint
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    env:
+      LAKE_CONFIG: ${{ github.workspace }}/verified-lcalc/scripts/tauceti-cache.toml
+      LAKE_CACHE_DIR: ${{ github.workspace }}/verified-lcalc/.lake/cache
+      LAKE_ARTIFACT_CACHE: "true"
+      LAKE_RESTORE_ARTIFACTS: "true"
     defaults:
       run:
         working-directory: verified-lcalc
@@ -18,12 +23,6 @@ jobs:
         with:
           path: verified-lcalc
           fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          repository: leanprover-community/mathlib4
-          ref: 3440367ed1804626334f13a3a534a9cbb3385a59
-          path: mathlib4
           persist-credentials: false
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
@@ -41,16 +40,28 @@ jobs:
           rm elan-init elan.tar.gz
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
           "$HOME/.elan/bin/elan" toolchain install "$(cat lean-toolchain)"
+      - name: Load pinned TauCeti cache mappings
+        run: |
+          revision="$(python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          packages = json.loads(Path("lake-manifest.json").read_text())["packages"]
+          print(next(package["rev"] for package in packages if package["name"] == "TauCeti"))
+          PY
+          )"
+          # Lake fetches only the TauCeti artifacts reached by downstream build targets.
+          if ! lake cache get --package=TauCeti --service=tauceti-public \
+              --repo=TauCetiProject/TauCeti --rev="$revision" --mappings-only; then
+            echo "::warning::TauCeti cache mappings unavailable; Lake will build needed modules from source"
+          fi
       - name: Fetch targeted Mathlib cache
         env:
           MATHLIB_CACHE_DIR: ${{ runner.temp }}/mathlib-cache
         run: |
-          mapfile -t modules < <(
-            git grep -h -E '^(public )?(meta )?import Mathlib\.' -- '*.lean' |
-              awk '{for (i = 1; i <= NF; ++i) if ($i ~ /^Mathlib\./) {print $i; break}}' |
-              sort -u
-          )
-          test "${#modules[@]}" -gt 0
+          roots="$(python3 scripts/mathlib_cache_roots.py)"
+          test -n "$roots"
+          mapfile -t modules <<< "$roots"
           lake exe cache get "${modules[@]}"
           lake exe cache clean!
       - name: Verify mathematical regressions

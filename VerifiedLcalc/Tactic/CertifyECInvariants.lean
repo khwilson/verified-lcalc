@@ -24,6 +24,46 @@ private def bindStored (base field label : Name) (type : TSyntax `term) :
     (← `($projection $w = some $value)) (← `(by rfl))
   return some value
 
+private def certifyReductionInvariants (base : Name) (curve m hm : Ident)
+    (hasMinimality : Bool) : CommandElabM Unit := do
+  let hglobal := rootIdent (base ++ `global_minimal)
+  if let some claim ← bindStored base `semistable `semistable (← `(Bool)) then
+    if hasMinimality then
+      let hv := rootIdent (base ++ `semistable_value_valid)
+      checked (base ++ `semistable_value_valid)
+        (← `(decide (Int.gcd ($curve).Δ ($curve).c₄ = 1) = $claim)) (← `(by decide +kernel))
+      checked (base ++ `semistable)
+        (← `(WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
+          (($curve).baseChange ℚ) ↔ $claim = true)) (← `(by
+          rw [semistable_iff_coprime_of_isGlobalMinimal $curve $hglobal, ← $hv, decide_eq_true_eq]))
+    else
+      logInfo m!"Unverified {base} semistable: supply minimality evidence"
+  if let some claim ← bindStored base `squarefreeDiscriminant `squarefree_discriminant
+      (← `(Bool)) then
+    if hasMinimality then
+      let hv := rootIdent (base ++ `squarefree_discriminant_value_valid)
+      checked (base ++ `squarefree_discriminant_value_valid)
+        (← `(decide ($m).primes.Nodup = $claim)) (← `(by decide +kernel))
+      checked (base ++ `squarefree_discriminant)
+        (← `(Squarefree ($curve).Δ.natAbs ↔ $claim = true)) (← `(by
+          rw [Certification.squarefree_discriminant_iff_nodup $curve $m $hm,
+            ← $hv, decide_eq_true_eq]))
+    else
+      logInfo m!"Unverified {base} squarefree_disc: supply minimality evidence"
+  if let some rows ← bindStored base `localInvariants `local_invariants
+      (← `(List LocalReductionClaim)) then
+    if hasMinimality then
+      let hv := rootIdent (base ++ `local_invariants_value_valid)
+      checked (base ++ `local_invariants_value_valid)
+        (← `(($rows).all (fun row => row.check $curve) = true)) (← `(by decide +kernel))
+      checked (base ++ `local_invariants)
+        (← `(∀ row ∈ $rows, LocalReductionClaim.Spec row $curve)) (← `(by
+          intro row hrow
+          exact LocalReductionClaim.check_correct row $curve $hglobal
+            (List.all_eq_true.mp $hv row hrow)))
+    else
+      logInfo m!"Unverified {base} local_invariants: supply minimality evidence"
+
 /-- Check each supplied invariant against the actual curve, not an LMFDB label. -/
 def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
@@ -51,6 +91,7 @@ def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
   let hm := rootIdent (base ++ `minimality_valid)
   let d := rootIdent (base ++ `localData)
   let hd := rootIdent (base ++ `local_data_valid)
+  certifyReductionInvariants base curve m hm hasMinimality
   if let some values ← bindStored base `badPrimes `bad_primes (← `(List Nat)) then
     if hasMinimality then
       let hv := rootIdent (base ++ `bad_primes_value_valid)
@@ -88,8 +129,8 @@ def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
       checked (base ++ `abs_discriminant_value_valid)
         (← `(($curve).Δ.natAbs = $a)) (← `(by decide +kernel))
       checked (base ++ `minimal_discriminant_abs)
-        (← `(WeierstrassCurve.IsGlobalMinimal (NumberField.RingOfIntegers ℚ) (($curve).baseChange ℚ) ∧
-          ($curve).Δ.natAbs = $a))
+        (← `(WeierstrassCurve.IsGlobalMinimal (NumberField.RingOfIntegers ℚ)
+          (($curve).baseChange ℚ) ∧ ($curve).Δ.natAbs = $a))
         (← `(Certification.minimal_discriminant_abs_of_witness $curve $m $hm $a $hv))
     else
       logInfo m!"Unverified {base} absD: supply minimality evidence"
