@@ -140,7 +140,8 @@ def validWildAt (e : (WeierstrassCurve ℤ)) (p : Nat) (w : Option TateWitness) 
     ∃ v, w = some v ∧ v.Valid e p ∧ (wildRoot e p v = 1 ∨ wildRoot e p v = -1)
   else w = none
 
-instance (e : (WeierstrassCurve ℤ)) (p : Nat) (w : Option TateWitness) : Decidable (validWildAt e p w) :=
+instance (e : (WeierstrassCurve ℤ)) (p : Nat) (w : Option TateWitness) :
+    Decidable (validWildAt e p w) :=
   if h : modelReduction e p = .additive then
     match w with
     | none => isFalse (by simp [validWildAt, h])
@@ -174,7 +175,8 @@ def wildLocalRoot (e : (WeierstrassCurve ℤ)) (d : WildData) (p : Nat) : Int :=
   | some w => wildRoot e p w
   | none => localRoot e p
 
-def wildConductorRootFromPrimes (e : (WeierstrassCurve ℤ)) (d : WildData) (ps : List Nat) : Nat × Int :=
+def wildConductorRootFromPrimes (e : (WeierstrassCurve ℤ)) (d : WildData)
+    (ps : List Nat) : Nat × Int :=
   ((ps.map fun p => p^wildExponent e d p).prod, -(ps.map (wildLocalRoot e d)).prod)
 
 end VerifiedLcalc.EllipticCurve
