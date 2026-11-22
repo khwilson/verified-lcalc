@@ -1,6 +1,7 @@
 module
 
 public import VerifiedLcalc.Certification.StoredInvariants
+public import VerifiedLcalc.EllipticCurve.TorsionBound
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public meta import Lean
 
@@ -94,10 +95,46 @@ private def certifyConductorValuations (base : Name) (curve hn : Ident)
       exact Certification.factorization_of_prime_exponent_check _ _ _
         (List.all_eq_true.mp $hv row hrow))) true
 
+private def certifyTorsionInvariants (base : Name) (curve : Ident) : CommandElabM Unit := do
+  let evidence ← bindStored base `torsionBound `torsion_bound (← `(TorsionBoundWitness))
+  let claim ← bindStored base `torsion `torsion (← `(Nat))
+  let some evidence := evidence |
+    if claim.isSome then logInfo m!"Unverified {base} torsion: supply torsion_bound evidence"
+    return
+  let hcheck := rootIdent (base ++ `torsion_bound_value_valid)
+  checked (base ++ `torsion_bound_value_valid)
+    (← `(checkTorsionBound $curve ($evidence).firstPrime ($evidence).secondPrime
+      ($evidence).bound = true)) (← `(by decide +kernel))
+  let htorsion ← `(Nat.card (AddCommGroup.torsion (($curve).baseChange ℚ).toAffine.Point))
+  let hbound := rootIdent (base ++ `torsion_bound)
+  checked (base ++ `torsion_bound)
+    (← `($htorsion ∣ ($evidence).bound ∧ 0 < ($evidence).bound))
+    (← `(checkTorsionBound_correct $curve _ _ _ $hcheck))
+  if let some value := claim then
+    checked (base ++ `torsion_claim_consistent)
+      (← `(0 < $value ∧ $value ∣ ($evidence).bound)) (← `(by decide +kernel))
+  let bound := mkApp (mkConst ``TorsionBoundWitness.bound)
+    (mkConst (base ++ `claimed_torsion_bound))
+  let some n ← (liftTermElabM do (evalNat (← whnf bound)).run)
+    | throwError "Expected a closed rational torsion bound"
+  if n == 1 then
+    let value ← match claim with
+      | some value => `($value:ident)
+      | none => `(1)
+    checked (base ++ `torsion)
+      (← `($htorsion = $value))
+      (← `(by
+        have h₁ : ($evidence).bound = 1 := by decide +kernel
+        have hdiv : $htorsion ∣ 1 := h₁ ▸ ($hbound).1
+        exact (Nat.dvd_one.mp hdiv).trans (by decide +kernel)))
+  else if claim.isSome then
+    logInfo m!"Unverified {base} torsion: the checked divisibility bound is not exact"
+
 /-- Check each supplied invariant against the actual curve, not an LMFDB label. -/
 def certifyStoredInvariants (base : Name) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
   let hn := rootIdent (base ++ `nonsingular)
+  certifyTorsionInvariants base curve
   if let some b ← bindStored base `bInvariants `b_invariants (← `(Int × Int × Int × Int)) then
     checked (base ++ `b_invariants)
       (← `((($curve).b₂, ($curve).b₄, ($curve).b₆, ($curve).b₈) = $b))

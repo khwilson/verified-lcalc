@@ -259,11 +259,11 @@ def certifyJson (name : Name) (text : String)
         "evaluator", "analytic_witness"]
       let localKeys := CurveDataJson.localReductionFields
       let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points",
-        "minimality", "local_data", "gens", "torsion_generators",
+        "minimality", "local_data", "gens", "torsion_generators", "torsion_generator_orders",
         "infinite_order_points", "independent_points", "binvs", "cinvs",
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
-        "j_integral", "potential_good_reduction"] ++
+        "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
         localKeys ++ if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
           then ["prime"] else []
       let skipped := object.toList.filterMap fun (key, _) =>
