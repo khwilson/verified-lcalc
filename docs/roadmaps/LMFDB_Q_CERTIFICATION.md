@@ -154,6 +154,18 @@ family of the right rank but index greater than one for basis claims. Consult
 TauCeti's `WorkedExamples/X3SubXAddOne/Rank` for a rank proof and
 `WorkedExamples/Curve37a1` for an independent lower-bound example.
 
+The current `certify_ec` interface accepts typed `AlgebraicRankBounds` proofs
+for the actual `Module.rank ℤ E(ℚ)` and checks optional `rank_bounds` and exact
+`rank` claims against them; it does not construct these bounds from raw data.
+The compiled 92.a1 example reuses TauCeti's two-descent proof for
+`X³ - X + 1` from the pinned TauCeti `v4.37.0-rc1` dependency. The project uses
+Mathlib's `LinearIndependent.cardinal_le_rank` and `finrank` APIs for checked
+lower bounds. General finite-Selmer evidence production, local-condition
+completeness, and basis saturation remain open M2 work; in particular the
+existing rank-bound API does not provide the missing checker that constructs
+and validates those inputs. The source row used by the example is pinned at
+`data/lmfdb/raw/curvedata-first-1200.txt:275` (`92b1` / `92.a1`).
+
 **M3 · Integral-point completeness.** The certifier reconstructs a candidate root
 from the square-completion formula and checks its exact integer equation. This
 rejects an invalid square or a division that has rounded to a nonroot. For each
