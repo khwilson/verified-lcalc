@@ -24,7 +24,8 @@ example : Squarefree LMFDB.C179a1.curve.Δ.natAbs :=
 example :
     LocalReductionClaim.Spec
       { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
-        reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1 } LMFDB.C179a1.curve :=
+        reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1 }
+      LMFDB.C179a1.curve :=
   LMFDB.C179a1.local_invariants _ (by decide +kernel)
 
 example :
@@ -51,6 +52,11 @@ example :
 example : ((LMFDB.C179a1.certificate.arithmetic.minimalModel.get
     (by decide +kernel)).kodaira.map fun fact => ((fact.prime : ℕ), fact.index)) =
     [(179, some 1)] := by decide +kernel
+
+example :
+    (((LMFDB.C179a1.certificate.arithmetic.minimalModel.get
+      (by decide +kernel)).localRows.get (by decide +kernel)).val.map fun row =>
+        (row.kodairaSymbol, row.tamagawaNumber)) = [(none, none)] := by decide +kernel
 
 example : (LMFDB.C197a1.curve.baseChange ℚ).j = 13824000 / 197 :=
   LMFDB.C197a1.j_invariant
