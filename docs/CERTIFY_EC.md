@@ -353,3 +353,19 @@ The reusable-theorem extraction plan is in [TAUCETI_ROADMAP.md](TAUCETI_ROADMAP.
 with separate arithmetic and analytic roadmaps. Certificate metadata and
 metaprogramming stay in this project; mathematical replacements should be
 upstreamed independently, with their own proof and axiom audits.
+
+## A single degree-two rational isogeny edge
+
+An `isogeny_edge` JSON object or Lean `isogenyEdge` specifies the target
+equation and a claimed minimum degree. For degree two, either supply a checked
+proof with `with_isogeny proof` or specify `kernel_x` as an exact rational
+x-coordinate (Lean `kernelX`). The raw kernel form checks a point with y=0
+on a source with a₁=a₃=0 and compares the exact Vélu quotient to the supplied
+target. Use the proof attachment for other rational transports.
+
+The command exports `E.degree_two_isogeny` indexed by both equations and
+`E.isogeny_minimum_degree` about the degrees of all rational isogenies in
+this direction. The exhibited map has a two-element cyclic rational kernel.
+A source or target label supplied alongside the equations is provenance.
+The fixture checks the edge 112.a2 → 112.a1 in the
+[LMFDB 112.a class](https://www.lmfdb.org/EllipticCurve/Q/112/a/).

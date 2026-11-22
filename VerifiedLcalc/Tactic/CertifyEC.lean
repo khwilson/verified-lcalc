@@ -4,6 +4,7 @@ public import VerifiedLcalc.Certification.DerivativeCertification
 public import VerifiedLcalc.Tactic.CertifyECData
 public import VerifiedLcalc.Tactic.CertifyECPoints
 public import VerifiedLcalc.Tactic.CertifyECInvariants
+public import VerifiedLcalc.Tactic.CertifyECIsogeny
 public meta import Lean
 
 /-!
@@ -219,7 +220,8 @@ def certifyPointFields (name : Name) (independence : Option (TSyntax `term)) :
 /-- The single verification path for all input methods. -/
 def certifyFields (name : Name) (input : TSyntax `term)
     (independence : Option (TSyntax `term) := none)
-    (proofs : Option (TSyntax `term) := none) : CommandElabM Unit := do
+    (proofs : Option (TSyntax `term) := none)
+    (isogeny : Option (TSyntax `term) := none) : CommandElabM Unit := do
   let name := name.eraseMacroScopes
   let base := (← getCurrNamespace) ++ name
   CertifyECData.certify name input false
@@ -233,6 +235,7 @@ def certifyFields (name : Name) (input : TSyntax `term)
   certifyPointFields name independence
   certifyLocalData base
   certifyStoredInvariants base proofs
+  certifyIsogenyEdge base isogeny
   if let some result := central then certifyAnalytic base true result
   if let some result := derivative then certifyAnalytic base false result
   logInfo m!"Certified {base}.ap_correct and {base}.point_integral for the supplied lists"
@@ -240,14 +243,16 @@ def certifyFields (name : Name) (input : TSyntax `term)
 /-- Programmatic entry point; failed components leave no declarations behind. -/
 def certify (name : Name) (input : TSyntax `term)
     (independence : Option (TSyntax `term) := none)
-    (proofs : Option (TSyntax `term) := none) : CommandElabM Unit :=
-  atomic (certifyFields name input independence proofs)
+    (proofs : Option (TSyntax `term) := none)
+    (isogeny : Option (TSyntax `term) := none) : CommandElabM Unit :=
+  atomic (certifyFields name input independence proofs isogeny)
 
 /-- Run the programmatic certificate check with atomic declaration emission. -/
 def certifyAtomic (name : Name) (input : TSyntax `term)
     (independence : Option (TSyntax `term) := none)
-    (proofs : Option (TSyntax `term) := none) : CommandElabM Unit :=
-  certify name input independence proofs
+    (proofs : Option (TSyntax `term) := none)
+    (isogeny : Option (TSyntax `term) := none) : CommandElabM Unit :=
+  certify name input independence proofs isogeny
 
 /-- Parse an exact JSON witness into Lean syntax for programmatic certification. -/
 def jsonInput (text : String) : CommandElabM (TSyntax `term) :=
@@ -256,9 +261,10 @@ def jsonInput (text : String) : CommandElabM (TSyntax `term) :=
 /-- JSON supplies the same record as direct Lean input; metadata is not a claim. -/
 def certifyJson (name : Name) (text : String)
     (independence : Option (TSyntax `term) := none)
-    (proofs : Option (TSyntax `term) := none) : CommandElabM Unit := atomic do
+    (proofs : Option (TSyntax `term) := none)
+    (isogeny : Option (TSyntax `term) := none) : CommandElabM Unit := atomic do
   let input ← jsonInput text
-  certifyFields name input independence proofs
+  certifyFields name input independence proofs isogeny
   if let .ok j := Json.parse text then
     if let .ok object := j.getObj? then
       let base := (← getCurrNamespace) ++ name.eraseMacroScopes
@@ -271,7 +277,7 @@ def certifyJson (name : Name) (text : String)
         "infinite_order_points", "independent_points", "binvs", "cinvs",
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
-        "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
+        "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
         localKeys ++ if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
           then ["prime"] else []
       let skipped := object.toList.filterMap fun (key, _) =>
@@ -362,6 +368,25 @@ def elabCertifyECProofs : CommandElab := fun stx => do
     certifyJson name.getId (← readJsonWitnessFile file) independence (some facts)
   | `(certifyECProofInput| from_json_string $text:str) =>
     certifyJson name.getId text.getString independence (some facts)
+  | _ => throwUnsupportedSyntax
+
+/-- Verify the degree-two edge with a supplied typed proof for the decoded target. -/
+syntax (name := certifyECIsogeny) "certify_ec " ident certifyECProofInput " with_isogeny " term
+  (" with_proofs " term)? (" with_independence " term)? : command
+
+/-- Elaborate a rational isogeny proof in the shared verification transaction. -/
+@[command_elab certifyECIsogeny]
+def elabCertifyECIsogeny : CommandElab := fun stx => do
+  let `(certify_ec $name:ident $source:certifyECProofInput with_isogeny $iso:term
+      $[with_proofs $facts:term]? $[with_independence $independence:term]?) := stx
+    | throwUnsupportedSyntax
+  match source with
+  | `(certifyECProofInput| from $input:term) =>
+    certify name.getId input independence facts (some iso)
+  | `(certifyECProofInput| from_json $file:str) =>
+    certifyJson name.getId (← readJsonWitnessFile file) independence facts (some iso)
+  | `(certifyECProofInput| from_json_string $text:str) =>
+    certifyJson name.getId text.getString independence facts (some iso)
   | _ => throwUnsupportedSyntax
 
 end VerifiedLcalc.CertifyEC

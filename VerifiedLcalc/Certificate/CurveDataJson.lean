@@ -187,12 +187,20 @@ def localReductionClaims (j : Json) :
     return some ((← localReductionClaim j) :: rows.getD [])
   return rows
 
+/-- Decode exact raw data for one rational isogeny edge. -/
+def isogenyEdgeClaim (j : Json) : Except String IsogenyEdgeClaim := do
+  let target ← equation (← j.getObjVal? "target")
+  let degree ← nonnegativeInteger (← j.getObjVal? "degree")
+  let kernelX ← optionalValue j "kernel_x" rationalValue
+  return { target, degree, kernelX }
+
 /-- Decode whichever supported fields are present. Integer square-root
 reconstruction supplies candidate y-coordinates for stored integral x-values;
 the certifier subsequently proves every resulting curve equation. -/
 def decode (j : Json) : Except String EllipticWitness := do
   let _ ← j.getObj?
   let equation ← equation j
+  let isogenyEdge ← optionalValue j "isogeny_edge" isogenyEdgeClaim
   let mut primeCoefficients : Array (Nat × Int) := #[]
   if let some rows := optionalData j "ap" then
     for row in ← array rows 256 do
@@ -280,6 +288,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     return ({ firstPrime, secondPrime, bound } : TorsionBoundWitness)
   return { base with
     equation
+    isogenyEdge
     bInvariants
     cInvariants
     discriminant
