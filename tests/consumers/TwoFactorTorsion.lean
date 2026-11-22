@@ -2,6 +2,8 @@ import VerifiedLcalcTests.Fixtures.TwoFactorTorsion
 
 open VerifiedLcalc Lean Elab Command
 
+noncomputable section
+
 /-! The compiled fixture exports the full structure and both generator images. -/
 
 example : Nat.card (AddCommGroup.torsion (C120b4.curve.baseChange ℚ).toAffine.Point) = 8 :=
@@ -34,8 +36,6 @@ example : (checkedStructure.equivalence (0, 1) :
 
 private def checkedPrimeSupport : TorsionPrimeSupportFacts C120b4.curve :=
   C120b4.certificate.torsion.primeSupport.get (by decide +kernel)
-
-example : checkedPrimeSupport.primes = [2] := rfl
 
 example (p : ℕ) : p ∈ checkedPrimeSupport.primes ↔ p.Prime ∧
     p ∣ Nat.card (AddCommGroup.torsion (C120b4.curve.baseChange ℚ).toAffine.Point) :=

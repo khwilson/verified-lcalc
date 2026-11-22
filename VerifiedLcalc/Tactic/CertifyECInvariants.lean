@@ -348,14 +348,21 @@ private def certifyTorsionPrimes (base : Name) : CommandElabM Unit := do
   let cardinality := rootIdent exactName
   let curve := rootIdent (base ++ `curve)
   let torsionType ← `(AddCommGroup.torsion (($curve).baseChange ℚ).toAffine.Point)
+  let hcardProof ← if (← getEnv).contains (base ++ `claimed_torsion) then
+    let claimed := rootIdent (base ++ `claimed_torsion)
+    `(by rw [$cardinality:term]; all_goals norm_num [$claimed:term])
+  else if (← getEnv).contains (base ++ `cyclic_torsion_order) then
+    let claimed := rootIdent (base ++ `cyclic_torsion_order)
+    `(by rw [$cardinality:term]; all_goals norm_num [$claimed:term])
+  else
+    `(by rw [$cardinality:term]; all_goals decide +kernel)
   checked (base ++ `torsion_primes_nodup) (← `(($primes).Nodup))
     (← `(by decide +kernel))
   checked (base ++ `torsion_primes_exact)
     (← `(∀ p, p ∈ $primes ↔ p.Prime ∧ p ∣ Nat.card $torsionType))
     (← `(by
       have hcard : $orderTerm = Nat.card $torsionType := by
-        rw [$cardinality:term]
-        all_goals decide +kernel
+        $hcardProof
       intro p
       change p ∈ (Nat.primeFactorsList $orderTerm).eraseDups ↔
         p.Prime ∧ p ∣ Nat.card $torsionType
