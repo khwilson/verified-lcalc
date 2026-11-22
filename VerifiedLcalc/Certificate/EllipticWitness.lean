@@ -3,6 +3,7 @@ module
 public import VerifiedLcalc.Certificate.IntegralXSupport
 public import VerifiedLcalc.Certificates.TorsionFacts
 public import VerifiedLcalc.Certificates.AlgebraicRank
+public import VerifiedLcalc.Certificates.Regulator
 public import VerifiedLcalc.EllipticCurve.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.DerivativeCore
 public import VerifiedLcalc.EllipticCurve.Tate.WildRootCore
@@ -31,7 +32,8 @@ structure EllipticProofs {R : Type*} [CommRing R] (curve : WeierstrassCurve R) w
   /-- A discriminant value with a proof about the indexed equation. -/
   discriminant : Option { d : R // curve.Δ = d } := none
   /-- The ordered tuple of b₂, b₄, b₆ and b₈ with a proof about the equation. -/
-  bInvariants : Option { b : R × R × R × R // (curve.b₂, curve.b₄, curve.b₆, curve.b₈) = b } := none
+  bInvariants : Option { b : R × R × R × R //
+    (curve.b₂, curve.b₄, curve.b₆, curve.b₈) = b } := none
   /-- The ordered pair of c₄ and c₆ with a proof about the equation. -/
   cInvariants : Option { c : R × R // (curve.c₄, curve.c₆) = c } := none
 
@@ -108,6 +110,8 @@ structure EllipticWitness where
   jInvariant : Option Rat := none
   /-- An error bound on the reported abc quality. -/
   abcQuality : Option AbcQualityClaim := none
+  /-- Stored regulator value and any explicit error evidence. -/
+  regulator : Option RegulatorClaim := none
   /-- Whether the rational j-invariant belongs to the image of ℤ. -/
   jIntegral : Option Bool := none
   /-- Whether the curve has potential good reduction at every rational prime. -/
