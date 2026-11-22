@@ -13,6 +13,11 @@ example : (LMFDB.C112a2.curve.baseChange ℚ).j = -4 / 7 :=
   LMFDB.C112a2.j_invariant
 example : LMFDB.C112a2.curve.Δ = -7168 := LMFDB.C112a2.discriminant
 
+example :
+    |(LMFDB.C112a2.curve.baseChange ℚ).abcQuality LMFDB.C112a2.abc_quality_defined -
+      (10348177494302118 / 10000000000000000 : ℝ)| ≤ (1 / 1000000000000000 : ℝ) := by
+  convert LMFDB.C112a2.abc_quality using 1 <;> norm_num [LMFDB.C112a2.claimed_abc_quality]
+
 example : (LMFDB.C179a1.curve.baseChange ℚ).j = -110592 / 179 :=
   LMFDB.C179a1.j_invariant
 example : LMFDB.C179a1.curve.Δ = -179 := LMFDB.C179a1.discriminant
@@ -152,6 +157,7 @@ run_cmd do
     for axiomName in dependencies do
       unless unconditional.contains axiomName || (conditional && axiomName == modularity) do
         throwError "Unexpected dependency {axiomName} in {lemmaName}"
+  check `LMFDB.C112a2 `abc_quality false
   check `LMFDB.C112a2 `integral_y_fiber_complete false
   check `LMFDB.C112a2 `generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.points_on_curve false
@@ -248,5 +254,19 @@ theorem imported_cyclic_torsion_structure :
 
 run_cmd do
   for axiomName in ← liftTermElabM (Lean.collectAxioms ``imported_cyclic_torsion_structure) do
+    unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+      throwError "Unexpected aggregate axiom: {axiomName}"
+
+private def checkedAbcQuality :=
+  LMFDB.C112a2.certificate.rational.abcQuality.get (by decide +kernel)
+
+/-- The compiled aggregate bounds the actual abc quality. -/
+theorem imported_abc_quality_bound :
+    |(LMFDB.C112a2.curve.baseChange ℚ).abcQuality checkedAbcQuality.defined -
+      (checkedAbcQuality.claim.reported : ℝ)| ≤ (checkedAbcQuality.claim.error : ℝ) :=
+  checkedAbcQuality.within_error
+
+run_cmd do
+  for axiomName in ← liftTermElabM (Lean.collectAxioms ``imported_abc_quality_bound) do
     unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
       throwError "Unexpected aggregate axiom: {axiomName}"
