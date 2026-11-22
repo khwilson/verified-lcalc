@@ -1,8 +1,16 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 public import VerifiedLcalc.EllipticCurve.Tate.WildRootCore
 public import VerifiedLcalc.EllipticCurve.Tate.TameArithmetic
 public import VerifiedLcalc.EllipticCurve.Tate.InvariantMinimality
 public import Mathlib.NumberTheory.LegendreSymbol.ZModChar
+
+/-! # Correctness of finite wild reduction arithmetic -/
+
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
 
@@ -61,7 +69,8 @@ theorem wildRoot_correct (e : (WeierstrassCurve ℤ)) (p : Nat) (hp : p.Prime) (
 /-- The actual reduction and valuation meaning of an executable Tate witness. -/
 def TateWitness.ArithmeticSpec (w : TateWitness) (e : (WeierstrassCurve ℤ)) (p : Nat) : Prop :=
   (p = 2 ∨ p = 3) ∧ e.Δ ≠ 0 ∧
-    ((WeierstrassCurve.baseChange e (ZMod p)).Δ = 0 ∧ (WeierstrassCurve.baseChange e (ZMod p)).c₄ = 0) ∧
+    ((WeierstrassCurve.baseChange e (ZMod p)).Δ = 0 ∧
+      (WeierstrassCurve.baseChange e (ZMod p)).c₄ = 0) ∧
     w.Path e p ∧ w.offset < e.Δ.natAbs.factorization p
 
 theorem tateWitness_valid_correct (w : TateWitness) (e : (WeierstrassCurve ℤ)) (p : Nat) :
@@ -82,14 +91,16 @@ noncomputable def wildExponentSpec (e : (WeierstrassCurve ℤ)) (d : WildData) (
   | some w => e.Δ.natAbs.factorization p - w.offset
   | none => tameConductorExponent e p
 
-noncomputable def wildLocalRootSpec (e : (WeierstrassCurve ℤ)) (d : WildData) (p : Nat) [Fact p.Prime] : Int :=
+noncomputable def wildLocalRootSpec (e : (WeierstrassCurve ℤ)) (d : WildData) (p : Nat)
+    [Fact p.Prime] : Int :=
   match (if p = 2 then d.atTwo else if p = 3 then d.atThree else none) with
   | some w => wildRootSpec e p w
   | none => tameLocalRootSpec e p
 
 theorem wildExponent_correct (e : (WeierstrassCurve ℤ)) (d : WildData) (p : Nat) (hp : p.Prime) :
     wildExponent e d p = wildExponentSpec e d p := by
-  simp only [wildExponent, wildExponentSpec, Nat.padicValNat_def, Nat.multiplicity_eq_factorization hp,
+  simp only [wildExponent, wildExponentSpec, Nat.padicValNat_def,
+    Nat.multiplicity_eq_factorization hp,
     localExponent_correct]
   rfl
 
@@ -130,7 +141,8 @@ noncomputable def wildLevelFast (e : (WeierstrassCurve ℤ)) (d : WildData) : Na
 noncomputable def wildSignFast (e : (WeierstrassCurve ℤ)) (d : WildData) : Int :=
   -(∏ p ∈ (e.Δ).natAbs.primeFactors, wildLocalRoot e d p)
 
-theorem wildLevel_eq_fast (e : (WeierstrassCurve ℤ)) (d : WildData) : wildLevel e d = wildLevelFast e d := by
+theorem wildLevel_eq_fast (e : (WeierstrassCurve ℤ)) (d : WildData) :
+    wildLevel e d = wildLevelFast e d := by
   unfold wildLevel wildLevelFast
   apply Finset.prod_congr rfl
   intro p hp
