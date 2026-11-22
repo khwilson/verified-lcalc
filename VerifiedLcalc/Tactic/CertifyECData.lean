@@ -59,6 +59,37 @@ private def certifyRationalCoordinates (base field : Name) (curve witness : TSyn
       (($curve).baseChange ℚ).toAffine.Point :=
     .mk ($onCurve (($coords)[i]).1 (($coords)[i]).2 (List.getElem_mem i.isLt))))
 
+/-- Check exact orders of the already constructed rational points. -/
+private def certifyTorsionOrders (base : Name) (witness : TSyntax `term) : CommandElabM Unit := do
+  let some input ← CertifyEC.optionalInput (base ++ `witness) `torsionGeneratorOrders | return
+  let torsion := base ++ `torsion_generators
+  unless (← getEnv).contains (torsion ++ `point) do
+    throwError "Provide torsion generator coordinates with their claimed orders"
+  let point := CertifyEC.rootIdent (torsion ++ `point)
+  let coords := CertifyEC.rootIdent (torsion ++ `coordinates)
+  let orders := CertifyEC.rootIdent (torsion ++ `orders)
+  CertifyEC.emit (← `(def $orders : List Nat := $input))
+  CertifyEC.checked (torsion ++ `orders_eq)
+    (← `(($witness).torsionGeneratorOrders = some $orders)) (← `(by rfl))
+  let hlen := CertifyEC.rootIdent (torsion ++ `orders_length)
+  CertifyEC.checked (torsion ++ `orders_length)
+    (← `(($orders).length = ($coords).length)) (← `(by decide +kernel))
+  let hcheck := CertifyEC.rootIdent (torsion ++ `orders_valid)
+  CertifyEC.checked (torsion ++ `orders_valid)
+    (← `((List.finRange ($coords).length).all (fun i =>
+      EllipticWitness.exactOrderCheck ($point i) ($orders)[i.val]'(by
+        rw [$hlen]
+        exact i.isLt)) = true))
+    (← `(by decide +kernel))
+  CertifyEC.checked (torsion ++ `exact_order)
+    (← `(∀ i : Fin ($coords).length, addOrderOf ($point i) = ($orders)[i.val]'(by
+      rw [$hlen]
+      exact i.isLt)))
+    (← `(by
+      intro i
+      exact EllipticWitness.exactOrderCheck_sound
+        (List.all_eq_true.mp $hcheck i (List.mem_finRange i))))
+
 /-- Check supplied arithmetic data and export ordinary definitions and theorems. -/
 def certify (name : Name) (input : TSyntax `term) (announce := true) : CommandElabM Unit := do
   let name := name.eraseMacroScopes
@@ -101,6 +132,7 @@ def certify (name : Name) (input : TSyntax `term) (announce := true) : CommandEl
     (← `(by intro i; exact WeierstrassCurve.pointOfIntegralSolution_mem _ _ _ _))
   certifyRationalCoordinates (base ++ `generators) `generatorCoordinates curve w
   certifyRationalCoordinates (base ++ `torsion_generators) `torsionGeneratorCoordinates curve w
+  certifyTorsionOrders base w
   if announce then
     logInfo m!"Certified {base}.ap_correct and {base}.point_integral (arithmetic only)"
 

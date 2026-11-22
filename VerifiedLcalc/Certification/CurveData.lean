@@ -4,6 +4,7 @@ public import VerifiedLcalc.EllipticCurve.MinimalArithmetic
 public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
 public import VerifiedLcalc.Certificate.EllipticWitness
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
+public import Mathlib.GroupTheory.OrderOfElement
 
 /-!
 # Exact certificates for stored elliptic-curve arithmetic data
@@ -48,6 +49,27 @@ theorem affineCoordinatesValid_sound {R : Type*} [CommRing R] [DecidableEq R]
 /-- Check precisely the supplied integer solutions, without searching for others. -/
 def integralCoordinatesValid (w : EllipticWitness) : Bool :=
   affineCoordinatesValid w.equation (w.integralCoordinates.getD [])
+
+/-- Check annihilation and the proper multiples obtained from prime divisors of the claim.
+The bound limits work for untrusted input. -/
+def exactOrderCheck {A : Type*} [AddMonoid A] [DecidableEq A] (P : A) (n : Nat) : Bool :=
+  decide (0 < n ∧ n ≤ 256) && decide (n • P = 0) &&
+    (List.range (n + 1)).all fun p =>
+      if isPrime p && decide (p ∣ n) then decide ((n / p) • P ≠ 0) else true
+
+/-- A checked claim is the additive order in the supplied group. -/
+theorem exactOrderCheck_sound {A : Type*} [AddMonoid A] [DecidableEq A] {P : A} {n : Nat}
+    (h : exactOrderCheck P n = true) : addOrderOf P = n := by
+  obtain ⟨hbound, hdiv⟩ := Bool.and_eq_true_iff.mp h
+  obtain ⟨hn, hzero⟩ := Bool.and_eq_true_iff.mp hbound
+  have hpos := (of_decide_eq_true hn).1
+  apply addOrderOf_eq_of_nsmul_and_div_prime_nsmul (of_decide_eq_true hzero)
+  intro p hp hpn
+  have hmem : p ∈ List.range (n + 1) :=
+    List.mem_range.mpr (Nat.lt_succ_of_le (Nat.le_of_dvd hpos hpn))
+  have hpcheck : (isPrime p && decide (p ∣ n)) = true :=
+    Bool.and_eq_true_iff.mpr ⟨(isPrime_correct p).mpr hp, decide_eq_true hpn⟩
+  exact of_decide_eq_true (by simpa only [hpcheck, if_true] using List.all_eq_true.mp hdiv p hmem)
 
 /-- A successful finite check proves every listed value is the actual prime
 coefficient of the rational curve, with local minimality handled at bad primes. -/

@@ -10,6 +10,7 @@
   "xcoord_integral_points": [-2, -1, 0, 2, 6, 16],
   "gens": [[0, 2, 1]],
   "torsion_generators": [[-2, 0, 1]],
+  "torsion_generator_orders": [2],
   "anlist": [0, 1, 0, -2, 0, -4, 0, -1, 0],
   "conductor": 112,
   "global_root_number": -1,

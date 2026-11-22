@@ -95,6 +95,9 @@ example :
       (1 : ℂ) = 1 :=
   Curve112.analytic_rank
 
+example : addOrderOf (LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩) = 2 :=
+  LMFDB.C112a2.torsion_generators.exact_order _
+
 run_cmd do
   let unconditional := [``propext, ``Classical.choice, ``Quot.sound]
   let modularity := ``Assumptions.ellipticModularity
@@ -110,6 +113,7 @@ run_cmd do
         throwError "Unexpected dependency {axiomName} in {lemmaName}"
   check `LMFDB.C112a2 `generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.points_on_curve false
+  check `LMFDB.C112a2 `torsion_generators.exact_order false
   check `LMFDB.C112a2 `dirichlet_coefficients false
   check `Curve112 `analytic_rank true
   for curve in [`LMFDB.C179a1, `LMFDB.C243a1] do
