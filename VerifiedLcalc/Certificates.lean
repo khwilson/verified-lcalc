@@ -21,5 +21,8 @@ public import VerifiedLcalc.Certificates.AnalyticRank
 public import VerifiedLcalc.Certificates.Artifacts
 public import VerifiedLcalc.Certificates.NumericalRanks
 public import VerifiedLcalc.Certificates.AnalyticEvidence
+public import VerifiedLcalc.Certificates.CurveWitness
+public import VerifiedLcalc.Certificates.RationalInvariants
+public import VerifiedLcalc.Certificates.PointFacts
 
 /-! # Mathematical certificate contracts -/
