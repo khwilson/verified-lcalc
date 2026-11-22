@@ -30,6 +30,8 @@ example :
 example : (LMFDB.C197a1.curve.baseChange ℚ).j = 13824000 / 197 :=
   LMFDB.C197a1.j_invariant
 example : LMFDB.C197a1.curve.Δ = 197 := LMFDB.C197a1.discriminant
+example : ¬ IsLocalization.IsInteger ℤ (LMFDB.C197a1.curve.baseChange ℚ).j :=
+  fun h => Bool.false_ne_true (LMFDB.C197a1.j_integral.mp h)
 
 example : (LMFDB.C214a1.curve.baseChange ℚ).j = 357911 / 214 :=
   LMFDB.C214a1.j_invariant
@@ -64,6 +66,8 @@ example : LMFDB.C286f1.curve.Δ = -286 := LMFDB.C286f1.discriminant
 example : (LMFDB.C288a1.curve.baseChange ℚ).j = 1728 :=
   LMFDB.C288a1.j_invariant
 example : LMFDB.C288a1.curve.Δ = 110592 := LMFDB.C288a1.discriminant
+example : IsLocalization.IsInteger ℤ (LMFDB.C288a1.curve.baseChange ℚ).j :=
+  LMFDB.C288a1.j_integral.mpr rfl
 
 example : (LMFDB.C291d1.curve.baseChange ℚ).j = -4096 / 291 :=
   LMFDB.C291d1.j_invariant
@@ -100,6 +104,8 @@ run_cmd do
       unless unconditional.contains axiomName || (conditional && axiomName == modularity) do
         throwError "Unexpected dependency {axiomName} in {lemmaName}"
   check `LMFDB.C112a2 `dirichlet_coefficients false
+  check `LMFDB.C197a1 `j_integral false
+  check `LMFDB.C288a1 `j_integral false
   check `Curve112 `analytic_rank true
   for curve in [`LMFDB.C179a1, `LMFDB.C243a1] do
     for suffix in [`semistable, `squarefree_discriminant, `local_invariants] do
