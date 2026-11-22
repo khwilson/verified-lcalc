@@ -1,8 +1,6 @@
 module
 
-public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point
-public import Mathlib.LinearAlgebra.Dimension.Finite
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
+public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenerated -- shake: keep
 
 /-! # Natural-valued algebraic rank bounds for rational elliptic curves -/
 
@@ -31,13 +29,9 @@ def AlgebraicRankBounds.ofFinrankEq {W : WeierstrassCurve ℚ} [W.toAffine.IsEll
 /-- Compatibility constructor for existing proofs stated using `Module.rank`.
 Mordell–Weil finite generation converts the cardinal equality to `finrank`. -/
 def AlgebraicRankBounds.ofRankEq {W : WeierstrassCurve ℚ} [W.toAffine.IsElliptic]
-    [Module.Finite ℤ W.toAffine.Point]
     (n : ℕ) (h : Module.rank ℤ W.toAffine.Point = (n : Cardinal)) :
     AlgebraicRankBounds W := by
-  classical
-  have h' : (Module.finrank ℤ W.toAffine.Point : Cardinal) = (n : Cardinal) :=
-    (Module.finrank_eq_rank ℤ W.toAffine.Point).trans h
-  exact .ofFinrankEq n (by exact_mod_cast h')
+  exact .ofFinrankEq n (Module.finrank_eq_of_rank_eq h)
 
 /-- A checked interval can prove weaker bounds on the same curve. -/
 def AlgebraicRankBounds.weaken {W : WeierstrassCurve ℚ} [W.toAffine.IsElliptic]
