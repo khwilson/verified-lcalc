@@ -3,7 +3,8 @@ open Lake DSL
 
 package «verified-lcalc»
 
-require mathlib from "../mathlib4"
+require mathlib from git "https://github.com/leanprover-community/mathlib4" @
+  "31ce06eaadf4a200c0e1407c5f10953cf606b8f8"
 
 lean_lib VerifiedLcalc
 

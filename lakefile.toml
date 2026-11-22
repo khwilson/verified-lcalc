@@ -2,11 +2,10 @@ name = "verified-lcalc"
 version = "0.1.0"
 defaultTargets = ["VerifiedLcalc", "ec-coefficients", "exp-enclosure", "precision-policy", "import-lmfdb"]
 
-# Local checkout at 3440367ed1804626334f13a3a534a9cbb3385a59.
-# See docs/BUILD.md for the portable dependency configuration.
 [[require]]
 name = "mathlib"
-path = "../mathlib4"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "31ce06eaadf4a200c0e1407c5f10953cf606b8f8"
 
 [[lean_lib]]
 name = "VerifiedLcalc"
