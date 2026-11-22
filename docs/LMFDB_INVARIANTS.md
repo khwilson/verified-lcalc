@@ -34,6 +34,7 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `ap` / `aplist` | `primeCoefficients` | Actual `LFunction p` coefficients with proved sufficient local minimality checks. |
 | `anlist` | `dirichletCoefficients` | Actual consecutive `LFunction n` coefficients; requires `minimality`. Native JSON starts with a₀=0, which is checked and removed; direct Lean lists start at a₁. |
 | `conductor` | `conductor` | Identification with the chosen modular realization's level; requires `minimality`, `localData`, and the existing modularity/arithmetic-compatibility axiom. |
+| Local `conductor_valuation` | `localInvariants[].conductorValuation` | Proves primality and the claimed exponent in the Mathlib factorization of the curve's checked modular level. Requires a checked `conductor` with `minimality` and `localData`. |
 | `global_root_number` | `rootNumber` | Identification with that realization's global root/Fricke sign under the same conditions. This is an explicit extension key, not the local-table `root_number`. |
 | Integral coordinates / stored x-values | `integralCoordinates` | Point membership; not completeness of the integral-point set. |
 | Point-index requests | `infiniteOrderPoints`, `independentPoints` | Infinite order and algebraic-rank lower bounds, with an explicit independence proof for a requested family. |
@@ -49,7 +50,13 @@ over a discrete valuation ring and its fraction field.
 
 All equation invariants, minimality, bad-prime, coefficient, semistability, and local reduction results have only
 standard Lean axiom dependencies. Conductor and global-root identification are
-explicitly conditional. Supplying `minimality` also exports `global_minimal`.
+explicitly conditional. The local `conductor_valuation` theorem shares this boundary through the
+checked level equation. The finite exponent check uses the Mathlib natural-number factorization
+of that level. A comparison with the intrinsic Artin exponent or with the norm of TauCeti's
+algorithmic conductor ideal requires a separate theorem.
+[Algorithmic conductor ideal](https://github.com/TauCetiProject/TauCeti/pull/15468)
+
+Supplying `minimality` also exports `global_minimal`.
 None of these checks certifies an external label or database provenance.
 
 A local row has a required `prime` and optional exact integer values for
@@ -77,7 +84,7 @@ missing theorem.
 | Group / fields | Proof work still needed |
 | --- | --- |
 | `potential_good_reduction` | Integrate TauCeti's `hasPotentialGoodReduction_iff_isInteger_j` and connect it to the finite check on the denominator of `j`. |
-| Local `conductor_valuation`, `kodaira_symbol`, `root_number`, `tamagawa_number`, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
+| Local `kodaira_symbol`, `root_number`, `tamagawa_number`, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
 | `gens`, `torsion_generators`, `torsion`, `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | Normalize rational point coordinates; prove generator orders, independence, and a torsion upper bound. Membership alone does not prove subgroup order or exhaustivity. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Lower bounds already have the explicit independence route. Exact rank needs an upper-bound/descent certificate; integral-point counts need completeness proofs. |
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |

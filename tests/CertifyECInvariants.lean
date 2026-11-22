@@ -11,7 +11,7 @@ certify_ec Partial37 from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"jinv":[110592,37],"signD":1,"absD":37,
       "bad_primes":[37],"num_bad_primes":1,"semistable":true,"squarefree_disc":true,
       "local_invariants":[{"prime":37,"discriminant_valuation":1,
-        "j_denominator_valuation":1,"reduction_type":-1}],
+        "j_denominator_valuation":1,"reduction_type":-1,"conductor_valuation":1}],
       "conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3]}"#
 example : (Partial37.curve.baseChange ℚ).j = 110592 / 37 := Partial37.j_invariant
 
@@ -43,13 +43,27 @@ certify_ec JSON37 from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"jinv":["110592","37"],"binvs":[0,-2,1,-1],"cinvs":[48,-216],
       "absD":37,"bad_primes":[37],"num_bad_primes":1,"semistable":true,"squarefree_disc":true,
       "local_invariants":[{"prime":37,"discriminant_valuation":1,
-        "j_denominator_valuation":1,"reduction_type":-1}],
+        "j_denominator_valuation":1,"reduction_type":-1,"conductor_valuation":1}],
       "conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3,2,-2,6,-1,0],
       "minimality":[37],"local_data":{"at_two":null,"at_three":null}}"#
 example : JSON37.curve.Δ.natAbs = 37 := JSON37.minimal_discriminant_abs.2
 
 example : WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
     (JSON37.curve.baseChange ℚ) := JSON37.semistable.mpr rfl
+
+example : (Modularity.modularWitness JSON37.curve JSON37.nonsingular).level.factorization 37 = 1 :=
+  (JSON37.conductor_valuation (37, 1) (by decide +kernel)).2
+
+certify_ec DirectConductorValuations from
+  { Invariants37.witness with
+    localInvariants := some
+      [{ prime := 37, conductorValuation := some 1 },
+       { prime := 2, conductorValuation := some 0 }] }
+
+example :
+    (Modularity.modularWitness DirectConductorValuations.curve
+      DirectConductorValuations.nonsingular).level.factorization 2 = 0 :=
+  (DirectConductorValuations.conductor_valuation (2, 0) (by decide +kernel)).2
 
 certify_ec AdditiveLocal from_json_string
   r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],"semistable":false,
@@ -86,7 +100,8 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
       `semistable, `squarefree_discriminant, `local_invariants, `claimed_semistable,
-      `claimed_squarefree_discriminant, `claimed_local_invariants] do
+      `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_conductor_valuations,
+      `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation] do
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
@@ -128,8 +143,14 @@ run_cmd do
   invariantRejected `CompositeLocalPrime (← `(certify_ec CompositeLocalPrime from
     { Invariants37.witness with localInvariants := some [
         { prime := 4, discriminantValuation := some 0 }] }))
+  invariantRejected `BadConductorValuation (← `(certify_ec BadConductorValuation from
+    { DirectConductorValuations.witness with
+      localInvariants := some [{ prime := 37, conductorValuation := some 50000 }] }))
+  invariantRejected `CompositeConductorPrime (← `(certify_ec CompositeConductorPrime from
+    { DirectConductorValuations.witness with
+      localInvariants := some [{ prime := 4, conductorValuation := some 0 }] }))
   invariantRejected `WrongConductor (← `(certify_ec WrongConductor from
-    { Invariants37.witness with conductor := some 1 }))
+    { DirectConductorValuations.witness with conductor := some 1 }))
   invariantRejected `WrongRootNumber (← `(certify_ec WrongRootNumber from
     { Invariants37.witness with rootNumber := some 1 }))
   invariantRejected `WrongAN (← `(certify_ec WrongAN from
@@ -141,7 +162,7 @@ run_cmd do
       minimalDiscriminantAbs := some 151552 }))
   for suffix in [`minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
-      `semistable, `squarefree_discriminant, `local_invariants] do
+      `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation] do
     if (← getEnv).contains (`Partial37 ++ suffix) then
       throwError "Missing arithmetic evidence generated an invariant claim"
   for suffix in [`j_integral, `potential_good_reduction] do
@@ -175,6 +196,15 @@ run_cmd do
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
+  for name in [`JSON37, `DirectConductorValuations] do
+    let axioms ← liftTermElabM <| Lean.collectAxioms (name ++ `conductor_valuation)
+    let modularity := ``VerifiedLcalc.Assumptions.ellipticModularity
+    unless axioms.contains modularity do throwError "Conductor exponent lost its assumption"
+    for ax in axioms do
+      unless standard.contains ax || ax == modularity do
+        throwError "Unexpected conductor exponent axiom: {ax}"
+  if (← getEnv).contains `SplitLocal.conductor_valuation then
+    throwError "A row without a conductor exponent generated an exponent theorem"
   let additiveFields := [`semistable, `squarefree_discriminant, `local_invariants]
   for (name, fields) in [(`AdditiveLocal, additiveFields), (`SplitLocal, [`local_invariants])] do
     for field in fields do
@@ -189,6 +219,17 @@ run_cmd do
   match CurveDataJson.parse r#"{"ainvs":[0,0,1,-1,0],"j_integral":"false"}"# with
   | .error _ => pure ()
   | .ok _ => throwError "Non-boolean j_integral accepted"
+  for v in ["-1", "1.5", "true"] do
+    let raw := "{\"ainvs\":[0,0,1,-1,0],\"prime\":37,\"conductor_valuation\":" ++ v ++ "}"
+    match CurveDataJson.parse raw with
+    | .error _ => pure ()
+    | .ok _ => throwError "Malformed conductor exponent accepted"
+  let row := r#"{"prime":37,"conductor_valuation":1}"#
+  let oversized := String.intercalate "," (List.replicate 257 row)
+  let raw := "{\"ainvs\":[0,0,1,-1,0],\"local_invariants\":[" ++ oversized ++ "]}"
+  match CurveDataJson.parse raw with
+  | .error _ => pure ()
+  | .ok _ => throwError "Oversized conductor valuation row list accepted"
   match CurveDataJson.parse r#"{"ainvs":[0,0,1,-1,0],"anlist":[1,1]}"# with
   | .error _ => pure ()
   | .ok _ => throwError "Nonzero anlist origin accepted"
