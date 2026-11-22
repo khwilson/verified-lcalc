@@ -27,8 +27,8 @@ claim. `EllipticWitness.central` and
 All three forms, and `CertifyEC.certify` / `certifyAtomic`, use the same checker.
 Optional stored invariants include b/c values, equation discriminant and sign,
 j-invariant and its integrality, everywhere potential good reduction, minimal absolute
-discriminant, bad-prime set/count, anlist, conductor and global root number. Prerequisite-dependent claims without the
-required evidence are explicitly reported as unverified. See
+discriminant, bad-prime set/count, anlist, conductor and global root number.
+Prerequisite-dependent claims without the required evidence are reported as unverified. See
 `docs/LMFDB_INVARIANTS.md` for the exact mathematical outputs and trust boundary.
 JSON can supply `ainvs`, `ap` or `aplist`, and `integral_points` or
 `xcoord_integral_points`; unrelated metadata carries no claim. The legacy rank
