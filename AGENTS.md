@@ -54,6 +54,14 @@
   theorems. Add the raw field to the certificate coverage inventory and test
   an imported consumer. Use optional fields for absent evidence and a
   membership or bound type for partial evidence.
+- Put canonical public certificate data and witness contract declarations in
+  `VerifiedLcalc/Certificates/`. Reuse upstream Mathlib and TauCeti mathematical
+  objects first; add only narrowly justified local specifications where the
+  upstream API lacks the required encoding. Keep proof-only imports ordinary
+  `import`s, and use `public import` only when the imported declarations occur
+  in the public signature or are intentionally re-exported by an umbrella.
+  Maintain the compiler-backed import audit and consumer at
+  `tests/consumers/CertificateContracts.lean`.
 - Keep realization-dependent facts parameterized over explicit realizations.
   The aggregate itself and new finite downstream projection theorems must
   pass the standard Lean axiom audit on a mixed certificate.

@@ -1,12 +1,12 @@
 module
 
 public import VerifiedLcalc.EllipticCurve.Tate.TameCore
+public import VerifiedLcalc.Certificates.Transcripts
 
 /-! # Integer witnesses for additive Tate reduction at the wild primes -/
 
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
-open Artifacts
 
 /-- Check the specified prime-power divisibilities of the Weierstrass coefficients. -/
 def TateWeights (e : (WeierstrassCurve ℤ)) (p n1 n2 n3 n4 n6 : Nat) : Prop :=
@@ -77,27 +77,6 @@ def decStarChain (p : Nat) (e : (WeierstrassCurve ℤ)) (oddStage : Bool) (k : N
 
 instance (p : Nat) (e : (WeierstrassCurve ℤ)) (oddStage : Bool) (k : Nat) (xs : List Int) :
     Decidable (StarChain p e oddStage k xs) := decStarChain p e oddStage k xs
-
-/-- A finite Tate reduction transcript. Codes: II=2, III=3, IV=4,
-I0*=-1, IV*=-4, III*=-3, II*=-2, I_n*=-(4+n). -/
-structure TateWitness where
-  /-- Initial horizontal translation. -/
-  r : Int
-  /-- Initial shear in the y-coordinate. -/
-  s : Int
-  /-- Initial vertical translation. -/
-  t : Int
-  /-- Vertical translation parameter at the start of the starred cases. -/
-  starT : Int := 0
-  /-- Candidate repeated root of the cubic. -/
-  cubicRoot : Int := 0
-  /-- Candidate repeated root of the quadratic. -/
-  quadraticRoot : Int := 0
-  /-- Repeated roots checked in the starred blow-up sequence. -/
-  chain : List Int := []
-  /-- Integer code for the proposed Kodaira symbol. -/
-  kodaira : Int
-  deriving Repr, DecidableEq
 
 /-- Number of geometric components minus one, in Ogg's conductor formula. -/
 def TateWitness.offset (w : TateWitness) : Nat :=

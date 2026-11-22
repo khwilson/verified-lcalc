@@ -1,7 +1,9 @@
 module
 
-public import VerifiedLcalc.Scan
+public import VerifiedLcalc.Certificates.Enclosures
 public import VerifiedLcalc.Upstream.LedvinkaExponentialCore
+
+/-! # Exact rational enclosures for the exponential -/
 
 @[expose] public section
 
@@ -15,17 +17,23 @@ def rationalExpBounds (lo hi : Rat) (prec : Nat) : Rat × Rat :=
   let upper := -((-hi).toDyadic prec)
   ((expBounds lower prec).1.toRat, (expBounds upper prec).2.toRat)
 
+/-- Exact data for a rational multiple of an exponential term. -/
 structure RationalExpTerm where
+  /-- Rational multiplicative coefficient. -/
   coefficient : Rat
+  /-- Lower endpoint for the exponential argument. -/
   argumentLo : Rat
+  /-- Upper endpoint for the exponential argument. -/
   argumentHi : Rat
   deriving Repr, DecidableEq
 
+/-- Enclose one weighted exponential term by outward-rounded rational bounds. -/
 def rationalWeightedBounds (term : RationalExpTerm) (prec : Nat) : Rat × Rat :=
   let b := rationalExpBounds term.argumentLo term.argumentHi prec
   if 0 ≤ term.coefficient then (term.coefficient * b.1, term.coefficient * b.2)
   else (term.coefficient * b.2, term.coefficient * b.1)
 
+/-- Add term enclosures without introducing floating point arithmetic. -/
 def rationalExpSumBounds (prec : Nat) : List RationalExpTerm → Rat × Rat
   | [] => (0, 0)
   | term :: terms =>

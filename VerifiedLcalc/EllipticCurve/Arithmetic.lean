@@ -1,15 +1,15 @@
 module
 
-public import VerifiedLcalc.Certificate
+public import VerifiedLcalc.Certificates.WeierstrassInstances
 public import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCountOdd
 public import Mathlib.Data.ZMod.Basic
 public import Mathlib.Data.Nat.Prime.Defs
 
+/-! # Finite point counts and Frobenius traces -/
+
 @[expose] public section
 
 namespace VerifiedLcalc.EllipticCurve
-open Artifacts
-
 /-- Use Euler's criterion at odd primes and the shared finite-ring enumeration
 otherwise. Modulus zero retains the unsupported sentinel convention. -/
 def computePointCount (e : WeierstrassCurve ℤ) (p : Nat) : Nat :=
@@ -23,7 +23,7 @@ def computePointCount (e : WeierstrassCurve ℤ) (p : Nat) : Nat :=
 /-- Evaluate the shared finite-ring trace. Correctness against TauCeti's
 field-valued mathematical definition is proved for prime moduli. -/
 def computeFrobeniusTrace (e : WeierstrassCurve ℤ) (p : Nat) : Int :=
-  if hp : p = 0 then 0 else
+  if _hp : p = 0 then 0 else
     (p : Int) + 1 - computePointCount e p
 
 /-- Reflect Mathlib's decidable primality predicate into the executable API. -/
@@ -34,9 +34,13 @@ Tate's algorithm or assert that a singular model is minimal. -/
 def goodReduction (e : (WeierstrassCurve ℤ)) (p : Nat) : Bool :=
   decide (e.Δ % (p : Int) ≠ 0)
 
+/-- The exact finite-field data retained for one supported prime. -/
 structure PrimeData where
+  /-- Prime modulus used for the reduction. -/
   prime : Nat
+  /-- Number of points on the reduced curve, including the point at infinity. -/
   points : Nat
+  /-- Frobenius trace `p + 1 - points`. -/
   trace : Int
   deriving Repr, DecidableEq
 
@@ -65,6 +69,7 @@ def localPair (a q : Int) : Nat → Int × Int
   | 0 => (1, a)
   | n + 1 => let prev := localPair a q n; (prev.2, a * prev.2 - q * prev.1)
 
+/-- Coefficient at index k of the inverse quadratic Euler factor. -/
 def localCoefficient (a q : Int) (k : Nat) : Int := (localPair a q k).1
 
 /-- Operational recurrence for the executable evaluator. Its mathematical
