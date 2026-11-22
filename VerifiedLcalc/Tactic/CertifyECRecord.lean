@@ -1,6 +1,7 @@
 module
 
 public import VerifiedLcalc.Certificate.CheckedElliptic
+public import VerifiedLcalc.Certification.TorsionBoundFacts
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public import VerifiedLcalc.Tactic.CertifyECArithmeticFacts
 public import VerifiedLcalc.Tactic.CertifyECAnalyticFacts
@@ -144,16 +145,17 @@ private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := d
       independentPoints := $independent, rankLowerBound := $lowerBound,
       rankBounds := $rankBounds, rank := $exactRank })
 
-private def torsionFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
+private def torsionFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `term) := do
   let boundName := base ++ `torsion_bound
   unless (← getEnv).contains boundName do return ← `({})
   let evidence := rootIdent (base ++ `claimed_torsion_bound)
   let checkedBound := rootIdent (base ++ `torsion_bound_value_valid)
-  let valid := rootIdent boundName
   let consistent ← if (← getEnv).contains (base ++ `torsion_claim_consistent) then
     `(some ⟨$(rootIdent (base ++ `claimed_torsion)),
       $(rootIdent (base ++ `torsion_claim_consistent))⟩)
   else `(none)
+  let divisor ← `(some ({ Certification.torsionDivisorFacts_of_check $curve $evidence
+    $checkedBound with consistentClaim := $consistent }))
   let exactName := base ++ `torsion
   let exactCardinality ← if (← getEnv).contains exactName then do
     let value ← liftTermElabM do
@@ -185,7 +187,7 @@ private def torsionFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
       $(rootIdent (base ++ `torsion_primes_nodup)),
       $(rootIdent (base ++ `torsion_primes_exact))⟩)
   else `(none)
-  `({ divisor := some ⟨$evidence, $checkedBound, $valid, $consistent⟩,
+  `({ divisor := $divisor,
       cardinality := $exactCardinality, cyclicStructure := $cyclic,
       twoFactorStructure := $twoFactor, primeSupport := $primeSupport })
 
@@ -201,7 +203,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let algebraic ← algebraicFactsTerm base
   let arithmetic ← arithmeticFactsTerm base curve
   let analytic ← analyticFactsTerm base curve
-  let torsion ← torsionFactsTerm base
+  let torsion ← torsionFactsTerm base curve
   let name := base ++ `certificate
   let certificate := rootIdent name
   let edgeName := base ++ `degree_two_isogeny

@@ -5,19 +5,28 @@ import Lean
 
 open VerifiedLcalc Lean Elab Command
 
-#check IntegralXSupport
-#check CompleteIntegralPointFacts
-#check DegreeTwoIsogenyFact
-#check Box
-#check PrecisionPolicy
-#check EllipticCurve.MinimalityWitness
-#check EllipticCurve.TateWitness
-#check EllipticCurve.WildData
-#check EllipticCurve.CentralResult
-#check EllipticCurve.DerivativeResult
-#check EllipticCurve.CentralPayloadCorrect
-#check EllipticCurve.DerivativePayloadCorrect
-#check EllipticCurve.AlgebraicRankBounds
+example (curve : WeierstrassCurve ℤ) : Type := IntegralXSupport curve
+example (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] :
+    Type := CompleteIntegralPointFacts curve
+example (source target : WeierstrassCurve ℤ) : Type := DegreeTwoIsogenyFact source target
+example : Type := TorsionBoundWitness
+example (curve : WeierstrassCurve ℤ) : Type := TorsionDivisorFacts curve
+example (curve : WeierstrassCurve ℤ) : Type := CyclicTorsionFacts curve
+example (curve : WeierstrassCurve ℤ) : Type := TwoFactorTorsionFacts curve
+example (curve : WeierstrassCurve ℤ) : Type := TorsionPrimeSupportFacts curve
+example (curve : WeierstrassCurve ℤ) : Type := TorsionFacts curve
+example : Type := Box
+example : Type := PrecisionPolicy
+example : Type := EllipticCurve.MinimalityWitness
+example : Type := EllipticCurve.TateWitness
+example : Type := EllipticCurve.WildData
+example : Type := EllipticCurve.CentralResult
+example : Type := EllipticCurve.DerivativeResult
+example (result : EllipticCurve.CentralResult) : Prop := EllipticCurve.CentralPayloadCorrect result
+example (result : EllipticCurve.DerivativeResult) : Prop :=
+  EllipticCurve.DerivativePayloadCorrect result
+example {W : WeierstrassCurve ℚ} [W.toAffine.IsElliptic] :
+    Type := EllipticCurve.AlgebraicRankBounds W
 
 section MordellWeilInstance
 variable {W : WeierstrassCurve ℚ} [W.toAffine.IsElliptic]
@@ -35,6 +44,8 @@ run_cmd do
     `VerifiedLcalc.Certification.IntegralPointCount,
     `VerifiedLcalc.Certification.DegreeTwoIsogeny,
     `VerifiedLcalc.Certification.DegreeTwoIsogenyRaw,
+    `VerifiedLcalc.Certification.TorsionBoundFacts,
+    `VerifiedLcalc.EllipticCurve.TorsionBound,
     `VerifiedLcalc.Scan,
     `VerifiedLcalc.Precision,
     `VerifiedLcalc.Certificate,
