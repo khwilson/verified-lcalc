@@ -38,8 +38,12 @@ theorem evaluateDerivative_correct {e : (WeierstrassCurve ℤ)} {N M steps cutof
           policy.precisionBits steps cutoff with
       | none => simp [ht, hf] at h
       | some finite =>
-        have h' := h
-        simp [ht, hf] at h'
+        have h' : r = ⟨e, N, policy, M, steps, cutoff, modelCoefficients e M,
+            (alphaBounds N policy.precisionBits).1,
+            (alphaBounds N policy.precisionBits).2, finite, tail,
+            ⟨finite.1 - tail, finite.2 + tail, 0, 0⟩⟩ := by
+          apply Option.some.inj
+          simpa [ht, hf] using h.symm
         cases h'
         exact ⟨rfl,rfl,rfl,rfl,rfl,rfl,hn'.1,hn'.2.1,hn'.2.2,rfl,rfl,rfl,ht,hf,rfl⟩
 end VerifiedLcalc.EllipticCurve
