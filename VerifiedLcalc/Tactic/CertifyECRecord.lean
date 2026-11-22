@@ -79,6 +79,22 @@ private def rankLowerBoundTerm (base : Name) : CommandElabM (TSyntax `term) := d
   let proof := rootIdent theoremName
   `(some ⟨$count, $proof⟩)
 
+private def generatorCountTerm (base : Name) : CommandElabM (TSyntax `term) := do
+  let proofName := base ++ `generators.count_valid
+  unless (← getEnv).contains proofName do return ← `(none)
+  let count := rootIdent (base ++ `generators.count)
+  `(some ⟨$count, $(rootIdent proofName)⟩)
+
+private def rankBoundsTerm (base : Name) : CommandElabM (TSyntax `term) := do
+  let proofName := base ++ `algebraic_rank_witness
+  unless (← getEnv).contains proofName do return ← `(none)
+  `(some $(rootIdent proofName))
+
+private def exactRankTerm (base : Name) : CommandElabM (TSyntax `term) := do
+  let proofName := base ++ `algebraic_rank
+  unless (← getEnv).contains proofName do return ← `(none)
+  `(some ⟨$(rootIdent (base ++ `mordell_weil_rank)), $(rootIdent proofName)⟩)
+
 private def torsionGeneratorOrderTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let child := base ++ `torsion_generators
   unless (← getEnv).contains (child ++ `exact_order) do return ← `(none)
@@ -105,15 +121,20 @@ private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := d
   let integral ← integralMembershipTerm base
   let fibers ← integralYFiberTerm base
   let generators ← rationalMembershipTerm (base ++ `generators)
+  let generatorCount ← generatorCountTerm base
   let torsionGenerators ← rationalMembershipTerm (base ++ `torsion_generators)
   let torsionOrders ← torsionGeneratorOrderTerm base
   let infinite ← infiniteOrderFactsTerm base
   let independent ← independenceFactsTerm base
   let lowerBound ← rankLowerBoundTerm base
+  let rankBounds ← rankBoundsTerm base
+  let exactRank ← exactRankTerm base
   `({ integralPoints := $integral, integralYFibers := $fibers, generators := $generators,
+      generatorCount := $generatorCount,
       torsionGenerators := $torsionGenerators, torsionGeneratorOrders := $torsionOrders,
       infiniteOrderPoints := $infinite,
-      independentPoints := $independent, rankLowerBound := $lowerBound })
+      independentPoints := $independent, rankLowerBound := $lowerBound,
+      rankBounds := $rankBounds, rank := $exactRank })
 
 private def torsionFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let boundName := base ++ `torsion_bound

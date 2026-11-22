@@ -43,6 +43,8 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `integral_points` | `integralCoordinates` | Point membership on the supplied equation. |
 | `xcoord_integral_points` | `integralFiberRoots` | Complete finite y-fibers at the listed x-values, with a double root represented once. The theorem makes no claim over other x-values. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
+| `rank`, `rank_bounds` | `algebraicRank`, `algebraicRankBounds` | Verify supplied endpoints against a typed proof of bounds on the actual Mordell–Weil rank. A singleton proof gives exact rank. |
+| `ngens` | `generatorCount` | Length of the checked `gens` list. A basis or spanning claim needs its own evidence. |
 | `torsion_generator_orders` | `torsionGeneratorOrders` | Project-specific list giving an exact additive order for each supplied torsion generator point. |
 | `torsion_structure` | `torsionStructure` | An additive equivalence onto the full rational torsion subgroup, for cyclic factors or two factors `[2, n]` with verified independence and a matching divisor. |
 | `torsion_primes` | `torsionPrimes` | Ascending distinct prime support of the exact full rational torsion cardinality; checked only after that cardinality is proved. |
@@ -135,8 +137,8 @@ missing theorem.
 | Group / fields | Proof work still needed |
 | --- | --- |
 | Specific additive `kodaira_symbol`, local `root_number`, other `tamagawa_number` branches, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
-| Tighter `torsion_structure` bounds and `intrinsic_torsion` | Construct tight bounds for the rational torsion group or prove the required torsion pairing statement. |
-| `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Lower bounds already have the explicit independence route. Exact rank needs an upper-bound/descent certificate; integral-point counts need completeness proofs. |
+| Tighter torsion bounds and `intrinsic_torsion` | Construct tight bounds for the rational torsion group or prove the required torsion pairing statement. |
+| `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Rank intervals can be supplied as Lean proofs and are checked against the actual rational point group; exact rank requires a singleton interval. `ngens` checks only the length of the supplied generator list, not that it is a basis. Integral-point counts need completeness proofs. |
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |
 | `cm`, quadratic-twist fields | Actual endomorphism/twist statements and, for a minimal twist, the required minimality comparison. A j-value lookup alone is not a CM certificate. |
 | Modular `degree`, `manin_constant`, `optimality` | Statements about the modular parametrization, not the degree of an arbitrary isogeny. |

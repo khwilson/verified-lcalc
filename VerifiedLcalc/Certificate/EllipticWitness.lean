@@ -1,5 +1,6 @@
 module
 
+public import VerifiedLcalc.EllipticCurve.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.DerivativeCore
 public import VerifiedLcalc.EllipticCurve.Tate.WildRootCore
 
@@ -84,6 +85,10 @@ structure IsogenyEdgeClaim where
   /-- Optional x-coordinate of a kernel point with y=0. -/
   kernelX : Option Rat := none
   deriving Repr, DecidableEq
+/-- Lean proofs accepted alongside raw claims on an integral Weierstrass equation. -/
+structure IntegralCurveProofs (curve : WeierstrassCurve ℤ) extends EllipticProofs curve where
+  /-- Proved endpoints of a Mordell–Weil rank interval on the rational curve. -/
+  algebraicRank : Option (AlgebraicRankBounds (curve.baseChange ℚ)) := none
 
 /-- The single input record for elliptic-curve certification. `none` means that
 no data of that kind was supplied; `some []` is an explicitly supplied empty
@@ -143,6 +148,12 @@ structure EllipticWitness where
   integralFiberRoots : Option (List (Int × Int)) := none
   /-- Rational affine coordinates for the LMFDB generator list, checked for membership. -/
   generatorCoordinates : Option (List (Rat × Rat)) := none
+  /-- Claimed length of the supplied generator coordinate list. -/
+  generatorCount : Option Nat := none
+  /-- Claimed Mordell–Weil rank, distinct from a numerical analytic-rank candidate. -/
+  algebraicRank : Option Nat := none
+  /-- Supplied lower and upper bounds on the Mordell–Weil rank. -/
+  algebraicRankBounds : Option (Nat × Nat) := none
   /-- Rational affine coordinates for the LMFDB torsion generator list, checked for membership. -/
   torsionGeneratorCoordinates : Option (List (Rat × Rat)) := none
   /-- Claimed exact additive orders, in the same order as the torsion coordinates. -/

@@ -49,4 +49,42 @@ theorem algebraic_rank_pos_of_infinite_order {W : WeierstrassCurve ℚ}
     (1 : Cardinal) ≤ Module.rank ℤ W.toAffine.Point :=
   algebraic_rank_lower_bound _ (independent_singleton_of_infinite_order P hP)
 
+/-- Checked lower and upper bounds on the same curve's Mordell–Weil rank. -/
+structure AlgebraicRankBounds (W : WeierstrassCurve ℚ) where
+  /-- The claimed lower endpoint. -/
+  lower : ℕ
+  /-- The claimed upper endpoint. -/
+  upper : ℕ
+  /-- The actual rank is at least the lower endpoint. -/
+  lower_le_rank : (lower : Cardinal) ≤ Module.rank ℤ W.toAffine.Point
+  /-- The actual rank is at most the upper endpoint. -/
+  rank_le_upper : Module.rank ℤ W.toAffine.Point ≤ (upper : Cardinal)
+
+/-- A proof of exact rank gives the corresponding singleton interval. -/
+def AlgebraicRankBounds.ofRankEq {W : WeierstrassCurve ℚ} (n : ℕ)
+    (h : Module.rank ℤ W.toAffine.Point = (n : Cardinal)) : AlgebraicRankBounds W :=
+  ⟨n, n, h.ge, h.le⟩
+
+/-- A checked interval can prove a weaker lower and upper bound on the same curve. -/
+def AlgebraicRankBounds.weaken {W : WeierstrassCurve ℚ}
+    (fact : AlgebraicRankBounds W) (lower upper : ℕ)
+    (hl : lower ≤ fact.lower) (hu : fact.upper ≤ upper) : AlgebraicRankBounds W :=
+  ⟨lower, upper, (Nat.cast_le.mpr hl).trans fact.lower_le_rank,
+    fact.rank_le_upper.trans (Nat.cast_le.mpr hu)⟩
+
+/-- A checked additional lower bound can tighten the interval. -/
+def AlgebraicRankBounds.raiseLower {W : WeierstrassCurve ℚ}
+    (fact : AlgebraicRankBounds W) (lower : ℕ)
+    (h : (lower : Cardinal) ≤ Module.rank ℤ W.toAffine.Point) : AlgebraicRankBounds W :=
+  ⟨max fact.lower lower, fact.upper, by
+    rcases le_total lower fact.lower with hl | hl
+    · simpa only [max_eq_left hl] using fact.lower_le_rank
+    · simpa only [max_eq_right hl] using h, fact.rank_le_upper⟩
+
+/-- An interval with equal endpoints proves the exact Mordell–Weil rank. -/
+theorem AlgebraicRankBounds.rank_eq_of_equal {W : WeierstrassCurve ℚ}
+    (fact : AlgebraicRankBounds W) (h : fact.lower = fact.upper) :
+    Module.rank ℤ W.toAffine.Point = (fact.lower : Cardinal) :=
+  le_antisymm (by simpa only [h] using fact.rank_le_upper) fact.lower_le_rank
+
 end VerifiedLcalc.EllipticCurve

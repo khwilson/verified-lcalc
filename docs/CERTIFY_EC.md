@@ -120,7 +120,12 @@ Each successful command exports `Name.certificate` indexed by its integral
 Weierstrass equation. Its `equationFacts` and `rational` fields hold exact
 invariants. The `algebraic` field holds membership of supplied points, complete
 integral y-fibers above specified x-coordinates, individual point orders, an
-independent family, and a proved rank lower bound. The `arithmetic` field
+independent family, and proved rank bounds for the actual rational point group.
+`certificate.algebraic.rankBounds` contains the checked interval, while
+`certificate.algebraic.rank` is present only when the interval proves an exact
+rank. `certificate.algebraic.generatorCount` proves that `ngens` is the length
+of the supplied `gens` list; it does not claim that the list is a basis. The
+`arithmetic` field
 exposes finite reduction facts and separate conditional results. To use a conditional arithmetic result, supply
 an explicit `ArithmeticModularRealization` of the equation. The `analytic`
 field keeps checked numerical payloads and separately gives enclosures and
@@ -151,6 +156,31 @@ example : E.curve.Δ =
 
 Use `E.certificate.equationFacts` as the `with_proofs` attachment when the
 next certificate checks the same integral equation.
+
+## Verify a supplied Mordell–Weil rank proof
+
+Attach `IntegralCurveProofs W` with its `algebraicRank` field set to a checked
+`AlgebraicRankBounds (W.baseChange ℚ)`. The same attachment can contain the
+equation-level facts. Its lower and upper inequalities refer to
+`Module.rank ℤ (W.baseChange ℚ).toAffine.Point`.
+
+With this evidence, `certify_ec` can verify JSON `rank_bounds: [lower, upper]`
+and an exact algebraic `rank` claim. It exports `Name.algebraic_rank_bounds`
+and `Name.algebraic_rank_witness`. A checked infinite-order point or independent
+family can tighten the lower endpoint. A singleton after tightening also
+exports `Name.algebraic_rank`. The exported interval can be wider than the supplied
+proof interval. Reuse its typed witness as the `algebraicRank` field in a
+later proof attachment over the same equation.
+
+An inline legacy analytic payload still uses `rank` for the numerical
+candidate. With nested `analytic_witness`, a top-level algebraic claim can be
+supplied separately. The explicit `algebraic_rank` key is also accepted.
+An analytic-rank theorem and a generator basis each need their own evidence.
+The compiled example uses TauCeti's worked two-descent for `y² = x³ - x + 1`.
+The pinned LMFDB input row `92b1` / `92.a1` records rank `1`, bounds `[1,1]`,
+one generator, and `[[1,1,1]]` in
+[`curvedata-first-1200.txt`](../data/lmfdb/raw/curvedata-first-1200.txt#L275).
+The separate `Partial` example deliberately weakens that interval to `[0,2]`.
 
 ## Import checked theorems
 
@@ -267,7 +297,10 @@ with `c ≠ 0` and decode to `(a/c², b/c³)` in ℚ. The corresponding direct
 Lean fields `generatorCoordinates` and `torsionGeneratorCoordinates` take
 exact affine pairs. Each supplied list exports `coordinates`, `points_on_curve`
 and `point i` under `Name.generators` or `Name.torsion_generators`. These establish
-membership on the rational curve.
+membership on the rational curve. The optional `ngens` claim
+(`generatorCount` in Lean) verifies the length of the supplied `gens` list
+and exports `Name.generators.count_valid`. A claim with no list remains
+unverified.
 
 To check individual torsion orders, supply the project-specific JSON field
 `torsion_generator_orders` or the Lean field `torsionGeneratorOrders`.

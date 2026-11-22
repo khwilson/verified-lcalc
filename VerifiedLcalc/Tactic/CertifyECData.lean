@@ -59,6 +59,21 @@ private def certifyRationalCoordinates (base field : Name) (curve witness : TSyn
       (($curve).baseChange ℚ).toAffine.Point :=
     .mk ($onCurve (($coords)[i]).1 (($coords)[i]).2 (List.getElem_mem i.isLt))))
 
+/-- Check the listed generator count against the supplied, checked coordinates. -/
+private def certifyGeneratorCount (base : Name) (witness : TSyntax `term) : CommandElabM Unit := do
+  let some input ← CertifyEC.optionalInput (base ++ `witness) `generatorCount | return
+  let coordinatesName := base ++ `generators.coordinates
+  unless (← getEnv).contains coordinatesName do
+    logInfo m!"Unverified {base} ngens: supply the generator coordinate list"
+    return
+  let coordinates := CertifyEC.rootIdent coordinatesName
+  let count := CertifyEC.rootIdent (base ++ `generators.count)
+  CertifyEC.emit (← `(def $count : Nat := $input))
+  CertifyEC.checked (base ++ `generators.count_eq_input)
+    (← `(($witness).generatorCount = some $count)) (← `(by rfl))
+  CertifyEC.checked (base ++ `generators.count_valid)
+    (← `(($coordinates).length = $count)) (← `(by decide +kernel))
+
 /-- Check one root per supplied x and export its exact integral fiber. -/
 private def certifyIntegralFibers (base : Name) (curve witness : TSyntax `term) :
     CommandElabM Unit := do
@@ -158,6 +173,7 @@ def certify (name : Name) (input : TSyntax `term) (announce := true) : CommandEl
     (← `(by intro i; exact WeierstrassCurve.pointOfIntegralSolution_mem _ _ _ _))
   certifyIntegralFibers base curve w
   certifyRationalCoordinates (base ++ `generators) `generatorCoordinates curve w
+  certifyGeneratorCount base w
   certifyRationalCoordinates (base ++ `torsion_generators) `torsionGeneratorCoordinates curve w
   certifyTorsionOrders base w
   if announce then
