@@ -82,11 +82,15 @@ lake -f lakefile.certificates.lean env lean tests/CertifyEC.lean
 ```
 
 The alternative Lake configuration reuses the same pinned mathlib and existing
-build caches. It declares `data/witnesses` as a Lake input target, so editing JSON
-invalidates the certificate library. **Plain Lean file reads do not themselves
-register Lake dependencies.** In your own package, track JSON with `input_file`
-or `input_dir` plus the certificate library's `extraDepTargets`, or embed the
-witness in the Lean source. Otherwise force source recompilation after edits.
+build caches. Its certificate and test libraries use Lake's `needs` field to track
+their JSON input directories. Rebuilding with Lake after a JSON edit rechecks
+the affected certificates before a consumer imports them.
+
+In your own package, declare the witnesses as an `input_file` or `input_dir`
+target and include its package target key in the certificate library's `needs`
+array, for example ``needs := #[`@/witnesses]``. Lean's file reads in `from_json`
+run during elaboration. Lake uses the declared inputs to decide when elaboration
+must run again.
 
 After compiling, another file simply imports the module:
 

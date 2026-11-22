@@ -13,7 +13,7 @@ input_dir lmfdbCIWitnesses where
 
 lean_lib VerifiedLcalcTests where
   srcDir := "tests"
-  extraDepTargets := #[`lmfdbCIWitnesses]
+  needs := #[`@/lmfdbCIWitnesses]
 
 -- JSON is an explicit Lake input. Editing a witness invalidates its consumers.
 input_dir certificateWitnesses where
@@ -27,4 +27,4 @@ input_dir curveDataWitnesses where
 @[default_target]
 lean_lib CertifiedCurves where
   srcDir := "examples/certify_ec"
-  extraDepTargets := #[`certificateWitnesses, `curveDataWitnesses]
+  needs := #[`@/certificateWitnesses, `@/curveDataWitnesses]
