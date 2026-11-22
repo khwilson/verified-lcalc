@@ -22,6 +22,7 @@ AUDITS = (
     "tests/consumers/Cubic.lean",
     "tests/consumers/TorsionBound.lean",
     "tests/consumers/DegreeTwoIsogeny.lean",
+    "tests/consumers/SecondMellinDerivative.lean",
     "tests/consumers/Additive.lean",
     "tests/consumers/Wild.lean",
 )
