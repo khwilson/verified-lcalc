@@ -51,7 +51,7 @@ theorem card_torsion_dvd_computePointCount (e : WeierstrassCurve ℤ) (p : ℕ)
   have hΔ : e.Δ ∉ v.asIdeal := by
     rw [hv, Ideal.mem_span_singleton]
     simpa only [goodReduction, decide_eq_true_eq, Int.dvd_iff_emod_eq_zero] using hg
-  letI := e.isElliptic_integralModel_baseChange (K := ℚ) v hΔ
+  let := e.isElliptic_integralModel_baseChange (K := ℚ) v hΔ
   have h := Affine.Point.card_torsion_dvd_card_reduction
     (W := (e.baseChange ℚ).toAffine) v fun q hq => by
       rw [hv]
@@ -75,8 +75,8 @@ theorem checkTorsionBound_correct (e : WeierstrassCurve ℤ) (p q bound : ℕ)
   simp only [checkTorsionBound, Bool.and_eq_true, bne_iff_ne, beq_iff_eq,
     isPrime_correct, and_assoc] at h
   rcases h with ⟨hp, hp₂, hpg, hq, hq₂, hqg, rfl, hpos⟩
-  letI : Fact p.Prime := ⟨hp⟩
-  letI : Fact q.Prime := ⟨hq⟩
+  let : Fact p.Prime := ⟨hp⟩
+  let : Fact q.Prime := ⟨hq⟩
   exact ⟨Nat.dvd_gcd (card_torsion_dvd_computePointCount e p hp₂ hpg)
     (card_torsion_dvd_computePointCount e q hq₂ hqg), Nat.pos_of_ne_zero hpos⟩
 
