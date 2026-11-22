@@ -13,18 +13,25 @@
 
 ## Assumptions and proof boundaries
 
-- User-authorized exception (2026-11-17, clarified 2026-11-18): the sole temporary
+- User-authorized exception (2026-11-17, clarified 2026-11-18): the temporary
   axiom `VerifiedLcalc.Assumptions.ellipticModularity` covers every nonsingular
   elliptic curve over Q, including additive reduction, with coefficient/Fricke
   matching and the documented semistable, tame and wild arithmetic conductor
   and root-number compatibility. Geometric Tate/Ogg and Halberstadt/local
-  epsilon-factor compatibility remain part of that assumption. This does not
-  authorize BSD, exact vanishing, numerical-correctness axioms, arbitrary input
-  compatibility, or modularity over arbitrary number fields.
-- Keep one assumption family per file: `Assumptions/Modularity.lean` and
-  `Assumptions/Precision.lean`. The latter supplies explicit hypothesis records,
-  not a blanket gap axiom. Mathematical proofs belong in `EllipticCurve/Modularity/`
-  and `Certification/`, not in the assumption files.
+  epsilon-factor compatibility remain part of that assumption. By itself this
+  does not authorize unrestricted BSD, exact vanishing, numerical-correctness
+  axioms, arbitrary input compatibility, or modularity over arbitrary number
+  fields. The separate narrow low-rank exception is recorded below.
+- Keep one assumption family per file: `Assumptions/Modularity.lean`,
+  `Assumptions/Precision.lean`, and the separately authorized
+  `Assumptions/LowRankBSD.lean`. `Precision.lean` supplies explicit hypothesis
+  records, not a blanket gap axiom. Mathematical proofs belong in
+  `EllipticCurve/Modularity/` and `Certification/`, not in the assumption files.
+- User-authorized exception (2026-11-22): the isolated opt-in
+  `Assumptions/LowRankBSD.lean` may assume only the forward analytic-to-algebraic
+  rank implications for exact analytic order zero and one over Q, using the
+  same nonsingular equation and explicit arithmetic modular realization. Do not
+  assume either converse or activate this family in the default library.
 - Higher-rank upgrades require actual derivative enclosures, a specified nonzero
   gap strictly larger than the cutoff, and next nonvanishing for exact rank.
   Evaluators for derivatives two and higher are still missing.

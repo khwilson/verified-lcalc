@@ -1,8 +1,9 @@
 # Temporary modularity assumption
 
 On 2026-11-17 the user explicitly authorized a temporary axiom for the missing
-curve-to-modular-form connection. This is the sole exception to the project's
-default prohibition on custom mathematical axioms.
+curve-to-modular-form connection. This was the project's first exception to its
+default prohibition on custom mathematical axioms. A separate, narrow low-rank
+forward implication was authorized on 2026-11-22 below.
 
 The axiom is named:
 
@@ -43,6 +44,23 @@ This packages established modularity and standard identifications, including
 the general case beyond semistable curves. The package itself has **not** been
 proved in this project. One can replace the axiom by a theorem of the same type
 later without changing its consumers.
+
+## Opt-in low-rank BSD implication
+
+On 2026-11-22 the user authorized a separate temporary assumption, isolated in
+`VerifiedLcalc.Assumptions.analyticOrder_le_one_implies_finrank`. It covers only
+the forward implication for exact analytic order zero or one: for one
+nonsingular integral equation and an explicit `ArithmeticModularRealization`,
+the order of that realization's L-function at 1 equals the natural-valued
+Mordell--Weil rank of the same rational curve. The derived wrappers accept an
+exact `ConditionalAnalyticRank` fact and a realization explicitly. This module
+is opt-in and is not imported by the default library or `certify_ec`.
+
+Neither converse is assumed. In particular, a catalogue value, an algebraic
+rank interval, or numerical smallness cannot supply the exact analytic-order
+premise. The converse statements remain conjectural low-rank BSD results and
+would require additional hypotheses, such as appropriate Selmer corank and
+finiteness of the Tate--Shafarevich group.
 
 ## What follows in Lean
 
