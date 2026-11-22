@@ -233,19 +233,20 @@ run_cmd do
         unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
           throwError "Unexpected rational-point certificate axiom: {axiomName}"
 
-#eval show IO Unit from do
+run_cmd do
   for text in [r#"{"ainvs":[0,0,1,-1,0]}"#,
       r#"{"ainvs":[0,0,1,-1,0],"ap":null,"integral_points":null,
-          "gens":null,"torsion_generators":null}"#] do
+          "gens":null,"torsion_generators":null,"xcoord_integral_points":null}"#] do
     match CurveDataJson.parse text with
     | .ok w =>
       unless w.primeCoefficients.isNone && w.integralCoordinates.isNone &&
-          w.generatorCoordinates.isNone && w.torsionGeneratorCoordinates.isNone &&
+          w.integralFiberRoots.isNone && w.generatorCoordinates.isNone &&
+          w.torsionGeneratorCoordinates.isNone &&
           w.centralResult.isNone && w.derivativeResult.isNone &&
           w.minimality.isNone && w.localData.isNone &&
           w.infiniteOrderPoints.isNone && w.independentPoints.isNone do
-        throw (IO.userError "Missing optional data was manufactured")
-    | .error reason => throw (IO.userError reason)
+        throwError "Missing optional data was manufactured"
+    | .error reason => throwError reason
   let good ← IO.FS.readFile "data/curve-data/37a1.json"
   let malformed := [
     good.replace "\"97\"" "\"10001\"",
@@ -256,14 +257,14 @@ run_cmd do
   for text in malformed do
     match CurveDataJson.parse text with
     | .error _ => pure ()
-    | .ok _ => throw (IO.userError "Malformed curve-data JSON accepted")
+    | .ok _ => throwError "Malformed curve-data JSON accepted"
   for text in [good.replace "\"97\"" "97",
       good.replace "\"schema\":" "\"unknown\":true,\"schema\":"] do
     match CurveDataJson.parse text with
     | .ok _ => pure ()
-    | .error reason => throw (IO.userError s!"Supported partial data rejected: {reason}")
+    | .error reason => throwError s!"Supported partial data rejected: {reason}"
   let rankText ← IO.FS.readFile "data/witnesses/37a1.json"
-  let .ok rankJson := Json.parse rankText | throw (IO.userError "Invalid rank fixture")
+  let .ok rankJson := Json.parse rankText | throwError "Invalid rank fixture"
   let nested := Json.mkObj [
     ("analytic_witness", rankJson),
     ("subject", Json.mkObj [("label", .str "unverified metadata")]),
@@ -271,5 +272,5 @@ run_cmd do
   match CurveDataJson.parse nested.compress with
   | .ok w =>
     unless w.derivativeResult.isSome && w.primeCoefficients == some [(2, -2), (3, -3)] do
-      throw (IO.userError "Nested supported facts were dropped")
-  | .error reason => throw (IO.userError reason)
+      throwError "Nested supported facts were dropped"
+  | .error reason => throwError reason
