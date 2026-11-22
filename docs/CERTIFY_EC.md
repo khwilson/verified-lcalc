@@ -102,7 +102,7 @@ The same attachment works after `from_json` and `from_json_string`.
 Use `with_independence` after `with_proofs` when supplying both. Additional
 proof-carrying facts can use the same index. For example, a downstream Lean
 record can carry an `EllipticProofs curve` and
-`jValue : {q : ℚ // (curve.baseChange ℚ).j = q}` side by side, and pass its
+`c₄Value : {a : R // curve.c₄ = a}` side by side, and pass its
 first field to the current command.
 
 ## Import checked theorems
