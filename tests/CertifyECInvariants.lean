@@ -83,9 +83,35 @@ example : ¬ WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
   have := AdditiveLocal.semistable.mp h
   contradiction
 
+certify_ec KodairaGood from
+  { equation := ⟨0, 0, 1, -1, 0⟩, minimality := some ⟨[37]⟩,
+    localInvariants := some [{ prime := 3, kodairaSymbol := some 1 }] }
+
+example : (KodairaGood.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 3) = .I 0 := by
+  obtain ⟨_, h⟩ := KodairaGood.kodaira_symbols { prime := 3, kodairaSymbol := some 1 }
+    (by decide +kernel)
+  exact h 1 rfl
+
+certify_ec KodairaAdditive from_json_string
+  r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],"prime":3,"kodaira_symbol":2}"#
+
+example : ∀ n, (KodairaAdditive.curve.baseChange ℚ).reductionSymbol
+    (RationalLocalRing 3) ≠ .I n := by
+  obtain ⟨_, h⟩ := KodairaAdditive.kodaira_symbols { prime := 3, kodairaSymbol := some 2 }
+    (by decide +kernel)
+  exact h 2 rfl
+
 certify_ec SplitLocal from_json_string
   r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
-      "local_invariants":[{"prime":11,"reduction_type":1}]}"#
+      "local_invariants":[{"prime":11,"reduction_type":1,"kodaira_symbol":9}]}"#
+
+example :
+    letI : Fact (Nat.Prime 11) := ⟨by decide⟩
+    (SplitLocal.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 11) = .I 5 := by
+  let row : LocalReductionClaim :=
+    { prime := 11, reductionType := some 1, kodairaSymbol := some 9 }
+  obtain ⟨_, h⟩ := SplitLocal.kodaira_symbols row (by decide +kernel)
+  exact h 9 rfl
 
 run_cmd do
   let input ← CertifyEC.jsonInput
@@ -109,12 +135,23 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `potential_good_reduction_input_eq, `potential_good_reduction_value_valid,
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
-      `semistable, `squarefree_discriminant, `local_invariants, `claimed_semistable,
-      `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_conductor_valuations,
+      `semistable, `squarefree_discriminant, `local_invariants, `kodaira_symbols,
+      `claimed_semistable, `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_conductor_valuations,
       `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation] do
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `AdditiveCodeAtGoodPrime (← `(certify_ec AdditiveCodeAtGoodPrime from
+    { KodairaGood.witness with localInvariants := some [{ prime := 3, kodairaSymbol := some 2 }] }))
+  invariantRejected `GoodCodeAtAdditivePrime (← `(certify_ec GoodCodeAtAdditivePrime from
+    { KodairaAdditive.witness with
+      localInvariants := some [{ prime := 3, kodairaSymbol := some 1 }] }))
+  invariantRejected `AdditiveCodeAtMultiplicativePrime
+    (← `(certify_ec AdditiveCodeAtMultiplicativePrime from
+      { SplitLocal.witness with
+        localInvariants := some [{ prime := 11, kodairaSymbol := some (-5) }] }))
+  invariantRejected `WrongMultiplicativeIndex (← `(certify_ec WrongMultiplicativeIndex from
+    { SplitLocal.witness with localInvariants := some [{ prime := 11, kodairaSymbol := some 5 }] }))
   invariantRejected `WrongJ (← `(certify_ec WrongJ from
     { Invariants37.witness with jInvariant := some 0 }))
   invariantRejected `WrongIntegralJ (← `(certify_ec WrongIntegralJ from_json_string
@@ -188,7 +225,8 @@ run_cmd do
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
-  for theoremName in [`IntegralJ.j_integral, `NonintegralJ.j_integral,
+  for theoremName in [`KodairaGood.kodaira_symbols, `KodairaAdditive.kodaira_symbols,
+      `IntegralJ.j_integral, `NonintegralJ.j_integral,
       `PotentialGood.potential_good_reduction, `NoPotentialGood.potential_good_reduction] do
     for ax in ← liftTermElabM <| Lean.collectAxioms theoremName do
       unless standard.contains ax do throwError "Unexpected j-invariant check axiom: {ax}"
@@ -232,6 +270,9 @@ run_cmd do
     match CurveDataJson.parse ("{\"ainvs\":[0,0,1,-1,0],\"jinv\":" ++ j ++ "}") with
     | .error _ => pure ()
     | .ok _ => throwError "Malformed exact rational accepted"
+  match CurveDataJson.parse r#"{"ainvs":[0,0,0,0,1],"prime":3,"kodaira_symbol":0}"# with
+  | .error _ => pure ()
+  | .ok _ => throwError "Zero PARI Kodaira code accepted"
   match CurveDataJson.parse r#"{"ainvs":[0,0,1,-1,0],"j_integral":"false"}"# with
   | .error _ => pure ()
   | .ok _ => throwError "Non-boolean j_integral accepted"
