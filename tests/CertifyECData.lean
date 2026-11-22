@@ -63,7 +63,21 @@ example : DirectDoubleRoot.integral_y_fiber ⟨0, by decide⟩ = ({0} : Finset �
 
 -- Match the LMFDB exponent convention even when the third coordinate is negative.
 certify_ec RationalGenerators from_json_string
-  r#"{"ainvs":[0,0,1,-1,0],"gens":[[1,5,-2]],"torsion_generators":[]}"#
+  r#"{"ainvs":[0,0,1,-1,0],"gens":[[1,5,-2]],"ngens":1,"torsion_generators":[]}"#
+example : RationalGenerators.generators.coordinates.length = 1 :=
+  RationalGenerators.generators.count_valid
+
+certify_ec EmptyGeneratorCount from
+  { equation := ⟨0, 0, 1, -1, 0⟩, generatorCoordinates := some [], generatorCount := some 0 }
+example : EmptyGeneratorCount.generators.coordinates.length = 0 :=
+  EmptyGeneratorCount.generators.count_valid
+
+certify_ec UnwitnessedGeneratorCount from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"ngens":1}"#
+run_cmd do
+  if (← getEnv).contains `UnwitnessedGeneratorCount.generators.count_valid then
+    throwError "An unsupported generator count became a theorem"
+
 example : RationalGenerators.generators.coordinates = [(1 / 4, -5 / 8)] := by decide +kernel
 example : (RationalGenerators.curve.baseChange ℚ).toAffine.Equation (1 / 4) (-5 / 8) :=
   RationalGenerators.generators.points_on_curve _ _ (by decide +kernel)
@@ -141,7 +155,8 @@ meta def expectDataRejected (name : Name) (command : Syntax) : CommandElabM Unit
       `ap_correct, `integral_coordinates_valid, `points_on_curve, `curve_isElliptic,
       `point, `point_integral, `integral_fiber_roots, `integral_fiber_roots_eq,
       `integral_fiber_roots_valid, `integral_y_fiber, `integral_y_fiber_complete,
-      `generators.point, `torsion_generators.point,
+      `generators.point, `torsion_generators.point, `generators.count,
+      `generators.count_eq_input, `generators.count_valid,
       `torsion_generators.orders, `torsion_generators.orders_eq, `torsion_generators.orders_length,
       `torsion_generators.orders_in_range, `torsion_generators.orders_valid,
       `torsion_generators.exact_order] do
@@ -162,6 +177,8 @@ run_cmd do
     { Data37.witness with integralCoordinates := some [(0, 1)] }))
   expectDataRejected `InvalidWeightedPoint (← `(certify_ec InvalidWeightedPoint from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"gens":[[0,0,1]],"torsion_generators":[[1,1,1]]}"#))
+  expectDataRejected `WrongGeneratorCount (← `(certify_ec WrongGeneratorCount from_json_string
+    r#"{"ainvs":[0,0,1,-1,0],"gens":[[0,0,1]],"ngens":2}"#))
   expectDataRejected `WrongOrder (← `(certify_ec WrongOrder from
     { TorsionOrderFour.witness with torsionGeneratorOrders := some [8] }))
   expectDataRejected `MissingOrder (← `(certify_ec MissingOrder from

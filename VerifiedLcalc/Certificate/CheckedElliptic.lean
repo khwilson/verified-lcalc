@@ -5,6 +5,7 @@ public import VerifiedLcalc.Certification.CurveData
 public import VerifiedLcalc.Certificate.ArithmeticFacts
 public import VerifiedLcalc.Certification.AbcQuality
 public import VerifiedLcalc.Certificate.AnalyticFacts
+public import VerifiedLcalc.EllipticCurve.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.PointIndependence
 public import VerifiedLcalc.EllipticCurve.TorsionBound
 public import Mathlib.GroupTheory.Torsion
@@ -20,6 +21,7 @@ and a proof of independence carry their stated lower-bound conclusions.
 @[expose] public section
 
 namespace VerifiedLcalc
+open EllipticCurve
 
 /-- The exact rational report, its evidence, and a bound on the actual abc quality. -/
 structure AbcQualityFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
@@ -115,6 +117,14 @@ structure TorsionGeneratorOrderFacts {curve : WeierstrassCurve ℚ} [curve.IsEll
   exactOrder : ∀ i : Fin source.coordinates.length,
     addOrderOf (source.point i) = orders.get (Fin.cast length_eq.symm i)
 
+/-- A proved count of the rational points in the submitted generator list.
+This records list length only; it makes no basis or generation claim. -/
+structure GeneratorCountFacts (coordinates : List (Rat × Rat)) where
+  /-- The submitted LMFDB generator count. -/
+  count : ℕ
+  /-- The coordinate list has exactly the claimed length. -/
+  length_eq : coordinates.length = count
+
 /-- Integral seed points and the complete set of integral y-coordinates over each seed's x. -/
 structure IntegralYFiberFacts (curve : WeierstrassCurve ℤ) where
   /-- The supplied integral seed points, in input order. -/
@@ -133,6 +143,9 @@ structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).
   integralYFibers : Option (IntegralYFiberFacts curve) := none
   /-- Membership for the supplied rational generator coordinates. -/
   generators : Option (AffineMembership (curve.baseChange ℚ)) := none
+  /-- The checked `ngens` count for the supplied generator coordinates. -/
+  generatorCount : Option (GeneratorCountFacts
+    (generators.getD (AffineMembership.empty (curve.baseChange ℚ))).coordinates) := none
   /-- Membership for the supplied rational torsion generator coordinates. -/
   torsionGenerators : Option (AffineMembership (curve.baseChange ℚ)) := none
   /-- Exact orders of the listed torsion generators, when supplied and checked. -/
@@ -147,6 +160,11 @@ structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).
   /-- A proved lower bound for the rank of the rational point group. -/
   rankLowerBound : Option { n : ℕ //
     (n : Cardinal) ≤ Module.rank ℤ (curve.baseChange ℚ).toAffine.Point } := none
+  /-- A proved lower and upper bound for the actual rational point group rank. -/
+  rankBounds : Option (AlgebraicRankBounds (curve.baseChange ℚ)) := none
+  /-- An exact algebraic Mordell–Weil rank, when the checked interval is a singleton. -/
+  rank : Option { n : ℕ //
+    Module.rank ℤ (curve.baseChange ℚ).toAffine.Point = (n : Cardinal) } := none
 
 /-- A verified positive multiple of the whole torsion order
 and an optional consistent raw claim. -/
