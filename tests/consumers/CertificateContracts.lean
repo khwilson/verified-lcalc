@@ -8,6 +8,15 @@ open VerifiedLcalc Lean Elab Command
 #check IntegralXSupport
 #check CompleteIntegralPointFacts
 #check DegreeTwoIsogenyFact
+#check Box
+#check PrecisionPolicy
+#check EllipticCurve.MinimalityWitness
+#check EllipticCurve.TateWitness
+#check EllipticCurve.WildData
+#check EllipticCurve.CentralResult
+#check EllipticCurve.DerivativeResult
+#check EllipticCurve.CentralPayloadCorrect
+#check EllipticCurve.DerivativePayloadCorrect
 #check EllipticCurve.AlgebraicRankBounds
 
 section MordellWeilInstance
@@ -25,6 +34,13 @@ run_cmd do
   for backend in [`VerifiedLcalc.Certification.CurveData,
     `VerifiedLcalc.Certification.IntegralPointCount,
     `VerifiedLcalc.Certification.DegreeTwoIsogeny,
-    `VerifiedLcalc.Certification.DegreeTwoIsogenyRaw] do
+    `VerifiedLcalc.Certification.DegreeTwoIsogenyRaw,
+    `VerifiedLcalc.Scan,
+    `VerifiedLcalc.Precision,
+    `VerifiedLcalc.Certificate,
+    `VerifiedLcalc.EllipticCurve.CentralCore,
+    `VerifiedLcalc.EllipticCurve.DerivativeCore,
+    `VerifiedLcalc.Certification.CentralEvaluator,
+    `VerifiedLcalc.Certification.DerivativeEvaluator] do
     if imported.contains backend then
       throwError m!"contract umbrella imported backend module {backend}"

@@ -26,6 +26,7 @@ AUDITS = (
     "tests/consumers/Additive.lean",
     "tests/consumers/Wild.lean",
     "tests/consumers/CertificateContracts.lean",
+    "tests/consumers/RawCertificateData.lean",
     "tests/OrderCheckGenerality.lean",
     "tests/CyclicTorsionStructure.lean",
     "tests/TwoFactorTorsion.lean",
