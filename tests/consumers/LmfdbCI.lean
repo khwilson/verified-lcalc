@@ -115,6 +115,9 @@ example :
       (1 : ℂ) = 1 :=
   Curve112.analytic_rank
 
+example : addOrderOf (LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩) = 2 :=
+  LMFDB.C112a2.torsion_generators.exact_order _
+
 example :
     (Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level.factorization 2 =
       4 :=
@@ -136,6 +139,7 @@ run_cmd do
   check `LMFDB.C112a2 `generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.points_on_curve false
   check `LMFDB.C179a1 `tamagawa_numbers false
+  check `LMFDB.C112a2 `torsion_generators.exact_order false
   check `LMFDB.C112a2 `dirichlet_coefficients false
   check `LMFDB.C197a1 `j_integral false
   check `LMFDB.C288a1 `j_integral false

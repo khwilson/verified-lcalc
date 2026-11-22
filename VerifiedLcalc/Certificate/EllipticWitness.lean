@@ -30,6 +30,16 @@ structure LocalReductionClaim where
   tamagawaNumber : Option Nat := none
   deriving Repr, DecidableEq
 
+/-- Two proposed odd primes of good reduction and the gcd of their point counts. -/
+structure TorsionBoundWitness where
+  /-- First proposed prime of good reduction. -/
+  firstPrime : Nat
+  /-- Second proposed prime of good reduction. -/
+  secondPrime : Nat
+  /-- Claimed positive gcd of the two reduced point counts. -/
+  bound : Nat
+  deriving Repr, DecidableEq
+
 /-- The single input record for elliptic-curve certification. `none` means that
 no data of that kind was supplied; `some []` is an explicitly supplied empty
 list, not a claim of completeness. Numerical results are rank candidates;
@@ -70,6 +80,10 @@ structure EllipticWitness where
   squarefreeDiscriminant : Option Bool := none
   /-- Local reduction claims at the supplied primes. -/
   localInvariants : Option (List LocalReductionClaim) := none
+  /-- Reduction evidence bounding the order of the full rational torsion subgroup. -/
+  torsionBound : Option TorsionBoundWitness := none
+  /-- Claimed exact order of the full rational torsion subgroup. -/
+  torsion : Option Nat := none
   /-- Claims for individual prime-indexed L-function coefficients. -/
   primeCoefficients : Option (List (Nat × Int)) := none
   /-- Claimed integral point coordinates on the supplied equation. -/
@@ -78,6 +92,8 @@ structure EllipticWitness where
   generatorCoordinates : Option (List (Rat × Rat)) := none
   /-- Rational affine coordinates for the LMFDB torsion generator list, checked for membership. -/
   torsionGeneratorCoordinates : Option (List (Rat × Rat)) := none
+  /-- Claimed exact additive orders, in the same order as the torsion coordinates. -/
+  torsionGeneratorOrders : Option (List Nat) := none
   /-- Indices into the supplied integral-coordinate list. -/
   infiniteOrderPoints : Option (List Nat) := none
   /-- Selected indices for a rank bound; requires a supplied independence proof. -/
