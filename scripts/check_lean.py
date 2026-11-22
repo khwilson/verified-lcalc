@@ -86,6 +86,7 @@ def main() -> None:
         "tests/consumers/CertifiedECInvariantsConsumer.lean",
         "tests/consumers/TwoFactorTorsion.lean",
         "tests/consumers/MordellWeilRank.lean",
+        "tests/consumers/CompleteIntegralPoints.lean",
     ):
         run(["lake", "-f", "lakefile.certificates.lean", "env", "lean", source])
     for source in AUDITS:

@@ -1,5 +1,6 @@
 module
 
+public import VerifiedLcalc.Certificate.IntegralXSupport
 public import VerifiedLcalc.EllipticCurve.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.DerivativeCore
 public import VerifiedLcalc.EllipticCurve.Tate.WildRootCore
@@ -89,6 +90,8 @@ structure IsogenyEdgeClaim where
 structure IntegralCurveProofs (curve : WeierstrassCurve ℤ) extends EllipticProofs curve where
   /-- Proved endpoints of a Mordell–Weil rank interval on the rational curve. -/
   algebraicRank : Option (AlgebraicRankBounds (curve.baseChange ℚ)) := none
+  /-- Exhaustive abscissa support for integral points on the supplied equation. -/
+  integralXSupport : Option (IntegralXSupport curve) := none
 
 /-- The single input record for elliptic-curve certification. `none` means that
 no data of that kind was supplied; `some []` is an explicitly supplied empty
@@ -146,6 +149,8 @@ structure EllipticWitness where
   integralCoordinates : Option (List (Int × Int)) := none
   /-- One candidate integral root for each supplied x-coordinate whose fiber is certified. -/
   integralFiberRoots : Option (List (Int × Int)) := none
+  /-- Claimed number of distinct affine integral points on this equation. -/
+  numIntegralPoints : Option Nat := none
   /-- Rational affine coordinates for the LMFDB generator list, checked for membership. -/
   generatorCoordinates : Option (List (Rat × Rat)) := none
   /-- Claimed length of the supplied generator coordinate list. -/

@@ -119,7 +119,8 @@ first field to the current command.
 Each successful command exports `Name.certificate` indexed by its integral
 Weierstrass equation. Its `equationFacts` and `rational` fields hold exact
 invariants. The `algebraic` field holds membership of supplied points, complete
-integral y-fibers above specified x-coordinates, individual point orders, an
+integral y-fibers above specified x-coordinates, the complete integral-point
+set when exhaustive abscissa support is supplied, individual point orders, an
 independent family, and proved rank bounds for the actual rational point group.
 `certificate.algebraic.rankBounds` contains the checked interval, while
 `certificate.algebraic.rank` is present only when the interval proves an exact
@@ -289,8 +290,48 @@ keeps its indexing, including repeated roots. Direct Lean input can supply the
 same root witnesses in the optional `integralFiberRoots` field.
 
 These fibers certify completeness only at the listed x-values. An empty list
-checks zero fibers. The theorem gives no global integral-point count or
-algebraic-rank bound.
+checks zero fibers. They make no global count claim on their own.
+
+For a complete integral-point count, add `integralXSupport` to the
+`IntegralCurveProofs` attachment. Its `IntegralXSupport` proof must place
+every affine integral solution's x-coordinate in the supplied support list.
+The command checks that each support value occurs among the checked fiber
+seeds. It unions their exact fibers into a finite set of distinct pairs, even
+if the input repeats a seed or supplies both roots at an x-coordinate.
+`Name.num_int_pts` proves the cardinality of the actual affine integral
+point set. The command checks a supplied `num_int_pts` JSON claim or
+`numIntegralPoints` Lean claim and derives the count when it is omitted.
+The counted set is TauCeti's `curve.integralPoints`, with membership expressed
+through the existing integral-coordinate characterization
+([pinned definition](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Point/Integral.lean#L101-L114)).
+The reusable result is also available as
+`Name.certificate.algebraic.completeIntegralPoints`; it includes the support,
+finite coordinate set, completeness theorem, explicit finiteness of
+`Name.curve.integralPoints`, and the `Nat.card` equality. Without support, a
+raw count stays unverified, but a count below the number of distinct checked
+points or seed-fiber solutions is rejected.
+
+### Complete integral-point counts
+
+`ec_curvedata.num_int_pts` supplies the claimed count and
+`ec_mwbsd.xcoord_integral_points` supplies candidate x-values. In JSON, include
+both fields and provide an equation-indexed support proof:
+
+```lean
+def pointProofs : IntegralCurveProofs curve :=
+  { integralXSupport := some support }
+
+certify_ec Counted from_json "curve.json" with_proofs pointProofs
+
+example : Nat.card Counted.curve.integralPoints =
+    Counted.integral_point_certificate.count := Counted.num_int_pts
+```
+
+Here `support` proves every affine integral solution's x-coordinate occurs in
+the listed fibers; the result stores the exact distinct-point count. A complete
+compiled example is `VerifiedLcalcTests.Fixtures.Curve27a3`; it proves the
+count two using Fermat's theorem for cubes. The count-zero consumer uses a
+separate congruence proof.
 
 LMFDB `gens` and `torsion_generators` accept exact weighted triples `[a,b,c]`
 with `c ≠ 0` and decode to `(a/c², b/c³)` in ℚ. The corresponding direct

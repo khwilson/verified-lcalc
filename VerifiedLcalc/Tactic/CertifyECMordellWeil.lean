@@ -6,6 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Tactic.CertifyECCommon
+public import VerifiedLcalc.Tactic.CertifyECIntegralPoints
 
 /-! Verify Lean rank evidence and bind it to the raw claims for the same equation. -/
 
@@ -110,6 +111,16 @@ def certifyProofAttachment (base : Name) (input : Option (TSyntax `term)) :
       | exact { toEllipticProofs := $raw }))
     pure name
   certifyRankClaims base curve attachment
+  let support ← if let some facts := attachment then do
+    let selected ← `(($facts).integralXSupport)
+    let value ← liftTermElabM do whnf (← Lean.Elab.Term.elabTerm selected none)
+    match value.getAppFn.constName? with
+    | some ``Option.none => pure none
+    | some ``Option.some => some <$> `(($selected).get (by decide +kernel))
+    | _ => throwError "Expected closed optional integral abscissa support"
+  else pure none
+  let count ← optionalInput (base ++ `witness) `numIntegralPoints
+  certifyCompleteIntegralPoints base support count
   attachment.mapM fun facts => `(($facts).toEllipticProofs)
 
 end VerifiedLcalc.CertifyEC

@@ -267,6 +267,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     let b := equation.a₁ * x + equation.a₃
     integralCoordinates := (integralCoordinates.push (x, y)).push (x, -y - b)
   unless integralCoordinates.size ≤ 8192 do throw "Too many integral coordinates"
+  let numIntegralPoints ← optionalValue j "num_int_pts" nonnegativeInteger
   let generatorCoordinates ← optionalValue j "gens" weightedCoordinates
   let generatorCount ← optionalValue j "ngens" nonnegativeInteger
   let algebraicRank ← algebraicRankClaim j
@@ -359,6 +360,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     primeCoefficients := primeData
     integralCoordinates := pointData
     integralFiberRoots
+    numIntegralPoints
     generatorCoordinates
     generatorCount
     algebraicRank
