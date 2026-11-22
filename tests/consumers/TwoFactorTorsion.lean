@@ -1,10 +1,10 @@
 import VerifiedLcalcTests.Fixtures.TwoFactorTorsion
 
+/-! The compiled fixture exports the full structure and both generator images. -/
+
 open VerifiedLcalc Lean Elab Command
 
 noncomputable section
-
-/-! The compiled fixture exports the full structure and both generator images. -/
 
 example : Nat.card (AddCommGroup.torsion (C120b4.curve.baseChange ℚ).toAffine.Point) = 8 :=
   C120b4.torsion
