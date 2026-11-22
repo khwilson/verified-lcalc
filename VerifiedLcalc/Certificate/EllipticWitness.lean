@@ -26,6 +26,8 @@ structure LocalReductionClaim where
   jDenominatorValuation : Option Nat := none
   /-- Signed Frobenius trace code for bad reduction. -/
   reductionType : Option Int := none
+  /-- Claimed intrinsic local component-group order. -/
+  tamagawaNumber : Option Nat := none
   deriving Repr, DecidableEq
 
 /-- The single input record for elliptic-curve certification. `none` means that

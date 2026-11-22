@@ -1,7 +1,7 @@
 module
 
 public import VerifiedLcalc.Certification.WildCertification
-public import VerifiedLcalc.EllipticCurve.Tate.LocalReduction
+public import VerifiedLcalc.EllipticCurve.Tate.Tamagawa
 public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReduction
 public import VerifiedLcalc.Certificate.EllipticWitness
 public import Mathlib.Data.Nat.Squarefree
@@ -213,5 +213,35 @@ theorem LocalReductionClaim.check_correct (row : LocalReductionClaim) (e : Weier
       by_cases hroot : hasNodeRoot e row.prime = true
       · exact Or.inl ⟨ht.symm.trans (he.trans (ite_eq_left hroot)), hsplit.mpr hroot⟩
       · exact Or.inr ⟨ht.symm.trans (he.trans (ite_eq_right hroot)), mt hsplit.mp hroot⟩
+
+/-- Check supplied local Tamagawa values whose reduction type is supported. -/
+def LocalReductionClaim.checkTamagawa (row : LocalReductionClaim) (e : WeierstrassCurve ℤ) :
+    Bool :=
+  row.tamagawaNumber.all fun n =>
+    isPrime row.prime && (n != 0) && (!supportsTamagawaOne e row.prime || n == 1)
+
+/-- Exact local Tamagawa data at the supported primes of the supplied equation. -/
+def LocalReductionClaim.TamagawaSpec (row : LocalReductionClaim) (e : WeierstrassCurve ℤ) :
+    Prop :=
+  ∀ n, row.tamagawaNumber = some n → ∃ hp : row.prime.Prime,
+    letI : Fact row.prime.Prime := ⟨hp⟩
+    supportsTamagawaOne e row.prime = true →
+      (e.baseChange ℚ).tamagawaNumberAt (rationalPlace row.prime) = n
+
+/-- Successful local checks certify the completed-field Tamagawa factor at supported primes. -/
+theorem LocalReductionClaim.tamagawa_correct (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
+    [(e.baseChange ℚ).IsElliptic] (h : row.checkTamagawa e = true) : row.TamagawaSpec e := by
+  intro n hn
+  simp only [checkTamagawa, hn, Option.all_some, Bool.and_eq_true, isPrime_correct] at h
+  obtain ⟨⟨hp, _⟩, hval⟩ := h
+  let : Fact row.prime.Prime := ⟨hp⟩
+  refine ⟨hp, fun hs => ?_⟩
+  have heq : n = 1 := by
+    simpa only [hs, Bool.not_true, Bool.false_or, beq_iff_eq] using hval
+  exact (supportsTamagawaOne_correct e row.prime hs).trans heq.symm
+
+/-- Whether any supplied Tamagawa code falls outside the supported reduction scope. -/
+def hasUnsupportedTamagawaClaim (e : WeierstrassCurve ℤ) (rows : List LocalReductionClaim) : Bool :=
+  rows.any fun row => row.tamagawaNumber.isSome && !supportsTamagawaOne e row.prime
 
 end VerifiedLcalc

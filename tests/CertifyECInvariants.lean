@@ -83,6 +83,15 @@ example : ¬ WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
   have := AdditiveLocal.semistable.mp h
   contradiction
 
+certify_ec GoodTamagawa from
+  { equation := ⟨0, 0, 8, -16, 0⟩,
+    localInvariants := some [{ prime := 3, tamagawaNumber := some 1 }] }
+
+example : (GoodTamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 3) = 1 := by
+  obtain ⟨_, h⟩ := GoodTamagawa.tamagawa_numbers { prime := 3, tamagawaNumber := some 1 }
+    (by decide +kernel) 1 rfl
+  exact h (by decide +kernel)
+
 certify_ec SplitLocal from_json_string
   r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
       "local_invariants":[{"prime":11,"reduction_type":1}]}"#
@@ -109,12 +118,15 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `potential_good_reduction_input_eq, `potential_good_reduction_value_valid,
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
-      `semistable, `squarefree_discriminant, `local_invariants, `claimed_semistable,
+      `semistable, `squarefree_discriminant, `local_invariants, `tamagawa_numbers,
+      `tamagawa_values_valid, `claimed_semistable,
       `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_conductor_valuations,
       `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation] do
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `WrongTamagawa (← `(certify_ec WrongTamagawa from
+    { GoodTamagawa.witness with localInvariants := some [{ prime := 3, tamagawaNumber := some 2 }] }))
   invariantRejected `WrongJ (← `(certify_ec WrongJ from
     { Invariants37.witness with jInvariant := some 0 }))
   invariantRejected `WrongIntegralJ (← `(certify_ec WrongIntegralJ from_json_string
@@ -188,7 +200,7 @@ run_cmd do
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
-  for theoremName in [`IntegralJ.j_integral, `NonintegralJ.j_integral,
+  for theoremName in [`GoodTamagawa.tamagawa_numbers, `IntegralJ.j_integral, `NonintegralJ.j_integral,
       `PotentialGood.potential_good_reduction, `NoPotentialGood.potential_good_reduction] do
     for ax in ← liftTermElabM <| Lean.collectAxioms theoremName do
       unless standard.contains ax do throwError "Unexpected j-invariant check axiom: {ax}"

@@ -7,7 +7,7 @@ import VerifiedLcalcTests.Fixtures.LmfdbCI
 Check the exported theorem types and audit their dependencies after importing the compiled fixtures.
 -/
 
-open Lean Elab Command VerifiedLcalc
+open Lean Elab Command VerifiedLcalc VerifiedLcalc.EllipticCurve
 
 example : (LMFDB.C112a2.curve.baseChange ℚ).j = -4 / 7 :=
   LMFDB.C112a2.j_invariant
@@ -24,8 +24,17 @@ example : Squarefree LMFDB.C179a1.curve.Δ.natAbs :=
 example :
     LocalReductionClaim.Spec
       { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
-        reductionType := some 1 } LMFDB.C179a1.curve :=
+        reductionType := some 1, tamagawaNumber := some 1 } LMFDB.C179a1.curve :=
   LMFDB.C179a1.local_invariants _ (by decide +kernel)
+
+example :
+    letI : Fact (Nat.Prime 179) := ⟨by decide +kernel⟩
+    (LMFDB.C179a1.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 179) = 1 := by
+  let row : LocalReductionClaim :=
+    { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
+      reductionType := some 1, tamagawaNumber := some 1 }
+  obtain ⟨_, h⟩ := LMFDB.C179a1.tamagawa_numbers row (by decide +kernel) 1 rfl
+  exact h (by decide +kernel)
 
 example : (LMFDB.C197a1.curve.baseChange ℚ).j = 13824000 / 197 :=
   LMFDB.C197a1.j_invariant
@@ -126,6 +135,7 @@ run_cmd do
         throwError "Unexpected dependency {axiomName} in {lemmaName}"
   check `LMFDB.C112a2 `generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.points_on_curve false
+  check `LMFDB.C179a1 `tamagawa_numbers false
   check `LMFDB.C112a2 `dirichlet_coefficients false
   check `LMFDB.C197a1 `j_integral false
   check `LMFDB.C288a1 `j_integral false
