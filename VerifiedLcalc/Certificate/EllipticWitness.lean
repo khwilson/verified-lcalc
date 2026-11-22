@@ -70,6 +70,10 @@ structure EllipticWitness where
   primeCoefficients : Option (List (Nat × Int)) := none
   /-- Claimed integral point coordinates on the supplied equation. -/
   integralCoordinates : Option (List (Int × Int)) := none
+  /-- Rational affine coordinates for the LMFDB generator list, checked for membership. -/
+  generatorCoordinates : Option (List (Rat × Rat)) := none
+  /-- Rational affine coordinates for the LMFDB torsion generator list, checked for membership. -/
+  torsionGeneratorCoordinates : Option (List (Rat × Rat)) := none
   /-- Indices into the supplied integral-coordinate list. -/
   infiniteOrderPoints : Option (List Nat) := none
   /-- Selected indices for a rank bound; requires a supplied independence proof. -/

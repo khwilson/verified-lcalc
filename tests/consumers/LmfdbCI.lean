@@ -83,6 +83,15 @@ example : LMFDB.C291d1.curve.Δ = -291 := LMFDB.C291d1.discriminant
 example : LMFDB.C112a2.curve.toAffine.Equation 0 2 :=
   LMFDB.C112a2.points_on_curve 0 2 (by decide +kernel)
 
+example : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation 0 2 :=
+  LMFDB.C112a2.generators.points_on_curve 0 2 (by decide +kernel)
+
+example : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation (-2) 0 :=
+  LMFDB.C112a2.torsion_generators.points_on_curve (-2) 0 (by decide +kernel)
+
+example : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point :=
+  LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩
+
 example : LMFDB.C243a1.curve.toAffine.Equation 1 0 :=
   LMFDB.C243a1.points_on_curve 1 0 (by decide +kernel)
 
@@ -110,6 +119,8 @@ run_cmd do
     for axiomName in dependencies do
       unless unconditional.contains axiomName || (conditional && axiomName == modularity) do
         throwError "Unexpected dependency {axiomName} in {lemmaName}"
+  check `LMFDB.C112a2 `generators.points_on_curve false
+  check `LMFDB.C112a2 `torsion_generators.points_on_curve false
   check `LMFDB.C112a2 `dirichlet_coefficients false
   check `LMFDB.C197a1 `j_integral false
   check `LMFDB.C288a1 `j_integral false
