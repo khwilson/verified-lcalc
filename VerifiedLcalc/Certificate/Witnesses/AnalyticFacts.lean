@@ -15,7 +15,6 @@ public import VerifiedLcalc.EllipticCurve.Modularity.Realization
 public import VerifiedLcalc.Certificate.Witnesses.CurvePrecisionClaim
 public import VerifiedLcalc.NumericalRankSeparation
 public import VerifiedLcalc.Numerics.RealInterval
-public import Mathlib.Analysis.SpecialFunctions.Complex.Log
 
 /-! # Checked analytic fact structures -/
 

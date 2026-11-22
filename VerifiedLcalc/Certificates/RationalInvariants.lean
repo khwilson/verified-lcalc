@@ -21,6 +21,4 @@ The finite abc transcript checks and their soundness proofs live under
 
 namespace VerifiedLcalc
 
-
-
 end VerifiedLcalc

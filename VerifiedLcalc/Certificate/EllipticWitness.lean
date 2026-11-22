@@ -25,10 +25,6 @@ deriving instance Repr, DecidableEq for LocalReductionClaim
 deriving instance Repr, DecidableEq for IsogenyEdgeClaim
 deriving instance Repr, DecidableEq for EllipticWitness
 
-
-
-
-
 namespace EllipticWitness
 
 /-- The requested conductor exponents, keyed by their rational primes. -/
@@ -45,6 +41,7 @@ def central (r : CentralResult) (m : MinimalityWitness) (d : WildData) : Ellipti
 def derivative (r : DerivativeResult) (m : MinimalityWitness) (d : WildData) : EllipticWitness :=
   { equation := r.equation, derivativeResult := some r, minimality := some m, localData := some d }
 
+/-- The rank-zero constructor fills the central slot and leaves the derivative empty. -/
 theorem central_fields (r : CentralResult) (m : MinimalityWitness) (d : WildData) :
     (central r m d).equation = r.equation ∧
       (central r m d).centralResult = some r ∧
@@ -52,6 +49,7 @@ theorem central_fields (r : CentralResult) (m : MinimalityWitness) (d : WildData
       (central r m d).minimality = some m ∧ (central r m d).localData = some d :=
   ⟨rfl, rfl, rfl, rfl, rfl⟩
 
+/-- The rank-one constructor fills the derivative slot and leaves the central empty. -/
 theorem derivative_fields (r : DerivativeResult) (m : MinimalityWitness) (d : WildData) :
     (derivative r m d).equation = r.equation ∧
       (derivative r m d).derivativeResult = some r ∧

@@ -195,7 +195,6 @@ def LocalReductionClaim.check (row : LocalReductionClaim) (e : WeierstrassCurve 
       !goodReduction e row.prime && singularTrace e row.prime == code) &&
     row.kodairaSymbol.all (checkKodairaCode e row.prime)
 
-
 /-- Successful finite checks imply the claimed valuations and local reduction predicates. -/
 theorem LocalReductionClaim.check_correct (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
     [(e.baseChange ℚ).IsElliptic] (hm : IsGlobalMinimal (𝓞 ℚ) (e.baseChange ℚ))
@@ -240,7 +239,6 @@ def LocalReductionClaim.checkTamagawa (row : LocalReductionClaim) (e : Weierstra
   row.tamagawaNumber.all fun n =>
     isPrime row.prime && (n != 0) && (!supportsTamagawaOne e row.prime || n == 1)
 
-
 /-- Successful local checks certify the completed-field Tamagawa factor at supported primes. -/
 theorem LocalReductionClaim.tamagawa_correct (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
     [(e.baseChange ℚ).IsElliptic] (h : row.checkTamagawa e = true) : row.TamagawaSpec e := by
@@ -265,7 +263,6 @@ def hasMinimalityDependentLocalClaim (rows : List LocalReductionClaim) : Bool :=
 /-- Whether any row requests a specific additive Kodaira code. -/
 def hasAdditiveKodairaClaim (rows : List LocalReductionClaim) : Bool :=
   rows.any fun row => row.kodairaSymbol.any fun code => (kodairaIIndex code).isNone
-
 
 /-- Successful finite local checks certify the supported Kodaira statement. -/
 theorem LocalReductionClaim.kodaira_correct (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)

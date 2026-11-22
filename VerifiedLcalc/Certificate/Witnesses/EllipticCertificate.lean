@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.EllipticWitness
+public import VerifiedLcalc.Certificate.Witnesses.CurveProofs
 public import VerifiedLcalc.Certificate.Witnesses.RationalInvariants
 public import VerifiedLcalc.Certificate.Witnesses.PointFacts
 public import VerifiedLcalc.Certificate.PointAccessors

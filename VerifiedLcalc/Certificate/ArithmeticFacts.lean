@@ -20,8 +20,6 @@ namespace VerifiedLcalc
 
 open EllipticCurve NumberField WeierstrassCurve
 
-
-
 /-- Retain exactly the supplied factors for which an intrinsic equality is available. -/
 @[expose] def checkedTamagawaFacts (curve : WeierstrassCurve ℤ)
     (rows : List LocalReductionClaim)
@@ -32,7 +30,6 @@ open EllipticCurve NumberField WeierstrassCurve
       let proof := h row.val row.property value hc
       some ⟨⟨row.val.prime, Classical.choose proof⟩, value, Classical.choose_spec proof hs⟩
     | _, _ => none
-
 
 /-- Retain only checked symbols or additive-family information from the supplied rows. -/
 @[expose] def checkedKodairaFacts (curve : WeierstrassCurve ℤ)
@@ -45,7 +42,5 @@ open EllipticCurve NumberField WeierstrassCurve
       let proof := h row.val row.property
       some ⟨⟨row.val.prime, Classical.choose proof⟩, kodairaIIndex code,
         Classical.choose_spec proof code hc⟩
-
-
 
 end VerifiedLcalc

@@ -30,8 +30,6 @@ and a proof of independence carry their stated lower-bound conclusions.
 namespace VerifiedLcalc
 open EllipticCurve
 
-
-
 /-- The integral Weierstrass equation indexing the whole certificate. -/
 def EllipticCertificate.equation {curve : WeierstrassCurve ℤ}
     [(curve.baseChange ℚ).IsElliptic] (_ : EllipticCertificate curve) : WeierstrassCurve ℤ :=

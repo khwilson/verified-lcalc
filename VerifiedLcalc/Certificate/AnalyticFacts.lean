@@ -25,12 +25,6 @@ namespace VerifiedLcalc
 
 open EllipticCurve Modularity Certification
 
-
-
-
-
-
-
 /-- An explicit separation hypothesis upgrades the checked prefix to a lower bound. -/
 theorem CurvePrecisionFact.lower_bound {curve : WeierstrassCurve ℤ}
     {m : ModularRealization curve} (fact : CurvePrecisionFact curve m)
@@ -47,7 +41,6 @@ theorem CurvePrecisionFact.exact_rank {curve : WeierstrassCurve ℤ}
     (next : iteratedDeriv fact.claim.derivativeCount m.formL 1 ≠ 0) :
     analyticOrderAt m.formL 1 = fact.claim.derivativeCount :=
   NumericalRanks.rank_eq_of_small_gap (m.formL_differentiable.analyticAt 1) fact.small gap wide next
-
 
 /-- The checked conductor and sign agree with any supplied arithmetic realization. -/
 private theorem realization_matching {curve : WeierstrassCurve ℤ}
