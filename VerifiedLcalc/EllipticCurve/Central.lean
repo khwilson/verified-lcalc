@@ -1,24 +1,20 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.EllipticCurve.CentralFinite
 public import VerifiedLcalc.EllipticCurve.CentralTail
 public import VerifiedLcalc.EllipticCurve.Coefficients
+public import VerifiedLcalc.Certificate.Witnesses.CentralSeriesEvidence
+
+/-! Soundness results for central-value series evidence. -/
 
 @[expose] public section
 
 namespace VerifiedLcalc.EllipticCurve
-
-/-- Remaining analytic obligations for an actual central value. The series
-must be the convergent split-Mellin exponential series, not the raw Dirichlet
-series evaluated outside its convergence domain. The coefficient majorant and
-prefix identity are mathematical proofs, never unchecked runtime flags. -/
-structure CentralSeriesEvidence (r : CentralResult) (value : ℝ) where
-  series : Nat → ℝ
-  formula : HasSum series value
-  finiteSum : (∑ j ∈ Finset.range r.termLimit, series j) =
-    centralFiniteValue r.coefficients r.rootNumber (2 * Real.pi / Real.sqrt r.conductor)
-  majorant : ∀ j, |series j| ≤ ((1 + r.rootNumber : Int).natAbs : ℝ) *
-    (((j + 1 : Nat) : ℝ) ^ 2 * (r.geometricUpper : ℝ) ^ (j + 1))
 
 /-- Complete interval soundness including argument approximation, signed finite
 summation and analytic tail. It is conditional on the explicit series evidence,

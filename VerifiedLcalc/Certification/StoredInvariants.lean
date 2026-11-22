@@ -1,6 +1,7 @@
 module
 
 public import VerifiedLcalc.Certification.WildCertification
+public import VerifiedLcalc.Certificate.LocalReductionSpecs
 public import VerifiedLcalc.EllipticCurve.Tate.Tamagawa
 public import VerifiedLcalc.EllipticCurve.Tate.Kodaira
 public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReduction
@@ -194,24 +195,6 @@ def LocalReductionClaim.check (row : LocalReductionClaim) (e : WeierstrassCurve 
       !goodReduction e row.prime && singularTrace e row.prime == code) &&
     row.kodairaSymbol.all (checkKodairaCode e row.prime)
 
-/-- Optional local claims on a minimal equation. The signed reduction code is
-the trace of the singular reduction (zero for additive and ±1 for the two
-multiplicative types). -/
-def LocalReductionClaim.Spec (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
-    [(e.baseChange ℚ).IsElliptic] : Prop :=
-  ∃ hp : row.prime.Prime,
-    letI : Fact row.prime.Prime := ⟨hp⟩
-    let R := RationalLocalRing row.prime
-    IsMinimal R (e.baseChange ℚ) ∧
-    (∀ n, row.discriminantValuation = some n → e.Δ.natAbs.factorization row.prime = n) ∧
-    (∀ n, row.jDenominatorValuation = some n →
-      (e.baseChange ℚ).j.den.factorization row.prime = n) ∧
-    (∀ k, row.reductionType = some k →
-      ((e.baseChange ℚ).HasAdditiveReduction R ∧ k = 0 ∨
-        (e.baseChange ℚ).HasMultiplicativeReduction R ∧
-          (k = 1 ∧ (e.baseChange ℚ).HasSplitMultiplicativeReduction R ∨
-           k = -1 ∧ ¬ (e.baseChange ℚ).HasSplitMultiplicativeReduction R)) ∧
-      computeFrobeniusTrace e row.prime = k)
 
 /-- Successful finite checks imply the claimed valuations and local reduction predicates. -/
 theorem LocalReductionClaim.check_correct (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
@@ -257,13 +240,6 @@ def LocalReductionClaim.checkTamagawa (row : LocalReductionClaim) (e : Weierstra
   row.tamagawaNumber.all fun n =>
     isPrime row.prime && (n != 0) && (!supportsTamagawaOne e row.prime || n == 1)
 
-/-- Exact local Tamagawa data at the supported primes of the supplied equation. -/
-def LocalReductionClaim.TamagawaSpec (row : LocalReductionClaim) (e : WeierstrassCurve ℤ) :
-    Prop :=
-  ∀ n, row.tamagawaNumber = some n → ∃ hp : row.prime.Prime,
-    letI : Fact row.prime.Prime := ⟨hp⟩
-    supportsTamagawaOne e row.prime = true →
-      (e.baseChange ℚ).tamagawaNumberAt (rationalPlace row.prime) = n
 
 /-- Successful local checks certify the completed-field Tamagawa factor at supported primes. -/
 theorem LocalReductionClaim.tamagawa_correct (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
@@ -290,13 +266,6 @@ def hasMinimalityDependentLocalClaim (rows : List LocalReductionClaim) : Bool :=
 def hasAdditiveKodairaClaim (rows : List LocalReductionClaim) : Bool :=
   rows.any fun row => row.kodairaSymbol.any fun code => (kodairaIIndex code).isNone
 
-/-- Exact canonical symbol for a good or multiplicative code, or exclusion of
-the multiplicative family for an additive code. -/
-def LocalReductionClaim.KodairaSpec (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
-    [(e.baseChange ℚ).IsElliptic] : Prop :=
-  ∃ hp : row.prime.Prime,
-    letI : Fact row.prime.Prime := ⟨hp⟩
-    ∀ code, row.kodairaSymbol = some code → KodairaCodeSpec (e.baseChange ℚ) row.prime code
 
 /-- Successful finite local checks certify the supported Kodaira statement. -/
 theorem LocalReductionClaim.kodaira_correct (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)

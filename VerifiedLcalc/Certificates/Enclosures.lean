@@ -5,23 +5,16 @@ Authors: Kevin Wilson
 -/
 module
 
+public import VerifiedLcalc.Certificate.Witnesses.Enclosures
+
 /-! Primitive exact enclosures stored by certificate payloads. -/
 
 @[expose] public section
 
 namespace VerifiedLcalc
 
-/-- Closed rational rectangle in the real and imaginary coordinates. -/
-structure Box where
-  /-- Lower real endpoint. -/
-  reLo : Rat
-  /-- Upper real endpoint. -/
-  reHi : Rat
-  /-- Lower imaginary endpoint. -/
-  imLo : Rat
-  /-- Upper imaginary endpoint. -/
-  imHi : Rat
-  deriving Repr, DecidableEq
+deriving instance Repr for Box
+deriving instance DecidableEq for Box
 
 /-- Bounds are ordered. -/
 def Box.valid (b : Box) : Bool :=

@@ -1,0 +1,123 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
+module
+
+public import VerifiedLcalc.Certificate.Witnesses.CurveProofs
+public import VerifiedLcalc.Certificate.Witnesses.LocalClaims
+public import VerifiedLcalc.Certificate.Witnesses.AlgebraicRank
+public import VerifiedLcalc.Certificate.Witnesses.Regulator
+public import VerifiedLcalc.Certificate.Witnesses.SpecialValue
+public import VerifiedLcalc.Certificate.Witnesses.Torsion
+public import VerifiedLcalc.Certificate.Witnesses.IntegralPoints
+public import VerifiedLcalc.Certificate.Witnesses.NumericalData
+public import VerifiedLcalc.Certificate.Witnesses.Transcripts
+
+/-! # Input and proof-carrying structures for `certify_ec` -/
+
+@[expose] public section
+
+namespace VerifiedLcalc
+open EllipticCurve
+
+/-- Lean proofs accepted alongside raw claims on an integral Weierstrass equation. -/
+structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] extends EllipticProofs curve where
+  /-- Proved endpoints of a Mordell–Weil rank interval on the rational curve. -/
+  algebraicRank : Option (AlgebraicRankBounds (curve.baseChange ℚ)) := none
+  /-- Exhaustive abscissa support for integral points on the supplied equation. -/
+  integralXSupport : Option (IntegralXSupport curve) := none
+/-- The single input record for elliptic-curve certification. `none` means that
+no data of that kind was supplied; `some []` is an explicitly supplied empty
+list, not a claim of completeness. Numerical results are rank candidates;
+analytic certification additionally needs checked minimality and local data.
+This record asserts no mathematical validity. -/
+structure EllipticWitness where
+  /-- Integral Weierstrass equation representing the input curve. -/
+  equation : WeierstrassCurve ℤ
+  /-- A stored Taylor leading coefficient with explicit absolute-error evidence. -/
+  specialLValue : Option SpecialLValueClaim := none
+  /-- LMFDB analytic rank to compare with an independently checked analytic payload. -/
+  catalogueAnalyticRank : Option Nat := none
+  /-- A supplied minimum-degree rational isogeny edge. -/
+  isogenyEdge : Option IsogenyEdgeClaim := none
+  /-- Claims for the ordered tuple of b₂, b₄, b₆ and b₈. -/
+  bInvariants : Option (Int × Int × Int × Int) := none
+  /-- Claims for the ordered pair of c₄ and c₆. -/
+  cInvariants : Option (Int × Int) := none
+  /-- Claimed discriminant of the supplied equation. -/
+  discriminant : Option Int := none
+  /-- Claimed exact rational j-invariant. -/
+  jInvariant : Option Rat := none
+  /-- An error bound on the reported abc quality. -/
+  abcQuality : Option AbcQualityClaim := none
+  /-- Stored regulator value and any explicit error evidence. -/
+  regulator : Option RegulatorClaim := none
+  /-- Whether the rational j-invariant belongs to the image of ℤ. -/
+  jIntegral : Option Bool := none
+  /-- Whether the curve has potential good reduction at every rational prime. -/
+  potentialGoodReduction : Option Bool := none
+  /-- Claimed sign of the discriminant. -/
+  discriminantSign : Option Int := none
+  /-- LMFDB absD; certification needs a checked globally minimal model. -/
+  minimalDiscriminantAbs : Option Nat := none
+  /-- Identification with the modular level uses the authorized modularity axiom. -/
+  conductor : Option Nat := none
+  /-- Claimed global root number of the curve. -/
+  rootNumber : Option Int := none
+  /-- Consecutive a_n values starting at n=1; JSON anlist also carries a_0=0. -/
+  dirichletCoefficients : Option (List Int) := none
+  /-- Claimed complete list of primes of bad reduction. -/
+  badPrimes : Option (List Nat) := none
+  /-- Claimed number of primes of bad reduction. -/
+  numBadPrimes : Option Nat := none
+  /-- Claimed truth value of semistability of the curve. -/
+  semistable : Option Bool := none
+  /-- Claimed squarefreeness of the absolute minimal discriminant. -/
+  squarefreeDiscriminant : Option Bool := none
+  /-- Local reduction claims at the supplied primes. -/
+  localInvariants : Option (List LocalReductionClaim) := none
+  /-- Reduction evidence bounding the order of the full rational torsion subgroup. -/
+  torsionBound : Option TorsionBoundWitness := none
+  /-- Claimed exact order of the full rational torsion subgroup. -/
+  torsion : Option Nat := none
+  /-- Claims for individual prime-indexed L-function coefficients. -/
+  primeCoefficients : Option (List (Nat × Int)) := none
+  /-- Claimed integral point coordinates on the supplied equation. -/
+  integralCoordinates : Option (List (Int × Int)) := none
+  /-- One candidate integral root for each supplied x-coordinate whose fiber is certified. -/
+  integralFiberRoots : Option (List (Int × Int)) := none
+  /-- Claimed number of distinct affine integral points on this equation. -/
+  numIntegralPoints : Option Nat := none
+  /-- Rational affine coordinates for the LMFDB generator list, checked for membership. -/
+  generatorCoordinates : Option (List (Rat × Rat)) := none
+  /-- Claimed length of the supplied generator coordinate list. -/
+  generatorCount : Option Nat := none
+  /-- Claimed Mordell–Weil rank, distinct from a numerical analytic-rank candidate. -/
+  algebraicRank : Option Nat := none
+  /-- Supplied lower and upper bounds on the Mordell–Weil rank. -/
+  algebraicRankBounds : Option (Nat × Nat) := none
+  /-- Rational affine coordinates for the LMFDB torsion generator list, checked for membership. -/
+  torsionGeneratorCoordinates : Option (List (Rat × Rat)) := none
+  /-- Claimed exact additive orders, in the same order as the torsion coordinates. -/
+  torsionGeneratorOrders : Option (List Nat) := none
+  /-- Claimed invariant factors of rational torsion. -/
+  torsionStructure : Option (List Nat) := none
+  /-- Claimed distinct prime divisors of the exact rational torsion order. -/
+  torsionPrimes : Option (List Nat) := none
+  /-- Indices into the supplied integral-coordinate list. -/
+  infiniteOrderPoints : Option (List Nat) := none
+  /-- Selected indices for a rank bound; requires a supplied independence proof. -/
+  independentPoints : Option (List Nat) := none
+  /-- Numerical witness for a central-value enclosure. -/
+  centralResult : Option CentralResult := none
+  /-- Numerical witness for a first-derivative enclosure. -/
+  derivativeResult : Option DerivativeResult := none
+  /-- Prime factorization witness for minimality of the supplied equation. -/
+  minimality : Option MinimalityWitness := none
+  /-- Transcripts at 2 and 3 for the arithmetic conductor and root number. -/
+  localData : Option WildData := none
+
+end VerifiedLcalc

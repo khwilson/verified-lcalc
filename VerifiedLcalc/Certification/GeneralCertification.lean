@@ -1,21 +1,22 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.EllipticCurve.Modularity.RealizationIndependence
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
 public import VerifiedLcalc.Certification.CentralEvaluator
 public import VerifiedLcalc.EllipticCurve.MinimalArithmetic
+public import VerifiedLcalc.Certificate.Witnesses.ArithmeticCompatibility
+
+/-! Soundness results for explicit modular arithmetic compatibility. -/
 
 @[expose] public section
 namespace VerifiedLcalc.Certification
 open Modularity EllipticCurve
 open EllipticCurve
-
-/-- Proof-carrying conductor/sign compatibility for any curve, including
-additive reduction. The numerical inputs alone cannot construct this evidence. -/
-structure ArithmeticCompatibility (e : (WeierstrassCurve ℤ)) (N : Nat) (w : Int) where
-  realization : ModularRealization e
-  conductor_eq : realization.level = N
-  rootNumber_eq : realization.rootNumber = w
 
 /-- The existing proved/assumed semistable arithmetic route is one constructor
 of the general interface, not a restriction on general modularity. -/

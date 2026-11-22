@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
+
+public import VerifiedLcalc.Certificate.Witnesses.PrecisionPolicy
 
 /-! Immutable precision configuration shared by numerical certificates. -/
 
@@ -6,11 +13,8 @@ module
 
 namespace VerifiedLcalc
 
-/-- Immutable precision settings recorded in numerical evidence. -/
-structure PrecisionPolicy where
-  /-- Number of binary precision bits requested by the exact evaluator. -/
-  precisionBits : Nat
-  deriving Repr, DecidableEq
+deriving instance Repr for PrecisionPolicy
+deriving instance DecidableEq for PrecisionPolicy
 
 /-- Default immutable policy used by legacy producers. -/
 def globalPrecision : PrecisionPolicy := ⟨53⟩
