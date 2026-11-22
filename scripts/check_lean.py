@@ -78,6 +78,7 @@ def main() -> None:
         "tests/consumers/CertifiedECDataConsumer.lean",
         "tests/consumers/CertifiedECPointsConsumer.lean",
         "tests/consumers/CertifiedECInvariantsConsumer.lean",
+        "tests/consumers/MordellWeilRank.lean",
     ):
         run(["lake", "-f", "lakefile.certificates.lean", "env", "lean", source])
     for source in AUDITS:

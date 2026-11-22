@@ -4,6 +4,7 @@ public import VerifiedLcalc.Certification.DerivativeCertification
 public import VerifiedLcalc.Tactic.CertifyECData
 public import VerifiedLcalc.Tactic.CertifyECPoints
 public import VerifiedLcalc.Tactic.CertifyECInvariants
+public import VerifiedLcalc.Tactic.CertifyECMordellWeil
 public meta import Lean
 
 /-!
@@ -232,7 +233,7 @@ def certifyFields (name : Name) (input : TSyntax `term)
     throwError "Conflicting rank candidates: supply at most one central or derivative result"
   certifyPointFields name independence
   certifyLocalData base
-  certifyStoredInvariants base proofs
+  certifyStoredInvariants base (← certifyProofAttachment base proofs)
   if let some result := central then certifyAnalytic base true result
   if let some result := derivative then certifyAnalytic base false result
   logInfo m!"Certified {base}.ap_correct and {base}.point_integral for the supplied lists"
@@ -271,7 +272,8 @@ def certifyJson (name : Name) (text : String)
         "infinite_order_points", "independent_points", "binvs", "cinvs",
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
-        "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
+        "j_integral", "potential_good_reduction", "torsion_bound", "torsion", "algebraic_rank",
+        "rank_bounds"] ++ (if CurveDataJson.inlineAnalyticRankField j then [] else ["rank"]) ++
         localKeys ++ if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
           then ["prime"] else []
       let skipped := object.toList.filterMap fun (key, _) =>

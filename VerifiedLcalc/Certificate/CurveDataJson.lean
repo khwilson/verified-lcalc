@@ -187,6 +187,22 @@ def localReductionClaims (j : Json) :
     return some ((← localReductionClaim j) :: rows.getD [])
   return rows
 
+/-- The inline analytic format owns its `rank` field. A nested analytic witness
+can coexist with top-level LMFDB algebraic data. -/
+def inlineAnalyticRankField (j : Json) : Bool :=
+  (optionalData j "schema" == some (.str "lcalc.ec-rank.v1")) ||
+    ["subject", "parameters", "coefficients", "enclosure", "evaluator"].all
+      (fun key => (optionalData j key).isSome)
+
+/-- Decode a top-level algebraic rank and check that any two spellings agree. -/
+def algebraicRankClaim (j : Json) : Except String (Option Nat) := do
+  let explicit ← optionalValue j "algebraic_rank" nonnegativeInteger
+  if inlineAnalyticRankField j then return explicit
+  let native ← optionalValue j "rank" nonnegativeInteger
+  if let (some a, some b) := (explicit, native) then
+    unless a = b do throw "Conflicting algebraic rank claims"
+  return explicit.or native
+
 /-- Decode whichever supported fields are present. Integer square-root
 reconstruction supplies candidate y-coordinates for stored integral x-values;
 the certifier subsequently proves every resulting curve equation. -/
@@ -225,6 +241,11 @@ def decode (j : Json) : Except String EllipticWitness := do
   unless integralCoordinates.size ≤ 8192 do throw "Too many integral coordinates"
   let generatorCoordinates ← optionalValue j "gens" weightedCoordinates
   let generatorCount ← optionalValue j "ngens" nonnegativeInteger
+  let algebraicRank ← algebraicRankClaim j
+  let algebraicRankBounds ← optionalValue j "rank_bounds" fun value => do
+    let endpoints ← array value 2
+    unless endpoints.size = 2 do throw "Expected two algebraic rank bounds"
+    return (← nonnegativeInteger endpoints[0]!, ← nonnegativeInteger endpoints[1]!)
   let torsionGeneratorCoordinates ← optionalValue j "torsion_generators" weightedCoordinates
   let torsionGeneratorOrders ← optionalValue j "torsion_generator_orders" fun value => do
     (← array value 4096).toList.mapM nonnegativeInteger
@@ -304,6 +325,8 @@ def decode (j : Json) : Except String EllipticWitness := do
     integralFiberRoots
     generatorCoordinates
     generatorCount
+    algebraicRank
+    algebraicRankBounds
     torsionGeneratorCoordinates
     torsionGeneratorOrders
     infiniteOrderPoints

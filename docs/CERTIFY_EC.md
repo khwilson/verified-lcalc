@@ -105,6 +105,26 @@ record can carry an `EllipticProofs curve` and
 `c₄Value : {a : R // curve.c₄ = a}` side by side, and pass its
 first field to the current command.
 
+## Verify a supplied Mordell–Weil rank proof
+
+Attach `IntegralCurveProofs W` with its `algebraicRank` field set to a checked
+`AlgebraicRankBounds (W.baseChange ℚ)`. The same attachment can contain the
+equation-level facts. Its lower and upper inequalities refer to
+`Module.rank ℤ (W.baseChange ℚ).toAffine.Point`.
+
+With this evidence, `certify_ec` can verify JSON `rank_bounds: [lower, upper]`
+and an exact algebraic `rank` claim. It exports `Name.algebraic_rank_bounds`
+and `Name.algebraic_rank_witness`. A checked infinite-order point or independent
+family can tighten the lower endpoint. A singleton after tightening also
+exports `Name.algebraic_rank`. The exported interval can be wider than the supplied
+proof interval. Reuse its typed witness as the `algebraicRank` field in a
+later proof attachment over the same equation.
+
+An inline legacy analytic payload still uses `rank` for the numerical
+candidate. With nested `analytic_witness`, a top-level algebraic claim can be
+supplied separately. The explicit `algebraic_rank` key is also accepted.
+An analytic-rank theorem and a generator basis each need their own evidence.
+
 ## Import checked theorems
 
 Build the examples and their compiled certificates from the project root.
