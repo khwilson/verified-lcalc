@@ -1,7 +1,5 @@
 module
 
-public import Init
-
 /-! Raw finite transcripts for minimality and local Tate computations. Their
 validation and mathematical interpretation live in the corresponding cores. -/
 

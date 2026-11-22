@@ -1,7 +1,5 @@
 module
 
-public import Init
-
 /-! Immutable precision configuration shared by numerical certificates. -/
 
 @[expose] public section

@@ -1,7 +1,5 @@
 module
 
-public import Init
-
 /-! Primitive exact enclosures stored by certificate payloads. -/
 
 @[expose] public section
