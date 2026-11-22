@@ -23,6 +23,7 @@ def derivativeCellBounds (cs : List Int) (al ah left right : Rat) (bits : Nat) :
   let logs := ((logBounds left 8 bits).1,(logBounds right 8 bits).2)
   return roundInterval bits (intervalMul ((right-left),(right-left)) (intervalMul logs f))
 
+/-- Enclose the normalized derivative integral on the finite interval `[1, cutoff]`. -/
 def derivativeFiniteBounds (cs : List Int) (al ah : Rat) (bits steps cutoff : Nat) :
     Option RealInterval := do
   let cells ← (List.range (steps*(cutoff-1))).mapM fun (j : Nat) =>

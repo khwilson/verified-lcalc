@@ -11,6 +11,7 @@ public import VerifiedLcalc.Certificates.NumericalContracts
 namespace VerifiedLcalc.EllipticCurve
 open Numerics
 
+/-- Construct a central-value payload from exact coefficient and tail bounds. -/
 def evaluateCentral (equation : (WeierstrassCurve ℤ)) (conductor : Nat)
     (rootNumber : Int) (limit : Nat) (policy : PrecisionPolicy := globalPrecision) :
     Option CentralResult :=

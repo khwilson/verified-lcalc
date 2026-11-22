@@ -31,9 +31,11 @@ theorem quadraticRepeated_correct (p : Nat) (a b c x : Int) :
   push_cast
   rfl
 
+/-- Mathematical valuation with the finite sentinel used at zero invariants. -/
 def wildValuationSpec (p : Nat) (a : Int) : Nat :=
   if a = 0 then 12 else a.natAbs.factorization p
 
+/-- Mathematical residue of the unit part of an integer at p. -/
 def wildUnitSpec (p modulus : Nat) (a : Int) : Int :=
   (a / (p : Int)^(wildValuationSpec p a)) % (modulus : Int)
 
@@ -86,11 +88,13 @@ theorem tateWitness_valid_correct (w : TateWitness) (e : (WeierstrassCurve ℤ))
     exact ⟨hp, hn, (modelReduction_additive_iff e p).mpr hr, hw,
       by simpa only [Nat.padicValNat_def, Nat.multiplicity_eq_factorization hprime] using ho⟩
 
+/-- Mathematical conductor exponent using transcript offsets at wild primes. -/
 noncomputable def wildExponentSpec (e : (WeierstrassCurve ℤ)) (d : WildData) (p : Nat) : Nat :=
   match (if p = 2 then d.atTwo else if p = 3 then d.atThree else none) with
   | some w => e.Δ.natAbs.factorization p - w.offset
   | none => tameConductorExponent e p
 
+/-- Mathematical local root number from invariant values and checked wild data. -/
 noncomputable def wildLocalRootSpec (e : (WeierstrassCurve ℤ)) (d : WildData) (p : Nat)
     [Fact p.Prime] : Int :=
   match (if p = 2 then d.atTwo else if p = 3 then d.atThree else none) with
@@ -131,13 +135,17 @@ theorem wildLocalRoot_correct (e : (WeierstrassCurve ℤ)) (d : WildData) (hd : 
   | none => exact localRoot_correct e p (fallback_supported e d hd p Fact.out h)
   | some w => exact wildRoot_correct e p Fact.out w
 
+/-- Global conductor assembled from mathematical local exponents. -/
 noncomputable def wildLevel (e : (WeierstrassCurve ℤ)) (d : WildData) : Nat :=
   ∏ p ∈ (e.Δ).natAbs.primeFactors, p^wildExponentSpec e d p
+/-- Global root number assembled from mathematical local signs. -/
 noncomputable def wildSign (e : (WeierstrassCurve ℤ)) (d : WildData) : Int :=
   -(∏ p ∈ (e.Δ).natAbs.primeFactors,
     if hp : p.Prime then @wildLocalRootSpec e d p ⟨hp⟩ else 1)
+/-- Executable counterpart of `wildLevel` over the discriminant prime list. -/
 noncomputable def wildLevelFast (e : (WeierstrassCurve ℤ)) (d : WildData) : Nat :=
   ∏ p ∈ (e.Δ).natAbs.primeFactors, p^wildExponent e d p
+/-- Executable counterpart of `wildSign` over the discriminant prime list. -/
 noncomputable def wildSignFast (e : (WeierstrassCurve ℤ)) (d : WildData) : Int :=
   -(∏ p ∈ (e.Δ).natAbs.primeFactors, wildLocalRoot e d p)
 
@@ -173,6 +181,7 @@ theorem validWildAt_some_spec (e : (WeierstrassCurve ℤ)) (p : Nat) (w : TateWi
   exact ⟨(tateWitness_valid_correct w e p).mp hw.1,
     by simpa only [wildRoot_correct e p hp w] using hw.2⟩
 
+/-- Mathematical conductor and root number for the supplied prime list. -/
 noncomputable def wildConductorRootFromPrimesSpec (e : (WeierstrassCurve ℤ)) (d : WildData)
     (ps : List Nat) : Nat × Int :=
   ((ps.map fun p => p^wildExponentSpec e d p).prod,

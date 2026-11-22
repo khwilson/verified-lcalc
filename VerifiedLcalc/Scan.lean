@@ -54,8 +54,11 @@ theorem scan_correct (bs : List Box) (n : Nat) :
 
 /-- Proof-carrying output of the executable core. -/
 structure Certificate (bs : List Box) where
+  /-- First derivative index whose exact box excludes zero. -/
   rank : Nat
+  /-- The finite scan returned this rank. -/
   computed : scan bs = some rank
+  /-- The scan result yields a proof witness for the supplied boxes. -/
   sound : Witness bs rank
 
 /-- A result is constructed only after checking the exact search equation. -/

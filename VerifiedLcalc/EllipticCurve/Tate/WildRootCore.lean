@@ -25,6 +25,7 @@ def twoCharacter (a n : Int) : Int :=
 def wildValuation (p : Nat) (a : Int) : Nat :=
   if a = 0 then 12 else padicValNat p a.natAbs
 
+/-- Unit part after removing the encoded p-adic valuation, reduced modulo modulus. -/
 def wildUnit (p modulus : Nat) (a : Int) : Int :=
   (a / (p : Int)^(wildValuation p a)) % (modulus : Int)
 
@@ -91,6 +92,7 @@ def twoRootTable (K : Int → Int → Int) (v4 v6 vd : Nat)
   | -9 => if row = 2 then -(K (-1) d) else -1
   | _ => -1
 
+/-- The row number in Halberstadt's 3-adic classification. -/
 def threeRow (v4 v6 vd : Nat) (kod : Int) : Nat :=
   if kod.natAbs > 4 then 1 else
   match kod with
@@ -99,6 +101,7 @@ def threeRow (v4 v6 vd : Nat) (kod : Int) : Nat :=
   | -4 | 2 => if vd % 6 = 4 then 3 else if vd % 6 = 5 then 4 else if v6 % 3 = 1 then 2 else 1
   | _ => if vd % 6 = 0 then 2 else if vd % 6 = 1 then 3 else 1
 
+/-- Mathematical 3-adic root-number case table, parameterized by its character. -/
 def threeRootTable (K : Int → Int) (v4 v6 vd : Nat)
     (u v d : Int) (kod : Int) : Int :=
   let row := threeRow v4 v6 vd kod
@@ -135,6 +138,8 @@ def wildRoot (e : (WeierstrassCurve ℤ)) (p : Nat) (w : TateWitness) : Int :=
   if p = 2 then twoRootTable twoCharacter v4 v6 vd u v d w.kodaira
   else threeRootTable (legendreSym 3) v4 v6 vd u v d w.kodaira
 
+/-- Check that additive reduction has a valid local witness and sign, or no
+witness is supplied when reduction is not additive. -/
 def validWildAt (e : (WeierstrassCurve ℤ)) (p : Nat) (w : Option TateWitness) : Prop :=
   if modelReduction e p = .additive then
     ∃ v, w = some v ∧ v.Valid e p ∧ (wildRoot e p v = 1 ∨ wildRoot e p v = -1)
@@ -149,10 +154,12 @@ instance (e : (WeierstrassCurve ℤ)) (p : Nat) (w : Option TateWitness) :
         (by simp [validWildAt, h])
   else decidable_of_iff (w = none) (by simp [validWildAt, h])
 
+/-- Both possible wild-prime transcripts are arithmetically valid for the model. -/
 def WildData.Valid (d : WildData) (e : (WeierstrassCurve ℤ)) : Prop :=
   validWildAt e 2 d.atTwo ∧ validWildAt e 3 d.atThree
   deriving Decidable
 
+/-- Construct wild-prime transcript data when both candidates pass validation. -/
 def wildData? (e : (WeierstrassCurve ℤ)) : Option WildData :=
   let d : WildData := ⟨tateWitness? e 2, tateWitness? e 3⟩
   if d.Valid e then some d else none
@@ -165,16 +172,19 @@ theorem wildData?_sound (e : (WeierstrassCurve ℤ)) (d : WildData)
   · next hv => cases h; exact hv
   · simp at h
 
+/-- Conductor exponent using a supplied wild transcript or the tame formula. -/
 def wildExponent (e : (WeierstrassCurve ℤ)) (d : WildData) (p : Nat) : Nat :=
   match (if p = 2 then d.atTwo else if p = 3 then d.atThree else none) with
   | some w => padicValNat p (e.Δ).natAbs - w.offset
   | none => localExponent e p
 
+/-- Local root number using wild transcript data where it is supplied. -/
 def wildLocalRoot (e : (WeierstrassCurve ℤ)) (d : WildData) (p : Nat) : Int :=
   match (if p = 2 then d.atTwo else if p = 3 then d.atThree else none) with
   | some w => wildRoot e p w
   | none => localRoot e p
 
+/-- Multiply the local conductor and root contributions over a supplied list. -/
 def wildConductorRootFromPrimes (e : (WeierstrassCurve ℤ)) (d : WildData)
     (ps : List Nat) : Nat × Int :=
   ((ps.map fun p => p^wildExponent e d p).prod, -(ps.map (wildLocalRoot e d)).prod)

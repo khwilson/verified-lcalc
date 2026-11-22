@@ -34,9 +34,13 @@ Tate's algorithm or assert that a singular model is minimal. -/
 def goodReduction (e : (WeierstrassCurve ℤ)) (p : Nat) : Bool :=
   decide (e.Δ % (p : Int) ≠ 0)
 
+/-! The exact finite-field data retained for one supported prime. -/
 structure PrimeData where
+  /-- Prime modulus used for the reduction. -/
   prime : Nat
+  /-- Number of points on the reduced curve, including the point at infinity. -/
   points : Nat
+  /-- Frobenius trace `p + 1 - points`. -/
   trace : Int
   deriving Repr, DecidableEq
 
@@ -65,6 +69,7 @@ def localPair (a q : Int) : Nat → Int × Int
   | 0 => (1, a)
   | n + 1 => let prev := localPair a q n; (prev.2, a * prev.2 - q * prev.1)
 
+/-- Coefficient at index k of the inverse quadratic Euler factor. -/
 def localCoefficient (a q : Int) (k : Nat) : Int := (localPair a q k).1
 
 /-- Operational recurrence for the executable evaluator. Its mathematical

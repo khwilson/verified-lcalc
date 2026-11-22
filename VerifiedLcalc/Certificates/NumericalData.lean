@@ -29,6 +29,7 @@ structure CentralResult where
   coefficients : List Int
   /-- Lower and upper rational bounds for the Mellin scale. -/
   alphaLo : Rat
+  /-- Upper rational bound for the Mellin scale. -/
   alphaHi : Rat
   /-- Exact rational upper bound for the exponential ratio. -/
   geometricUpper : Rat
@@ -57,6 +58,7 @@ structure DerivativeResult where
   coefficients : List Int
   /-- Lower and upper rational bounds for the Mellin scale. -/
   alphaLo : Rat
+  /-- Upper rational bound for the Mellin scale. -/
   alphaHi : Rat
   /-- Enclosure of the normalized derivative integral over `[1, cutoff]`. -/
   finite : RealInterval

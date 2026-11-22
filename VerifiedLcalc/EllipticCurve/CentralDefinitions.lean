@@ -11,7 +11,9 @@ Evaluator search and correctness theorems live in `CentralCore`. -/
 namespace VerifiedLcalc.EllipticCurve
 open Numerics
 
+/-- Lower rational endpoint of the fixed pi enclosure. -/
 def piLower : Rat := 314159265358979323846 / 100000000000000000000
+/-- Upper rational endpoint of the fixed pi enclosure. -/
 def piUpper : Rat := 314159265358979323847 / 100000000000000000000
 
 /-- Rational bounds for 2*pi/sqrt(N). Fixed 20-decimal pi bounds cap attainable
@@ -41,6 +43,7 @@ def squareTailBound (q : Rat) (limit : Nat) : Option Rat :=
     some ((((limit + 1 : Nat) : Rat) ^ 2 * q ^ (limit + 1)) / (1 - ratio))
   else none
 
+/-- Rectangle enclosing the truncated central sum and its symmetric tail. -/
 def centralBox (coefficients : List Int) (rootNumber : Int) (alphaLo alphaHi : Rat)
     (prec : Nat) (tail : Rat) : Box :=
   let bounds := rationalExpSumBounds prec
