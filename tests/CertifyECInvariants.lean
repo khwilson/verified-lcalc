@@ -245,7 +245,6 @@ run_cmd do
   invariantRejected `WrongTamagawa (← `(certify_ec WrongTamagawa from
     { GoodTamagawa.witness with
       localInvariants := some [{ prime := 3, tamagawaNumber := some 2 }] }))
-
   invariantRejected `IncompatibleAdditiveRows (← `(certify_ec IncompatibleAdditiveRows
     from_json_string
     r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],
