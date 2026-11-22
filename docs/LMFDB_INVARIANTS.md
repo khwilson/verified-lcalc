@@ -80,9 +80,10 @@ The `kodaira_symbols` theorem gives the exact symbol for these codes.
 Without a terminal translation, the additive check proves that the symbol is
 outside the entire `Iₙ` family and reports that the exact code remains unverified.
 If the row includes `kodaira_terminal`, the kernel translates the same equation
-and checks the stopping condition for the decoded symbol. The resulting
-`kodaira_terminal_symbols` theorem carries the exact terminal equation evidence.
-Its `reductionSymbol_eq` projection gives the canonical local equality. For
+and checks the stopping condition for the decoded symbol. The resulting `kodaira_terminals` list carries the verified prime, translation,
+canonical symbol and stopping proof for each translated row. The
+`reductionSymbol_eq` projection gives the canonical local equality. The diagnostic
+lists the primes whose rows established only the additive family. For
 example, LMFDB `50.b3` at 5 takes `"kodaira_symbol":2,"kodaira_terminal":[0,0,2]`
 for type II. A supplied translation that fails the stopping condition causes
 the command to reject the claim.

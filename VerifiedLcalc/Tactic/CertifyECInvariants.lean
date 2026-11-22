@@ -67,6 +67,8 @@ private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
           intro row hrow
           exact LocalReductionClaim.kodairaTerminal_correct row $curve
             (List.all_eq_true.mp $hTerminal row hrow)))
+      emit (← `(def $(rootIdent (base ++ `kodaira_terminals)) :=
+        checkedAdditiveTerminalFacts $curve $rows $hTerminal))
     if hasMinimality then
       let hv := rootIdent (base ++ `local_invariants_value_valid)
       checked (base ++ `local_invariants_value_valid)
@@ -81,11 +83,12 @@ private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
           intro row hrow
           exact LocalReductionClaim.kodaira_correct row $curve $hn $hglobal
             (List.all_eq_true.mp $hv row hrow)))
-      let additive := mkApp (mkConst ``hasAdditiveKodairaClaim)
+      let missing := mkApp (mkConst ``additiveKodairaPrimesWithoutTerminal)
         (mkConst (base ++ `claimed_local_invariants))
-      let additive ← liftTermElabM <| whnf additive
-      if additive.isConstOf ``Bool.true then
-        logInfo m!"{base}: additive Kodaira family verified. Exact additive codes unverified."
+      let missing ← liftTermElabM <| reduce missing
+      unless missing.isAppOfArity ``List.nil 1 do
+        logInfo (m!"{base}: additive Kodaira family verified at primes {missing}. " ++
+          m!"Exact codes remain unverified at these primes.")
     else
       let needsMinimality ← `(($rows).any fun row => row.discriminantValuation.isSome ||
         row.jDenominatorValuation.isSome || row.reductionType.isSome ||

@@ -110,7 +110,8 @@ example : (KodairaGood.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 
   exact h 1 rfl
 
 /--
-info: KodairaAdditive: additive Kodaira family verified. Exact additive codes unverified.
+info: KodairaAdditive: additive Kodaira family verified at primes [3].
+Exact codes remain unverified at these primes.
 ---
 info: Certified KodairaAdditive.ap_correct and KodairaAdditive.point_integral for the supplied lists
 -/
@@ -132,6 +133,23 @@ example : LocalReductionClaim.checkKodairaTerminal
 example : LocalReductionClaim.checkKodairaTerminal
     { prime := 5, kodairaSymbol := some (-6), kodairaTerminal := some (0, 0, 0) }
     ⟨0, 5, 125, 125, 3125⟩ = true := by decide +kernel
+
+/--
+info: MixedAdditiveKodaira: additive Kodaira family verified at primes [2].
+Exact codes remain unverified at these primes.
+---
+info: Certified MixedAdditiveKodaira.ap_correct and MixedAdditiveKodaira.point_integral
+for the supplied lists
+-/
+#guard_msgs (whitespace := lax) in
+certify_ec MixedAdditiveKodaira from
+  { equation := ⟨0, 0, 0, 0, 4⟩
+    minimality := some ⟨[2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3]⟩
+    localInvariants := some [
+      { prime := 2, kodairaSymbol := some (-4) },
+      { prime := 3, kodairaSymbol := some 2, kodairaTerminal := some (2, 0, 0) }] }
+
+example : MixedAdditiveKodaira.kodaira_terminals.map (fun fact => (fact.1 : ℕ)) = [3] := rfl
 
 certify_ec SplitLocal from_json_string
   r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
@@ -204,7 +222,7 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
       `semistable, `squarefree_discriminant, `local_invariants, `kodaira_symbols,
-      `kodaira_terminal_symbols, `kodaira_terminal_values_valid,
+      `kodaira_terminal_symbols, `kodaira_terminal_values_valid, `kodaira_terminals,
       `claimed_semistable, `claimed_squarefree_discriminant, `claimed_local_invariants,
       `claimed_conductor_valuations,
       `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation] do
@@ -322,6 +340,7 @@ run_cmd do
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
   for theoremName in [`ExactAdditiveKodaira.kodaira_terminal_symbols,
+      `ExactAdditiveKodaira.kodaira_terminals, `MixedAdditiveKodaira.kodaira_terminals,
       `KodairaGood.kodaira_symbols, `KodairaAdditive.kodaira_symbols,
       `TrivialTorsion.torsion, `BoundedTorsion.torsion_bound,
       `IntegralJ.j_integral, `NonintegralJ.j_integral,

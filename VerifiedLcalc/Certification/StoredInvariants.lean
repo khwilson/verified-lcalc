@@ -216,10 +216,10 @@ theorem LocalReductionClaim.check_correct (row : LocalReductionClaim) (e : Weier
       · exact Or.inl ⟨ht.symm.trans (he.trans (ite_eq_left hroot)), hsplit.mpr hroot⟩
       · exact Or.inr ⟨ht.symm.trans (he.trans (ite_eq_right hroot)), mt hsplit.mp hroot⟩
 
-/-- Whether an additive Kodaira claim omits its terminal translation. -/
-def hasAdditiveKodairaClaim (rows : List LocalReductionClaim) : Bool :=
-  rows.any fun row =>
-    row.kodairaTerminal.isNone && row.kodairaSymbol.any fun code => (kodairaIIndex code).isNone
+/-- Primes at which only the additive Kodaira family was requested with no terminal translation. -/
+def additiveKodairaPrimesWithoutTerminal (rows : List LocalReductionClaim) : List ℕ :=
+  (rows.filter fun row => row.kodairaTerminal.isNone &&
+    row.kodairaSymbol.any fun code => (kodairaIIndex code).isNone).map LocalReductionClaim.prime
 
 /-- Exact canonical symbol for a good or multiplicative code, or exclusion of
 the multiplicative family for an additive code. -/
@@ -269,5 +269,31 @@ theorem LocalReductionClaim.kodairaTerminal_correct (row : LocalReductionClaim)
   let : Decidable ((intTateTranslation rst • e).IsTateTerminal (row.prime : ℤ) symbol.val) :=
     decidableIsTateTerminalInt _ _ _
   exact ⟨hp, code, ⟨rst, symbol, of_decide_eq_true hterminal⟩, rfl, hcode, hsymbol⟩
+
+/-- Project the actual prime, translation and symbol from a checked input row. -/
+def LocalReductionClaim.additiveTerminalFact? (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
+    (h : row.checkKodairaTerminal e = true) :
+    Option ((prime : Nat.Primes) × AdditiveTerminalFact e prime) :=
+  match hrst : row.kodairaTerminal, hcode : row.kodairaSymbol with
+  | some rst, some code =>
+    match hsymbol : additiveKodairaSymbol code with
+    | some symbol =>
+      have ht : row.prime.Prime ∧
+          @decide _ (decidableIsTateTerminalInt (intTateTranslation rst • e)
+            row.prime symbol.val) = true := by
+        simpa only [checkKodairaTerminal, hrst, hcode, hsymbol, Option.all_some,
+          Option.any_some, Bool.and_eq_true, isPrime_correct] using h
+      let terminal := @of_decide_eq_true _ (decidableIsTateTerminalInt
+        (intTateTranslation rst • e) row.prime symbol.val) ht.2
+      some ⟨⟨row.prime, ht.1⟩, ⟨rst, symbol, terminal⟩⟩
+    | none => none
+  | _, _ => none
+
+/-- The concrete checked additive terminal equations supplied for this curve. -/
+def checkedAdditiveTerminalFacts (e : WeierstrassCurve ℤ) (rows : List LocalReductionClaim)
+    (h : rows.all (fun row => row.checkKodairaTerminal e) = true) :
+    List ((prime : Nat.Primes) × AdditiveTerminalFact e prime) :=
+  rows.attach.filterMap fun row =>
+    row.val.additiveTerminalFact? e (List.all_eq_true.mp h row.val row.property)
 
 end VerifiedLcalc

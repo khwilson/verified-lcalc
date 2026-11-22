@@ -31,6 +31,10 @@ example : FileProofCarrying37.curve.Δ = 37 := FileProofCarrying37.discriminant
 
 open VerifiedLcalc VerifiedLcalc.EllipticCurve
 
+example : ExactAdditiveKodaira.kodaira_terminals.map (fun fact =>
+    ((fact.1 : ℕ), fact.2.translation, fact.2.symbol.val)) =
+    [(5, (0, 0, 2), TauCeti.ReductionSymbol.II)] := rfl
+
 /-- The compiled terminal witness proves type II at 5 for LMFDB 50.b3. -/
 theorem imported_additive_kodaira :
     letI : Fact (Nat.Prime 5) := ⟨by decide⟩
