@@ -25,7 +25,7 @@ private def bindStored (base field label : Name) (type : TSyntax `term) :
     (← `($projection $w = some $value)) (← `(by rfl))
   return some value
 
-private def certifyReductionInvariants (base : Name) (curve m hm : Ident)
+private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
     (hasMinimality : Bool) : CommandElabM Unit := do
   let hglobal := rootIdent (base ++ `global_minimal)
   if let some claim ← bindStored base `semistable `semistable (← `(Bool)) then
@@ -80,6 +80,16 @@ private def certifyReductionInvariants (base : Name) (curve m hm : Ident)
           intro row hrow
           exact LocalReductionClaim.check_correct row $curve $hglobal
             (List.all_eq_true.mp $hv row hrow)))
+      checked (base ++ `kodaira_symbols)
+        (← `(∀ row ∈ $rows, LocalReductionClaim.KodairaSpec row $curve)) (← `(by
+          intro row hrow
+          exact LocalReductionClaim.kodaira_correct row $curve $hn $hglobal
+            (List.all_eq_true.mp $hv row hrow)))
+      let additive := mkApp (mkConst ``hasAdditiveKodairaClaim)
+        (mkConst (base ++ `claimed_local_invariants))
+      let additive ← liftTermElabM <| whnf additive
+      if additive.isConstOf ``Bool.true then
+        logInfo m!"{base}: additive Kodaira family verified. Exact additive codes unverified."
     else
       let needsMinimality := mkApp (mkConst ``hasMinimalityDependentLocalClaim)
         (mkConst (base ++ `claimed_local_invariants))
@@ -230,7 +240,7 @@ def certifyStoredInvariants (base : Name)
   let hm := rootIdent (base ++ `minimality_valid)
   let d := rootIdent (base ++ `localData)
   let hd := rootIdent (base ++ `local_data_valid)
-  certifyReductionInvariants base curve m hm hasMinimality
+  certifyReductionInvariants base curve hn m hm hasMinimality
   if let some values ← bindStored base `badPrimes `bad_primes (← `(List Nat)) then
     if hasMinimality then
       let hv := rootIdent (base ++ `bad_primes_value_valid)

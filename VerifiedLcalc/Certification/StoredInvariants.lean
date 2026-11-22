@@ -2,6 +2,7 @@ module
 
 public import VerifiedLcalc.Certification.WildCertification
 public import VerifiedLcalc.EllipticCurve.Tate.Tamagawa
+public import VerifiedLcalc.EllipticCurve.Tate.Kodaira
 public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReduction
 public import VerifiedLcalc.Certificate.EllipticWitness
 public import Mathlib.Data.Nat.Squarefree
@@ -163,6 +164,7 @@ def LocalReductionClaim.Compatible (a b : LocalReductionClaim) : Prop :=
     OptionalValuesAgree a.jDenominatorValuation b.jDenominatorValuation ∧
     OptionalValuesAgree a.reductionType b.reductionType ∧
     OptionalValuesAgree a.tamagawaNumber b.tamagawaNumber ∧
+    OptionalValuesAgree a.kodairaSymbol b.kodairaSymbol ∧
     OptionalValuesAgree a.conductorValuation b.conductorValuation
 
 instance (a b : LocalReductionClaim) : Decidable (a.Compatible b) := by
@@ -189,7 +191,8 @@ def LocalReductionClaim.check (row : LocalReductionClaim) (e : WeierstrassCurve 
     row.jDenominatorValuation.all (fun n =>
       padicValNat row.prime (((e.c₄ : Rat) ^ 3 / (e.Δ : Rat)).den) == n) &&
     row.reductionType.all (fun code =>
-      !goodReduction e row.prime && singularTrace e row.prime == code)
+      !goodReduction e row.prime && singularTrace e row.prime == code) &&
+    row.kodairaSymbol.all (checkKodairaCode e row.prime)
 
 /-- Optional local claims on a minimal equation. The signed reduction code is
 the trace of the singular reduction (zero for additive and ±1 for the two
@@ -215,7 +218,7 @@ theorem LocalReductionClaim.check_correct (row : LocalReductionClaim) (e : Weier
     [(e.baseChange ℚ).IsElliptic] (hm : IsGlobalMinimal (𝓞 ℚ) (e.baseChange ℚ))
     (h : row.check e = true) : row.Spec e := by
   simp only [check, Bool.and_eq_true, Option.all_eq_true, beq_iff_eq, Bool.not_eq_true'] at h
-  obtain ⟨⟨⟨hp, hd⟩, hj⟩, hr⟩ := h
+  obtain ⟨⟨⟨⟨hp, hd⟩, hj⟩, hr⟩, _⟩ := h
   have hp := (isPrime_correct _).mp hp
   let : Fact row.prime.Prime := ⟨hp⟩
   let hmin := hm.isMinimal (rationalPlace row.prime)
@@ -281,6 +284,31 @@ def hasUnsupportedTamagawaClaim (e : WeierstrassCurve ℤ) (rows : List LocalRed
 /-- Whether any supplied local valuation or reduction type requires a checked minimal model. -/
 def hasMinimalityDependentLocalClaim (rows : List LocalReductionClaim) : Bool :=
   rows.any fun row => row.discriminantValuation.isSome || row.jDenominatorValuation.isSome ||
-    row.reductionType.isSome
+    row.reductionType.isSome || row.kodairaSymbol.isSome
+
+/-- Whether any row requests a specific additive Kodaira code. -/
+def hasAdditiveKodairaClaim (rows : List LocalReductionClaim) : Bool :=
+  rows.any fun row => row.kodairaSymbol.any fun code => (kodairaIIndex code).isNone
+
+/-- Exact canonical symbol for a good or multiplicative code, or exclusion of
+the multiplicative family for an additive code. -/
+def LocalReductionClaim.KodairaSpec (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
+    [(e.baseChange ℚ).IsElliptic] : Prop :=
+  ∃ hp : row.prime.Prime,
+    letI : Fact row.prime.Prime := ⟨hp⟩
+    ∀ code, row.kodairaSymbol = some code → KodairaCodeSpec (e.baseChange ℚ) row.prime code
+
+/-- Successful finite local checks certify the supported Kodaira statement. -/
+theorem LocalReductionClaim.kodaira_correct (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
+    [(e.baseChange ℚ).IsElliptic] (hn : e.Δ ≠ 0)
+    (hm : IsGlobalMinimal (𝓞 ℚ) (e.baseChange ℚ)) (h : row.check e = true) :
+    row.KodairaSpec e := by
+  obtain ⟨hp, _⟩ := row.check_correct e hm h
+  let : Fact row.prime.Prime := ⟨hp⟩
+  let := hm.isMinimal (rationalPlace row.prime)
+  refine ⟨hp, fun code hc => ?_⟩
+  have hkod := (Bool.and_eq_true_iff.mp h).2
+  rw [hc] at hkod
+  exact checkKodairaCode_correct e row.prime hn code hkod
 
 end VerifiedLcalc

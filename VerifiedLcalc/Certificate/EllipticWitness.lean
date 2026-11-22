@@ -51,6 +51,8 @@ structure LocalReductionClaim where
   reductionType : Option Int := none
   /-- Claimed intrinsic local component-group order. -/
   tamagawaNumber : Option Nat := none
+  /-- Claimed PARI Kodaira code. Additive codes request a family check. -/
+  kodairaSymbol : Option Int := none
   deriving Repr, DecidableEq
 
 /-- Two proposed odd primes of good reduction and the gcd of their point counts. -/

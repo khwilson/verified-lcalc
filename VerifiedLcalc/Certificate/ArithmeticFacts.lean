@@ -54,6 +54,31 @@ structure LocalTamagawaFact (curve : WeierstrassCurve ℤ) where
       some ⟨⟨row.val.prime, Classical.choose proof⟩, value, Classical.choose_spec proof hs⟩
     | _, _ => none
 
+/-- An exact multiplicative-family index, or a proof of additive reduction at this prime. -/
+structure LocalKodairaFact (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
+  /-- The prime at which the reduction symbol was checked. -/
+  prime : Nat.Primes
+  /-- The index of `Iₙ`, with `none` denoting the additive family. -/
+  index : Option ℕ
+  /-- An equality for the exact index, or exclusion of every `Iₙ`. -/
+  correct :
+    letI : Fact (prime : ℕ).Prime := ⟨prime.property⟩
+    match index with
+    | some n => (curve.baseChange ℚ).reductionSymbol (RationalLocalRing (prime : ℕ)) = .I n
+    | none => ∀ n, (curve.baseChange ℚ).reductionSymbol (RationalLocalRing (prime : ℕ)) ≠ .I n
+
+/-- Retain only checked symbols or additive-family information from the supplied rows. -/
+@[expose] def checkedKodairaFacts (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] (rows : List LocalReductionClaim)
+    (h : ∀ row ∈ rows, row.KodairaSpec curve) : List (LocalKodairaFact curve) :=
+  rows.attach.filterMap fun row =>
+    match hc : row.val.kodairaSymbol with
+    | none => none
+    | some code =>
+      let proof := h row.val row.property
+      some ⟨⟨row.val.prime, Classical.choose proof⟩, kodairaIIndex code,
+        Classical.choose_spec proof code hc⟩
+
 /-- Arithmetic facts about a verified globally minimal integral model of the curve. -/
 structure MinimalModelArithmeticFacts (curve : WeierstrassCurve ℤ)
     [(curve.baseChange ℚ).IsElliptic] where
@@ -77,7 +102,10 @@ structure MinimalModelArithmeticFacts (curve : WeierstrassCurve ℤ)
   numBadPrimes : Option { n : ℕ // curve.Δ.natAbs.primeFactors.card = n } := none
   /-- Checked local rows. Level exponents belong to the modular subrecord. -/
   localRows : Option { rows : List LocalReductionClaim // ∀ row ∈ rows,
-    row.conductorValuation = none ∧ row.tamagawaNumber = none ∧ row.Spec curve } := none
+    row.conductorValuation = none ∧ row.kodairaSymbol = none ∧
+      row.tamagawaNumber = none ∧ row.Spec curve } := none
+  /-- Checked canonical Kodaira facts at the supplied primes. -/
+  kodaira : List (LocalKodairaFact curve) := []
 
 /-- Optional arithmetic facts indexed by the same nonsingular integral equation. -/
 structure ArithmeticFacts (curve : WeierstrassCurve ℤ)

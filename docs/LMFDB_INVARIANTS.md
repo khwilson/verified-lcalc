@@ -33,6 +33,7 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `squarefree_disc` | `squarefreeDiscriminant` | Equivalence with Mathlib's `Squarefree` on the absolute minimal discriminant, using the checked `minimality`. |
 | `local_invariants` or a top-level local row | `localInvariants` | Checks each supplied prime and any supplied `discriminant_valuation`, `j_denominator_valuation` or `reduction_type` against the minimal equation, using the checked `minimality`. |
 | `tamagawa_number` | `localInvariants` row field `tamagawaNumber` | Exact intrinsic Tamagawa number at a prime of good or `I₁` reduction. A local test proves minimality at that prime. |
+| `kodaira_symbol` | `localInvariants` row field `kodairaSymbol` | Canonical TauCeti `Iₙ` equality for good or multiplicative reduction. For additive codes the theorem excludes every `Iₙ`. Requires `minimality`. |
 | `ap` / `aplist` | `primeCoefficients` | Actual `LFunction p` coefficients with proved sufficient local minimality checks. |
 | `anlist` | `dirichletCoefficients` | Actual consecutive `LFunction n` coefficients; requires `minimality`. Native JSON starts with a₀=0, which is checked and removed; direct Lean lists start at a₁. |
 | `conductor` | `conductor` | Identification with the chosen modular realization's level; requires `minimality`, `localData`, and the existing modularity/arithmetic-compatibility axiom. |
@@ -79,6 +80,16 @@ multiplicative reduction of index one. The equality concerns TauCeti's
 minimality witness for this field. A claim outside this scope is reported
 as unverified. [Completed Tamagawa factor](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Product.lean#L47-L87)
 
+The producer stores Sage's PARI Kodaira codes. Code 1 represents good
+reduction `I₀`. For positive `n`, code `n + 4` represents `Iₙ`.
+The `kodaira_symbols` theorem gives the exact symbol for these codes.
+For an additive code it proves that the symbol is outside the entire
+`Iₙ` family and reports that the exact code remains unverified. Claims that contradict the checked family or multiplicative
+index are rejected. A specific additive symbol needs further terminal
+Tate-algorithm evidence.
+[Producer](https://github.com/JohnCremona/ecdata/blob/25cec5ecfec8b9f016eb1631ac633194c2bed39f/scripts/files.py#L137-L149)
+· [PARI code mapping](https://github.com/sagemath/sage/blob/8de8dad7bcb38e1baa43508cbe944bf04a2d0401/src/sage/schemes/elliptic_curves/kodaira_symbol.py#L111-L148)
+
 Local claims can be split across rows. When two rows name the same prime,
 any supplied single-valued invariants must agree.
 
@@ -108,7 +119,7 @@ missing theorem.
 
 | Group / fields | Proof work still needed |
 | --- | --- |
-| Local `kodaira_symbol`, `root_number`, other `tamagawa_number` branches, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
+| Specific additive `kodaira_symbol`, local `root_number`, other `tamagawa_number` branches, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
 | `gens`, `torsion_generators`, nontrivial `torsion`, `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | Match verified point orders and independence with a tight divisibility bound to prove generation. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Lower bounds already have the explicit independence route. Exact rank needs an upper-bound/descent certificate; integral-point counts need completeness proofs. |
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |

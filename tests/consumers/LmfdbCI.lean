@@ -24,7 +24,7 @@ example : Squarefree LMFDB.C179a1.curve.Δ.natAbs :=
 example :
     LocalReductionClaim.Spec
       { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
-        reductionType := some 1, tamagawaNumber := some 1 } LMFDB.C179a1.curve :=
+        reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1 } LMFDB.C179a1.curve :=
   LMFDB.C179a1.local_invariants _ (by decide +kernel)
 
 example :
@@ -32,12 +32,25 @@ example :
     (LMFDB.C179a1.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 179) = 1 := by
   let row : LocalReductionClaim :=
     { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
-      reductionType := some 1, tamagawaNumber := some 1 }
+      reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1 }
   obtain ⟨_, h⟩ := LMFDB.C179a1.tamagawa_numbers row (by decide +kernel) 1 rfl
   exact h (by decide +kernel)
 
 example : (LMFDB.C179a1.certificate.arithmetic.tamagawa.map fun fact =>
     ((fact.prime : ℕ), fact.value)) = [(179, 1)] := by decide +kernel
+
+example :
+    letI : Fact (Nat.Prime 179) := ⟨by decide +kernel⟩
+    (LMFDB.C179a1.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 179) = .I 1 := by
+  let row : LocalReductionClaim :=
+    { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
+      reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1 }
+  obtain ⟨_, h⟩ := LMFDB.C179a1.kodaira_symbols row (by decide +kernel)
+  exact h 5 rfl
+
+example : ((LMFDB.C179a1.certificate.arithmetic.minimalModel.get
+    (by decide +kernel)).kodaira.map fun fact => ((fact.prime : ℕ), fact.index)) =
+    [(179, some 1)] := by decide +kernel
 
 example : (LMFDB.C197a1.curve.baseChange ℚ).j = 13824000 / 197 :=
   LMFDB.C197a1.j_invariant
@@ -159,6 +172,7 @@ run_cmd do
   check `LMFDB.C112a2 `generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.points_on_curve false
   check `LMFDB.C179a1 `tamagawa_numbers false
+  check `LMFDB.C179a1 `kodaira_symbols false
   for axiomName in ← liftTermElabM (Lean.collectAxioms ``LMFDB.C179a1.certificate) do
     unless unconditional.contains axiomName do
       throwError "Unexpected aggregate dependency {axiomName}"

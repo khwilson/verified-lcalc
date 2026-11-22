@@ -56,7 +56,8 @@ theorem imported_aggregate_conductor
 theorem imported_aggregate_finite_local_row (row : VerifiedLcalc.LocalReductionClaim)
     (h : row ∈ ((Invariants37.certificate.arithmetic.minimalModel.get
       (by decide +kernel)).localRows.get (by decide +kernel)).val) :
-    row.conductorValuation = none ∧ row.tamagawaNumber = none ∧ row.Spec Invariants37.curve :=
+    row.conductorValuation = none ∧ row.kodairaSymbol = none ∧
+      row.tamagawaNumber = none ∧ row.Spec Invariants37.curve :=
   ((Invariants37.certificate.arithmetic.minimalModel.get
     (by decide +kernel)).localRows.get (by decide +kernel)).property row h
 
