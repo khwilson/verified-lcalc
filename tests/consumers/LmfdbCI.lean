@@ -196,17 +196,26 @@ theorem imported_aggregate_derivative_enclosure
   (((Curve37.certificate.analytic.derivative.get (by decide +kernel)).enclosure).get
     (by decide +kernel)).contains model
 
+/-- The compiled certificate gives all integral solutions over the indexed seed's x-coordinate. -/
+theorem imported_aggregate_integral_y_fiber (y : ℤ) :
+    y ∈ (LMFDB.C112a2.certificate.algebraic.integralYFibers.get
+      (by decide +kernel)).fiber ⟨0, by decide⟩ ↔
+      LMFDB.C112a2.curve.toAffine.Equation (-2) y :=
+  (LMFDB.C112a2.certificate.algebraic.integralYFibers.get
+    (by decide +kernel)).complete _ y
+
 run_cmd do
   let modularity := ``Assumptions.ellipticModularity
   let legacyAxioms ← liftTermElabM <| Lean.collectAxioms ``Curve11.analytic_rank
   unless legacyAxioms.contains modularity do
     throwError "Expected the legacy rank to use the authorized assumption"
   for fact in [``imported_aggregate_central_payload, ``imported_aggregate_rank,
-      ``imported_aggregate_central_enclosure, ``imported_aggregate_derivative_enclosure] do
+      ``imported_aggregate_central_enclosure, ``imported_aggregate_derivative_enclosure,
+      ``imported_aggregate_integral_y_fiber] do
     let axioms ← liftTermElabM <| Lean.collectAxioms fact
     for name in axioms do
       unless [``propext, ``Classical.choice, ``Quot.sound].contains name do
-        throwError "Unexpected analytic aggregate axiom in {fact}: {name}"
+        throwError "Unexpected aggregate axiom in {fact}: {name}"
 
 example : LMFDB.C112a2.certificate.algebraic.generators.map AffineMembership.coordinates =
     some [(0, 2)] := rfl

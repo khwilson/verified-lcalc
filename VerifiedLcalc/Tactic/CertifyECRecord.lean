@@ -85,15 +85,27 @@ private def torsionGeneratorOrderTerm (base : Name) : CommandElabM (TSyntax `ter
     intro n h
     exact (of_decide_eq_true (List.all_eq_true.mp $support n h)).1, $exactOrder⟩)
 
+private def integralYFiberTerm (base : Name) : CommandElabM (TSyntax `term) := do
+  let completeName := base ++ `integral_y_fiber_complete
+  unless (← getEnv).contains completeName do return ← `(none)
+  let curve := rootIdent (base ++ `curve)
+  let roots := rootIdent (base ++ `integral_fiber_roots)
+  let valid := rootIdent (base ++ `integral_fiber_roots_valid)
+  let fiber := rootIdent (base ++ `integral_y_fiber)
+  let complete := rootIdent completeName
+  `(some ⟨⟨$roots, EllipticWitness.affineCoordinatesValid_sound $curve $roots $valid⟩,
+    $fiber, $complete⟩)
+
 private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let integral ← integralMembershipTerm base
+  let fibers ← integralYFiberTerm base
   let generators ← rationalMembershipTerm (base ++ `generators)
   let torsionGenerators ← rationalMembershipTerm (base ++ `torsion_generators)
   let torsionOrders ← torsionGeneratorOrderTerm base
   let infinite ← infiniteOrderFactsTerm base
   let independent ← independenceFactsTerm base
   let lowerBound ← rankLowerBoundTerm base
-  `({ integralPoints := $integral, generators := $generators,
+  `({ integralPoints := $integral, integralYFibers := $fibers, generators := $generators,
       torsionGenerators := $torsionGenerators, torsionGeneratorOrders := $torsionOrders,
       infiniteOrderPoints := $infinite,
       independentPoints := $independent, rankLowerBound := $lowerBound })

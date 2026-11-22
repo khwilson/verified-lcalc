@@ -99,10 +99,22 @@ structure TorsionGeneratorOrderFacts {curve : WeierstrassCurve ℚ} [curve.IsEll
   exactOrder : ∀ i : Fin source.coordinates.length,
     addOrderOf (source.point i) = orders.get (Fin.cast length_eq.symm i)
 
+/-- Integral seed points and the complete set of integral y-coordinates over each seed's x. -/
+structure IntegralYFiberFacts (curve : WeierstrassCurve ℤ) where
+  /-- The supplied integral seed points, in input order. -/
+  seeds : AffineMembership curve
+  /-- The finite set of all integral y-coordinates at the indexed x-coordinate. -/
+  fiber : Fin seeds.coordinates.length → Finset ℤ
+  /-- The indexed fiber is exactly the set of solutions of the given equation at that x. -/
+  complete : ∀ (i : Fin seeds.coordinates.length) (y : ℤ),
+    y ∈ fiber i ↔ curve.toAffine.Equation (seeds.coordinates[i]).1 y
+
 /-- Checked point lists, individual orders and algebraic lower bounds. -/
 structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
   /-- Membership on the supplied integral equation. -/
   integralPoints : Option (AffineMembership curve) := none
+  /-- Complete integral y-fibers at the specified integral x-coordinates. -/
+  integralYFibers : Option (IntegralYFiberFacts curve) := none
   /-- Membership for the supplied rational generator coordinates. -/
   generators : Option (AffineMembership (curve.baseChange ℚ)) := none
   /-- Membership for the supplied rational torsion generator coordinates. -/

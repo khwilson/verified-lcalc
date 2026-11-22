@@ -340,7 +340,8 @@ run_cmd do
 run_cmd do
   let equation := #[`equation, `bInvariants, `cInvariants, `discriminant]
   let rational := #[`discriminantSign, `jInvariant, `jIntegral]
-  let algebraic := #[`integralCoordinates, `generatorCoordinates, `torsionGeneratorCoordinates,
+  let algebraic := #[`integralCoordinates, `integralFiberRoots, `generatorCoordinates,
+    `torsionGeneratorCoordinates,
     `infiniteOrderPoints, `independentPoints]
   let arithmetic := #[`potentialGoodReduction, `minimalDiscriminantAbs, `conductor, `rootNumber,
     `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
@@ -364,6 +365,7 @@ example : EmptyProofs.certificate.equationFacts.discriminant.isNone = true := rf
 example : JZero.certificate.equationFacts.discriminant.map Subtype.val = some (-432) := rfl
 
 example : NonintegralJ.certificate.rational.jIntegral.map Subtype.val = some false := rfl
+example : JZero.certificate.algebraic.integralYFibers = none := rfl
 example : Partial37.certificate.arithmetic.minimalModel.isNone = true := rfl
 
 example : BoundedTorsion.certificate.torsion.divisor.isSome = true := rfl

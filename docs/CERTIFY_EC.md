@@ -118,9 +118,10 @@ first field to the current command.
 
 Each successful command exports `Name.certificate` indexed by its integral
 Weierstrass equation. Its `equationFacts` and `rational` fields hold exact
-invariants. The `algebraic` field distinguishes membership of supplied points,
-individual infinite-order proofs, an independent family, and a proved rank
-lower bound. The `arithmetic` field exposes the finite reduction facts and
+invariants. The `algebraic` field holds membership of supplied points, complete
+integral y-fibers above specified x-coordinates, individual point orders, an
+independent family, and a proved rank lower bound. The `arithmetic` field
+exposes the finite reduction facts and
 separate conditional results. To use a conditional arithmetic result, supply
 an explicit `ArithmeticModularRealization` of the equation. The `analytic`
 field keeps checked numerical payloads and separately gives enclosures and
