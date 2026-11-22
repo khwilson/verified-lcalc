@@ -102,6 +102,7 @@ private def torsionFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let boundName := base ++ `torsion_bound
   unless (← getEnv).contains boundName do return ← `({})
   let evidence := rootIdent (base ++ `claimed_torsion_bound)
+  let checkedBound := rootIdent (base ++ `torsion_bound_value_valid)
   let valid := rootIdent boundName
   let consistent ← if (← getEnv).contains (base ++ `torsion_claim_consistent) then
     `(some ⟨$(rootIdent (base ++ `claimed_torsion)),
@@ -116,7 +117,7 @@ private def torsionFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
     let n ← literalSyntax value
     `(some ⟨$n, $(rootIdent exactName)⟩)
   else `(none)
-  `({ divisor := some ⟨($evidence).bound, $valid, $consistent⟩,
+  `({ divisor := some ⟨$evidence, $checkedBound, $valid, $consistent⟩,
       cardinality := $exactCardinality })
 
 /-- Emit the indexed public certificate with a standard-axiom dependency audit. -/

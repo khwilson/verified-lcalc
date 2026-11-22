@@ -4,6 +4,7 @@ public import VerifiedLcalc.Certification.CurveData
 public import VerifiedLcalc.Certificate.ArithmeticFacts
 public import VerifiedLcalc.Certificate.AnalyticFacts
 public import VerifiedLcalc.EllipticCurve.PointIndependence
+public import VerifiedLcalc.EllipticCurve.TorsionBound
 public import Mathlib.GroupTheory.Torsion
 
 /-!
@@ -44,14 +45,16 @@ def AffineMembership.point {R : Type*} [CommRing R] [Nontrivial R]
 
 /-- Lift a checked integral pair to the rational point group. -/
 def AffineMembership.rationalPoint {curve : WeierstrassCurve ℤ}
-    [(curve.baseChange ℚ).IsElliptic] (facts : AffineMembership curve) (i : Fin facts.coordinates.length) :
+    [(curve.baseChange ℚ).IsElliptic] (facts : AffineMembership curve)
+    (i : Fin facts.coordinates.length) :
     (curve.baseChange ℚ).toAffine.Point :=
   curve.pointOfIntegralSolution (facts.coordinates[i]).1 (facts.coordinates[i]).2
     (facts.onCurve _ _ (List.getElem_mem i.isLt))
 
 /-- The lifted point belongs to the set of integral points for the indexed equation. -/
 theorem AffineMembership.rationalPoint_integral {curve : WeierstrassCurve ℤ}
-    [(curve.baseChange ℚ).IsElliptic] (facts : AffineMembership curve) (i : Fin facts.coordinates.length) :
+    [(curve.baseChange ℚ).IsElliptic] (facts : AffineMembership curve)
+    (i : Fin facts.coordinates.length) :
     facts.rationalPoint i ∈ curve.integralPoints :=
   WeierstrassCurve.pointOfIntegralSolution_mem _ _ _ _
 
@@ -119,12 +122,21 @@ structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).
 
 /-- A verified divisor of the whole torsion order and an optional consistent raw claim. -/
 structure TorsionDivisorFacts (curve : WeierstrassCurve ℤ) where
-  /-- The positive divisor obtained from good-reduction point counts. -/
-  bound : ℕ
+  /-- The odd primes and divisor supplied to the reduction check. -/
+  evidence : TorsionBoundWitness
+  /-- The stated divisor is the verified gcd of the two good-reduction point counts. -/
+  checked : EllipticCurve.checkTorsionBound curve evidence.firstPrime evidence.secondPrime
+    evidence.bound = true
   /-- The full torsion order divides this positive value. -/
-  valid : Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) ∣ bound ∧ 0 < bound
+  valid : Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) ∣
+    evidence.bound ∧ 0 < evidence.bound
   /-- A supplied count consistent with the bound. -/
-  consistentClaim : Option { n : ℕ // 0 < n ∧ n ∣ bound } := none
+  consistentClaim : Option { n : ℕ // 0 < n ∧ n ∣ evidence.bound } := none
+
+/-- The positive divisor of the full torsion order. -/
+def TorsionDivisorFacts.bound {curve : WeierstrassCurve ℤ}
+    (facts : TorsionDivisorFacts curve) : ℕ :=
+  facts.evidence.bound
 
 /-- Partial divisibility bounds and exact cardinality assertions for the torsion subgroup. -/
 structure TorsionFacts (curve : WeierstrassCurve ℤ) where

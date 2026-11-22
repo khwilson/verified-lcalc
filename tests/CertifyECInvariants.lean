@@ -365,5 +365,7 @@ example : NonintegralJ.certificate.rational.jIntegral.map Subtype.val = some fal
 example : Partial37.certificate.arithmetic.minimalModel.isNone = true := rfl
 
 example : BoundedTorsion.certificate.torsion.divisor.isSome = true := rfl
+example : BoundedTorsion.certificate.torsion.divisor.map
+    (fun fact => (fact.evidence.firstPrime, fact.evidence.secondPrime)) = some (3, 5) := rfl
 example : BoundedTorsion.certificate.torsion.cardinality.isNone = true := rfl
 example : TrivialTorsion.certificate.torsion.cardinality.map Subtype.val = some 1 := rfl
