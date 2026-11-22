@@ -13,6 +13,31 @@ example (m : ArithmeticModularRealization Curve37.curve) :
     analyticOrderAt m.formL 1 = 1 :=
   Curve37.catalogue_analytic_rank m
 
+example :
+    Curve11.catalogue_rank =
+      Curve11.certificate.analytic.rank.get Curve11.catalogue_rank_available :=
+  rfl
+
+namespace ImportedRank
+
+def curve := Curve37.curve
+
+instance : (curve.baseChange ℚ).IsElliptic :=
+  inferInstanceAs ((Curve37.curve.baseChange ℚ).IsElliptic)
+
+def witness : EllipticWitness := { equation := curve, catalogueAnalyticRank := some 1 }
+
+def certificate : EllipticCertificate curve := Curve37.certificate
+
+end ImportedRank
+
+-- A reused typed certificate can have a rank without a newly emitted analytic_rank declaration.
+run_cmd CertifyEC.certifyCatalogueRank `ImportedRank
+
+example (m : ArithmeticModularRealization ImportedRank.curve) :
+    analyticOrderAt m.formL 1 = 1 :=
+  ImportedRank.catalogue_analytic_rank m
+
 certify_ec RankWithNoPayload from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"rank":4,"analytic_rank":2}"#
 

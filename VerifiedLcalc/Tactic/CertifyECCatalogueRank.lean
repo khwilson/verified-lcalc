@@ -5,49 +5,48 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.ConditionalAnalyticRank
-public import VerifiedLcalc.Tactic.CertifyECCommon
+public import VerifiedLcalc.Tactic.CertifyECRecord
 public meta import Lean
 
-/-! # Attach the native analytic-rank reference value to a checked payload -/
+/-! # Compare an optional catalogue value with the typed analytic rank -/
 
 public meta section
 
 namespace VerifiedLcalc.CertifyEC
-open Lean Elab Command EllipticCurve Modularity
+open Lean Elab Command Modularity
 
-/-- Check a native catalogue value only against a previously proved analytic rank. -/
-def certifyCatalogueRank (base : Name) (central : Bool) : CommandElabM Unit := do
+/-- Bind a native analytic-rank field to the independently checked typed rank. -/
+def certifyCatalogueRank (base : Name) : CommandElabM Unit := do
   let some input ← optionalInput (base ++ `witness) `catalogueAnalyticRank | return
+  let certificate := rootIdent (base ++ `certificate)
+  let available ← liftTermElabM do
+    let projection ← Term.elabTerm (← `(($certificate).analytic.rank)) none
+    let value ← Lean.Meta.whnf projection
+    match value.getAppFn.constName? with
+    | some ``Option.some => pure true
+    | some ``Option.none => pure false
+    | _ => throwError "Expected a closed checked analytic rank option"
+  unless available do
+    logInfo m!"Unverified {base} analytic_rank: supply a complete checked analytic payload"
+    return
   let witness := rootIdent (base ++ `witness)
   let curve := rootIdent (base ++ `curve)
   let val := rootIdent (base ++ `claimed_analytic_rank)
   let fact := rootIdent (base ++ `catalogue_rank)
+  let hSome := rootIdent (base ++ `catalogue_rank_available)
   let hVal := rootIdent (base ++ `catalogue_rank_value_eq)
-  let hn := rootIdent (base ++ `nonsingular)
-  let r := rootIdent (base ++ `result)
-  let v := rootIdent (base ++ `minimality)
-  let hv := rootIdent (base ++ `minimality_valid)
-  let d := rootIdent (base ++ `localData)
-  let hd := rootIdent (base ++ `local_data_valid)
-  let hN := rootIdent (base ++ `conductor_valid)
-  let hw := rootIdent (base ++ `root_number_valid)
-  let hp := rootIdent (base ++ `payload_correct)
-  let hz := rootIdent (base ++ `excludes_zero)
-  let rank ← if central then `(0) else `(1)
   emit (← `(def $val : Nat := $input))
   checked (base ++ `catalogue_rank_input_eq)
     (← `(($witness).catalogueAnalyticRank = some $val)) (← `(by rfl))
-  checked (base ++ `catalogue_rank_value_eq)
-    (← `($val = $rank)) (← `(by decide +kernel))
-  let rankProof ← if central then
-    `(ConditionalAnalyticRank.central $r $hn $v $hv $d $hd $hN $hw $hp $hz)
-    else `(ConditionalAnalyticRank.derivative $r $hn $v $hv $d $hd $hN $hw $hp $hz)
+  checked (base ++ `catalogue_rank_available)
+    (← `((($certificate).analytic.rank).isSome = true)) (← `(by rfl))
   emit (← `(def $fact : ConditionalAnalyticRank $curve :=
-    ⟨$val, fun m => by rw [$hVal:term]; exact $rankProof m⟩))
+    (($certificate).analytic.rank).get $hSome))
+  checked (base ++ `catalogue_rank_value_eq)
+    (← `(($fact).val = $val)) (← `(by decide +kernel))
   checked (base ++ `catalogue_analytic_rank)
     (← `(∀ (m : ArithmeticModularRealization $curve),
       analyticOrderAt m.formL (1 : ℂ) = $val))
-    (← `(($fact).correct))
+    (← `(fun m => by rw [← $hVal:term]; exact ($fact).correct m))
 
 end VerifiedLcalc.CertifyEC
