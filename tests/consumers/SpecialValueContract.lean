@@ -1,4 +1,4 @@
-import VerifiedLcalc.Certificates
+import VerifiedLcalc.Certificates.SpecialValue
 import Lean
 
 /-! # Check the special-value contract import -/
@@ -13,4 +13,4 @@ run_cmd do
   for backend in [`VerifiedLcalc.Certification.SpecialValue,
       `VerifiedLcalc.Tactic.CertifyEC] do
     if imported.contains backend then
-      throwError "Contract umbrella imported backend module {backend}"
+      throwError "Special-value contract imported backend module {backend}"

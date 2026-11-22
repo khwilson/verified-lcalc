@@ -5,7 +5,6 @@ public import VerifiedLcalc.Certificates.IntegralPointCount
 public import VerifiedLcalc.Certificates.TorsionFacts
 public import VerifiedLcalc.Certificates.AlgebraicRank
 public import VerifiedLcalc.Certificates.Regulator
-public import VerifiedLcalc.Certificates.SpecialValue
 public import VerifiedLcalc.Certificates.Enclosures
 public import VerifiedLcalc.Certificates.PrecisionPolicy
 public import VerifiedLcalc.Certificates.Transcripts
