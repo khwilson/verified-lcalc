@@ -36,9 +36,10 @@ theorem evaluateDerivative_correct {e : (WeierstrassCurve ℤ)} {N M steps cutof
       cases hf : derivativeFiniteBounds (modelCoefficients e M)
           (alphaBounds N policy.precisionBits).1 (alphaBounds N policy.precisionBits).2
           policy.precisionBits steps cutoff with
-      | none => simp [ht,hf] at h
+      | none => simp [ht, hf] at h
       | some finite =>
-        simp [ht,hf] at h
-        cases h
+        have h' := h
+        simp [ht, hf] at h'
+        cases h'
         exact ⟨rfl,rfl,rfl,rfl,rfl,rfl,hn'.1,hn'.2.1,hn'.2.2,rfl,rfl,rfl,ht,hf,rfl⟩
 end VerifiedLcalc.EllipticCurve
