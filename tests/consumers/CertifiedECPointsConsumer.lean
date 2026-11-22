@@ -28,3 +28,7 @@ private def importedIndexedFamily :=
   DirectPoints.certificate.algebraic.independentPoints.get (by decide +kernel)
 
 example : LinearIndependent ℤ importedIndexedFamily.points := importedIndexedFamily.independent
+
+example : (DirectNumerics.certificate.analytic.central.get (by decide +kernel)).enclosure.isNone =
+    true := rfl
+example : DirectNumerics.certificate.analytic.rank.isNone = true := rfl

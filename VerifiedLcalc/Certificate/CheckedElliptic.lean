@@ -83,6 +83,19 @@ def IndependentPointFacts.points {curve : WeierstrassCurve ℤ}
     (i : Fin facts.indices.length) : (curve.baseChange ℚ).toAffine.Point :=
   source.rationalPoint ⟨facts.indices[i], facts.indicesValid _ (List.getElem_mem i.isLt)⟩
 
+/-- Positive exact orders aligned with the supplied rational point list. -/
+structure TorsionGeneratorOrderFacts {curve : WeierstrassCurve ℚ} [curve.IsElliptic]
+    (source : AffineMembership curve) where
+  /-- The order list in the same index order as the points. -/
+  orders : List ℕ
+  /-- There is one order for every checked point. -/
+  length_eq : orders.length = source.coordinates.length
+  /-- Each order is positive. -/
+  positive : ∀ n ∈ orders, 0 < n
+  /-- The actual additive order of each supplied coordinate point. -/
+  exactOrder : ∀ i : Fin source.coordinates.length,
+    addOrderOf (source.point i) = orders.get (Fin.cast length_eq.symm i)
+
 /-- Checked point lists, individual orders and algebraic lower bounds. -/
 structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
   /-- Membership on the supplied integral equation. -/
@@ -91,6 +104,9 @@ structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).
   generators : Option (AffineMembership (curve.baseChange ℚ)) := none
   /-- Membership for the supplied rational torsion generator coordinates. -/
   torsionGenerators : Option (AffineMembership (curve.baseChange ℚ)) := none
+  /-- Exact orders of the listed torsion generators, when supplied and checked. -/
+  torsionGeneratorOrders : Option (TorsionGeneratorOrderFacts
+    (torsionGenerators.getD (AffineMembership.empty (curve.baseChange ℚ)))) := none
   /-- The supplied indexed points checked for infinite order. -/
   infiniteOrderPoints : Option
     (List (InfiniteOrderPointFact (integralPoints.getD (AffineMembership.empty curve)))) := none

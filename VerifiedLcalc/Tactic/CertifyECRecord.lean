@@ -74,15 +74,28 @@ private def rankLowerBoundTerm (base : Name) : CommandElabM (TSyntax `term) := d
   let proof := rootIdent theoremName
   `(some ⟨$count, $proof⟩)
 
+private def torsionGeneratorOrderTerm (base : Name) : CommandElabM (TSyntax `term) := do
+  let child := base ++ `torsion_generators
+  unless (← getEnv).contains (child ++ `exact_order) do return ← `(none)
+  let orders := rootIdent (child ++ `orders)
+  let length := rootIdent (child ++ `orders_length)
+  let support := rootIdent (child ++ `orders_in_range)
+  let exactOrder := rootIdent (child ++ `exact_order)
+  `(some ⟨$orders, $length, by
+    intro n h
+    exact (of_decide_eq_true (List.all_eq_true.mp $support n h)).1, $exactOrder⟩)
+
 private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let integral ← integralMembershipTerm base
   let generators ← rationalMembershipTerm (base ++ `generators)
   let torsionGenerators ← rationalMembershipTerm (base ++ `torsion_generators)
+  let torsionOrders ← torsionGeneratorOrderTerm base
   let infinite ← infiniteOrderFactsTerm base
   let independent ← independenceFactsTerm base
   let lowerBound ← rankLowerBoundTerm base
   `({ integralPoints := $integral, generators := $generators,
-      torsionGenerators := $torsionGenerators, infiniteOrderPoints := $infinite,
+      torsionGenerators := $torsionGenerators, torsionGeneratorOrders := $torsionOrders,
+      infiniteOrderPoints := $infinite,
       independentPoints := $independent, rankLowerBound := $lowerBound })
 
 private def torsionFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
@@ -96,9 +109,11 @@ private def torsionFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   else `(none)
   let exactName := base ++ `torsion
   let exactCardinality ← if (← getEnv).contains exactName then do
-    let n ← if (← getEnv).contains (base ++ `claimed_torsion) then
-      `($(rootIdent (base ++ `claimed_torsion)))
-    else `(1)
+    let value ← liftTermElabM do
+      let type ← inferType (mkConst exactName)
+      let some (_, _, value) := type.eq? | throwError "Expected an exact torsion cardinality"
+      pure value
+    let n ← literalSyntax value
     `(some ⟨$n, $(rootIdent exactName)⟩)
   else `(none)
   `({ divisor := some ⟨($evidence).bound, $valid, $consistent⟩,

@@ -349,7 +349,7 @@ run_cmd do
     `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
     `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData]
   let analytic := #[`centralResult, `derivativeResult]
-  let torsion := #[`torsionBound, `torsion]
+  let torsion := #[`torsionBound, `torsion, `torsionGeneratorOrders]
   let tracked := equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion
   for field in fields do
     unless tracked.contains field do

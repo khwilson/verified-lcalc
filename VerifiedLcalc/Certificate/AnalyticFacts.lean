@@ -23,6 +23,18 @@ namespace VerifiedLcalc
 
 open EllipticCurve Modularity Certification
 
+/-- The central box encloses the real part of the actual central value. -/
+structure CentralCurveEnclosure (curve : WeierstrassCurve ℤ) (r : CentralResult) : Type where
+  /-- Containment for an explicit arithmetic realization. -/
+  contains : ∀ m : ArithmeticModularRealization curve,
+    r.box.Contains (Complex.ofReal (m.formL 1).re)
+
+/-- The scaled first-derivative bounds enclose the actual raw derivative's real part. -/
+structure DerivativeCurveEnclosure (curve : WeierstrassCurve ℤ) (r : DerivativeResult) : Type where
+  /-- Containment after scaling the normalized integral enclosure. -/
+  contains : ∀ m : ArithmeticModularRealization curve,
+    r.realDerivativeBounds.Contains (deriv m.formL 1).re
+
 /-- A central enclosure payload verified for this integral equation. -/
 structure CentralNumericalFact (curve : WeierstrassCurve ℤ) where
   /-- The checked evaluator output. -/
@@ -33,6 +45,8 @@ structure CentralNumericalFact (curve : WeierstrassCurve ℤ) where
   payload : CentralPayloadCorrect result
   /-- The enclosure excludes zero. -/
   excludes_zero : result.box.excludesZero = true
+  /-- Actual scalar containment when arithmetic evidence is available. -/
+  enclosure : Option (CentralCurveEnclosure curve result) := none
 
 /-- A first-derivative enclosure payload verified for this integral equation. -/
 structure DerivativeNumericalFact (curve : WeierstrassCurve ℤ) where
@@ -44,6 +58,8 @@ structure DerivativeNumericalFact (curve : WeierstrassCurve ℤ) where
   payload : DerivativePayloadCorrect result
   /-- The enclosure excludes zero. -/
   excludes_zero : result.box.excludesZero = true
+  /-- Actual scalar containment when arithmetic evidence is available. -/
+  enclosure : Option (DerivativeCurveEnclosure curve result) := none
 
 /-- An analytic rank that can be instantiated with any arithmetic realization. -/
 structure ConditionalAnalyticRank (curve : WeierstrassCurve ℤ) where
@@ -109,7 +125,7 @@ theorem CentralNumericalFact.rank_with_realization {curve : WeierstrassCurve ℤ
     (hN : wildLevelFast curve d = fact.result.conductor)
     (hw : wildSignFast curve d = fact.result.rootNumber) (m : ArithmeticModularRealization curve) :
     analyticOrderAt m.formL (1 : ℂ) = 0 := by
-  rcases fact with ⟨r, hcurve, hp, hz⟩
+  rcases fact with ⟨r, hcurve, hp, hz, _⟩
   subst curve
   obtain ⟨hlevel, hsign⟩ := realization_matching m hn v hv d hd hN hw
   apply certifyCentralWithRealization r m.toModularRealization hlevel hsign hp _ hz
@@ -123,10 +139,40 @@ theorem DerivativeNumericalFact.rank_with_realization {curve : WeierstrassCurve 
     (hN : wildLevelFast curve d = fact.result.conductor)
     (hw : wildSignFast curve d = -1) (m : ArithmeticModularRealization curve) :
     analyticOrderAt m.formL (1 : ℂ) = 1 := by
-  rcases fact with ⟨r, hcurve, hp, hz⟩
+  rcases fact with ⟨r, hcurve, hp, hz, _⟩
   subst curve
   obtain ⟨hlevel, hsign⟩ := realization_matching m hn v hv d hd hN hw
   apply m.toModularRealization.analyticOrder_one_of_derivativePayload r hp hlevel.symm hsign _ hz
+  rw [hp.2.2.2.1]
+  exact minimal_prefix r.equation hn (minimal_of_witness r.equation v hv) r.termLimit
+
+/-- The checked central payload and arithmetic evidence yield a true central enclosure. -/
+theorem CentralNumericalFact.contains_with_realization {curve : WeierstrassCurve ℤ}
+    (fact : CentralNumericalFact curve) (hn : curve.Δ ≠ 0)
+    (v : MinimalityWitness) (hv : v.Valid curve) (d : WildData) (hd : d.Valid curve)
+    (hN : wildLevelFast curve d = fact.result.conductor)
+    (hw : wildSignFast curve d = fact.result.rootNumber) (m : ArithmeticModularRealization curve) :
+    fact.result.box.Contains (Complex.ofReal (m.formL 1).re) := by
+  rcases fact with ⟨r, hcurve, hp, _, _⟩
+  subst curve
+  obtain ⟨hlevel, hsign⟩ := realization_matching m hn v hv d hd hN hw
+  apply centralPayload_sound hp
+    (m.toModularRealization.centralSeriesEvidence_of_coefficients
+      r hp rfl hlevel.symm hsign.symm _)
+  rw [hp.2.2.1]
+  exact minimal_prefix r.equation hn (minimal_of_witness r.equation v hv) r.termLimit
+
+/-- The checked scaled interval encloses the first derivative for an actual realization. -/
+theorem DerivativeNumericalFact.contains_with_realization {curve : WeierstrassCurve ℤ}
+    (fact : DerivativeNumericalFact curve) (hn : curve.Δ ≠ 0)
+    (v : MinimalityWitness) (hv : v.Valid curve) (d : WildData) (hd : d.Valid curve)
+    (hN : wildLevelFast curve d = fact.result.conductor)
+    (hw : wildSignFast curve d = -1) (m : ArithmeticModularRealization curve) :
+    fact.result.realDerivativeBounds.Contains (deriv m.formL 1).re := by
+  rcases fact with ⟨r, hcurve, hp, _, _⟩
+  subst curve
+  obtain ⟨hlevel, hsign⟩ := realization_matching m hn v hv d hd hN hw
+  apply m.toModularRealization.realDerivativeBounds_contains r hp hlevel.symm hsign
   rw [hp.2.2.2.1]
   exact minimal_prefix r.equation hn (minimal_of_witness r.equation v hv) r.termLimit
 

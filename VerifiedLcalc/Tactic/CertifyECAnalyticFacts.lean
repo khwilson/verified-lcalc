@@ -28,8 +28,14 @@ def analyticFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `ter
   let hp := rootIdent (base ++ `payload_correct)
   let hz := rootIdent (base ++ `excludes_zero)
   let central := result.type.isConstOf ``CentralResult
+  let numeric ← if central then
+    `(({ result := $resultId, result_curve := $hcurve, payload := $hp, excludes_zero := $hz } :
+      CentralNumericalFact $curve))
+  else
+    `(({ result := $resultId, result_curve := $hcurve, payload := $hp, excludes_zero := $hz } :
+      DerivativeNumericalFact $curve))
   let hNName := base ++ `conductor_valid
-  let rank ← if env.contains hNName then do
+  let (rank, enclosure) ← if env.contains hNName then do
     let hn := rootIdent (base ++ `nonsingular)
     let v := rootIdent (base ++ `minimality)
     let hv := rootIdent (base ++ `minimality_valid)
@@ -38,17 +44,22 @@ def analyticFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `ter
     let hN := rootIdent hNName
     let hw := rootIdent (base ++ `root_number_valid)
     if central then
-      `(some ⟨0, fun m => CentralNumericalFact.rank_with_realization
-        (⟨$resultId, $hcurve, $hp, $hz⟩ : CentralNumericalFact $curve)
-        $hn $v $hv $d $hd $hN $hw m⟩)
+      let rank ← `(some ⟨0, fun m => CentralNumericalFact.rank_with_realization
+        $numeric $hn $v $hv $d $hd $hN $hw m⟩)
+      let enclosure ← `(some ⟨fun m => CentralNumericalFact.contains_with_realization
+        $numeric $hn $v $hv $d $hd $hN $hw m⟩)
+      pure (rank, enclosure)
     else
-      `(some ⟨1, fun m => DerivativeNumericalFact.rank_with_realization
-        (⟨$resultId, $hcurve, $hp, $hz⟩ : DerivativeNumericalFact $curve)
-        $hn $v $hv $d $hd $hN $hw m⟩)
-  else `(none)
+      let rank ← `(some ⟨1, fun m => DerivativeNumericalFact.rank_with_realization
+        $numeric $hn $v $hv $d $hd $hN $hw m⟩)
+      let enclosure ← `(some ⟨fun m => DerivativeNumericalFact.contains_with_realization
+        $numeric $hn $v $hv $d $hd $hN $hw m⟩)
+      pure (rank, enclosure)
+  else pure (← `(none), ← `(none))
+  let numeric ← `(some { $numeric with enclosure := $enclosure })
   if central then
-    `(({ central := some ⟨$resultId, $hcurve, $hp, $hz⟩, rank := $rank } : AnalyticFacts $curve))
+    `(({ central := $numeric, rank := $rank } : AnalyticFacts $curve))
   else
-    `(({ derivative := some ⟨$resultId, $hcurve, $hp, $hz⟩, rank := $rank } : AnalyticFacts $curve))
+    `(({ derivative := $numeric, rank := $rank } : AnalyticFacts $curve))
 
 end VerifiedLcalc.CertifyEC
