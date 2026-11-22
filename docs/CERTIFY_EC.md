@@ -117,8 +117,16 @@ first field to the current command.
 ## Use the checked certificate
 
 Each successful command exports `Name.certificate` indexed by its integral
-Weierstrass equation. Its `equationFacts` and `rational` fields hold exact
-invariants. The `algebraic` field holds membership of supplied points, complete
+Weierstrass equation. Its public data contracts live in
+`VerifiedLcalc/Certificates/`; the import-only umbrella is
+`VerifiedLcalc.Certificates`. These modules use Mathlib and TauCeti objects where
+available, with local definitions limited to specific certificate encodings
+that upstream does not provide. Proof-only dependencies remain ordinary imports,
+and public re-exports are reserved for declarations in signatures and the
+intentional umbrella API. The compiler-backed import boundary is checked by
+[`tests/consumers/CertificateContracts.lean`](../tests/consumers/CertificateContracts.lean).
+Its `equationFacts` and `rational` fields hold exact invariants. The `algebraic`
+field holds membership of supplied points, complete
 integral y-fibers above specified x-coordinates, the complete integral-point
 set when exhaustive abscissa support is supplied, individual point orders, an
 independent family, and proved rank bounds for the actual rational point group.
