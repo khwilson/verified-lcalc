@@ -4,11 +4,11 @@ public import Std
 public import Init.Data.Rat
 public import VerifiedLcalc.Certificates.Enclosures
 
-@[expose] public section
-
 /-! A conservative rank search on exact rational rectangles. No floating point
 or tolerance test is used. A rectangle containing zero is inconclusive unless
 it is the singleton zero. -/
+
+@[expose] public section
 namespace VerifiedLcalc
 
 /-- Finite evidence for the first nonzero derivative: all earlier boxes are

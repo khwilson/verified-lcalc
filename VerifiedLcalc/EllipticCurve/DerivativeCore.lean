@@ -2,6 +2,9 @@ module
 public import VerifiedLcalc.EllipticCurve.CentralCore
 public import VerifiedLcalc.EllipticCurve.DerivativeDefinitions
 public import VerifiedLcalc.Certificates.NumericalContracts
+
+/-! # First-derivative numerical evaluator -/
+
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
 open Numerics

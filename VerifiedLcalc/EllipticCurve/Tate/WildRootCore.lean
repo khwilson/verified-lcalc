@@ -9,6 +9,9 @@ module
 public import VerifiedLcalc.EllipticCurve.Tate.WildTateCore
 public import VerifiedLcalc.Certificates.Transcripts
 public import Mathlib.NumberTheory.LegendreSymbol.ZModChar
+
+/-! # Wild local root-number transcript arithmetic -/
+
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
 

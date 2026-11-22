@@ -1,6 +1,9 @@
 module
 public import VerifiedLcalc.Numerics.RationalExpCore
 public import VerifiedLcalc.Certificates.Enclosures
+
+/-! # Exact rational interval operations -/
+
 @[expose] public section
 namespace VerifiedLcalc.Numerics
 open Inclusion.IntervalDyadicReal

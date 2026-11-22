@@ -3,6 +3,8 @@ module
 public import VerifiedLcalc.Certificates.Enclosures
 public import VerifiedLcalc.Upstream.LedvinkaExponentialCore
 
+/-! # Exact rational enclosures for the exponential -/
+
 @[expose] public section
 
 namespace VerifiedLcalc.Numerics

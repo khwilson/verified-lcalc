@@ -4,6 +4,8 @@ public import VerifiedLcalc.Certificates.NumericalData
 public import VerifiedLcalc.EllipticCurve.CentralDefinitions
 public import VerifiedLcalc.Certificates.NumericalContracts
 
+/-! # Central-value numerical evaluator -/
+
 @[expose] public section
 
 namespace VerifiedLcalc.EllipticCurve

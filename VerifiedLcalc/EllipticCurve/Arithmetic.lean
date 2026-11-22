@@ -5,6 +5,8 @@ public import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCountOdd
 public import Mathlib.Data.ZMod.Basic
 public import Mathlib.Data.Nat.Prime.Defs
 
+/-! # Finite point counts and Frobenius traces -/
+
 @[expose] public section
 
 namespace VerifiedLcalc.EllipticCurve

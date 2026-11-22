@@ -3,6 +3,8 @@ module
 public import VerifiedLcalc.EllipticCurve.CoefficientCore
 public import VerifiedLcalc.Certificates.Transcripts
 
+/-! # Reduction classification from checked transcripts -/
+
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
 
