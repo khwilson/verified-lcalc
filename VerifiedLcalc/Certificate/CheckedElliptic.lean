@@ -8,6 +8,7 @@ public import VerifiedLcalc.Certificate.ArithmeticFacts
 public import VerifiedLcalc.Certificates.TorsionFacts
 public import VerifiedLcalc.Certification.AbcQuality
 public import VerifiedLcalc.Certificate.AnalyticFacts
+public import VerifiedLcalc.Certificates.Regulator
 public import VerifiedLcalc.Certificates.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.PointIndependence
 public import Mathlib.GroupTheory.Torsion
@@ -170,6 +171,8 @@ structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).
   /-- An exact algebraic Mordell–Weil rank, when the checked interval is a singleton. -/
   rank : Option { n : ℕ //
     Module.finrank ℤ (curve.baseChange ℚ).toAffine.Point = n } := none
+  /-- A stored regulator enclosure checked from an exact algebraic rank of zero. -/
+  regulator : Option (RegulatorFacts (curve.baseChange ℚ)) := none
 
 /-- The family-indexed certificate exported by the verification command. -/
 structure EllipticCertificate (curve : WeierstrassCurve ℤ)

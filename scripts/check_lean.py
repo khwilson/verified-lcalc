@@ -16,6 +16,7 @@ AUDITS = (
     "AuditGeneralModularity.lean",
     "AuditDerivative.lean",
     "AuditAssumptions.lean",
+    "AuditLowRankBSD.lean",
     "AuditIntegration.lean",
     "AuditIntervalComponents.lean",
     "tests/VerifiedLcalcTests/Fixtures/Cubic.lean",
@@ -96,6 +97,8 @@ def main() -> None:
         "tests/consumers/TorsionFacts.lean",
         "tests/consumers/TorsionBoundCompatibility.lean",
         "tests/consumers/MordellWeilRank.lean",
+        "tests/consumers/LowRankBSD.lean",
+        "tests/consumers/LowRankBSDDefaultAbsent.lean",
         "tests/consumers/CompleteIntegralPoints.lean",
         "tests/consumers/CertificateCompatibility.lean",
     ):

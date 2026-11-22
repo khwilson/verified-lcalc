@@ -14,6 +14,92 @@ theorem imported_complete_integer_count : Nat.card Checked.curve.integralPoints 
   (Checked.certificate.algebraic.completeIntegralPoints.get (by decide +kernel)).integralPoints_card
 
 example : Checked.certificate.algebraic.completeIntegralPoints.isSome = true := by rfl
+example : Checked.certificate.algebraic.regulator.isSome = true := by rfl
+example :
+    (Checked.certificate.algebraic.regulator.get (by decide +kernel)).exact_value.isSome = true :=
+  rfl
+
+certify_ec SageRealLiteralRegulator from_json_string
+  r#"{
+    "ainvs":[0,0,1,0,-7],
+    "regulator":{"__RealLiteral__":0,"data":"1.000000000000000000000","prec":97}
+  }"#
+  with_proofs proofs
+
+example : SageRealLiteralRegulator.certificate.algebraic.regulator.isSome = true := by rfl
+
+theorem imported_regulator_value_is_one :
+    ((Checked.certificate.algebraic.regulator.get (by decide +kernel)).exact_value.get
+      (by decide +kernel)).val = 1 := rfl
+
+theorem imported_regulator_eq_one :
+    (Checked.curve.baseChange ℚ).toAffine.regulator = 1 := by
+  let value := (Checked.certificate.algebraic.regulator.get (by decide +kernel)).exact_value.get
+    (by decide +kernel)
+  calc
+    (Checked.curve.baseChange ℚ).toAffine.regulator = value.val := value.property
+    _ = 1 := rfl
+
+theorem imported_regulator_within_error :
+    |(Checked.curve.baseChange ℚ).toAffine.regulator -
+      ((Checked.certificate.algebraic.regulator.get (by decide +kernel)).reported : ℝ)| ≤
+      ((Checked.certificate.algebraic.regulator.get (by decide +kernel)).error : ℝ) :=
+  (Checked.certificate.algebraic.regulator.get (by decide +kernel)).within_error
+
+certify_ec ExactRegulator from
+  { equation := curve, regulator := some ⟨1, none⟩ }
+  with_proofs proofs
+
+example : ExactRegulator.certificate.algebraic.regulator.isSome = true := by rfl
+example : ExactRegulator.claimed_regulator.error = none := by decide +kernel
+
+certify_ec ApproxRegulator from
+  { equation := curve, regulator := some ⟨999 / 1000, some (1 / 1000)⟩ }
+  with_proofs proofs
+
+example : ApproxRegulator.certificate.algebraic.regulator.isSome = true := by rfl
+
+certify_ec TypedApproxRegulator from
+  { equation := curve, regulator := some ⟨999 / 1000, some (1 / 1000)⟩ }
+  with_proofs proofs
+
+example : TypedApproxRegulator.certificate.algebraic.regulator.isSome = true := by rfl
+
+certify_ec NoRankForRegulator from
+  { equation := curve, regulator := some ⟨1, none⟩ }
+
+example : NoRankForRegulator.certificate.algebraic.regulator.isNone = true := by rfl
+
+def partialProofs : IntegralCurveProofs curve :=
+  { proofs with algebraicRank := some ((proofs.algebraicRank.get (by decide +kernel)).weaken
+      0 1 (by decide +kernel) (by decide +kernel)) }
+
+certify_ec PartialRankForRegulator from
+  { equation := curve, regulator := some ⟨1, none⟩ }
+  with_proofs partialProofs
+
+example : PartialRankForRegulator.certificate.algebraic.rank.isNone = true := by rfl
+example : PartialRankForRegulator.certificate.algebraic.regulator.isNone = true := by rfl
+
+private meta def expectRegulatorRejected (name : Name) (command : Syntax) : CommandElabM Unit := do
+  let messages := (← get).messages
+  let failed ← try
+    elabCommand command
+    pure (← get).messages.hasErrors
+  catch _ => pure true
+  set { (← get) with messages }
+  unless failed do throwError "Incorrect rank-zero regulator report accepted: {name}"
+  for suffix in [`curve, `certificate, `regulator_value_valid, `regulator_eq_one] do
+    if (← getEnv).contains (name ++ suffix) then
+      throwError "Rejected regulator report leaked {name ++ suffix}"
+
+run_cmd do
+  expectRegulatorRejected `DisjointRegulator (← `(certify_ec DisjointRegulator from
+    { equation := curve, regulator := some ⟨99 / 100, some 1 / 1000⟩ }
+    with_proofs proofs))
+  expectRegulatorRejected `NegativeRegulatorError (← `(certify_ec NegativeRegulatorError from
+    { equation := curve, regulator := some ⟨1, some (-1)⟩ }
+    with_proofs proofs))
 example : Checked.certificate.algebraic.integralYFibers.isSome = true := by rfl
 example : Checked.certificate.algebraic.rank.isSome = true := by rfl
 
@@ -83,6 +169,8 @@ run_cmd do
   expectCountRejected `UndersizedSeedFiber (← `(certify_ec UndersizedSeedFiber from
     { equation := curve, integralFiberRoots := some [(3, 4)], numIntegralPoints := some 1 }))
   for fact in [``imported_complete_integer_count, ``Checked.certificate, ``Checked.algebraic_rank,
+      ``Checked.regulator_eq_one, ``Checked.regulator_within_error,
+      ``imported_regulator_eq_one, ``imported_regulator_within_error,
       ``natCard_rational_points] do
     for axiomName in ← liftTermElabM (Lean.collectAxioms fact) do
       unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
