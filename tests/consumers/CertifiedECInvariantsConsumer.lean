@@ -52,13 +52,29 @@ theorem imported_aggregate_conductor
     model.level = 37 :=
   (Invariants37.certificate.arithmetic.modular.conductor.get (by decide +kernel)).property model
 
+/-- The finite local data carry only the fields covered by their finite proof. -/
+theorem imported_aggregate_finite_local_row (row : VerifiedLcalc.LocalReductionClaim)
+    (h : row ∈ ((Invariants37.certificate.arithmetic.minimalModel.get
+      (by decide +kernel)).localRows.get (by decide +kernel)).val) :
+    row.conductorValuation = none ∧ row.Spec Invariants37.curve :=
+  ((Invariants37.certificate.arithmetic.minimalModel.get
+    (by decide +kernel)).localRows.get (by decide +kernel)).property row h
+
+/-- The supplied local exponent is accessible through the conditional family. -/
+theorem imported_aggregate_conductor_valuation
+    (model : VerifiedLcalc.Modularity.ArithmeticModularRealization Invariants37.curve) :
+    model.level.factorization 37 = 1 :=
+  ((Invariants37.certificate.arithmetic.modular.conductorValuations.get
+    (by decide +kernel)).property model (37, 1) (by decide +kernel)).2
+
 open Lean Elab Command in
 run_cmd do
   let modularity := ``VerifiedLcalc.Assumptions.ellipticModularity
   let conductorAxioms ← liftTermElabM <| Lean.collectAxioms ``Invariants37.conductor
   unless conductorAxioms.contains modularity do
     throwError "The mixed certificate lacks its expected modularity-dependent conductor"
-  for fact in [``imported_aggregate_discriminant, ``imported_aggregate_conductor] do
+  for fact in [``imported_aggregate_discriminant, ``imported_aggregate_conductor,
+      ``imported_aggregate_conductor_valuation, ``imported_aggregate_finite_local_row] do
     let finiteAxioms ← liftTermElabM <| Lean.collectAxioms fact
     for name in finiteAxioms do
       unless [``propext, ``Classical.choice, ``Quot.sound].contains name do

@@ -78,7 +78,11 @@ private def minimalModelFactsTerm (base : Name) (curve : Ident) : CommandElabM (
   let localRows ← if env.contains (base ++ `local_invariants) then
     let values := rootIdent (base ++ `claimed_local_invariants)
     let hrows := rootIdent (base ++ `local_invariants)
-    `(some ⟨($values).map (fun row => { row with conductorValuation := none }), by
+    `(some ⟨($values).map (fun row => ({
+        prime := row.prime
+        discriminantValuation := row.discriminantValuation
+        jDenominatorValuation := row.jDenominatorValuation
+        reductionType := row.reductionType } : LocalReductionClaim)), by
       intro row hr
       obtain ⟨input, hinput, hEq⟩ := List.mem_map.mp hr
       subst row
