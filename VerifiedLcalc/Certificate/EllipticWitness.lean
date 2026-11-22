@@ -1,6 +1,7 @@
 module
 
 public import VerifiedLcalc.Certificate.IntegralXSupport
+public import VerifiedLcalc.Certificates.CurveWitness
 public import VerifiedLcalc.Certificates.TorsionFacts
 public import VerifiedLcalc.Certificates.AlgebraicRank
 public import VerifiedLcalc.Certificates.Regulator
@@ -19,30 +20,6 @@ Optional claims and arithmetic witnesses for the `certify_ec` command.
 namespace VerifiedLcalc
 open EllipticCurve
 
-/-- An integral or scalar-valued discriminant together with its curve and exact proof. -/
-structure DiscriminantWitness (R : Type*) [CommRing R] where
-  /-- The equation whose discriminant is certified. -/
-  curve : WeierstrassCurve R
-  /-- The value of the discriminant. -/
-  discriminant : R
-  /-- The discriminant of the supplied equation equals the supplied value. -/
-  discriminant_eq : curve.Δ = discriminant
-
-/-- Optional proved facts about one fixed Weierstrass equation. -/
-structure EllipticProofs {R : Type*} [CommRing R] (curve : WeierstrassCurve R) where
-  /-- A discriminant value with a proof about the indexed equation. -/
-  discriminant : Option { d : R // curve.Δ = d } := none
-  /-- The ordered tuple of b₂, b₄, b₆ and b₈ with a proof about the equation. -/
-  bInvariants : Option { b : R × R × R × R //
-    (curve.b₂, curve.b₄, curve.b₆, curve.b₈) = b } := none
-  /-- The ordered pair of c₄ and c₆ with a proof about the equation. -/
-  cInvariants : Option { c : R × R // (curve.c₄, curve.c₆) = c } := none
-
-/-- Attach a standalone discriminant witness to its own equation. -/
-def DiscriminantWitness.toProofs {R : Type*} [CommRing R] (w : DiscriminantWitness R) :
-    EllipticProofs w.curve :=
-  { discriminant := some ⟨w.discriminant, w.discriminant_eq⟩ }
-
 /-- Optional claims from an LMFDB local row. The reduction codes are 0 for
 additive, 1 for split multiplicative and -1 for nonsplit multiplicative. -/
 structure LocalReductionClaim where
@@ -60,16 +37,6 @@ structure LocalReductionClaim where
   tamagawaNumber : Option Nat := none
   /-- Claimed PARI Kodaira code. Additive codes request a family check. -/
   kodairaSymbol : Option Int := none
-  deriving Repr, DecidableEq
-
-/-- A reported abc quality and evidence for its absolute error bound. -/
-structure AbcQualityClaim where
-  /-- Exact rational interpretation of the reported value. -/
-  reported : Rat
-  /-- Claimed maximum absolute error. -/
-  error : Rat
-  /-- All prime factors of the abc product, with multiplicity. -/
-  factors : List Nat
   deriving Repr, DecidableEq
 
 /-- A single oriented edge claim with an exact integral target equation. -/

@@ -9,6 +9,7 @@ public import VerifiedLcalc.Certification.StoredInvariants
 public import VerifiedLcalc.Numerics.RealInterval
 public import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Log
 public import TauCeti.AlgebraicGeometry.EllipticCurve.AbcQuality
+public import VerifiedLcalc.Certificates.RationalInvariants
 
 /-!
 # Certified error bounds for elliptic-curve abc quality
@@ -109,5 +110,31 @@ theorem abc_quality_of_check (e : WeierstrassCurve ℤ) [(e.baseChange ℚ).IsEl
   rw [hrad] at hb
   rw [(e.baseChange ℚ).abcQuality_def hdefined, j_invariant_of_exact_formula e (abcJ e) rfl]
   simpa only [abcMaximum, abcProduct, Nat.cast_max] using hb
+
+/-- A successful backend check retains its Boolean audit and projects to the
+mathematical rational-invariant contract. -/
+structure CheckedAbcQualityFacts (e : WeierstrassCurve ℤ)
+    [(e.baseChange ℚ).IsElliptic] where
+  /-- The corresponding mathematical statement about TauCeti's quality. -/
+  facts : AbcQualityFacts e
+  /-- The checker result remains available to compatibility consumers. -/
+  valid : abcQualityValid e facts.claim = true
+
+/-- Convert checked transcript evidence into the public mathematical contract. -/
+def abcQualityFactsOfCheck (e : WeierstrassCurve ℤ) [(e.baseChange ℚ).IsElliptic]
+    (claim : AbcQualityClaim) (h : abcQualityValid e claim = true) :
+    CheckedAbcQualityFacts e := by
+  have hdefined := abc_quality_defined_of_check e claim h
+  have hfactor : claim.factors.prod =
+      let t := (e.baseChange ℚ).j / 1728
+      let c : ℤ := t.den
+      (t.num * (c - t.num) * c).natAbs := by
+    simp only [abcQualityValid, decide_eq_true_eq] at h
+    simpa [abcJ, abcProduct, j_invariant_of_exact_formula e (abcJ e) rfl] using h.2.2.1
+  have hprime : ∀ p ∈ claim.factors, p.Prime := by
+    simp only [abcQualityValid, decide_eq_true_eq] at h
+    exact fun p hp => (isPrime_correct p).mp (List.all_eq_true.mp h.2.2.2.1 p hp)
+  have herr := abc_quality_of_check e claim h hdefined
+  exact ⟨⟨claim, hdefined, hfactor, hprime, herr⟩, h⟩
 
 end VerifiedLcalc.Certification

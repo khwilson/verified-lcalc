@@ -26,9 +26,19 @@ construct or verify their evidence.
 | `MinimalityWitness`, `TateWitness`, `WildData` | `VerifiedLcalc.Certificates.Transcripts` | Finite arithmetic transcript data. Rechecking and geometric/local compatibility remain in the reduction and Tate cores. |
 | `CentralResult`, `DerivativeResult` | `VerifiedLcalc.Certificates.NumericalData` | Raw numerical outputs, including equation, normalization inputs, coefficient prefix, precision, integral/quadrature enclosure and tail. |
 | `CentralPayloadCorrect`, `DerivativePayloadCorrect` | `VerifiedLcalc.Certificates.NumericalContracts` | Exact predicates relating payloads to the specified central and first-derivative formulae. Evaluators and their correctness proofs remain in the existing implementation modules. |
+| `DiscriminantWitness`, `EllipticProofs` | `VerifiedLcalc.Certificates.CurveWitness` | Use Mathlib's `WeierstrassCurve` discriminant and invariant expressions, with equality proofs indexed by the supplied equation. |
+| `AbcQualityClaim` | `VerifiedLcalc.Certificates.CurveWitness` | Raw submitted rational report, error, and factor list; no checking algorithm is part of the record. |
+| `RationalInvariantFacts` | `VerifiedLcalc.Certificates.RationalInvariants` | Sign, rational j-invariant, and integer-localization predicate are stated directly for the integral equation or its rational base change. |
+| `AbcQualityFacts` | `VerifiedLcalc.Certificates.RationalInvariants` | Refers to TauCeti's `WeierstrassCurve.abcQuality`, exact reduced abc-product factorization, and prime factors. The checker-success boolean remains in the `Certification.CheckedAbcQualityFacts` backend companion because the exact error enclosure does not imply the backend's particular interval test succeeded. |
+| `AffineMembership`, `InfiniteOrderPointFact`, `IndependentPointFacts` | `VerifiedLcalc.Certificates.PointFacts` | Membership is the actual affine Weierstrass equation; rational points lift through TauCeti's `pointOfIntegralSolution`; infinite order and integer linear independence refer to those points. |
+| `TorsionGeneratorOrderFacts` | `VerifiedLcalc.Certificates.PointFacts` | Exact additive orders of the submitted points, indexed by Mathlib's `addOrderOf`. |
+| `GeneratorCountFacts` | `VerifiedLcalc.Certificates.PointFacts` | The claimed count equals the length of the supplied coordinate list; it makes no generation claim. |
+| `IntegralYFiberFacts` | `VerifiedLcalc.Certificates.PointFacts` | Each finite fiber is exactly the set of integer y-coordinates satisfying the supplied Weierstrass equation at its indexed x-coordinate. |
 
 `VerifiedLcalc.Certificate.IntegralXSupport` remains an import-only compatibility
 module. Existing singular import paths continue to expose migrated records for
 compatibility. `tests/consumers/CertificateContracts.lean` imports the plural
 umbrella, checks these public declarations, and rejects accidental imports of
 the corresponding checker and evaluator modules.
+`VerifiedLcalc.Certificate.EllipticWitness` reexports the moved curve witness
+declarations for existing import paths.
