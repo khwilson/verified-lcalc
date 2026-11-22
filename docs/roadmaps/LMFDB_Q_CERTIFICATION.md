@@ -52,11 +52,13 @@ methodology does not supply a Lean witness.
 
 ## Source review and upstream routing
 
-The project builds against Mathlib `3440367ed1804626334f13a3a534a9cbb3385a59`.
+The source review used the project's then-current Mathlib revision
+`3440367ed1804626334f13a3a534a9cbb3385a59`. See the [build guide](../BUILD.md)
+for the active dependency pins.
 The [public Mathlib master reduction file](https://github.com/leanprover-community/mathlib4/blob/a495318fed6482b3c90df686de5131b46a70fd5b/Mathlib/AlgebraicGeometry/EllipticCurve/Reduction.lean)
 was also checked for the reduction predicates. Both supply
 `WeierstrassCurve.IsMinimal`, the reduction classes, and the standard
-Weierstrass and affine point types. The current TauCeti public main inspected
+Weierstrass and affine point types. The TauCeti public main inspected
 here is [b608709](https://github.com/TauCetiProject/TauCeti/tree/b608709b45f23ccda55703d572b0adb1fdec30fd/TauCeti/AlgebraicGeometry/EllipticCurve).
 API names below refer to that source, while this project's vendored excerpts have
 their own pins. Reuse candidates require a compatibility and axiom audit

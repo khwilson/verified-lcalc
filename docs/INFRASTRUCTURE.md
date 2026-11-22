@@ -8,8 +8,8 @@ its limits; it does not claim that the entire analytic-rank backend exists.
 
 ## Integration completed in this workspace
 
-Selected TauCeti arithmetic proofs are now ported and kernel-checked against
-our existing mathlib pin. See
+Selected TauCeti arithmetic proofs were ported and kernel-checked against
+the Mathlib pin in use at the time. See
 [the port provenance](../VerifiedLcalc/Upstream/TauCeti/README.md) and
 [the integration status](INTEGRATION.md). The default library imports the
 axiom-free arithmetic adapter. The modularity-dependent evaluator interface
@@ -33,9 +33,9 @@ conditional only on the unchanged modularity axiom. See
 The earlier TauCeti findings below used the older local checkout. A fresh GitHub
 source inspection found substantially more reusable infrastructure at current
 commit `0642eae29e0a59ef798d04de325386445906e755` (2026-11-17).
-This revision uses our Lean version, `v4.36.0-rc2`, but a different mathlib
-revision, `048fffa1dbcd080d3058fab41d8c188168595c22`. It has not yet been
-added as a dependency or built/audited in this project.
+At the time, this revision used the project’s Lean version, `v4.36.0-rc2`,
+and Mathlib `048fffa1dbcd080d3058fab41d8c188168595c22`. The audit covered its
+source declarations.
 
 | Obligation | Available source theorem or infrastructure |
 | --- | --- |
@@ -94,10 +94,9 @@ Other relevant projects:
 The inspected local mathematical checkout is
 `../Igusa/memory/upstream/TauCeti`, clean at commit
 `d01c9825761c7e6168457c383458afa8668196a7` (2026-10-02), using Lean
-`v4.35.0-rc3`. Our project uses `v4.36.0-rc2`. The upstream `main/lean-toolchain`
-viewed on the web reports `v4.36.0-rc2`, but attempts to retrieve the current main
-commit/source tree failed; the mathematical findings below are scoped to the
-inspected local pin. The automation repositories under `../tauceti-framework`
+`v4.35.0-rc3`. This project then used `v4.36.0-rc2`. At that point the upstream
+`main/lean-toolchain` also reported `v4.36.0-rc2`. The findings below cover
+the inspected local pin. The automation repositories under `../tauceti-framework`
 are not the mathematical library.
 
 Useful files at the inspected pin:
@@ -127,15 +126,15 @@ transcendental expressions. This is a search result, not a claim about every
 current TauCeti theorem. The existence of a newform analytic-rank definition by
 itself does not supply the curve-to-newform connection or central value bounds.
 
-No TauCeti dependency has been added: blindly adding this older checkout would
-introduce a toolchain/mathlib mismatch. Before reusing it directly, choose a
-compatible immutable upstream pin and audit the selected modules' dependencies.
-No TauCeti proof source had been copied at that earlier audit stage; the selected ports described above were added subsequently.
+At that audit stage the older TauCeti checkout used a different Lean and
+Mathlib pair. The selected source ports were added later. The active compiler and
+Mathlib pins now match a published TauCeti revision, as recorded in the
+[build guide](BUILD.md).
 
 ## David Ledvinka: inclusion and dyadic intervals
 
-This work is already present in our pinned mathlib revision
-`3440367ed1804626334f13a3a534a9cbb3385a59`; no external package is needed.
+These modules are available in the current Mathlib dependency and were
+also present in the audited revision `3440367ed1804626334f13a3a534a9cbb3385a59`.
 Relevant authored modules:
 
 - `Mathlib/Tactic/Inclusion/Extension/Interval/Basic.lean`:
@@ -148,7 +147,7 @@ Relevant authored modules:
 - `.../IntervalDyadicReal/Tactic.lean`: the `dyadic_interval` tactic, including
   precision and binary-splitting options.
 
-[The pinned tactic source](https://github.com/leanprover-community/mathlib4/blob/3440367ed1804626334f13a3a534a9cbb3385a59/Mathlib/Tactic/Inclusion/Extension/IntervalDyadicReal/Tactic.lean)
+[The tactic source at the audited revision](https://github.com/leanprover-community/mathlib4/blob/3440367ed1804626334f13a3a534a9cbb3385a59/Mathlib/Tactic/Inclusion/Extension/IntervalDyadicReal/Tactic.lean)
 and its associated files explicitly attribute David Ledvinka. Git history also
 records his multiplication, absolute-value, power, and integer extensions.
 

@@ -1,9 +1,11 @@
 # Selected TauCeti ports
 
-This directory ports a small arithmetic dependency chain rather than adding
-TauCeti as a package and changing this project's mathlib pin. The proof bodies
-are checked against this project's Lean 4.36.0-rc2 / mathlib
-3440367ed1804626334f13a3a534a9cbb3385a59.
+This directory contains selected TauCeti source ports used by the library.
+The build pins Lean and Mathlib to the versions published by TauCeti
+`b7121f4d7408c1a323335f3547e857b0b547369a`. See the
+[build guide](../../../docs/BUILD.md) for the active pins and
+[PROVENANCE.json](PROVENANCE.json) for each port's original source revision
+and adaptations.
 
 Source repository: https://github.com/TauCetiProject/TauCeti
 
