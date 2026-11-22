@@ -25,9 +25,10 @@ is accepted.
 
 ## Local use
 
-This checkout uses Lean `v4.36.0-rc2` and the adjacent mathlib checkout at
-`3440367ed1804626334f13a3a534a9cbb3385a59`. See [BUILD.md](docs/BUILD.md) for pins
-and targeted cache instructions.
+Both Lake configurations use Lean `v4.37.0-rc1` and resolve Mathlib at
+`31ce06eaadf4a200c0e1407c5f10953cf606b8f8` from upstream Git. These versions
+match the published TauCeti pin. See [BUILD.md](docs/BUILD.md) for dependency
+and cache instructions.
 
 ```sh
 make certificates

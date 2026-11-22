@@ -11,8 +11,9 @@ The unmodified source's SHA-256 is
 It is licensed under Apache 2.0; its copyright/author header is preserved and
 `LICENSE` contains mathlib's license text.
 
-Local compatibility changes for our mathlib pin
-`3440367ed1804626334f13a3a534a9cbb3385a59` and Lean `v4.36.0-rc2`:
+The original port adapted this source to Mathlib
+`3440367ed1804626334f13a3a534a9cbb3385a59` and Lean `v4.36.0-rc2`.
+See the [build guide](../../docs/BUILD.md) for the current pins.
 
 - Moved the 17 executable definitions unchanged into
   `LedvinkaExponentialCore.lean` (using `Nat`/`Int` instead of notation).

@@ -1,37 +1,31 @@
 # Build and cache
 
-The workspace configuration uses `../mathlib4` to reuse its artifacts. Its
-reviewed revision is `3440367ed1804626334f13a3a534a9cbb3385a59`. Since a local
-path dependency does not lock its contents, verify that revision and local
-changes before treating a run as reproducible:
+Both Lake configurations resolve Mathlib from its upstream Git repository at
+`31ce06eaadf4a200c0e1407c5f10953cf606b8f8`. The committed
+`lake-manifest.json` locks the transitive dependencies, and `lean-toolchain`
+selects Lean `v4.37.0-rc1`. Lake manages the source checkout in
+`.lake/packages/mathlib`. These versions match
+[TauCeti's locked dependencies](https://github.com/TauCetiProject/TauCeti/blob/b7121f4d7408c1a323335f3547e857b0b547369a/lake-manifest.json)
+and
+[toolchain](https://github.com/TauCetiProject/TauCeti/blob/b7121f4d7408c1a323335f3547e857b0b547369a/lean-toolchain).
+The project continues to use the [selected TauCeti ports](../VerifiedLcalc/Upstream/TauCeti/README.md).
+
+Keep both Lake configurations, the manifest and the toolchain aligned when
+updating a dependency. Historical reports retain their recorded dependency
+revisions. A new benchmark records the actual Mathlib Git checkout selected by
+its Lake configuration.
+
+Fetch the targeted Mathlib cache before building proofs.
 
 ```sh
-git -C ../mathlib4 rev-parse HEAD
-git -C ../mathlib4 diff --exit-code
-```
-
-For a standalone project, replace the `[[require]]` block in `lakefile.toml` with:
-
-```toml
-[[require]]
-name = "mathlib"
-git = "https://github.com/leanprover-community/mathlib4.git"
-rev = "3440367ed1804626334f13a3a534a9cbb3385a59"
-```
-
-Then run `lake update`. Preserve the generated `lake-manifest.json`, which also
-pins transitive dependencies. The `lean-toolchain` file pins the compiler.
-
-Fetch targeted mathlib cache artifacts before building proofs:
-
-```sh
-MATHLIB_CACHE_DIR=/private/tmp/verified-lcalc-mathlib-cache lake exe cache get Mathlib.Analysis.Complex.Basic Mathlib.Analysis.Analytic.Order Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
+MATHLIB_CACHE_DIR="${TMPDIR:-/tmp}/verified-lcalc-mathlib-cache" lake exe cache get Mathlib.Analysis.Complex.Basic Mathlib.Analysis.Analytic.Order Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 lake build
 ```
 
-Use a writable cache directory; the sandbox cannot write the user's default
-`~/.cache/mathlib`. Cache misses for this mathlib development revision may still
-need source compilation. Do not start concurrent builds of shared dependencies.
+Use a writable cache directory. Fetch the modules needed by the intended build,
+following the import list in the [Lean CI workflow](../.github/workflows/lean.yml)
+for the full verification build. Missing cache artifacts require source compilation.
+Use one Lake build owner per dependency checkout.
 Integral curve inputs now use Mathlib's `WeierstrassCurve ℤ` directly, so the
 computation core imports its canonical basic-curve definition. Keep analytic
 proof imports out of standalone computation entry points where practical;
@@ -47,9 +41,7 @@ for request identity, proof obligations, and the distinction between importing
 trusted compiled artifacts and checking their source again.
 
 
-For the local certificate examples use `make certificates` (or
-`lake -f lakefile.certificates.lean build CertifiedCurves`). The alternative Lake
-configuration tracks JSON input files. For a standalone checkout, update its
-`require mathlib from "../mathlib4"` to the same pinned dependency as the main
-configuration, then preserve the resolved manifest. Retired generated batch
-modules are not required or imported by this build.
+For the local certificate examples use `make certificates` or
+`lake -f lakefile.certificates.lean build CertifiedCurves`. The alternative
+Lake configuration uses the same pinned Mathlib dependency and tracks JSON
+input files for the examples and test fixtures.
