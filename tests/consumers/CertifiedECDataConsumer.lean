@@ -1,6 +1,6 @@
 import CertifiedCurves.Data
 
--- Import and use the compiled arithmetic theorems without reading witness JSON.
+/-! # Reuse the compiled arithmetic certificates for 37.a1 -/
 theorem imported_ap_bad_prime : (Data37.curve.baseChange ℚ).LFunction 37 = -1 :=
   Data37.ap_correct 37 (-1) (by decide +kernel)
 
