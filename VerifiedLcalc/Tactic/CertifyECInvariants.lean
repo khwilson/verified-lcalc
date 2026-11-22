@@ -92,7 +92,7 @@ private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Un
   let pointOrder := base ++ `torsion_generators.exact_order
   unless trivial do
     unless (← getEnv).contains pointOrder do
-      logInfo m!"Unverified {base} cyclic torsion: supply an exact order for the first torsion point"
+      logInfo m!"Unverified {base} cyclic torsion: supply the exact order of the first point"
       return
     let orders := rootIdent (base ++ `torsion_generators.orders)
     let hasGeneratorOrder ← liftTermElabM do
@@ -122,7 +122,8 @@ private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Un
     let hf := rootIdent (base ++ `torsion_structure_claim_valid)
     checked (base ++ `torsion_structure)
       (← `($factors = (if $n = 1 then [] else [$n]) ∧
-        ∃ e : ZMod $n ≃+ $torsionType, (e 1 : (($curve).baseChange ℚ).toAffine.Point) = $point))
+        ∃ e : ZMod $n ≃+ $torsionType,
+          (e 1 : (($curve).baseChange ℚ).toAffine.Point) = $point))
       (← `(⟨$hf, exists_torsion_addEquiv_of_order_dvd ($bound).2 $horder ($bound).1⟩))
 
 /-- Check each supplied invariant against the actual curve, not an LMFDB label. -/
