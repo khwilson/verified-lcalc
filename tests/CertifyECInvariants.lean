@@ -203,6 +203,7 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `potential_good_reduction_input_eq, `potential_good_reduction_value_valid,
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
+      `local_invariants_agree, `local_invariants_agree_valid,
       `semistable, `squarefree_discriminant, `local_invariants, `kodaira_symbols,
       `claimed_semistable, `claimed_squarefree_discriminant, `claimed_local_invariants,
       `claimed_conductor_valuations,
@@ -308,7 +309,6 @@ run_cmd do
       minimalDiscriminantAbs := some 151552 }))
   for suffix in [`minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
-      `local_invariants_agree, `local_invariants_agree_valid,
       `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation,
       `kodaira_symbols] do
     if (← getEnv).contains (`Partial37 ++ suffix) then
