@@ -5,15 +5,15 @@ import Lean
 
 open VerifiedLcalc Lean Elab Command
 
-#check IntegralXSupport
-#check CompleteIntegralPointFacts
-#check DegreeTwoIsogenyFact
-#check TorsionBoundWitness
-#check TorsionDivisorFacts
-#check CyclicTorsionFacts
-#check TwoFactorTorsionFacts
-#check TorsionPrimeSupportFacts
-#check TorsionFacts
+example : Type := IntegralXSupport
+example (curve : WeierstrassCurve ℤ) : Type := CompleteIntegralPointFacts curve
+example (source target : WeierstrassCurve ℤ) : Type := DegreeTwoIsogenyFact source target
+example : Type := TorsionBoundWitness
+example (curve : WeierstrassCurve ℤ) : Type := TorsionDivisorFacts curve
+example (curve : WeierstrassCurve ℤ) : Type := CyclicTorsionFacts curve
+example (curve : WeierstrassCurve ℤ) : Type := TwoFactorTorsionFacts curve
+example (curve : WeierstrassCurve ℤ) : Type := TorsionPrimeSupportFacts curve
+example (curve : WeierstrassCurve ℤ) : Type := TorsionFacts curve
 
 run_cmd do
   let imported := (← getEnv).allImportedModuleNames
