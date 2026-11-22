@@ -25,6 +25,7 @@ AUDITS = (
     "tests/consumers/SecondMellinDerivative.lean",
     "tests/consumers/Additive.lean",
     "tests/consumers/Wild.lean",
+    "tests/OrderCheckGenerality.lean",
     "tests/CyclicTorsionStructure.lean",
     "tests/TwoFactorTorsion.lean",
 )
@@ -79,6 +80,7 @@ def main() -> None:
         "tests/GlobalMinimality.lean",
         "tests/IntervalMultiplication.lean",
         "tests/OddPointCount.lean",
+        "tests/OrderCheckGenerality.lean",
         "tests/consumers/CertifiedECConsumer.lean",
         "tests/consumers/CatalogueAnalyticRank.lean",
         "tests/consumers/CertifiedECDataConsumer.lean",

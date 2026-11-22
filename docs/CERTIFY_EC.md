@@ -343,6 +343,12 @@ membership on the rational curve. The optional `ngens` claim
 and exports `Name.generators.count_valid`. A claim with no list remains
 unverified.
 
+The public generic order checker is `EllipticWitness.exactOrderCheckMul` with
+soundness theorem `exactOrderCheckMul_sound`. It checks a nonzero claimed order,
+the claimed power, and each proper power indexed by a prime divisor. Its
+`@[to_additive]` API generates the established `exactOrderCheck` and
+`exactOrderCheck_sound` names used for additive groups.
+
 To check individual torsion orders, supply the project-specific JSON field
 `torsion_generator_orders` or the Lean field `torsionGeneratorOrders`.
 Supply one claimed order per torsion coordinate pair in list order. Orders
