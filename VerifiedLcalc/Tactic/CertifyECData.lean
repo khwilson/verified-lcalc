@@ -28,9 +28,9 @@ list. It includes bad primes where the local minimality checker succeeds.
 integer-coordinate list; `Name.point_integral i` proves membership in TauCeti's
 `curve.integralPoints`. A supplied fiber root also gives `Name.integral_y_fiber i`
 and an exact enumeration theorem at the stored x. Every generated theorem is
-audited against standard Lean axioms only. Failure rolls back the entire command. Compile the containing
-module to obtain importable `.olean` declarations; use a `public section` when
-exporting through Lean's `module` syntax.
+audited against standard Lean axioms only. Failure rolls back the entire command.
+Compile the containing module to obtain importable `.olean` declarations. When
+using Lean's `module` syntax, export them in a `public section`.
 -/
 
 public meta section
