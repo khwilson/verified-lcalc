@@ -1,8 +1,7 @@
 module
 
 public import VerifiedLcalc.Certificates.Regulator
-public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenerated
-public import Mathlib.LinearAlgebra.Dimension.Torsion.Basic
+import Mathlib.LinearAlgebra.Dimension.Torsion.Basic
 
 /-! # Rank-zero regulator verification -/
 
