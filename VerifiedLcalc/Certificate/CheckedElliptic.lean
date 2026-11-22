@@ -6,7 +6,7 @@ public import VerifiedLcalc.Certification.IntegralPointCount
 public import VerifiedLcalc.Certificate.ArithmeticFacts
 public import VerifiedLcalc.Certification.AbcQuality
 public import VerifiedLcalc.Certificate.AnalyticFacts
-public import VerifiedLcalc.EllipticCurve.AlgebraicRank
+public import VerifiedLcalc.Certificates.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.PointIndependence
 public import VerifiedLcalc.EllipticCurve.TorsionBound
 public import Mathlib.GroupTheory.Torsion
@@ -161,14 +161,14 @@ structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).
   /-- The supplied family checked for integer independence. -/
   independentPoints : Option
     (IndependentPointFacts (integralPoints.getD (AffineMembership.empty curve))) := none
-  /-- A proved lower bound for the rank of the rational point group. -/
+  /-- A proved lower bound for the rational Mordell–Weil rank. -/
   rankLowerBound : Option { n : ℕ //
-    (n : Cardinal) ≤ Module.rank ℤ (curve.baseChange ℚ).toAffine.Point } := none
+    n ≤ Module.finrank ℤ (curve.baseChange ℚ).toAffine.Point } := none
   /-- A proved lower and upper bound for the actual rational point group rank. -/
   rankBounds : Option (AlgebraicRankBounds (curve.baseChange ℚ)) := none
   /-- An exact algebraic Mordell–Weil rank, when the checked interval is a singleton. -/
   rank : Option { n : ℕ //
-    Module.rank ℤ (curve.baseChange ℚ).toAffine.Point = (n : Cardinal) } := none
+    Module.finrank ℤ (curve.baseChange ℚ).toAffine.Point = n } := none
 
 /-- A verified positive multiple of the whole torsion order
 and an optional consistent raw claim. -/

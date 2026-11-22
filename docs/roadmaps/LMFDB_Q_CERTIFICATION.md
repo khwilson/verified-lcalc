@@ -155,11 +155,13 @@ TauCeti's `WorkedExamples/X3SubXAddOne/Rank` for a rank proof and
 `WorkedExamples/Curve37a1` for an independent lower-bound example.
 
 The current `certify_ec` interface accepts typed `AlgebraicRankBounds` proofs
-for the actual `Module.rank ℤ E(ℚ)` and checks optional `rank_bounds` and exact
-`rank` claims against them; it does not construct these bounds from raw data.
+for the actual `Module.finrank ℤ E(ℚ)` and checks optional `rank_bounds` and
+exact `rank` claims against them; it does not construct these bounds from raw
+data. TauCeti's proved `moduleFinite_point_of_numberField` instance makes
+finrank the natural-valued Mordell–Weil rank for nonsingular curves over ℚ.
 The compiled 92.a1 example reuses TauCeti's two-descent proof for
 `X³ - X + 1` from the pinned TauCeti `v4.37.0-rc1` dependency. The project uses
-Mathlib's `LinearIndependent.cardinal_le_rank` and `finrank` APIs for checked
+Mathlib's finite-dimensional linear-independence and finrank APIs for checked
 lower bounds. General finite-Selmer evidence production, local-condition
 completeness, and basis saturation remain open M2 work; in particular the
 existing rank-bound API does not provide the missing checker that constructs

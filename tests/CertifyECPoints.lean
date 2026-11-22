@@ -18,7 +18,7 @@ example : LinearIndependent ℤ (fun i : Fin 2 => Pi.single i (1 : ℚ)) := by
   norm_num [Matrix.det_fin_two, Pi.single_apply]
 
 example : ¬ IsOfFinAddOrder DirectPoints.infiniteOrder.point0.point := DirectPoints.infiniteOrder.point0.infinite_order
-example : (1 : Cardinal) ≤ Module.rank ℤ (DirectPoints.curve.baseChange ℚ).toAffine.Point :=
+example : 1 ≤ Module.finrank ℤ (DirectPoints.curve.baseChange ℚ).toAffine.Point :=
   DirectPoints.algebraic_rank_lower_bound
 
 example : DirectPoints.witness.infiniteOrderPoints = some DirectPoints.infinite_order_indices :=
@@ -43,7 +43,7 @@ certify_ec JSONFamily from_json_string
     exact JSONFamily.infiniteOrder.point0.infinite_order
       (isOfFinAddOrder_iff_zsmul_eq_zero.mpr ⟨a, hn, hp⟩))
 
-example : (1 : Cardinal) ≤ Module.rank ℤ (JSONFamily.curve.baseChange ℚ).toAffine.Point :=
+example : 1 ≤ Module.finrank ℤ (JSONFamily.curve.baseChange ℚ).toAffine.Point :=
   JSONFamily.algebraic_rank_lower_bound
 
 run_cmd do

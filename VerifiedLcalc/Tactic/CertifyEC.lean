@@ -212,7 +212,7 @@ def certifyPointFields (name : Name) (independence : Option (TSyntax `term)) :
       (← `(($witness).independentPoints = some $ix)) (← `(by rfl))
     let h := rootIdent (base ++ `algebraic ++ `algebraic_rank_lower_bound)
     checked (base ++ `algebraic_rank_lower_bound)
-      (← `((($ix).length : Cardinal) ≤ Module.rank ℤ (($curve).baseChange ℚ).toAffine.Point))
+      (← `(($ix).length ≤ Module.finrank ℤ (($curve).baseChange ℚ).toAffine.Point))
       (← `($h))
   else
     if independence.isSome then
@@ -220,7 +220,7 @@ def certifyPointFields (name : Name) (independence : Option (TSyntax `term)) :
     if let some child := firstInfinite then
       let h := rootIdent (child ++ `algebraic_rank_lower_bound)
       checked (base ++ `algebraic_rank_lower_bound)
-        (← `((1 : Cardinal) ≤ Module.rank ℤ (($curve).baseChange ℚ).toAffine.Point)) (← `($h))
+        (← `(1 ≤ Module.finrank ℤ (($curve).baseChange ℚ).toAffine.Point)) (← `($h))
 
 /-- The single verification path for all input methods. -/
 def certifyFields (name : Name) (input : TSyntax `term)

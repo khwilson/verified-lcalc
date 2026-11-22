@@ -36,7 +36,7 @@ example : DirectPoints.point ⟨0, by decide⟩ ∈ DirectPoints.curve.integralP
 example : ¬ IsOfFinAddOrder (DirectPoints.point ⟨1, by decide⟩) :=
   DirectPoints.infiniteOrder.point0.infinite_order
 
-example : (1 : Cardinal) ≤ Module.rank ℤ (DirectPoints.curve.baseChange ℚ).toAffine.Point :=
+example : 1 ≤ Module.finrank ℤ (DirectPoints.curve.baseChange ℚ).toAffine.Point :=
   DirectPoints.algebraic_rank_lower_bound
 
 -- Supplied data only. No JSON file, witness search, or numerical producer.
