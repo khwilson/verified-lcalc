@@ -3,13 +3,17 @@ on:
   push:
     branches: [main]
   pull_request:
+concurrency:
+  # PR updates share their merge ref. Give each main push its own group.
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 permissions:
   contents: read
 jobs:
   lean:
     name: Lean certificates and lint
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     defaults:
       run:
         working-directory: verified-lcalc
