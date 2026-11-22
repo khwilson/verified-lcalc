@@ -4,6 +4,7 @@ public import VerifiedLcalcTests.Fixtures.AssumedCurve11
 public import VerifiedLcalcTests.Fixtures.AssumedCurve11Central
 public import VerifiedLcalcTests.Fixtures.AssumedCurve37
 public import VerifiedLcalcTests.Fixtures.Cubic
+public import VerifiedLcalcTests.Fixtures.DegreeTwoIsogeny
 public import VerifiedLcalcTests.Fixtures.Curve11Arithmetic
 public import VerifiedLcalcTests.Fixtures.Curve11Central
 public import VerifiedLcalcTests.Fixtures.GeneralModularityExamples
@@ -20,3 +21,5 @@ public import VerifiedLcalcTests.Arithmetic.ReductionExamples
 public import VerifiedLcalcTests.Arithmetic.TameExamples
 public import VerifiedLcalcTests.Arithmetic.TorsionBound
 public import VerifiedLcalcTests.Arithmetic.WildExamples
+
+/-! # Compiled elliptic-curve certificate fixtures and arithmetic examples -/

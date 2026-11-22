@@ -75,6 +75,16 @@ structure TorsionBoundWitness where
   bound : Nat
   deriving Repr, DecidableEq
 
+/-- A single oriented edge claim with an exact integral target equation. -/
+structure IsogenyEdgeClaim where
+  /-- Target equation for the rational map. -/
+  target : WeierstrassCurve ℤ
+  /-- Claimed minimum degree in this direction. -/
+  degree : Nat
+  /-- Optional x-coordinate of a kernel point with y=0. -/
+  kernelX : Option Rat := none
+  deriving Repr, DecidableEq
+
 /-- The single input record for elliptic-curve certification. `none` means that
 no data of that kind was supplied; `some []` is an explicitly supplied empty
 list, not a claim of completeness. Numerical results are rank candidates;
@@ -85,6 +95,8 @@ structure EllipticWitness where
   equation : WeierstrassCurve ℤ
   /-- LMFDB analytic rank to compare with an independently checked analytic payload. -/
   catalogueAnalyticRank : Option Nat := none
+  /-- A supplied minimum-degree rational isogeny edge. -/
+  isogenyEdge : Option IsogenyEdgeClaim := none
   /-- Claims for the ordered tuple of b₂, b₄, b₆ and b₈. -/
   bInvariants : Option (Int × Int × Int × Int) := none
   /-- Claims for the ordered pair of c₄ and c₆. -/

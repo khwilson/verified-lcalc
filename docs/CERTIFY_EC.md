@@ -414,3 +414,20 @@ curve and use an explicitly supplied arithmetic modular realization. A conflict
 rolls back the whole command. Missing analytic evidence leaves the reference
 value unverified. The algebraic `rank` column and the legacy rank-witness
 format's payload selector have their existing meanings.
+
+## A single degree-two rational isogeny edge
+
+An `isogeny_edge` JSON object or Lean `isogenyEdge` specifies the target
+equation and a claimed minimum degree. For degree two, either supply a checked
+proof with `with_isogeny proof` or specify `kernel_x` as an exact rational
+x-coordinate (Lean `kernelX`). The raw kernel form checks a point with y=0
+on a source with a₁=a₃=0 and compares the exact Vélu quotient to the supplied
+target. Use the proof attachment for other rational transports.
+
+The command exports `E.degree_two_isogeny` indexed by both equations and
+`E.isogeny_minimum_degree` about the degrees of all rational isogenies in
+this direction. `E.certificate.isogeny` pairs the checked target with the
+same typed edge. The exhibited map has a two-element cyclic rational kernel.
+A source or target label supplied alongside the equations is provenance.
+The fixture checks the edge 112.a2 → 112.a1 in the
+[LMFDB 112.a class](https://www.lmfdb.org/EllipticCurve/Q/112/a/).

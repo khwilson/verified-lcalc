@@ -1,5 +1,6 @@
 module
 
+public import VerifiedLcalc.Certification.DegreeTwoIsogeny
 public import VerifiedLcalc.Certification.CurveData
 public import VerifiedLcalc.Certificate.ArithmeticFacts
 public import VerifiedLcalc.Certification.AbcQuality
@@ -206,6 +207,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   analytic : AnalyticFacts curve
   /-- The checked full-group torsion facts. -/
   torsion : TorsionFacts curve
+  /-- A checked oriented rational isogeny edge and its integral target. -/
+  isogeny : Option (Σ target : WeierstrassCurve ℤ, DegreeTwoIsogenyFact curve target) := none
 
 /-- The integral Weierstrass equation indexing the whole certificate. -/
 def EllipticCertificate.equation {curve : WeierstrassCurve ℤ}

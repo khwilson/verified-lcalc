@@ -185,6 +185,45 @@ to the relevant `IsTateTerminal` and residue-polynomial hypotheses.
 [Terminal comparison](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Local.lean#L144-L162)
 · [Split and nonsplit indices](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/LocalIndex.lean#L469-L486)
 
+## TC-11 — explicit zero-y Vélu quotient equation
+
+Status: proved locally in
+[`DegreeTwoIsogenyRaw.lean`](../VerifiedLcalc/Certification/DegreeTwoIsogenyRaw.lean).
+The local `zeroYVelu_eq` calculation identifies TauCeti's general affine
+`veluCurve` with the explicit equation below when the rational source is
+nonsingular, `a₁ = a₃ = 0`, and `r` is a root of its cubic:
+
+```text
+d  = 3 r² + 2 a₂ r + a₄
+a₁' = a₃' = 0
+a₂' = a₂
+a₄' = a₄ - 5 d
+a₆' = a₆ - (4 a₂ + 7 r) d
+```
+
+Proposed upstream API: `Affine.veluCurve_zero_y`. State it over a field of
+characteristic not two with a nonsingular source, `a₁ = a₃ = 0`, and
+`r³ + a₂ r² + a₄ r + a₆ = 0`; conclude equality of the general Vélu quotient
+and the displayed normalized Weierstrass equation. Keep the kernel explicitly
+`{0, (r, 0)}` and prove it has cardinality two from nonsingularity. The
+rational adapter additionally requires an elliptic target and an exact change
+of target variables.
+
+## TC-12 — minimum degree from distinct j-invariants
+
+Status: proved locally in
+[`DegreeTwoIsogeny.lean`](../VerifiedLcalc/Certification/DegreeTwoIsogeny.lean).
+For elliptic Weierstrass curves over `ℚ` with unequal j-invariants, every
+rational isogeny between their affine models has degree at least two: degree
+one implies variable-change isomorphism, which preserves j. Combined with
+the witnessed degree-two Vélu isogeny, this proves that two is the attained
+minimum in that direction.
+
+Proposed upstream API: `Isogeny.two_le_degree_of_j_ne`. Its hypotheses are
+ellipticity of source and target and `source.j ≠ target.j`; its conclusion
+applies to each isogeny between their affine models. Keep the field and model
+assumptions explicit, and do not claim a lower bound without the j-inequality.
+
 ## Submission and validation
 
 TC-01, TC-02, TC-03 and TC-08 have compiled source rather than proposed axioms.

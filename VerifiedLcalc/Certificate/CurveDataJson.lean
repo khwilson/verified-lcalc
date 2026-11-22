@@ -206,12 +206,20 @@ def abcQualityClaim (j : Json) : Except String (Option AbcQualityClaim) := do
   let factors ← rows.toList.mapM nonnegativeInteger
   return some { reported, error, factors }
 
+/-- Decode exact raw data for one rational isogeny edge. -/
+def isogenyEdgeClaim (j : Json) : Except String IsogenyEdgeClaim := do
+  let target ← equation (← j.getObjVal? "target")
+  let degree ← nonnegativeInteger (← j.getObjVal? "degree")
+  let kernelX ← optionalValue j "kernel_x" rationalValue
+  return { target, degree, kernelX }
+
 /-- Decode whichever supported fields are present. Integer square-root
 reconstruction supplies candidate y-coordinates for stored integral x-values;
 the certifier subsequently proves every resulting curve equation. -/
 def decode (j : Json) : Except String EllipticWitness := do
   let _ ← j.getObj?
   let equation ← equation j
+  let isogenyEdge ← optionalValue j "isogeny_edge" isogenyEdgeClaim
   let catalogueAnalyticRank ← optionalValue j "analytic_rank" nonnegativeInteger
   let mut primeCoefficients : Array (Nat × Int) := #[]
   if let some rows := optionalData j "ap" then
@@ -303,6 +311,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     return ({ firstPrime, secondPrime, bound } : TorsionBoundWitness)
   return { base with
     equation
+    isogenyEdge
     catalogueAnalyticRank
     bInvariants
     cInvariants

@@ -157,10 +157,23 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let torsion ← torsionFactsTerm base
   let name := base ++ `certificate
   let certificate := rootIdent name
-  emit (← `(def $certificate : EllipticCertificate $curve :=
-    { nonsingular := $nonsingular, equationFacts := $equationFacts,
-      rational := $rational, algebraic := $algebraic, arithmetic := $arithmetic,
-      analytic := $analytic, torsion := $torsion }))
+  let edgeName := base ++ `degree_two_isogeny
+  let isogeny ← if (← getEnv).contains edgeName then
+    `(some ⟨$(rootIdent (base ++ `isogeny_target)), $(rootIdent edgeName)⟩)
+  else `(none)
+  let record ← `({
+    nonsingular := $nonsingular
+    equationFacts := $equationFacts
+    rational := $rational
+    algebraic := $algebraic
+    arithmetic := $arithmetic
+    analytic := $analytic
+    torsion := $torsion
+    isogeny := $isogeny })
+  if (← getEnv).contains edgeName then
+    emit (← `(noncomputable def $certificate : EllipticCertificate $curve := $record))
+  else
+    emit (← `(def $certificate : EllipticCertificate $curve := $record))
   auditAxioms name
 
 end VerifiedLcalc.CertifyEC
