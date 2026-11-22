@@ -143,6 +143,15 @@ example :
       4 :=
   (LMFDB.C112a2.conductor_valuation (2, 4) (by decide +kernel)).2
 
+example :
+    Nat.card (AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) = 2 :=
+  LMFDB.C112a2.torsion
+
+example : ∃ e : ZMod 2 ≃+ AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point,
+    (e 1 : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =
+      LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩ :=
+  LMFDB.C112a2.torsion_structure.2
+
 run_cmd do
   let unconditional := [``propext, ``Classical.choice, ``Quot.sound]
   let modularity := ``Assumptions.ellipticModularity
@@ -164,6 +173,8 @@ run_cmd do
     unless unconditional.contains axiomName do
       throwError "Unexpected aggregate dependency {axiomName}"
   check `LMFDB.C112a2 `torsion_generators.exact_order false
+  check `LMFDB.C112a2 `torsion false
+  check `LMFDB.C112a2 `torsion_structure false
   check `LMFDB.C112a2 `dirichlet_coefficients false
   check `LMFDB.C197a1 `j_integral false
   check `LMFDB.C288a1 `j_integral false
@@ -239,3 +250,20 @@ example : LMFDB.C112a2.certificate.algebraic.generators.map AffineMembership.coo
 
 example : LMFDB.C112a2.certificate.algebraic.torsionGeneratorOrders.map
     TorsionGeneratorOrderFacts.orders = some [2] := rfl
+
+private def checkedCyclic :=
+  LMFDB.C112a2.certificate.torsion.cyclicStructure.get (by decide +kernel)
+
+example : checkedCyclic.factors = [2] := rfl
+
+/-- The compiled aggregate equivalence sends one to the checked rational generator. -/
+theorem imported_cyclic_torsion_structure :
+    ∃ e : ZMod 2 ≃+ AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point,
+      (e 1 : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =
+        LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩ :=
+  checkedCyclic.structure_eq.2
+
+run_cmd do
+  for axiomName in ← liftTermElabM (Lean.collectAxioms ``imported_cyclic_torsion_structure) do
+    unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+      throwError "Unexpected aggregate axiom: {axiomName}"
