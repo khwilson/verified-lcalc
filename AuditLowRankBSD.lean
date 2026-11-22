@@ -1,6 +1,8 @@
 import VerifiedLcalc.Certification.LowRankBSD
 import VerifiedLcalc.EllipticCurve.AlgebraicRank
 
+set_option linter.hashCommand false
+
 -- These conclusions depend on the one isolated forward implication assumption.
 /-- info: 'VerifiedLcalc.Certification.algebraic_finrank_of_conditional_analytic_rank' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.analyticOrder_le_one_implies_finrank] -/
 #guard_msgs (whitespace := lax) in
