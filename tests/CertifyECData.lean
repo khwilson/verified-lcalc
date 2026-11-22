@@ -124,7 +124,8 @@ meta def expectDataRejected (name : Name) (command : Syntax) : CommandElabM Unit
       `ap_correct, `integral_coordinates_valid, `points_on_curve, `curve_isElliptic,
       `point, `point_integral, `generators.point, `torsion_generators.point,
       `torsion_generators.orders, `torsion_generators.orders_eq, `torsion_generators.orders_length,
-      `torsion_generators.orders_valid, `torsion_generators.exact_order] do
+      `torsion_generators.orders_in_range, `torsion_generators.orders_valid,
+      `torsion_generators.exact_order] do
     if env.contains (name ++ suffix) then
       throwError "Failed curve-data certification leaked {name ++ suffix}"
     if env.contains (name ++ `data ++ suffix) then
@@ -150,6 +151,8 @@ run_cmd do
     r#"{"ainvs":[0,0,1,0,0],"torsion_generator_orders":[3]}"#))
   expectDataRejected `ZeroOrder (← `(certify_ec ZeroOrder from
     { TorsionOrderFour.witness with torsionGeneratorOrders := some [0] }))
+  expectDataRejected `OversizedOrder (← `(certify_ec OversizedOrder from
+    { TorsionOrderFour.witness with torsionGeneratorOrders := some [257] }))
   expectDataRejected `MalformedOrder (← `(certify_ec MalformedOrder from_json_string
     r#"{"ainvs":[0,0,1,0,0],"torsion_generators":[[0,0,1]],"torsion_generator_orders":[-3]}"#))
   expectDataRejected `ZeroWeight (← `(certify_ec ZeroWeight from_json_string

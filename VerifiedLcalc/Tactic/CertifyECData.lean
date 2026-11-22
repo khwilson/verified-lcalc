@@ -74,6 +74,11 @@ private def certifyTorsionOrders (base : Name) (witness : TSyntax `term) : Comma
   let hlen := CertifyEC.rootIdent (torsion ++ `orders_length)
   CertifyEC.checked (torsion ++ `orders_length)
     (← `(($orders).length = ($coords).length)) (← `(by decide +kernel))
+  try
+    CertifyEC.checked (torsion ++ `orders_in_range)
+      (← `(($orders).all (fun n => decide (0 < n ∧ n ≤ 256)) = true)) (← `(by decide +kernel))
+  catch _ =>
+    throwError "Torsion generator orders must be between 1 and 256"
   let hcheck := CertifyEC.rootIdent (torsion ++ `orders_valid)
   CertifyEC.checked (torsion ++ `orders_valid)
     (← `((List.finRange ($coords).length).all (fun i =>
