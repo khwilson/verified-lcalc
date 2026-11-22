@@ -67,15 +67,15 @@ private def certifyRankClaims (base : Name) (curve : Ident) (attachment : Option
     return
   let fact ← if let some (lower, h) := point then `(($fact).raiseLower $lower $h)
     else pure fact
-  let rank ← `(Module.rank ℤ (($curve).baseChange ℚ).toAffine.Point)
+  let finrank ← `(Module.finrank ℤ (($curve).baseChange ℚ).toAffine.Point)
   let value := rootIdent (base ++ `mordell_weil_bounds)
   let given ← interval.getDM `((($fact).lower, ($fact).upper))
   emit (← `(def $value : Nat × Nat := $given))
   checked (base ++ `algebraic_rank_bounds)
-    (← `((($value).1 : Cardinal) ≤ $rank ∧ $rank ≤ (($value).2 : Cardinal)))
+    (← `((($value).1 : Nat) ≤ $finrank ∧ $finrank ≤ (($value).2 : Nat)))
     (← `(by
       let bounds := ($fact).weaken ($value).1 ($value).2 (by decide +kernel) (by decide +kernel)
-      exact ⟨bounds.lower_le_rank, bounds.rank_le_upper⟩))
+      exact ⟨bounds.lower_le_finrank, bounds.finrank_le_upper⟩))
   let hbounds := rootIdent (base ++ `algebraic_rank_bounds)
   let witness := rootIdent (base ++ `algebraic_rank_witness)
   emit (← `(def $witness : AlgebraicRankBounds (($curve).baseChange ℚ) :=
@@ -94,10 +94,10 @@ private def certifyRankClaims (base : Name) (curve : Ident) (attachment : Option
   let n := rootIdent (base ++ `mordell_weil_rank)
   let given ← claim.getDM `(($fact).lower)
   emit (← `(def $n : Nat := $given))
-  checked (base ++ `algebraic_rank) (← `($rank = ($n : Cardinal)))
+  checked (base ++ `algebraic_rank) (← `($finrank = $n))
     (← `(by
       have h : ($fact).lower = $n := by decide +kernel
-      exact (($fact).rank_eq_of_equal (by decide +kernel)).trans (congrArg Nat.cast h)))
+      exact (($fact).rank_eq_of_equal (by decide +kernel)).trans h))
 
 /-- Elaborate one shared proof attachment, check any rank data, and pass the equation proofs on. -/
 def certifyProofAttachment (base : Name) (input : Option (TSyntax `term)) :

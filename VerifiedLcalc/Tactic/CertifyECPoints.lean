@@ -54,7 +54,7 @@ def certifyInfiniteOrder (name : Name) (curveName : Ident) (index : TSyntax `ter
     exact infiniteOrderCheck_sound $curve $x $y
       ($onCurve _ _ (List.getElem_mem $hb)) $hcheck))
   checked (base ++ `algebraic_rank_lower_bound)
-    (← `((1 : Cardinal) ≤ Module.rank ℤ (($curve).baseChange ℚ).toAffine.Point))
+    (← `(1 ≤ Module.finrank ℤ (($curve).baseChange ℚ).toAffine.Point))
     (← `(algebraic_rank_pos_of_infinite_order $p $ht))
   logInfo m!"Certified {base}.infinite_order and {base}.algebraic_rank_lower_bound"
 
@@ -84,7 +84,7 @@ def certifyRankLowerBound (name : Name) (curveName : Ident)
   let hi := rootIdent (base ++ `points_independent)
   checked (base ++ `points_independent) (← `(LinearIndependent ℤ $ps)) proof
   checked (base ++ `algebraic_rank_lower_bound)
-    (← `((($ix).length : Cardinal) ≤ Module.rank ℤ (($curve).baseChange ℚ).toAffine.Point))
+    (← `(($ix).length ≤ Module.finrank ℤ (($curve).baseChange ℚ).toAffine.Point))
     (← `(algebraic_rank_lower_bound $ps $hi))
   logInfo m!"Certified {base}.algebraic_rank_lower_bound from an independent point family"
 

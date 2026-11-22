@@ -10,6 +10,7 @@ import Mathlib.GroupTheory.Torsion
 import Mathlib.LinearAlgebra.Dimension.Torsion.Finite
 import Mathlib.NumberTheory.FLT.Three
 import Mathlib.Tactic
+import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenerated
 
 /-! # All rational points of the LMFDB curve `27.a3` -/
 
@@ -85,10 +86,15 @@ theorem rank_eq_zero : Module.rank ℤ (curve.baseChange ℚ).toAffine.Point = 0
   exact Module.rank_eq_zero_iff_isTorsion.mpr
     (isAddTorsion_iff_isTorsion_int.mp isAddTorsion_of_finite)
 
+/-- TauCeti's Mordell–Weil instance turns the cardinal result into finrank zero. -/
+theorem finrank_eq_zero : Module.finrank ℤ (curve.baseChange ℚ).toAffine.Point = 0 := by
+  have h := (Module.finrank_eq_rank ℤ (curve.baseChange ℚ).toAffine.Point).trans rank_eq_zero
+  exact_mod_cast h
+
 /-- Independently proved abscissa support and rank of the same equation. -/
 def proofs : IntegralCurveProofs curve :=
   { integralXSupport := some integralSupport
-    algebraicRank := some (.ofRankEq 0 (by simpa using rank_eq_zero)) }
+    algebraicRank := some (.ofFinrankEq 0 finrank_eq_zero) }
 
 certify_ec Checked from_json_string
   r#"{"ainvs":[0,0,1,0,-7],"xcoord_integral_points":[3,3],"num_int_pts":2,"rank":0}"#

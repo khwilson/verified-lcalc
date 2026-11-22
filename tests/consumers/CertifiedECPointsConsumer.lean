@@ -6,7 +6,7 @@ theorem imported_infinite_order : ¬ IsOfFinAddOrder DirectPoints.infiniteOrder.
   DirectPoints.infiniteOrder.point0.infinite_order
 
 theorem imported_algebraic_rank_lower_bound :
-    (1 : Cardinal) ≤ Module.rank ℤ (DirectPoints.curve.baseChange ℚ).toAffine.Point :=
+    1 ≤ Module.finrank ℤ (DirectPoints.curve.baseChange ℚ).toAffine.Point :=
   DirectPoints.algebraic_rank_lower_bound
 
 open Lean Elab Command in

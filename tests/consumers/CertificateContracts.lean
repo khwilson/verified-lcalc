@@ -15,6 +15,28 @@ example (curve : WeierstrassCurve ℤ) : Type := CyclicTorsionFacts curve
 example (curve : WeierstrassCurve ℤ) : Type := TwoFactorTorsionFacts curve
 example (curve : WeierstrassCurve ℤ) : Type := TorsionPrimeSupportFacts curve
 example (curve : WeierstrassCurve ℤ) : Type := TorsionFacts curve
+example : Type := Box
+example : Type := PrecisionPolicy
+example : Type := EllipticCurve.MinimalityWitness
+example : Type := EllipticCurve.TateWitness
+example : Type := EllipticCurve.WildData
+example : Type := EllipticCurve.CentralResult
+example : Type := EllipticCurve.DerivativeResult
+example (result : EllipticCurve.CentralResult) : Prop := EllipticCurve.CentralPayloadCorrect result
+example (result : EllipticCurve.DerivativeResult) : Prop :=
+  EllipticCurve.DerivativePayloadCorrect result
+example {W : WeierstrassCurve ℚ} [W.toAffine.IsElliptic] :
+    Type := EllipticCurve.AlgebraicRankBounds W
+
+section MordellWeilInstance
+variable {W : WeierstrassCurve ℚ} [W.toAffine.IsElliptic]
+
+example : Module.Finite ℤ W.toAffine.Point := by infer_instance
+
+example (n : ℕ) (h : Module.rank ℤ W.toAffine.Point = (n : Cardinal)) :
+    EllipticCurve.AlgebraicRankBounds W :=
+  .ofRankEq n h
+end MordellWeilInstance
 
 run_cmd do
   let imported := (← getEnv).allImportedModuleNames
@@ -23,6 +45,13 @@ run_cmd do
     `VerifiedLcalc.Certification.DegreeTwoIsogeny,
     `VerifiedLcalc.Certification.DegreeTwoIsogenyRaw,
     `VerifiedLcalc.Certification.TorsionBoundFacts,
-    `VerifiedLcalc.EllipticCurve.TorsionBound] do
+    `VerifiedLcalc.EllipticCurve.TorsionBound,
+    `VerifiedLcalc.Scan,
+    `VerifiedLcalc.Precision,
+    `VerifiedLcalc.Certificate,
+    `VerifiedLcalc.EllipticCurve.CentralCore,
+    `VerifiedLcalc.EllipticCurve.DerivativeCore,
+    `VerifiedLcalc.Certification.CentralEvaluator,
+    `VerifiedLcalc.Certification.DerivativeEvaluator] do
     if imported.contains backend then
       throwError m!"contract umbrella imported backend module {backend}"

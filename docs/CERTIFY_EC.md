@@ -171,7 +171,10 @@ next certificate checks the same integral equation.
 Attach `IntegralCurveProofs W` with its `algebraicRank` field set to a checked
 `AlgebraicRankBounds (W.baseChange ℚ)`. The same attachment can contain the
 equation-level facts. Its lower and upper inequalities refer to
-`Module.rank ℤ (W.baseChange ℚ).toAffine.Point`.
+`Module.finrank ℤ (W.baseChange ℚ).toAffine.Point`. TauCeti's proved
+Mordell–Weil instance supplies finite generation for every nonsingular
+rational elliptic curve, so this is the natural-number rank of the actual
+Mathlib point group.
 
 With this evidence, `certify_ec` can verify JSON `rank_bounds: [lower, upper]`
 and an exact algebraic `rank` claim. It exports `Name.algebraic_rank_bounds`

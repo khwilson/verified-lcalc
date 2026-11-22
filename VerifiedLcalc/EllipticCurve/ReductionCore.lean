@@ -1,6 +1,9 @@
 module
 
 public import VerifiedLcalc.EllipticCurve.CoefficientCore
+public import VerifiedLcalc.Certificates.Transcripts
+
+/-! # Reduction classification from checked transcripts -/
 
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
@@ -11,6 +14,7 @@ inductive ModelReduction where
   | good | multiplicative | additive
   deriving Repr, DecidableEq
 
+/-- Classify the supplied integral model by its reduction discriminant and c4. -/
 def modelReduction (e : (WeierstrassCurve ℤ)) (p : Nat) : ModelReduction :=
   if e.Δ % (p : Int) != 0 then .good
   else if e.c₄ % (p : Int) != 0 then .multiplicative
@@ -30,14 +34,9 @@ def twoAdicC4MinimalAt (e : (WeierstrassCurve ℤ)) (p : Nat) : Bool :=
 def invariantMinimalAt (e : (WeierstrassCurve ℤ)) (p : Nat) : Bool :=
   decide (e.c₄ % (p : Int) ^ 4 ≠ 0 ∨ e.c₆ % (p : Int) ^ 6 ≠ 0)
 
+/-- Boolean check of the model minimality conditions at p. -/
 def modelMinimalAt (e : (WeierstrassCurve ℤ)) (p : Nat) : Bool :=
   discriminantMinimalAt e p || twoAdicC4MinimalAt e p || invariantMinimalAt e p
-
-/-- A finite, explicit factorization witness. Primes outside this list are good.
-Both the factorization and the minimality checks are rechecked in the kernel. -/
-structure MinimalityWitness where
-  primes : List Nat
-  deriving Repr, DecidableEq
 
 /-- A prime factorization with repetition, plus minimality checks at its primes.
 The producer may supply any list; the kernel validates every assertion. -/
