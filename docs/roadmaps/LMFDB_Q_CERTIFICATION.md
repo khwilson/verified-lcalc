@@ -31,7 +31,7 @@ the source schema before creating a witness.
 | `ec_classdata.aplist, anlist` | Initial primes and consecutive arithmetic Dirichlet coefficients. Supported for the represented curve. Transfer to other class members requires the isogeny theorem in I1. |
 | `ec_classdata.isogeny_matrix, class_size, class_deg`; copies and `ec_curvedata.isogeny_degrees` | Minimum isogeny degrees between indexed representatives, number of rational isomorphism classes, maximum matrix entry, and distinct entries of the represented curve's row, respectively. I1. |
 | `ec_mwbsd.gens, torsion_generators, ngens, rank_bounds`; `ec_curvedata.rank, torsion, torsion_structure, torsion_primes, intrinsic_torsion` | Weighted triples $(a,b,c)$ with $c\ne0$ represent $(a/c^2,b/c^3)$. Generator count is list length. Rank bounds refer to Mordell–Weil rank. Torsion data concern the full rational torsion subgroup. Intrinsic torsion is the radical of the torsion pairing with values in $\mathbf Q^\times\otimes\mathbf Q/\mathbf Z$. Integral infinite-order and supplied independence proofs already give rank lower bounds. M1–M2. |
-| `ec_mwbsd.xcoord_integral_points`; `ec_curvedata.num_int_pts` | Finite affine integral solutions in the specified model, with one stored x per fiber and the count over all y. Membership is supported. M3 proves exhaustivity. |
+| `ec_mwbsd.xcoord_integral_points`; `ec_curvedata.num_int_pts` | Finite affine integral solutions in the specified model, with one stored x per fiber and the count over all y. Membership and exact fibers over listed x-values are supported. M3 tracks global exhaustivity. |
 | `ec_curvedata.cm, min_quad_twist_ainvs, min_quad_twist_disc` | Geometric endomorphism ring is ℤ when the CM code is zero, otherwise it is the order of the specified discriminant. Twist data give an integral representative minimizing conductor and a quadratic discriminant (1 for the trivial twist). The producer applies further tie rules, including special j values. I2. |
 | `ec_curvedata.degree, manin_constant, optimality` | Degree and differential scaling for the modular parametrization, and optimal-quotient status. The producer's optimality codes above 1 express ambiguity among candidates. Manin data can be conditional on optimality. I3. |
 | `ec_curvedata.analytic_rank`; `ec_mwbsd.special_value` | Vanishing order at 1 and leading coefficient $L^{(r)}(1)/r!$ in arithmetic normalization. Rank 0/1 are supported with full checked numerical payloads. Reference data for higher rank may carry uncertainty. A1. |
@@ -154,15 +154,19 @@ family of the right rank but index greater than one for basis claims. Consult
 TauCeti's `WorkedExamples/X3SubXAddOne/Rank` for a rank proof and
 `WorkedExamples/Curve37a1` for an independent lower-bound example.
 
-**M3 · Integral-point completeness.** Prove the finite reconstruction lemma
-for each x by completing the square:
-$(2y+a_1x+a_3)^2=(a_1x+a_3)^2+4(x^3+a_2x^2+a_4x+a_6)$.
-Check parity, both square roots and the double-root case. Given a proved
-global bound on x or on Mordell–Weil coefficients for every integral point,
-a checked sieve/exhaustive enumeration must give a set equivalence with all
-integral affine points. Use M2 for coefficient bounds, and specify the
-effective height bound or covering descent separately. Accept two-point and
-one-point fibers and rejection when a valid x is omitted.
+**M3 · Integral-point completeness.** The certifier reconstructs a candidate root
+from the square-completion formula and checks its exact integer equation. This
+rejects an invalid square or a division that has rounded to a nonroot. For each
+listed x, TauCeti's chord identity shows that any other integral y is either the
+checked root or its Weierstrass negation. The certified fiber is a finite set and
+counts a double root once. The original integral-coordinate list retains its
+indices.
+
+Global exhaustivity still requires a proved bound on x or on Mordell–Weil
+coefficients for every integral point, followed by a checked sieve or finite
+enumeration. Use M2 for coefficient bounds and specify the effective height bound
+or covering descent separately. The global checker must reject an omitted valid
+x.
 
 ## Isogenies, twists and modular parametrizations
 

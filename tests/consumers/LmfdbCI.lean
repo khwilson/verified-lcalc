@@ -85,6 +85,22 @@ example : (LMFDB.C291d1.curve.baseChange ℚ).j = -4096 / 291 :=
   LMFDB.C291d1.j_invariant
 example : LMFDB.C291d1.curve.Δ = -291 := LMFDB.C291d1.discriminant
 
+example : LMFDB.C112a2.integral_y_fiber ⟨0, by decide⟩ = ({0} : Finset ℤ) := by
+  decide +kernel
+
+example (y : ℤ) : y ∈ LMFDB.C112a2.integral_y_fiber ⟨0, by decide⟩ ↔
+    LMFDB.C112a2.curve.toAffine.Equation (-2) y :=
+  LMFDB.C112a2.integral_y_fiber_complete _ y
+
+example : LMFDB.C112a2.integral_y_fiber ⟨2, by decide⟩ = ({2, -2} : Finset ℤ) := by
+  decide +kernel
+
+-- The double root still occupies both of its original integral-coordinate indices.
+example : (LMFDB.C112a2.witness.integralCoordinates.getD [])[0]? = some (-2, 0) := by
+  decide +kernel
+example : (LMFDB.C112a2.witness.integralCoordinates.getD [])[1]? = some (-2, 0) := by
+  decide +kernel
+
 example : LMFDB.C112a2.curve.toAffine.Equation 0 2 :=
   LMFDB.C112a2.points_on_curve 0 2 (by decide +kernel)
 
@@ -133,6 +149,7 @@ run_cmd do
       unless unconditional.contains axiomName || (conditional && axiomName == modularity) do
         throwError "Unexpected dependency {axiomName} in {lemmaName}"
   check `LMFDB.C112a2 `abc_quality false
+  check `LMFDB.C112a2 `integral_y_fiber_complete false
   check `LMFDB.C112a2 `generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.exact_order false
