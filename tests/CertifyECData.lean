@@ -44,6 +44,23 @@ example : (RawData.curve.baseChange ℚ).LFunction 3 = -3 :=
 example : RawData.curve.toAffine.Equation 6 14 :=
   RawData.points_on_curve 6 14 (by decide +kernel)
 
+-- The odd linear term gives the two unequal roots 14 and -15 at x = 6.
+example : RawData.integral_y_fiber ⟨4, by decide⟩ = ({14, -15} : Finset ℤ) := by
+  decide +kernel
+example (y : ℤ) : y ∈ RawData.integral_y_fiber ⟨0, by decide⟩ ↔
+    RawData.curve.toAffine.Equation (-1) y :=
+  RawData.integral_y_fiber_complete _ y
+
+certify_ec EmptyFibers from_json_string
+  r#"{"ainvs":[0,0,0,-1,0],"xcoord_integral_points":[]}"#
+example : EmptyFibers.witness.integralFiberRoots = some [] := rfl
+example : EmptyData.witness.integralFiberRoots = none := rfl
+
+certify_ec DirectDoubleRoot from
+  { equation := ⟨0, 0, 0, -1, 0⟩, integralFiberRoots := some [(0, 0)] }
+example : DirectDoubleRoot.integral_y_fiber ⟨0, by decide⟩ = ({0} : Finset ℤ) := by
+  decide +kernel
+
 -- Match the LMFDB exponent convention even when the third coordinate is negative.
 certify_ec RationalGenerators from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"gens":[[1,5,-2]],"torsion_generators":[]}"#
@@ -58,6 +75,17 @@ certify_ec TorsionGeneratorCoordinates from
   { equation := ⟨0, -1, 1, -10, -20⟩, torsionGeneratorCoordinates := some [(5, 5)] }
 example : (TorsionGeneratorCoordinates.curve.baseChange ℚ).toAffine.Equation 5 5 :=
   TorsionGeneratorCoordinates.torsion_generators.points_on_curve _ _ (by decide +kernel)
+
+certify_ec TorsionOrderThree from_json_string
+  r#"{"ainvs":[0,0,1,0,0],"torsion_generators":[[0,0,1]],"torsion_generator_orders":[3]}"#
+example : addOrderOf (TorsionOrderThree.torsion_generators.point ⟨0, by decide⟩) = 3 :=
+  TorsionOrderThree.torsion_generators.exact_order _
+
+certify_ec TorsionOrderFour from
+  { equation := ⟨1, -1, -1, 0, 0⟩, torsionGeneratorCoordinates := some [(0, 0)],
+    torsionGeneratorOrders := some [4] }
+example : addOrderOf (TorsionOrderFour.torsion_generators.point ⟨0, by decide⟩) = 4 :=
+  TorsionOrderFour.torsion_generators.exact_order _
 
 certify_ec OnlyAP from
   { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := some [(2, -2)] }
@@ -111,7 +139,12 @@ meta def expectDataRejected (name : Name) (command : Syntax) : CommandElabM Unit
   unless failed do throwError "Invalid curve data accepted: {name}"
   for suffix in [`supplied, `witness, `curve, `nonsingular, `prime_coefficients_valid,
       `ap_correct, `integral_coordinates_valid, `points_on_curve, `curve_isElliptic,
-      `point, `point_integral, `generators.point, `torsion_generators.point] do
+      `point, `point_integral, `integral_fiber_roots, `integral_fiber_roots_eq,
+      `integral_fiber_roots_valid, `integral_y_fiber, `integral_y_fiber_complete,
+      `generators.point, `torsion_generators.point,
+      `torsion_generators.orders, `torsion_generators.orders_eq, `torsion_generators.orders_length,
+      `torsion_generators.orders_in_range, `torsion_generators.orders_valid,
+      `torsion_generators.exact_order] do
     if env.contains (name ++ suffix) then
       throwError "Failed curve-data certification leaked {name ++ suffix}"
     if env.contains (name ++ `data ++ suffix) then
@@ -129,6 +162,18 @@ run_cmd do
     { Data37.witness with integralCoordinates := some [(0, 1)] }))
   expectDataRejected `InvalidWeightedPoint (← `(certify_ec InvalidWeightedPoint from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"gens":[[0,0,1]],"torsion_generators":[[1,1,1]]}"#))
+  expectDataRejected `WrongOrder (← `(certify_ec WrongOrder from
+    { TorsionOrderFour.witness with torsionGeneratorOrders := some [8] }))
+  expectDataRejected `MissingOrder (← `(certify_ec MissingOrder from
+    { TorsionOrderFour.witness with torsionGeneratorOrders := some [] }))
+  expectDataRejected `MissingTorsionPoint (← `(certify_ec MissingTorsionPoint from_json_string
+    r#"{"ainvs":[0,0,1,0,0],"torsion_generator_orders":[3]}"#))
+  expectDataRejected `ZeroOrder (← `(certify_ec ZeroOrder from
+    { TorsionOrderFour.witness with torsionGeneratorOrders := some [0] }))
+  expectDataRejected `OversizedOrder (← `(certify_ec OversizedOrder from
+    { TorsionOrderFour.witness with torsionGeneratorOrders := some [257] }))
+  expectDataRejected `MalformedOrder (← `(certify_ec MalformedOrder from_json_string
+    r#"{"ainvs":[0,0,1,0,0],"torsion_generators":[[0,0,1]],"torsion_generator_orders":[-3]}"#))
   expectDataRejected `ZeroWeight (← `(certify_ec ZeroWeight from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"gens":[[1,5,0]]}"#))
   expectDataRejected `ShortWeightedPoint (← `(certify_ec ShortWeightedPoint from_json_string
@@ -138,6 +183,12 @@ run_cmd do
   expectDataRejected `Malformed (← `(certify_ec Malformed from_json_string "{}"))
   expectDataRejected `BadX (← `(certify_ec BadX from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"xcoord_integral_points":[3]}"#))
+  expectDataRejected `NegativeDiscriminantX (← `(certify_ec NegativeDiscriminantX from_json_string
+    r#"{"ainvs":[0,0,0,-1,0],"xcoord_integral_points":[-2]}"#))
+  expectDataRejected `NonintegralX (← `(certify_ec NonintegralX from_json_string
+    r#"{"ainvs":[0,0,0,-1,0],"xcoord_integral_points":[0.5]}"#))
+  expectDataRejected `WrongFiberRoot (← `(certify_ec WrongFiberRoot from
+    { equation := ⟨0, 0, 0, -1, 0⟩, integralFiberRoots := some [(0, 1)] }))
   expectDataRejected `ConflictingCurve (← `(certify_ec ConflictingCurve from
     { equation := Data11.curve, derivativeResult := some Curve37.result }))
   expectDataRejected `MixedBadAP (← `(certify_ec MixedBadAP from
@@ -174,6 +225,8 @@ run_cmd do
   for suffix in [`generators.points_on_curve, `torsion_generators.points_on_curve] do
     if (← getEnv).contains (`OnlyAP ++ suffix) then
       throwError "Missing generator data became a theorem"
+  if (← getEnv).contains `TorsionGeneratorCoordinates.torsion_generators.exact_order then
+    throwError "Missing torsion orders became a theorem"
   if (← getEnv).contains `VerifiedLcalc.CurveDataWitness then
     throwError "The retired aggregate witness type is still present"
 
@@ -208,19 +261,28 @@ run_cmd do
         unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
           throwError "Unexpected rational-point certificate axiom: {axiomName}"
 
-#eval show IO Unit from do
+run_cmd do
+  for name in [`TorsionOrderThree.torsion_generators, `TorsionOrderFour.torsion_generators] do
+    for suffix in [`orders_valid, `exact_order] do
+      let axioms ← liftTermElabM <| Lean.collectAxioms (name ++ suffix)
+      for axiomName in axioms do
+        unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+          throwError "Unexpected exact-order certificate axiom: {axiomName}"
+
+run_cmd do
   for text in [r#"{"ainvs":[0,0,1,-1,0]}"#,
       r#"{"ainvs":[0,0,1,-1,0],"ap":null,"integral_points":null,
-          "gens":null,"torsion_generators":null}"#] do
+          "gens":null,"torsion_generators":null,"xcoord_integral_points":null}"#] do
     match CurveDataJson.parse text with
     | .ok w =>
       unless w.primeCoefficients.isNone && w.integralCoordinates.isNone &&
-          w.generatorCoordinates.isNone && w.torsionGeneratorCoordinates.isNone &&
+          w.integralFiberRoots.isNone && w.generatorCoordinates.isNone &&
+          w.torsionGeneratorCoordinates.isNone &&
           w.centralResult.isNone && w.derivativeResult.isNone &&
           w.minimality.isNone && w.localData.isNone &&
           w.infiniteOrderPoints.isNone && w.independentPoints.isNone do
-        throw (IO.userError "Missing optional data was manufactured")
-    | .error reason => throw (IO.userError reason)
+        throwError "Missing optional data was manufactured"
+    | .error reason => throwError reason
   let good ← IO.FS.readFile "data/curve-data/37a1.json"
   let malformed := [
     good.replace "\"97\"" "\"10001\"",
@@ -231,14 +293,14 @@ run_cmd do
   for text in malformed do
     match CurveDataJson.parse text with
     | .error _ => pure ()
-    | .ok _ => throw (IO.userError "Malformed curve-data JSON accepted")
+    | .ok _ => throwError "Malformed curve-data JSON accepted"
   for text in [good.replace "\"97\"" "97",
       good.replace "\"schema\":" "\"unknown\":true,\"schema\":"] do
     match CurveDataJson.parse text with
     | .ok _ => pure ()
-    | .error reason => throw (IO.userError s!"Supported partial data rejected: {reason}")
+    | .error reason => throwError s!"Supported partial data rejected: {reason}"
   let rankText ← IO.FS.readFile "data/witnesses/37a1.json"
-  let .ok rankJson := Json.parse rankText | throw (IO.userError "Invalid rank fixture")
+  let .ok rankJson := Json.parse rankText | throwError "Invalid rank fixture"
   let nested := Json.mkObj [
     ("analytic_witness", rankJson),
     ("subject", Json.mkObj [("label", .str "unverified metadata")]),
@@ -246,5 +308,5 @@ run_cmd do
   match CurveDataJson.parse nested.compress with
   | .ok w =>
     unless w.derivativeResult.isSome && w.primeCoefficients == some [(2, -2), (3, -3)] do
-      throw (IO.userError "Nested supported facts were dropped")
-  | .error reason => throw (IO.userError reason)
+      throwError "Nested supported facts were dropped"
+  | .error reason => throwError reason

@@ -58,8 +58,12 @@ for every input. `Name.curve` and `Name.nonsingular` identify its integral model
 The arithmetic theorems `prime_coefficients_valid`, `ap_correct`,
 `integral_coordinates_valid`, and `points_on_curve` quantify over the supplied
 lists (`getD []` when absent). `point i` and `point_integral i` construct the
-corresponding rational points in TauCeti's `curve.integralPoints`. Neither list
-certifies completeness or algebraic rank.
+corresponding rational points in TauCeti's `curve.integralPoints`.
+The `xcoord_integral_points` JSON list or the Lean `integralFiberRoots` field
+also produces `integral_fiber_roots`, `integral_y_fiber i` and
+`integral_y_fiber_complete i y`. They enumerate all integral y-coordinates at
+each indexed x. A coincident root counts once in the fiber. This certifies no
+exhaustivity over x or algebraic rank.
 
 When supplied, minimality and local data produce their named definitions,
 `minimality_eq` / `local_data_eq`, and `minimality_valid` / `local_data_valid`.
@@ -263,11 +267,11 @@ def certifyJson (name : Name) (text : String)
         "evaluator", "analytic_witness"]
       let localKeys := CurveDataJson.localReductionFields
       let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points",
-        "minimality", "local_data", "gens", "torsion_generators",
+        "minimality", "local_data", "gens", "torsion_generators", "torsion_generator_orders",
         "infinite_order_points", "independent_points", "binvs", "cinvs",
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
-        "j_integral", "potential_good_reduction"] ++
+        "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
         localKeys ++ if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
           then ["prime"] else []
       let skipped := object.toList.filterMap fun (key, _) =>
