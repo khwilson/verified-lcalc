@@ -51,7 +51,10 @@ jobs:
               sort -u
           )
           test "${#modules[@]}" -gt 0
-          lake exe cache get "${modules[@]}"
+          # The Mathlib pin is the head of mathlib4#44201 from khwilson/mathlib4.
+          # Use upstream master artifacts first, then the fork scope for the checked-out commit.
+          lake exe cache get --repo=khwilson/mathlib4 --cache-from=master,forks \
+            --scope=HEAD "${modules[@]}"
           lake exe cache clean!
       - name: Verify mathematical regressions
         run: make test-lean
