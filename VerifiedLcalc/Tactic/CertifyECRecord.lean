@@ -85,6 +85,25 @@ private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := d
       torsionGenerators := $torsionGenerators, infiniteOrderPoints := $infinite,
       independentPoints := $independent, rankLowerBound := $lowerBound })
 
+private def torsionFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
+  let boundName := base ++ `torsion_bound
+  unless (← getEnv).contains boundName do return ← `({})
+  let evidence := rootIdent (base ++ `claimed_torsion_bound)
+  let valid := rootIdent boundName
+  let consistent ← if (← getEnv).contains (base ++ `torsion_claim_consistent) then
+    `(some ⟨$(rootIdent (base ++ `claimed_torsion)),
+      $(rootIdent (base ++ `torsion_claim_consistent))⟩)
+  else `(none)
+  let exactName := base ++ `torsion
+  let exactCardinality ← if (← getEnv).contains exactName then do
+    let n ← if (← getEnv).contains (base ++ `claimed_torsion) then
+      `($(rootIdent (base ++ `claimed_torsion)))
+    else `(1)
+    `(some ⟨$n, $(rootIdent exactName)⟩)
+  else `(none)
+  `({ divisor := some ⟨($evidence).bound, $valid, $consistent⟩,
+      cardinality := $exactCardinality })
+
 /-- Emit the indexed public certificate with a standard-axiom dependency audit. -/
 def certifyRecord (base : Name) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
@@ -97,12 +116,13 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let algebraic ← algebraicFactsTerm base
   let arithmetic ← arithmeticFactsTerm base curve
   let analytic ← analyticFactsTerm base curve
+  let torsion ← torsionFactsTerm base
   let name := base ++ `certificate
   let certificate := rootIdent name
   emit (← `(def $certificate : EllipticCertificate $curve :=
     { nonsingular := $nonsingular, equationFacts := $equationFacts,
       rational := $rational, algebraic := $algebraic, arithmetic := $arithmetic,
-      analytic := $analytic }))
+      analytic := $analytic, torsion := $torsion }))
   auditAxioms name
 
 end VerifiedLcalc.CertifyEC

@@ -15,6 +15,22 @@ certify_ec Partial37 from_json_string
       "conductor":37,"global_root_number":-1,"anlist":[0,1,-2,-3]}"#
 example : (Partial37.curve.baseChange ℚ).j = 110592 / 37 := Partial37.j_invariant
 
+certify_ec TrivialTorsion from
+  { equation := ⟨0, 0, 1, -1, 0⟩, torsionBound := some ⟨3, 5, 1⟩ }
+
+example : Nat.card (AddCommGroup.torsion (TrivialTorsion.curve.baseChange ℚ).toAffine.Point) = 1 :=
+  TrivialTorsion.torsion
+
+certify_ec BoundedTorsion from_json_string
+  r#"{"ainvs":[0,1,0,0,4],"torsion":2,
+      "torsion_bound":{"first_prime":3,"second_prime":5,"bound":2}}"#
+
+example : Nat.card (AddCommGroup.torsion (BoundedTorsion.curve.baseChange ℚ).toAffine.Point) ∣ 2 :=
+  BoundedTorsion.torsion_bound.1
+
+certify_ec UncheckedTorsion from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"torsion":11}"#
+
 certify_ec JZero from_json_string
   r#"{"ainvs":[0,0,0,0,1],"jinv":"0","signD":-1,"discriminant":-432}"#
 certify_ec IntegralJ from { equation := ⟨0, 0, 0, 0, 1⟩, jIntegral := some true }
@@ -143,6 +159,9 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `proofs, `discriminant_witness, `checked_facts, `certificate,
       `claimed_j_invariant, `claimed_j_integral, `j_integral, `j_integral_input_eq,
       `j_integral_value_valid, `claimed_discriminant, `global_minimal,
+      `torsion, `torsion_bound, `claimed_torsion, `claimed_torsion_bound,
+      `torsion_input_eq, `torsion_bound_input_eq, `torsion_bound_value_valid,
+      `torsion_claim_consistent,
       `claimed_potential_good_reduction, `potential_good_reduction,
       `potential_good_reduction_input_eq, `potential_good_reduction_value_valid,
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
@@ -153,6 +172,16 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `WrongTorsion (← `(certify_ec WrongTorsion from
+    { TrivialTorsion.witness with torsion := some 2 }))
+  invariantRejected `InconsistentTorsion (← `(certify_ec InconsistentTorsion from
+    { BoundedTorsion.witness with torsion := some 3 }))
+  invariantRejected `WrongTorsionBound (← `(certify_ec WrongTorsionBound from
+    { TrivialTorsion.witness with torsionBound := some ⟨3, 5, 2⟩ }))
+  invariantRejected `TorsionAtBadPrime (← `(certify_ec TorsionAtBadPrime from
+    { TrivialTorsion.witness with torsionBound := some ⟨3, 37, 1⟩ }))
+
+
   invariantRejected `ConflictingAggregateReuse (← `(certify_ec ConflictingAggregateReuse from
     { equation := Invariants37.certificate.equation, cInvariants := some (48, 216) }
     with_proofs Invariants37.certificate.equationFacts))
@@ -230,6 +259,9 @@ run_cmd do
       `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation] do
     if (← getEnv).contains (`Partial37 ++ suffix) then
       throwError "Missing arithmetic evidence generated an invariant claim"
+  for name in [`BoundedTorsion, `UncheckedTorsion] do
+    if (← getEnv).contains (name ++ `torsion) then
+      throwError "Unproved torsion order generated a theorem"
   if (← getEnv).contains `NoPotentialGood.j_integral then
     throwError "An omitted j_integral claim generated a theorem"
   if (← getEnv).contains `IntegralJ.potential_good_reduction then
@@ -239,7 +271,8 @@ run_cmd do
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
-  for theoremName in [`IntegralJ.j_integral, `NonintegralJ.j_integral,
+  for theoremName in [`TrivialTorsion.torsion, `BoundedTorsion.torsion_bound,
+      `IntegralJ.j_integral, `NonintegralJ.j_integral,
       `PotentialGood.potential_good_reduction, `NoPotentialGood.potential_good_reduction] do
     for ax in ← liftTermElabM <| Lean.collectAxioms theoremName do
       unless standard.contains ax do throwError "Unexpected j-invariant check axiom: {ax}"
@@ -316,7 +349,8 @@ run_cmd do
     `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
     `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData]
   let analytic := #[`centralResult, `derivativeResult]
-  let tracked := equation ++ rational ++ algebraic ++ arithmetic ++ analytic
+  let torsion := #[`torsionBound, `torsion]
+  let tracked := equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion
   for field in fields do
     unless tracked.contains field do
       throwError "Add the checked data/proof contract for new witness field {field}"
@@ -329,3 +363,7 @@ example : JZero.certificate.equationFacts.discriminant.map Subtype.val = some (-
 
 example : NonintegralJ.certificate.rational.jIntegral.map Subtype.val = some false := rfl
 example : Partial37.certificate.arithmetic.minimalModel.isNone = true := rfl
+
+example : BoundedTorsion.certificate.torsion.divisor.isSome = true := rfl
+example : BoundedTorsion.certificate.torsion.cardinality.isNone = true := rfl
+example : TrivialTorsion.certificate.torsion.cardinality.map Subtype.val = some 1 := rfl

@@ -124,7 +124,8 @@ lower bound. The `arithmetic` field exposes the finite reduction facts and
 separate conditional results. To use a conditional arithmetic result, supply
 an explicit `ArithmeticModularRealization` of the equation. The `analytic`
 field keeps checked numerical payloads and separately gives ranks conditional
-on an explicit realization.
+on an explicit realization. The `torsion` field distinguishes a checked
+divisor and a consistent supplied count from an exact full-subgroup cardinality.
 
 For example, the following reads an invariant from a compiled certificate
 using its exact proof. The default handles a missing value using the equation.

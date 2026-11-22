@@ -4,6 +4,7 @@ public import VerifiedLcalc.Certification.CurveData
 public import VerifiedLcalc.Certificate.ArithmeticFacts
 public import VerifiedLcalc.Certificate.AnalyticFacts
 public import VerifiedLcalc.EllipticCurve.PointIndependence
+public import Mathlib.GroupTheory.Torsion
 
 /-!
 # Checked data for one integral Weierstrass equation
@@ -100,6 +101,23 @@ structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).
   rankLowerBound : Option { n : ℕ //
     (n : Cardinal) ≤ Module.rank ℤ (curve.baseChange ℚ).toAffine.Point } := none
 
+/-- A verified divisor of the whole torsion order and an optional consistent raw claim. -/
+structure TorsionDivisorFacts (curve : WeierstrassCurve ℤ) where
+  /-- The positive divisor obtained from good-reduction point counts. -/
+  bound : ℕ
+  /-- The full torsion order divides this positive value. -/
+  valid : Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) ∣ bound ∧ 0 < bound
+  /-- A supplied count consistent with the bound. -/
+  consistentClaim : Option { n : ℕ // 0 < n ∧ n ∣ bound } := none
+
+/-- Partial divisibility bounds and exact cardinality assertions for the torsion subgroup. -/
+structure TorsionFacts (curve : WeierstrassCurve ℤ) where
+  /-- Evidence giving a positive divisor of the full torsion order. -/
+  divisor : Option (TorsionDivisorFacts curve) := none
+  /-- The exact cardinality of the whole torsion subgroup when determined. -/
+  cardinality : Option { n : ℕ //
+    Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) = n } := none
+
 /-- The family-indexed certificate exported by the verification command. -/
 structure EllipticCertificate (curve : WeierstrassCurve ℤ)
     [(curve.baseChange ℚ).IsElliptic] where
@@ -115,6 +133,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   arithmetic : ArithmeticFacts curve
   /-- Checked numerical data and explicit-realization analytic results. -/
   analytic : AnalyticFacts curve
+  /-- The checked full-group torsion facts. -/
+  torsion : TorsionFacts curve
 
 /-- The integral Weierstrass equation indexing the whole certificate. -/
 def EllipticCertificate.equation {curve : WeierstrassCurve ℤ}
