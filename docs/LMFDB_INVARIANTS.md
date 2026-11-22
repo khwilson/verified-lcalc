@@ -47,6 +47,7 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `discriminant` | `discriminant` | Equality with this supplied equation's Mathlib Δ; does not assert minimality. |
 | `abc_quality` with `abc_quality_evidence` | `abcQuality` | Proved absolute error bound between the reported decimal and TauCeti’s real abc quality, using the factorization in the evidence. |
 | `regulator` with optional `regulator_evidence.error` | `regulator` | With a proved algebraic rank of zero, checks the exact rank-zero regulator value `1` against the reported decimal and explicit error. A report without an error is treated as exact; other ranks remain unverified. |
+| `special_value` with `special_value_evidence.error` | `specialLValue` | Checks the reported arithmetic Taylor leading coefficient against the actual central-value enclosure at order zero or first-derivative enclosure at order one, with explicit nonnegative rational error. Higher orders remain unverified. |
 | `jinv` | `jInvariant` | Equality with Mathlib's actual rational-curve `j`. Accepts an exact numerator/positive-denominator pair, fraction string, or integer. |
 | `j_integral` | `jIntegral` | Exact JSON boolean. The exported `j_integral` theorem equates `IsLocalization.IsInteger ℤ` of Mathlib's j-invariant with the supplied flag being true. |
 | `potential_good_reduction` | `potentialGoodReduction` | Exact JSON boolean. The exported theorem equates potential good reduction at every rational prime with the supplied flag being true. |

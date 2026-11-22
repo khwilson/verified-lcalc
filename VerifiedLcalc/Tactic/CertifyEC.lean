@@ -295,10 +295,13 @@ def certifyJson (name : Name) (text : String)
           if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
           then ["prime"] else []
       let checkedAbcQuality := (← getEnv).contains (base ++ `abc_quality)
+      let checkedSpecialValue := (← getEnv).contains (base ++ `special_value_valid)
       let skipped := object.toList.filterMap fun (key, _) =>
         if known.contains key || (checkedRank && rankKeys.contains key) ||
             (checkedCatalogueRank && key == "analytic_rank") ||
-            (checkedAbcQuality && ["abc_quality", "abc_quality_evidence"].contains key) then none
+            (checkedAbcQuality && ["abc_quality", "abc_quality_evidence"].contains key) ||
+            (checkedSpecialValue && ["special_value", "special_value_evidence"].contains key)
+          then none
         else some key
       unless skipped.isEmpty do
         logInfo m!"Unverified metadata (no claim emitted): {skipped}"
