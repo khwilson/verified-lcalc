@@ -12,6 +12,8 @@
   "torsion_generators": [[-2, 0, 1]],
   "anlist": [0, 1, 0, -2, 0, -4, 0, -1, 0],
   "conductor": 112,
+  "prime": 2,
+  "conductor_valuation": 4,
   "global_root_number": -1,
   "local_data": {"at_two": {"r": "0", "s": "1", "t": "0", "starT": "1", "cubicRoot": "1", "quadraticRoot": "0", "chain": ["0"], "kodaira": "-6"}, "at_three": null}
 }
