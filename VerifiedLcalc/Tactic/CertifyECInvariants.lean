@@ -355,7 +355,6 @@ private def certifyTorsionPrimes (base : Name) : CommandElabM Unit := do
     (← `(by
       have hcard : $orderTerm = Nat.card $torsionType := by
         rw [$cardinality:term]
-        decide +kernel
       intro p
       change p ∈ (Nat.primeFactorsList $orderTerm).eraseDups ↔
         p.Prime ∧ p ∣ Nat.card $torsionType
