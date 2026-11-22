@@ -99,7 +99,7 @@ missing theorem.
 | Group / fields | Proof work still needed |
 | --- | --- |
 | Local `kodaira_symbol`, `root_number`, `tamagawa_number`, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
-| `gens`, `torsion_generators`, `torsion`, `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | For noncyclic structure, prove independence of supplied generators and match the resulting subgroup order to a verified divisor. Membership alone does not prove subgroup order or exhaustivity. |
+| Noncyclic `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | Prove independence for noncyclic generators and match their subgroup order to a verified divisor. Prime support follows from the exact group order. Intrinsic torsion requires the torsion pairing. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Lower bounds already have the explicit independence route. Exact rank needs an upper-bound/descent certificate; integral-point counts need completeness proofs. |
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |
 | `cm`, quadratic-twist fields | Actual endomorphism/twist statements and, for a minimal twist, the required minimality comparison. A j-value lookup alone is not a CM certificate. |

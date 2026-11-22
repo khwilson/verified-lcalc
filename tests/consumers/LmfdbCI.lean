@@ -106,13 +106,13 @@ example :
       (1 : ℂ) = 1 :=
   Curve112.analytic_rank
 
+example : addOrderOf (LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩) = 2 :=
+  LMFDB.C112a2.torsion_generators.exact_order _
+
 example :
     (Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level.factorization 2 =
       4 :=
   (LMFDB.C112a2.conductor_valuation (2, 4) (by decide +kernel)).2
-
-example : addOrderOf (LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩) = 2 :=
-  LMFDB.C112a2.torsion_generators.exact_order _
 
 example :
     Nat.card (AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) = 2 :=
