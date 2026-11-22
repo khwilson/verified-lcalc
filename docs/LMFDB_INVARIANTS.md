@@ -72,8 +72,8 @@ multiplicative reduction. Certificates cover each supplied row individually.
 The producer stores Sage's PARI Kodaira codes. Code 1 represents good
 reduction `I₀`. For positive `n`, code `n + 4` represents `Iₙ`.
 The `kodaira_symbols` theorem gives the exact symbol for these codes.
-For an additive code it proves only that the symbol is outside the entire
-`Iₙ` family. Claims that contradict the checked family or multiplicative
+For an additive code it proves that the symbol is outside the entire
+`Iₙ` family and reports that the exact code remains unverified. Claims that contradict the checked family or multiplicative
 index are rejected. A specific additive symbol needs further terminal
 Tate-algorithm evidence.
 [Producer](https://github.com/JohnCremona/ecdata/blob/25cec5ecfec8b9f016eb1631ac633194c2bed39f/scripts/files.py#L137-L149)

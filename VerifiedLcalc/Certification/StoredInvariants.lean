@@ -215,6 +215,10 @@ theorem LocalReductionClaim.check_correct (row : LocalReductionClaim) (e : Weier
       · exact Or.inl ⟨ht.symm.trans (he.trans (ite_eq_left hroot)), hsplit.mpr hroot⟩
       · exact Or.inr ⟨ht.symm.trans (he.trans (ite_eq_right hroot)), mt hsplit.mp hroot⟩
 
+/-- Whether any row requests a specific additive Kodaira code. -/
+def hasAdditiveKodairaClaim (rows : List LocalReductionClaim) : Bool :=
+  rows.any fun row => row.kodairaSymbol.any fun code => (kodairaIIndex code).isNone
+
 /-- Exact canonical symbol for a good or multiplicative code, or exclusion of
 the multiplicative family for an additive code. -/
 def LocalReductionClaim.KodairaSpec (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)

@@ -93,6 +93,12 @@ example : (KodairaGood.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 
     (by decide +kernel)
   exact h 1 rfl
 
+/--
+info: KodairaAdditive: additive Kodaira family verified. Exact additive codes unverified.
+---
+info: Certified KodairaAdditive.ap_correct and KodairaAdditive.point_integral for the supplied lists
+-/
+#guard_msgs in
 certify_ec KodairaAdditive from_json_string
   r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],"prime":3,"kodaira_symbol":2}"#
 

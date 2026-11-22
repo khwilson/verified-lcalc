@@ -66,6 +66,11 @@ private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
           intro row hrow
           exact LocalReductionClaim.kodaira_correct row $curve $hn $hglobal
             (List.all_eq_true.mp $hv row hrow)))
+      let additive := mkApp (mkConst ``hasAdditiveKodairaClaim)
+        (mkConst (base ++ `claimed_local_invariants))
+      let additive ← liftTermElabM <| whnf additive
+      if additive.isConstOf ``Bool.true then
+        logInfo m!"{base}: additive Kodaira family verified. Exact additive codes unverified."
     else
       logInfo m!"Unverified {base} local_invariants: supply minimality evidence"
 
