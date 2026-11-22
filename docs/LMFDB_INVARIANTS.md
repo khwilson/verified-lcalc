@@ -23,6 +23,8 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `binvs`, `cinvs` | `bInvariants`, `cInvariants` | Equalities with Mathlib's b₂,b₄,b₆,b₈ and c₄,c₆. These are optional equation-data extensions. |
 | `discriminant` | `discriminant` | Equality with this supplied equation's Mathlib Δ; does not assert minimality. |
 | `jinv` | `jInvariant` | Equality with Mathlib's actual rational-curve `j`. Accepts an exact numerator/positive-denominator pair, fraction string, or integer. |
+| `j_integral` | `jIntegral` | Exact JSON boolean. The exported `j_integral` theorem equates `IsLocalization.IsInteger ℤ` of Mathlib's j-invariant with the supplied flag being true. |
+| `potential_good_reduction` | `potentialGoodReduction` | Exact JSON boolean. The exported theorem equates potential good reduction at every rational prime with the supplied flag being true. |
 | `signD` | `discriminantSign` | Equality with the sign of the equation's Δ. |
 | `absD` | `minimalDiscriminantAbs` | Actual TauCeti `IsGlobalMinimal` together with the claimed absolute discriminant; requires checked `minimality`. |
 | `bad_primes` | `badPrimes` | Complete, duplicate-free prime-divisor list of the minimal discriminant, and equivalence with non-elliptic finite-field reduction; requires `minimality`. |
@@ -40,8 +42,18 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | Point-index requests | `infiniteOrderPoints`, `independentPoints` | Infinite order and algebraic-rank lower bounds, with an explicit independence proof for a requested family. |
 | Complete numerical payload | `centralResult`, `derivativeResult` | Existing analytic-rank-zero/one certificates under the documented modularity assumption. |
 
-All equation invariants, minimality, bad-prime, coefficient, semistability, and local reduction results have only
-standard Lean axiom dependencies. Conductor and global-root identification are
+`j_integral` checks whether the j-invariant is the image of an integer.
+`potential_good_reduction` uses the same denominator computation to check
+potential good reduction over the p-adic integers at every rational prime.
+Both checks work without a supplied `jinv` value or minimality evidence.
+The geometric theorem follows from TauCeti's local integral j-invariant
+criterion and its rational denominator criterion.
+[Local criterion](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/PotentialGoodReduction.lean#L438-L442)
+· [Denominator criterion](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/NumberTheory/Padics/RatCast.lean#L67-L80)
+
+Equation invariants, minimality, bad-prime, coefficient, semistability, local
+reduction and potential good reduction results have only standard Lean axiom
+dependencies. Conductor and global-root identification are
 explicitly conditional. Supplying `minimality` also exports `global_minimal`.
 None of these checks certifies an external label or database provenance.
 
@@ -69,7 +81,6 @@ missing theorem.
 
 | Group / fields | Proof work still needed |
 | --- | --- |
-| `potential_good_reduction` | Integrate TauCeti's `hasPotentialGoodReduction_iff_isInteger_j` and connect it to the finite check on the denominator of `j`. |
 | Local `conductor_valuation`, `kodaira_symbol`, `root_number`, `tamagawa_number`, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
 | `gens`, `torsion_generators`, `torsion`, `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | Prove independence, generation, and a torsion upper bound. Membership alone does not prove subgroup order or exhaustivity. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Lower bounds already have the explicit independence route. Exact rank needs an upper-bound/descent certificate; integral-point counts need completeness proofs. |
