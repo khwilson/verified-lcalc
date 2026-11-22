@@ -118,6 +118,10 @@ for the supplied lists
 certify_ec TamagawaOutsideScope from_json_string
   r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],"prime":11,"tamagawa_number":5}"#
 
+certify_ec CompatibleTamagawaRows from_json_string
+  r#"{"ainvs":[0,0,8,-16,0],"prime":3,"tamagawa_number":1,
+      "local_invariants":[{"prime":3,"tamagawa_number":1}]}"#
+
 certify_ec SplitLocal from_json_string
   r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
       "local_invariants":[{"prime":11,"reduction_type":1}]}"#
@@ -192,6 +196,14 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `IncompatibleTamagawaRows (← `(certify_ec IncompatibleTamagawaRows
+    from_json_string
+    r#"{"ainvs":[0,0,8,-16,0],"prime":2,"tamagawa_number":1,
+        "local_invariants":[{"prime":2,"tamagawa_number":2}]}"#))
+  invariantRejected `IncompatibleTamagawaRowsReversed
+    (← `(certify_ec IncompatibleTamagawaRowsReversed from_json_string
+      r#"{"ainvs":[0,0,8,-16,0],"prime":2,"tamagawa_number":2,
+          "local_invariants":[{"prime":2,"tamagawa_number":1}]}"#))
   invariantRejected `WrongTamagawa (← `(certify_ec WrongTamagawa from
     { GoodTamagawa.witness with
       localInvariants := some [{ prime := 3, tamagawaNumber := some 2 }] }))
@@ -274,6 +286,7 @@ run_cmd do
       minimalDiscriminantAbs := some 151552 }))
   for suffix in [`minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
+      `local_invariants_agree, `local_invariants_agree_valid,
       `semistable, `squarefree_discriminant, `local_invariants, `conductor_valuation] do
     if (← getEnv).contains (`Partial37 ++ suffix) then
       throwError "Missing arithmetic evidence generated an invariant claim"
@@ -291,7 +304,8 @@ run_cmd do
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
-  for theoremName in [`GoodTamagawa.tamagawa_numbers,
+  for theoremName in [`CompatibleTamagawaRows.local_invariants_agree,
+      `GoodTamagawa.tamagawa_numbers,
       `TrivialTorsion.torsion, `BoundedTorsion.torsion_bound,
       `IntegralJ.j_integral, `NonintegralJ.j_integral,
       `PotentialGood.potential_good_reduction, `NoPotentialGood.potential_good_reduction] do

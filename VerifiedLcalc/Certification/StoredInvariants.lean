@@ -146,6 +146,40 @@ end VerifiedLcalc.Certification
 namespace VerifiedLcalc
 open EllipticCurve NumberField WeierstrassCurve
 
+/-- Optional claims agree when any two supplied values are equal. -/
+def OptionalValuesAgree {α : Type*} (a b : Option α) : Prop :=
+  match a, b with
+  | some x, some y => x = y
+  | _, _ => True
+
+instance {α : Type*} [DecidableEq α] (a b : Option α) :
+    Decidable (OptionalValuesAgree a b) := by
+  cases a <;> cases b <;> dsimp [OptionalValuesAgree] <;> infer_instance
+
+/-- Single-valued local invariants supplied for the same prime must agree. -/
+def LocalReductionClaim.Compatible (a b : LocalReductionClaim) : Prop :=
+  a.prime = b.prime →
+    OptionalValuesAgree a.discriminantValuation b.discriminantValuation ∧
+    OptionalValuesAgree a.jDenominatorValuation b.jDenominatorValuation ∧
+    OptionalValuesAgree a.reductionType b.reductionType ∧
+    OptionalValuesAgree a.tamagawaNumber b.tamagawaNumber ∧
+    OptionalValuesAgree a.conductorValuation b.conductorValuation
+
+instance (a b : LocalReductionClaim) : Decidable (a.Compatible b) := by
+  unfold LocalReductionClaim.Compatible
+  infer_instance
+
+/-- Verify compatibility across every pair of supplied local rows. -/
+def localReductionClaimsAgree (rows : List LocalReductionClaim) : Bool :=
+  rows.all fun a => rows.all fun b => decide (a.Compatible b)
+
+/-- The compatibility check gives agreement for every pair of input rows. -/
+theorem localReductionClaimsAgree_correct (rows : List LocalReductionClaim)
+    (h : localReductionClaimsAgree rows = true) :
+    ∀ a ∈ rows, ∀ b ∈ rows, a.Compatible b := by
+  intro a ha b hb
+  exact of_decide_eq_true (List.all_eq_true.mp (List.all_eq_true.mp h a ha) b hb)
+
 /-- Finite checks use the actual integral equation and the reduced rational
 formula for j. A reduction code is meaningful only at a bad prime.
 The conductor exponent is checked separately against the checked modular level. -/

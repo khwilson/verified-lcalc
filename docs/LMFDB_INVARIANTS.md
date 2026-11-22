@@ -79,6 +79,9 @@ multiplicative reduction of index one. The equality concerns TauCeti's
 minimality witness for this field. A claim outside this scope is reported
 as unverified. [Completed Tamagawa factor](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Product.lean#L47-L87)
 
+Local claims can be split across rows. When two rows name the same prime,
+any supplied single-valued invariants must agree.
+
 `root_number` in an `ec_localdata` row is **local**, at that row's `prime`.
 It is deliberately not decoded as a global sign. The local reduction table is
 not the same data format as the supplied checked Tate transcripts in `localData`.

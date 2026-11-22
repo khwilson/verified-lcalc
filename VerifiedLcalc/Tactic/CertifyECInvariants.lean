@@ -53,6 +53,12 @@ private def certifyReductionInvariants (base : Name) (curve m hm : Ident)
       logInfo m!"Unverified {base} squarefree_disc: supply minimality evidence"
   if let some rows ← bindStored base `localInvariants `local_invariants
       (← `(List LocalReductionClaim)) then
+    let hagree := rootIdent (base ++ `local_invariants_agree_valid)
+    checked (base ++ `local_invariants_agree_valid)
+      (← `(localReductionClaimsAgree $rows = true)) (← `(by decide +kernel))
+    checked (base ++ `local_invariants_agree)
+      (← `(∀ a ∈ $rows, ∀ b ∈ $rows, LocalReductionClaim.Compatible a b))
+      (← `(localReductionClaimsAgree_correct $rows $hagree))
     let hTam := rootIdent (base ++ `tamagawa_values_valid)
     checked (base ++ `tamagawa_values_valid)
       (← `(($rows).all (fun row => row.checkTamagawa $curve) = true)) (← `(by decide +kernel))
