@@ -114,6 +114,35 @@ record can carry an `EllipticProofs curve` and
 `c₄Value : {a : R // curve.c₄ = a}` side by side, and pass its
 first field to the current command.
 
+## Use the checked certificate
+
+Each successful command exports `Name.certificate` indexed by its integral
+Weierstrass equation. Its `equationFacts` and `rational` fields hold exact
+invariants. The `algebraic` field holds membership of supplied points, complete
+integral y-fibers above specified x-coordinates, individual point orders, an
+independent family, and a proved rank lower bound. The `arithmetic` field
+exposes finite reduction facts and separate conditional results. To use a conditional arithmetic result, supply
+an explicit `ArithmeticModularRealization` of the equation. The `analytic`
+field keeps checked numerical payloads and separately gives enclosures and
+ranks conditional on an explicit realization. The `torsion` field can carry a
+verified positive multiple of the full subgroup order, a consistent supplied
+count, and an exact cardinality when determined.
+
+The `torsion.cyclicStructure` projection gives the checked factors, order,
+and rational generator together with a generator-preserving equivalence.
+
+For example, the following reads an invariant from a compiled certificate
+using its exact proof. The default handles a missing value using the equation.
+
+```lean
+example : E.curve.Δ =
+    (E.certificate.equationFacts.discriminant.getD ⟨E.curve.Δ, rfl⟩).val :=
+  (E.certificate.equationFacts.discriminant.getD ⟨E.curve.Δ, rfl⟩).property
+```
+
+Use `E.certificate.equationFacts` as the `with_proofs` attachment when the
+next certificate checks the same integral equation.
+
 ## Import checked theorems
 
 Build the examples and their compiled certificates from the project root.
@@ -244,11 +273,11 @@ torsion point, the LMFDB `torsion` claim certifies the cardinality of the
 full rational torsion subgroup. Supply the cyclic `torsion_structure` as
 `[n]` for a nontrivial group of order `n`. The structure theorem gives an
 additive equivalence from `ZMod n` sending 1 to that first point. The trivial
-group uses `[]` and the identity point. If the verified divisor is larger
+group uses `[]` and the identity point. If the verified bound is larger
 than the claimed order, the cyclic certificate requires tighter evidence.
 Invariant factors must be greater than one and each must divide every later
 factor. Their product must agree with the claimed cardinality and divide the
-verified upper divisor when those claims are supplied. Each checked point
+verified divisibility bound when those claims are supplied. Each checked point
 order must divide the last factor, or one for the empty list.
 Generation and independence require separate evidence.
 

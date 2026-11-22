@@ -119,7 +119,7 @@ private def certifyTorsionInvariants (base : Name) (curve : Ident) : CommandElab
         have hdiv : $htorsion ∣ 1 := h₁ ▸ ($hbound).1
         exact (Nat.dvd_one.mp hdiv).trans (by decide +kernel)))
 
-/-- Recover cyclic torsion when the verified divisor matches an exact point order. -/
+/-- Recover cyclic torsion when the verified bound matches an exact point order. -/
 private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Unit := do
   let factors ← bindStored base `torsionStructure `torsion_structure (← `(List Nat))
   let orderName := base ++ `claimed_torsion
@@ -149,7 +149,7 @@ private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Un
       (← `(by decide +kernel))
   unless (← getEnv).contains (base ++ `torsion_bound) do
     if factors.isSome then
-      logInfo m!"Unverified {base} torsion_structure: supply a torsion divisor"
+      logInfo m!"Unverified {base} torsion_structure: supply a checked torsion bound"
     return
   let candidate := rootIdent (base ++ `claimed_torsion_bound)
   if factors.isSome then
@@ -159,7 +159,7 @@ private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Un
     let claimedBound ← Lean.Elab.Term.elabTerm (← `(($candidate).bound)) (some (mkConst ``Nat))
     Meta.isDefEq (mkConst nName) claimedBound
   unless equalBound do
-    logInfo m!"Unverified {base} cyclic torsion: the verified divisor must match the claimed order"
+    logInfo m!"Unverified {base} cyclic torsion: the verified bound must match the claimed order"
     return
   let trivial ← liftTermElabM <| Meta.isDefEq (mkConst nName) (mkNatLit 1)
   let pointOrder := base ++ `torsion_generators.exact_order
@@ -192,11 +192,13 @@ private def certifyCyclicTorsion (base : Name) (curve : Ident) : CommandElabM Un
     checked (base ++ `torsion) (← `(Nat.card $torsionType = $n))
       (← `(torsion_card_eq_of_order_dvd ($bound).2 $horder ($bound).1))
   if let some factors := factors then
+    let generator := rootIdent (base ++ `cyclic_torsion_generator)
+    emit (← `(def $generator : (($curve).baseChange ℚ).toAffine.Point := $point))
     let hf := rootIdent (base ++ `torsion_structure_claim_valid)
     checked (base ++ `torsion_structure)
       (← `($factors = (if $n = 1 then [] else [$n]) ∧
         ∃ e : ZMod $n ≃+ $torsionType,
-          (e 1 : (($curve).baseChange ℚ).toAffine.Point) = $point))
+          (e 1 : (($curve).baseChange ℚ).toAffine.Point) = $generator))
       (← `(⟨$hf, exists_torsion_addEquiv_of_order_dvd ($bound).2 $horder ($bound).1⟩))
 
 /-- Check one optional equation invariant and return the corresponding proved value. -/
