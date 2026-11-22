@@ -361,8 +361,7 @@ private def certifyTorsionPrimes (base : Name) : CommandElabM Unit := do
   checked (base ++ `torsion_primes_exact)
     (← `(∀ p, p ∈ $primes ↔ p.Prime ∧ p ∣ Nat.card $torsionType))
     (← `(by
-      have hcard : $orderTerm = Nat.card $torsionType := by
-        $hcardProof
+      have hcard : $orderTerm = Nat.card $torsionType := $hcardProof
       intro p
       change p ∈ (Nat.primeFactorsList $orderTerm).eraseDups ↔
         p.Prime ∧ p ∣ Nat.card $torsionType
