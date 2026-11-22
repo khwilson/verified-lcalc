@@ -69,6 +69,15 @@ example : ¬ WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
   have := AdditiveLocal.semistable.mp h
   contradiction
 
+certify_ec TrivialTorsion from
+  { equation := ⟨0, 0, 1, -1, 0⟩, torsion := some 1, torsionStructure := some [],
+    torsionBound := some ⟨3, 5, 1⟩ }
+example : Nat.card (AddCommGroup.torsion (TrivialTorsion.curve.baseChange ℚ).toAffine.Point) = 1 :=
+  TrivialTorsion.torsion
+
+certify_ec AssertedTorsionOnly from_json_string
+  r#"{"ainvs":[0,1,0,0,4],"torsion":2,"torsion_structure":[2]}"#
+
 certify_ec SplitLocal from_json_string
   r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
       "local_invariants":[{"prime":11,"reduction_type":1}]}"#
@@ -96,7 +105,8 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
       `semistable, `squarefree_discriminant, `local_invariants, `claimed_semistable,
-      `claimed_squarefree_discriminant, `claimed_local_invariants] do
+      `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_torsion,
+      `claimed_torsion_structure, `torsion_bound, `torsion, `torsion_structure] do
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
@@ -110,6 +120,12 @@ run_cmd do
     r#"{"ainvs":[0,0,1,-1,0],"potential_good_reduction":true}"#))
   invariantRejected `WrongNoPotentialGood (← `(certify_ec WrongNoPotentialGood from
     { PotentialGood.witness with potentialGoodReduction := some false }))
+  invariantRejected `WrongCyclicStructure (← `(certify_ec WrongCyclicStructure from
+    { equation := ⟨1, -1, -1, 0, 0⟩, torsionGeneratorCoordinates := some [(0, 0)],
+      torsionGeneratorOrders := some [4], torsion := some 4, torsionStructure := some [2, 2],
+      torsionBound := some ⟨3, 5, 4⟩ }))
+  invariantRejected `WrongTorsionBound (← `(certify_ec WrongTorsionBound from
+    { TrivialTorsion.witness with torsionBound := some ⟨2, 5, 1⟩ }))
   invariantRejected `WrongDiscriminant (← `(certify_ec WrongDiscriminant from
     { Invariants37.witness with discriminant := some (-37) }))
   invariantRejected `WrongB (← `(certify_ec WrongB from
@@ -162,6 +178,9 @@ run_cmd do
     throwError "An omitted j_integral claim generated a theorem"
   if (← getEnv).contains `IntegralJ.potential_good_reduction then
     throwError "An omitted potential_good_reduction claim generated a theorem"
+  for suffix in [`torsion, `torsion_structure] do
+    if (← getEnv).contains (`AssertedTorsionOnly ++ suffix) then
+      throwError "Missing torsion evidence generated a claim"
   if (← getEnv).contains `LocalSignMetadata.root_number then
     throwError "Local root metadata became a global sign theorem"
 

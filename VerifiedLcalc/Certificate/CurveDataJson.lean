@@ -224,6 +224,8 @@ def decode (j : Json) : Except String EllipticWitness := do
   let torsionGeneratorCoordinates ← optionalValue j "torsion_generators" weightedCoordinates
   let torsionGeneratorOrders ← optionalValue j "torsion_generator_orders" fun value => do
     (← array value 4096).toList.mapM nonnegativeInteger
+  let torsionStructure ← optionalValue j "torsion_structure" fun value => do
+    (← array value 16).toList.mapM nonnegativeInteger
   let numeric ← numericFields j
   let base := numeric.getD { equation }
   let primeData := if (optionalData j "ap").isSome || (optionalData j "aplist").isSome
@@ -290,6 +292,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     generatorCoordinates
     torsionGeneratorCoordinates
     torsionGeneratorOrders
+    torsionStructure
     infiniteOrderPoints
     independentPoints
     minimality

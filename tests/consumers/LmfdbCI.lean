@@ -109,6 +109,15 @@ example :
 example : addOrderOf (LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩) = 2 :=
   LMFDB.C112a2.torsion_generators.exact_order _
 
+example :
+    Nat.card (AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) = 2 :=
+  LMFDB.C112a2.torsion
+
+example : ∃ e : ZMod 2 ≃+ AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point,
+    (e 1 : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =
+      LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩ :=
+  LMFDB.C112a2.torsion_structure.2
+
 run_cmd do
   let unconditional := [``propext, ``Classical.choice, ``Quot.sound]
   let modularity := ``Assumptions.ellipticModularity
@@ -125,6 +134,8 @@ run_cmd do
   check `LMFDB.C112a2 `generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.exact_order false
+  check `LMFDB.C112a2 `torsion false
+  check `LMFDB.C112a2 `torsion_structure false
   check `LMFDB.C112a2 `dirichlet_coefficients false
   check `LMFDB.C197a1 `j_integral false
   check `LMFDB.C288a1 `j_integral false

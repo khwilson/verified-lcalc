@@ -39,6 +39,7 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | Integral coordinates / stored x-values | `integralCoordinates` | Point membership; not completeness of the integral-point set. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
 | `torsion_generator_orders` | `torsionGeneratorOrders` | Project-specific list giving an exact additive order for each supplied torsion generator point. |
+| Cyclic `torsion_structure` | `torsionStructure` | An additive equivalence onto the full rational torsion subgroup when the verified divisor matches the order of the first torsion point. |
 | Point-index requests | `infiniteOrderPoints`, `independentPoints` | Infinite order and algebraic-rank lower bounds, with an explicit independence proof for a requested family. |
 | Complete numerical payload | `centralResult`, `derivativeResult` | Existing analytic-rank-zero/one certificates under the documented modularity assumption. |
 
@@ -82,7 +83,7 @@ missing theorem.
 | Group / fields | Proof work still needed |
 | --- | --- |
 | Local `conductor_valuation`, `kodaira_symbol`, `root_number`, `tamagawa_number`, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
-| `gens`, `torsion_generators`, `torsion`, `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | Prove independence, generation, and a torsion upper bound. Membership alone does not prove subgroup order or exhaustivity. |
+| `gens`, `torsion_generators`, `torsion`, `torsion_structure`, `torsion_primes`, `intrinsic_torsion` | For noncyclic structure, prove independence of supplied generators and match the resulting subgroup order to a verified divisor. Membership alone does not prove subgroup order or exhaustivity. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Lower bounds already have the explicit independence route. Exact rank needs an upper-bound/descent certificate; integral-point counts need completeness proofs. |
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |
 | `cm`, quadratic-twist fields | Actual endomorphism/twist statements and, for a minimal twist, the required minimality comparison. A j-value lookup alone is not a CM certificate. |
