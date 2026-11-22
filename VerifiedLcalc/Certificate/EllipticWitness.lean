@@ -88,6 +88,8 @@ structure EllipticWitness where
   primeCoefficients : Option (List (Nat × Int)) := none
   /-- Claimed integral point coordinates on the supplied equation. -/
   integralCoordinates : Option (List (Int × Int)) := none
+  /-- One candidate integral root for each supplied x-coordinate whose fiber is certified. -/
+  integralFiberRoots : Option (List (Int × Int)) := none
   /-- Rational affine coordinates for the LMFDB generator list, checked for membership. -/
   generatorCoordinates : Option (List (Rat × Rat)) := none
   /-- Rational affine coordinates for the LMFDB torsion generator list, checked for membership. -/
