@@ -52,6 +52,14 @@ def emit (command : Syntax) : CommandElabM Unit := do
   if (← get).messages.hasErrors then
     throwError "certify_ec stopped: a generated declaration failed to check"
 
+/-- Audit transitive dependencies of an emitted certificate declaration. -/
+def auditAxioms (name : Name) (modularity := false) : CommandElabM Unit := do
+  let axioms ← liftTermElabM <| Lean.collectAxioms name
+  for axiomName in axioms do
+    unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName ||
+        (modularity && axiomName == `VerifiedLcalc.Assumptions.ellipticModularity) do
+      throwError "certify_ec rejected {name}: unexpected axiom {axiomName}"
+
 /-- Give every obligation a named declaration and audit its proof dependencies. -/
 def checked (name : Name) (type : TSyntax `term) (proof : TSyntax `term)
     (modularity := false) : CommandElabM Unit := do
@@ -60,11 +68,7 @@ def checked (name : Name) (type : TSyntax `term) (proof : TSyntax `term)
     emit (← `(theorem $(rootIdent name) : $type := $proof))
   catch error =>
     throwError "certify_ec failed checking {name}: {error.toMessageData}"
-  let axioms ← liftTermElabM <| Lean.collectAxioms name
-  for axiomName in axioms do
-    unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName ||
-        (modularity && axiomName == `VerifiedLcalc.Assumptions.ellipticModularity) do
-      throwError "certify_ec rejected {name}: unexpected axiom {axiomName}"
+  auditAxioms name modularity
 
 /-- Roll back every generated declaration if any component of a certificate fails. -/
 def atomic (action : CommandElabM Unit) : CommandElabM Unit := do
