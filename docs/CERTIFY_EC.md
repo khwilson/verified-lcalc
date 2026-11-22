@@ -169,9 +169,18 @@ LMFDB `gens` and `torsion_generators` accept exact weighted triples `[a,b,c]`
 with `c ≠ 0` and decode to `(a/c², b/c³)` in ℚ. The corresponding direct
 Lean fields `generatorCoordinates` and `torsionGeneratorCoordinates` take
 exact affine pairs. Each supplied list exports `coordinates`, `points_on_curve`
-and `point i` under `Name.generators` or `Name.torsion_generators`.
-These establish membership on the rational curve. The field names identify the
-source lists. Generation, point order, and independence are separate claims.
+and `point i` under `Name.generators` or `Name.torsion_generators`. These establish
+membership on the rational curve.
+
+To check individual torsion orders, supply the project-specific JSON field
+`torsion_generator_orders` or the Lean field `torsionGeneratorOrders`.
+Supply one claimed order per torsion coordinate pair in list order. Orders
+from 1 to 256 are accepted for checking. The command exports
+`Name.torsion_generators.exact_order i` for the corresponding affine point as
+a theorem about Mathlib’s `addOrderOf`. An incorrect order, mismatched list
+length, or missing coordinate list rejects the whole certificate. The
+default when no orders are supplied is membership checking alone.
+Generation and independence require separate evidence.
 
 The same `certify_ec` command establishes stronger facts when
 `infiniteOrderPoints` or `independentPoints` is supplied in the witness.

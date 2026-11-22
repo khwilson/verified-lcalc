@@ -77,14 +77,12 @@ private def certifyTorsionOrders (base : Name) (witness : TSyntax `term) : Comma
   let hcheck := CertifyEC.rootIdent (torsion ++ `orders_valid)
   CertifyEC.checked (torsion ++ `orders_valid)
     (← `((List.finRange ($coords).length).all (fun i =>
-      EllipticWitness.exactOrderCheck ($point i) ($orders)[i.val]'(by
-        rw [$hlen]
-        exact i.isLt)) = true))
+      EllipticWitness.exactOrderCheck ($point i) (($orders).get (Fin.cast ($hlen).symm i))) =
+      true))
     (← `(by decide +kernel))
   CertifyEC.checked (torsion ++ `exact_order)
-    (← `(∀ i : Fin ($coords).length, addOrderOf ($point i) = ($orders)[i.val]'(by
-      rw [$hlen]
-      exact i.isLt)))
+    (← `(∀ i : Fin ($coords).length,
+      addOrderOf ($point i) = ($orders).get (Fin.cast ($hlen).symm i)))
     (← `(by
       intro i
       exact EllipticWitness.exactOrderCheck_sound

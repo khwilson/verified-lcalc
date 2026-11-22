@@ -233,6 +233,14 @@ run_cmd do
         unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
           throwError "Unexpected rational-point certificate axiom: {axiomName}"
 
+run_cmd do
+  for name in [`TorsionOrderThree.torsion_generators, `TorsionOrderFour.torsion_generators] do
+    for suffix in [`orders_valid, `exact_order] do
+      let axioms ← liftTermElabM <| Lean.collectAxioms (name ++ suffix)
+      for axiomName in axioms do
+        unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+          throwError "Unexpected exact-order certificate axiom: {axiomName}"
+
 #eval show IO Unit from do
   for text in [r#"{"ainvs":[0,0,1,-1,0]}"#,
       r#"{"ainvs":[0,0,1,-1,0],"ap":null,"integral_points":null,
