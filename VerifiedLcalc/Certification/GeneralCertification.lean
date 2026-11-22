@@ -44,7 +44,8 @@ theorem certifyGeneralMinimalCentral (r : CentralResult)
     (hn : r.equation.Δ ≠ 0)
     (hmin : ∀ (p : ℕ) [Fact p.Prime],
       WeierstrassCurve.IsMinimal ((rationalPlace p).adicCompletionIntegers ℚ)
-        ((WeierstrassCurve.baseChange r.equation ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
+        ((WeierstrassCurve.baseChange r.equation
+          ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
           ((rationalPlace p).adicCompletion ℚ)))
     (ha : ArithmeticCompatibility r.equation r.conductor r.rootNumber)
     (hp : CentralPayloadCorrect r) (hz : r.box.excludesZero = true) :

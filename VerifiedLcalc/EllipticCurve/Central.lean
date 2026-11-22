@@ -48,15 +48,18 @@ theorem centralPayload_sound {r : CentralResult} {value : ℝ}
   rw [hbox]
   constructor
   · change (((Numerics.rationalExpSumBounds r.policy.precisionBits
-        ((centralTerms r.coefficients r.rootNumber r.alphaLo r.alphaHi).map Prod.snd)).1 - r.tail : Rat) : ℝ) ≤ value ∧
+        ((centralTerms r.coefficients r.rootNumber r.alphaLo r.alphaHi).map Prod.snd)).1 -
+          r.tail : Rat) : ℝ) ≤ value ∧
       value ≤ (((Numerics.rationalExpSumBounds r.policy.precisionBits
-        ((centralTerms r.coefficients r.rootNumber r.alphaLo r.alphaHi).map Prod.snd)).2 + r.tail : Rat) : ℝ)
+          ((centralTerms r.coefficients r.rootNumber r.alphaLo r.alphaHi).map Prod.snd)).2 +
+            r.tail : Rat) : ℝ)
     push_cast
     have ha := abs_le.mp ht
     constructor <;> linarith [hf.1, hf.2, ha.1, ha.2]
   · change (0 : ℝ) ∈ Set.Icc ((0 : Rat) : ℝ) ((0 : Rat) : ℝ)
     norm_num
 
+/-- The computed box encloses the central value identified by the series evidence. -/
 theorem evaluateCentral_sound {equation : (WeierstrassCurve ℤ)} {conductor : Nat}
     {rootNumber : Int} {limit : Nat} {policy : PrecisionPolicy} {r : CentralResult}
     {value : ℝ}
