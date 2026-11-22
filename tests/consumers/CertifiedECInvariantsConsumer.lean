@@ -49,3 +49,13 @@ theorem imported_additive_kodaira :
   have hsymbol' : fact.symbol.val = TauCeti.ReductionSymbol.II := by
     exact congrArg Subtype.val (Option.some.inj hsymbol.symm)
   exact fact.reductionSymbol_eq.trans hsymbol'
+
+example : VerifiedLcalc.EllipticProofs ProofCarrying37.curve := ProofCarrying37.checked_facts
+
+example : ProofCarrying37.checked_facts.bInvariants.map Subtype.val = some (0, -2, 1, -1) := rfl
+example : ProofCarrying37.checked_facts.cInvariants.map Subtype.val = some (48, -216) := rfl
+example : ProofCarrying37.checked_facts.discriminant.map Subtype.val = some 37 := rfl
+
+example : Invariants37.checked_facts.bInvariants.isSome = true := rfl
+example : Invariants37.checked_facts.cInvariants.isSome = true := rfl
+example : Invariants37.checked_facts.discriminant.isSome = true := rfl
