@@ -160,7 +160,9 @@ run_cmd do
   check `LMFDB.C112a2 `generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.points_on_curve false
   check `LMFDB.C179a1 `kodaira_symbols false
-  check `LMFDB.C179a1 `certificate false
+  for axiomName in ← liftTermElabM (Lean.collectAxioms ``LMFDB.C179a1.certificate) do
+    unless unconditional.contains axiomName do
+      throwError "Unexpected aggregate dependency {axiomName}"
   check `LMFDB.C112a2 `torsion_generators.exact_order false
   check `LMFDB.C112a2 `dirichlet_coefficients false
   check `LMFDB.C197a1 `j_integral false
