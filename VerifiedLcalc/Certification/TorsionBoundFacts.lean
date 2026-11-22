@@ -53,10 +53,10 @@ theorem checked {curve : WeierstrassCurve ℤ}
   have hq₂ := (bne_iff_ne.mpr facts.secondPrime_odd)
   have hpg : EllipticCurve.goodReduction curve facts.evidence.firstPrime = true :=
     (EllipticCurve.goodReduction_correct curve _).mpr
-      (isUnit_iff_ne_zero.mp facts.firstGoodReduction.1)
+      (isUnit_iff_ne_zero.mp facts.firstGoodReduction.isUnit)
   have hqg : EllipticCurve.goodReduction curve facts.evidence.secondPrime = true :=
     (EllipticCurve.goodReduction_correct curve _).mpr
-      (isUnit_iff_ne_zero.mp facts.secondGoodReduction.1)
+      (isUnit_iff_ne_zero.mp facts.secondGoodReduction.isUnit)
   have hgcd : Nat.gcd (EllipticCurve.computePointCount curve facts.evidence.firstPrime)
       (EllipticCurve.computePointCount curve facts.evidence.secondPrime) = facts.evidence.bound := by
     simpa only [← EllipticCurve.computePointCount_correct] using facts.pointCountGcd
