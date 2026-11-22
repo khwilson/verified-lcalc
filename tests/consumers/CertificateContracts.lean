@@ -5,12 +5,6 @@ import Lean
 
 open VerifiedLcalc Lean Elab Command
 
-#check IntegralXSupport
-#check CompleteIntegralPointFacts
-#check DegreeTwoIsogenyFact
-#check EllipticCurve.AlgebraicRankBounds
-#check RegulatorClaim
-#check RegulatorFacts
 example (curve : WeierstrassCurve ℤ) : Type := IntegralXSupport curve
 example (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] :
     Type := CompleteIntegralPointFacts curve
