@@ -194,6 +194,45 @@ def localReductionClaims (j : Json) :
     return some ((← localReductionClaim j) :: rows.getD [])
   return rows
 
+/-- Decode an exact JSON decimal or the catalogue's Sage real-literal encoding.
+The precision tag describes representation only and supplies no error bound. -/
+def exactReportedDecimal (j : Json) : Except String Rat := do
+  let value ← match j with
+    | .num _ => pure j
+    | .str text =>
+      unless text.length ≤ 512 do throw "Oversized reported decimal"
+      Json.parse text
+    | .obj _ =>
+      let kind ← nonnegativeInteger (← j.getObjVal? "__RealLiteral__")
+      unless kind = 0 do throw "Unexpected real literal encoding"
+      let _ ← nonnegativeInteger (← j.getObjVal? "prec")
+      Json.parse (← (← j.getObjVal? "data").getStr?)
+    | _ => throw "Expected a reported JSON decimal or real literal"
+  let number ← value.getNum?
+  unless number.exponent ≤ 512 && (toString number.mantissa).length ≤ 512 do
+    throw "Oversized reported decimal"
+  return (number.mantissa : Rat) / 10 ^ number.exponent
+
+/-- Decode an explicit regulator error as an exact decimal or rational value. -/
+def regulatorErrorValue (j : Json) : Except String Rat := do
+  let value ← match j with
+    | .str text => if text.contains '/' then rationalValue j else exactReportedDecimal j
+    | .arr _ => rationalValue j
+    | _ => exactReportedDecimal j
+  unless 0 ≤ value do throw "Expected a nonnegative regulator error"
+  return value
+
+/-- Decode a stored regulator report and optional explicit error evidence. -/
+def regulatorClaim (j : Json) : Except String (Option RegulatorClaim) := do
+  let evidence := optionalData j "regulator_evidence"
+  let some raw := optionalData j "regulator" | do
+    if evidence.isSome then throw "regulator_evidence requires regulator"
+    return none
+  let reported ← exactReportedDecimal raw
+  let error ← evidence.mapM fun value => do
+    regulatorErrorValue (← value.getObjVal? "error")
+  return some { reported, error }
+
 /-- Interpret the stored JSON decimal exactly when explicit error evidence is present. -/
 def abcQualityClaim (j : Json) : Except String (Option AbcQualityClaim) := do
   let some evidence := optionalData j "abc_quality_evidence" | return none
@@ -307,6 +346,7 @@ def decode (j : Json) : Except String EllipticWitness := do
   let discriminant ← optionalValue j "discriminant" integer
   let jInvariant ← optionalValue j "jinv" rationalValue
   let abcQuality ← abcQualityClaim j
+  let regulator ← regulatorClaim j
   let jIntegral ← optionalValue j "j_integral" Json.getBool?
   let potentialGoodReduction ← optionalValue j "potential_good_reduction" Json.getBool?
   let discriminantSign ← optionalValue j "signD" integer
@@ -343,6 +383,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     discriminant
     jInvariant
     abcQuality
+    regulator
     jIntegral
     potentialGoodReduction
     discriminantSign

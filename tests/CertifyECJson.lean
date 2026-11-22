@@ -1,4 +1,11 @@
 import VerifiedLcalc.Certificate.Json
+import VerifiedLcalc.Certificate.CurveDataJson
+
+/-! # Validate the supported elliptic-curve JSON schema
+
+These checks cover data decoding separately from the mathematical certificate
+proofs, including rejection of malformed rank, conductor and schema fields.
+-/
 
 -- Schema checks are data validation, independent of the mathematical certificates.
 #eval do
@@ -33,3 +40,45 @@ import VerifiedLcalc.Certificate.Json
   match VerifiedLcalc.CertificateJson.decimal (.str (String.ofList (List.replicate 513 '9'))) with
   | .error _ => pure ()
   | .ok _ => throw (IO.userError "Ordinary coefficient integer bound was relaxed")
+
+-- Catalogue real literals preserve their decimal payload exactly. Their `prec`
+-- field is representation metadata, not an implicit error certificate.
+#eval show IO Unit from do
+  let parse := fun text => match Lean.Json.parse text with
+    | .ok value => value
+    | .error reason => panic! reason
+  let literal := parse "{\"__RealLiteral__\":0,\"data\":\"1.000000000000\",\"prec\":97}"
+  match VerifiedLcalc.CurveDataJson.exactReportedDecimal literal with
+  | .ok value => unless value == 1 do throw (IO.userError "Real literal decimal changed value")
+  | .error reason => throw (IO.userError reason)
+  match VerifiedLcalc.CurveDataJson.exactReportedDecimal (.str "1.000") with
+  | .ok value => unless value == 1 do throw (IO.userError "Decimal string changed value")
+  | .error reason => throw (IO.userError reason)
+  match VerifiedLcalc.CurveDataJson.exactReportedDecimal (.str "1/1") with
+  | .error _ => pure ()
+  | .ok _ => throw (IO.userError "Malformed decimal string was accepted")
+  let exact := parse "{\"regulator\":{\"__RealLiteral__\":0,\"data\":\"1.0\",\"prec\":97}}"
+  match VerifiedLcalc.CurveDataJson.regulatorClaim exact with
+  | .ok (some claim) =>
+    unless claim.reported == 1 && claim.error.isNone do
+      throw (IO.userError "Exact rank-zero regulator claim was changed")
+  | .ok none => throw (IO.userError "Regulator claim was dropped")
+  | .error reason => throw (IO.userError reason)
+  let bounded := parse "{\"regulator\":0.999,\"regulator_evidence\":{\"error\":0.001}}"
+  match VerifiedLcalc.CurveDataJson.regulatorClaim bounded with
+  | .ok (some claim) =>
+    unless claim.reported == 999 / 1000 && claim.error == some (1 / 1000) do
+      throw (IO.userError "Decimal regulator enclosure changed value")
+  | .ok none => throw (IO.userError "Bounded regulator claim was dropped")
+  | .error reason => throw (IO.userError reason)
+  let fractionBound := parse "{\"regulator\":1,\"regulator_evidence\":{\"error\":\"1/1000\"}}"
+  match VerifiedLcalc.CurveDataJson.regulatorClaim fractionBound with
+  | .ok (some claim) =>
+    unless claim.error == some (1 / 1000) do
+      throw (IO.userError "Rational regulator error changed value")
+  | .ok none => throw (IO.userError "Rational-error regulator claim was dropped")
+  | .error reason => throw (IO.userError reason)
+  let bad := parse "{\"regulator\":1,\"regulator_evidence\":{\"error\":-0.1}}"
+  match VerifiedLcalc.CurveDataJson.regulatorClaim bad with
+  | .error _ => pure ()
+  | _ => throw (IO.userError "Negative regulator error was accepted")

@@ -4,6 +4,7 @@ public import VerifiedLcalc.Certificate.IntegralXSupport
 public import VerifiedLcalc.Certificates.CurveWitness
 public import VerifiedLcalc.Certificates.TorsionFacts
 public import VerifiedLcalc.Certificates.AlgebraicRank
+public import VerifiedLcalc.Certificates.Regulator
 public import VerifiedLcalc.EllipticCurve.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.DerivativeCore
 public import VerifiedLcalc.EllipticCurve.Tate.WildRootCore
@@ -76,6 +77,8 @@ structure EllipticWitness where
   jInvariant : Option Rat := none
   /-- An error bound on the reported abc quality. -/
   abcQuality : Option AbcQualityClaim := none
+  /-- Stored regulator value and any explicit error evidence. -/
+  regulator : Option RegulatorClaim := none
   /-- Whether the rational j-invariant belongs to the image of ℤ. -/
   jIntegral : Option Bool := none
   /-- Whether the curve has potential good reduction at every rational prime. -/

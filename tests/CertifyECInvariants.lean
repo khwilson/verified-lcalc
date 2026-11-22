@@ -34,14 +34,16 @@ example : RawAbcMetadata.witness.abcQuality = none := rfl
 certify_ec TrivialTorsion from
   { equation := ⟨0, 0, 1, -1, 0⟩, torsionBound := some ⟨3, 5, 1⟩ }
 
-example : Nat.card (AddCommGroup.torsion (TrivialTorsion.curve.baseChange ℚ).toAffine.Point) = 1 :=
+example : Nat.card
+    (AddCommGroup.torsion (TrivialTorsion.curve.baseChange ℚ).toAffine.Point) = 1 :=
   TrivialTorsion.torsion
 
 certify_ec BoundedTorsion from_json_string
   r#"{"ainvs":[0,1,0,0,4],"torsion":2,
       "torsion_bound":{"first_prime":3,"second_prime":5,"bound":2}}"#
 
-example : Nat.card (AddCommGroup.torsion (BoundedTorsion.curve.baseChange ℚ).toAffine.Point) ∣ 2 :=
+example : Nat.card
+    (AddCommGroup.torsion (BoundedTorsion.curve.baseChange ℚ).toAffine.Point) ∣ 2 :=
   BoundedTorsion.torsion_bound.1
 
 certify_ec UncheckedTorsion from_json_string
@@ -221,7 +223,8 @@ example {R : Type*} [CommRing R] (curve : WeierstrassCurve R) (d : R)
     (DiscriminantWitness.toProofs ⟨curve, d, h⟩).discriminant = some ⟨d, h⟩ := rfl
 
 example {R : Type*} [CommRing R] (curve : WeierstrassCurve R) (d : R) (h : curve.Δ = d) :
-    ({ discriminant := some ⟨d, h⟩ } : EllipticProofs curve).discriminant = some ⟨d, h⟩ := rfl
+    ({ discriminant := some ⟨d, h⟩ } : EllipticProofs curve).discriminant =
+      some ⟨d, h⟩ := rfl
 
 private theorem forbiddenDelta : Invariants37.curve.Δ = 37 :=
   (fun _ : Assumptions.GeneralEllipticModularity => Invariants37.discriminant)
@@ -553,7 +556,7 @@ run_cmd do
   let rational := #[`discriminantSign, `jInvariant, `jIntegral, `abcQuality]
   let algebraic := #[`integralCoordinates, `integralFiberRoots, `numIntegralPoints,
     `generatorCoordinates, `generatorCount, `algebraicRank, `algebraicRankBounds,
-    `torsionGeneratorCoordinates, `infiniteOrderPoints, `independentPoints]
+    `torsionGeneratorCoordinates, `infiniteOrderPoints, `independentPoints, `regulator]
   let arithmetic := #[`potentialGoodReduction, `minimalDiscriminantAbs, `conductor, `rootNumber,
     `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
     `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData]
@@ -575,6 +578,7 @@ run_cmd do
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
     `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol]
   cover ``AbcQualityClaim #[`reported, `error, `factors]
+  cover ``RegulatorClaim #[`reported, `error]
   cover ``TorsionBoundWitness #[`firstPrime, `secondPrime, `bound]
 
 example : EmptyProofs.certificate.equationFacts.discriminant.isNone = true := rfl

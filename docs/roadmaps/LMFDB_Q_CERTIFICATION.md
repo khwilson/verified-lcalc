@@ -268,6 +268,10 @@ decimal. Accept exact rank-zero regulator $1$, a positive-rank interval,
 both signs of Δ for periods and a case with different stable and unstable
 Faltings heights.
 
+The `certify_ec` command checks a stored regulator decimal against the exact
+rank-zero value when an exact algebraic rank proof is supplied. Positive-rank
+regulator enclosures remain part of the height/evaluator work above.
+
 **A3 · Analytic quotient and algebraic Sha.** Given A1–A2 and L2/M1 evidence,
 enclose the following quotient with a strictly positive denominator.
 

@@ -290,6 +290,7 @@ def certifyJson (name : Name) (text : String)
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
         "num_int_pts",
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
+        ["regulator", "regulator_evidence"] ++
         algebraicKeys ++ localKeys ++
           if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
           then ["prime"] else []
