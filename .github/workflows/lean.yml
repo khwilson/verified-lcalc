@@ -70,18 +70,25 @@ jobs:
           DEPENDENCY_FINGERPRINT: ${{ hashFiles('verified-lcalc/lean-toolchain', 'verified-lcalc/lake-manifest.json', 'verified-lcalc/lakefile.toml', 'verified-lcalc/lakefile.certificates.lean', 'verified-lcalc/scripts/tauceti-cache.toml') }}
         run: |
           test -n "$DEPENDENCY_FINGERPRINT"
-          echo "prefix=lean-project-v1-ubuntu24.04-$RUNNER_OS-$RUNNER_ARCH-$DEPENDENCY_FINGERPRINT-" >> "$GITHUB_OUTPUT"
+          prefix="lean-project-v1-ubuntu24.04-$RUNNER_OS-$RUNNER_ARCH-$DEPENDENCY_FINGERPRINT-"
+          echo "prefix=$prefix" >> "$GITHUB_OUTPUT"
+          echo "key=${prefix}$GITHUB_SHA-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
       - name: Restore project Lean artifacts
         id: project-cache
+        continue-on-error: true
         uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: verified-lcalc/.lake/project-cache
-          key: ${{ steps.project-cache-key.outputs.prefix }}${{ github.run_id }}-${{ github.run_attempt }}
+          key: ${{ steps.project-cache-key.outputs.key }}
           restore-keys: |
             ${{ steps.project-cache-key.outputs.prefix }}
       - name: Import cached Lake artifacts
-        if: steps.project-cache.outputs.cache-matched-key != ''
-        run: lake cache unstage .lake/project-cache
+        if: steps.project-cache.outcome == 'success' && steps.project-cache.outputs.cache-matched-key != ''
+        run: |
+          if ! (cd .lake/project-cache && sha256sum --check --quiet checksums.sha256) ||
+            ! lake cache unstage .lake/project-cache; then
+            echo "::warning::Could not import project cache artifacts. Lake will build from source."
+          fi
       - name: Verify mathematical regressions
         run: make test-lean
       - name: Verify ten LMFDB curve certificates
@@ -101,14 +108,17 @@ jobs:
           uv run --locked python scripts/check_lean_style.py "$base"
       - name: Stage project Lean artifacts
         run: |
-          # Export the production library's module artifacts through Lake. Keep
-          # .lake/build empty on restore so removed modules cannot be imported.
-          lake build VerifiedLcalc:irArts -o .lake/project-outputs.jsonl
+          # Export only root-package module artifacts. Lake materializes matches
+          # into the clean build directory after checking current source inputs.
+          lake -f lakefile.certificates.lean build \
+            VerifiedLcalc:irArts CertifiedCurves:irArts VerifiedLcalcTests:irArts \
+            +VerifiedLcalcTests.Fixtures.LmfdbCI:irArts -o .lake/project-outputs.jsonl
           rm -rf .lake/project-cache
           lake cache stage .lake/project-outputs.jsonl .lake/project-cache
+          (cd .lake/project-cache && sha256sum -- *.ltar outputs.jsonl > checksums.sha256)
       - name: Save project Lean artifacts from main
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/cache/save@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: verified-lcalc/.lake/project-cache
-          key: ${{ steps.project-cache.outputs.cache-primary-key }}
+          key: ${{ steps.project-cache-key.outputs.key }}
