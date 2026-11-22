@@ -5,8 +5,9 @@ import Lean
 
 open VerifiedLcalc Lean Elab Command
 
-example : Type := IntegralXSupport
-example (curve : WeierstrassCurve ℤ) : Type := CompleteIntegralPointFacts curve
+example (curve : WeierstrassCurve ℤ) : Type := IntegralXSupport curve
+example (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] :
+    Type := CompleteIntegralPointFacts curve
 example (source target : WeierstrassCurve ℤ) : Type := DegreeTwoIsogenyFact source target
 example : Type := TorsionBoundWitness
 example (curve : WeierstrassCurve ℤ) : Type := TorsionDivisorFacts curve
