@@ -23,6 +23,7 @@ and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
 | `binvs`, `cinvs` | `bInvariants`, `cInvariants` | Equalities with Mathlib's b₂,b₄,b₆,b₈ and c₄,c₆. These are optional equation-data extensions. |
 | `discriminant` | `discriminant` | Equality with this supplied equation's Mathlib Δ; does not assert minimality. |
 | `abc_quality` with `abc_quality_evidence` | `abcQuality` | Proved absolute error bound between the reported decimal and TauCeti’s real abc quality, using the factorization in the evidence. |
+| `regulator` with optional `regulator_evidence.error` | `regulator` | With a proved algebraic rank of zero, checks the exact rank-zero regulator value `1` against the reported decimal and explicit error. A report without an error is treated as exact; other ranks remain unverified. |
 | `jinv` | `jInvariant` | Equality with Mathlib's actual rational-curve `j`. Accepts an exact numerator/positive-denominator pair, fraction string, or integer. |
 | `j_integral` | `jIntegral` | Exact JSON boolean. The exported `j_integral` theorem equates `IsLocalization.IsInteger ℤ` of Mathlib's j-invariant with the supplied flag being true. |
 | `potential_good_reduction` | `potentialGoodReduction` | Exact JSON boolean. The exported theorem equates potential good reduction at every rational prime with the supplied flag being true. |
@@ -65,6 +66,20 @@ The logarithms are enclosed at 64 bits. A tighter error request can fail
 when those enclosures cannot establish it. A bare decimal remains metadata.
 Direct Lean input uses `AbcQualityClaim`.
 [LMFDB definition](https://www.lmfdb.org/knowledge/show/ec.q.abc_quality)
+
+Regulator reports accept an exact JSON decimal, canonical decimal string, or Sage `__RealLiteral__`
+encoding. The real literal's `data` string is interpreted exactly and its
+`prec` field is representation metadata only. An optional
+`regulator_evidence.error` supplies a nonnegative exact absolute error as a
+JSON decimal, decimal string, fraction string, or numerator/denominator pair; a
+binary float or precision tag never creates an error bound. An exact algebraic
+rank proof is required before the command exports
+`certificate.algebraic.regulator`. At rank zero TauCeti proves the regulator is
+exactly one, which is checked against the submitted enclosure. A disjoint
+enclosure or negative error rejects the certificate. Missing or partial rank
+proofs leave the regulator unverified.
+The rank-zero convention reuses TauCeti's
+[`regulator_eq_one_of_finrank_eq_zero`](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/MordellWeil/Regulator/Basic.lean#L109).
 
 `j_integral` checks whether the j-invariant is the image of an integer.
 `potential_good_reduction` uses the same denominator computation to check

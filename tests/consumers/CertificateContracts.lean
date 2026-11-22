@@ -9,6 +9,8 @@ open VerifiedLcalc Lean Elab Command
 #check CompleteIntegralPointFacts
 #check DegreeTwoIsogenyFact
 #check EllipticCurve.AlgebraicRankBounds
+#check RegulatorClaim
+#check RegulatorFacts
 
 section MordellWeilInstance
 variable {W : WeierstrassCurve ℚ} [W.toAffine.IsElliptic]

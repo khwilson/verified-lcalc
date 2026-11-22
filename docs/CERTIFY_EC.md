@@ -176,6 +176,19 @@ exports `Name.algebraic_rank`. The exported interval can be wider than the suppl
 proof interval. Reuse its typed witness as the `algebraicRank` field in a
 later proof attachment over the same equation.
 
+## Check a stored regulator
+
+The `regulator` field accepts an exact JSON decimal, canonical decimal string,
+or Sage real literal; its `prec` value is metadata and does not supply an error
+bound. Optional `regulator_evidence.error` gives a nonnegative exact absolute
+error as a decimal or rational value. With an
+exact algebraic rank proof of zero, the checker uses TauCeti's rank-zero
+regulator theorem to certify the enclosure in
+`Name.certificate.algebraic.regulator`. An omitted error is accepted only when
+the report is exactly one. A bad error or an enclosure disjoint from one rejects
+the whole command. Without an exact zero-rank proof, the field remains
+unverified; positive-rank regulators need a separate mathematical evaluator.
+
 An inline legacy analytic payload still uses `rank` for the numerical
 candidate. With nested `analytic_witness`, a top-level algebraic claim can be
 supplied separately. The explicit `algebraic_rank` key is also accepted.

@@ -18,6 +18,13 @@ theorem imported_mordell_weil_rank :
 example : Exact.certificate.algebraic.rankBounds.isSome := by decide
 example : Exact.certificate.algebraic.rank.isSome := by decide
 
+certify_ec RankOneRegulator from
+  { equation := Exact.curve, regulator := some ⟨1, none⟩ }
+  with_proofs { algebraicRank := some (Exact.certificate.algebraic.rankBounds.get (by decide)) }
+
+example : RankOneRegulator.certificate.algebraic.rank.isSome := by decide
+example : RankOneRegulator.certificate.algebraic.regulator.isNone := by decide
+
 /-- `ngens` proves the length of the checked submitted generator list only. -/
 example : (Exact.certificate.algebraic.generatorCount.map fun facts => facts.count) = some 1 := by
   rfl

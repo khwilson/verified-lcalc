@@ -97,7 +97,19 @@ def proofs : IntegralCurveProofs curve :=
     algebraicRank := some (.ofFinrankEq 0 finrank_eq_zero) }
 
 certify_ec Checked from_json_string
-  r#"{"ainvs":[0,0,1,0,-7],"xcoord_integral_points":[3,3],"num_int_pts":2,"rank":0}"#
+  r#"{
+    "ainvs":[0,0,1,0,-7],"xcoord_integral_points":[3,3],
+    "num_int_pts":2,"rank":0,
+    "regulator":{"__RealLiteral__":0,"data":"1.000000000000000000000","prec":97}
+  }"#
+  with_proofs proofs
+
+certify_ec ApproxRegulator from_json_string
+  r#"{
+    "ainvs":[0,0,1,0,-7],
+    "regulator":0.999,
+    "regulator_evidence":{"error":0.001}
+  }"#
   with_proofs proofs
 
 end VerifiedLcalc.Examples.Curve27a3
