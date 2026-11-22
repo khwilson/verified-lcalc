@@ -282,13 +282,15 @@ def certifyJson (name : Name) (text : String)
       let localKeys := CurveDataJson.localReductionFields
       let algebraicKeys := if CurveDataJson.inlineAnalyticRankField j then [] else ["rank"]
       let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points",
-        "minimality", "local_data", "gens", "ngens", "torsion_generators", "torsion_generator_orders",
+        "minimality", "local_data", "gens", "ngens", "torsion_generators",
+        "torsion_generator_orders",
         "torsion_structure", "rank_bounds", "algebraic_rank", "infinite_order_points",
         "independent_points", "binvs", "cinvs",
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
-        algebraicKeys ++ localKeys ++ if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
+        algebraicKeys ++ localKeys ++
+          if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
           then ["prime"] else []
       let checkedAbcQuality := (← getEnv).contains (base ++ `abc_quality)
       let skipped := object.toList.filterMap fun (key, _) =>
