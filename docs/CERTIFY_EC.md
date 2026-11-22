@@ -169,6 +169,14 @@ The resulting rational points use TauCeti's `pointOfIntegralSolution` and
 assert absence of points, and a nonempty list asserts neither completeness nor
 an algebraic-rank lower bound. Integrality refers to the supplied equation.
 
+LMFDB `gens` and `torsion_generators` accept exact weighted triples `[a,b,c]`
+with `c ≠ 0` and decode to `(a/c², b/c³)` in ℚ. The corresponding direct
+Lean fields `generatorCoordinates` and `torsionGeneratorCoordinates` take
+exact affine pairs. Each supplied list exports `coordinates`, `points_on_curve`
+and `point i` under `Name.generators` or `Name.torsion_generators`.
+These establish membership on the rational curve. The field names identify the
+source lists. Generation, point order, and independence are separate claims.
+
 The same `certify_ec` command establishes stronger facts when
 `infiniteOrderPoints` or `independentPoints` is supplied in the witness.
 The latter uses a `with_independence` proof clause. See

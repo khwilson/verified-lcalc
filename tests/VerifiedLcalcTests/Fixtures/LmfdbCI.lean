@@ -7,6 +7,7 @@ public import VerifiedLcalc.Tactic.CertifyEC
 
 The checked-in inputs are exact values from the LMFDB source snapshot. Each command elaborates
 and checks the supplied witnesses before exporting the resulting Lean theorems for consumers.
+The 112.a2 fixture covers both LMFDB rational generator coordinate lists.
 -/
 
 @[expose] public section
