@@ -5,6 +5,7 @@ public import VerifiedLcalc.Certificates.CurveWitness
 public import VerifiedLcalc.Certificates.TorsionFacts
 public import VerifiedLcalc.Certificates.AlgebraicRank
 public import VerifiedLcalc.Certificates.Regulator
+public import VerifiedLcalc.Certificates.SpecialValue
 public import VerifiedLcalc.EllipticCurve.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.DerivativeCore
 public import VerifiedLcalc.EllipticCurve.Tate.WildRootCore
@@ -63,6 +64,8 @@ This record asserts no mathematical validity. -/
 structure EllipticWitness where
   /-- Integral Weierstrass equation representing the input curve. -/
   equation : WeierstrassCurve ℤ
+  /-- A stored Taylor leading coefficient with explicit absolute-error evidence. -/
+  specialLValue : Option SpecialLValueClaim := none
   /-- LMFDB analytic rank to compare with an independently checked analytic payload. -/
   catalogueAnalyticRank : Option Nat := none
   /-- A supplied minimum-degree rational isogeny edge. -/

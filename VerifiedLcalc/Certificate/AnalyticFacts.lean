@@ -8,6 +8,7 @@ module
 public import VerifiedLcalc.Certification.GeneralCertification
 public import VerifiedLcalc.Certification.DerivativeEvaluator
 public import VerifiedLcalc.Certification.Precision
+public import VerifiedLcalc.Certificates.SpecialValue
 
 /-!
 # Typed numerical and analytic evidence
@@ -102,6 +103,8 @@ structure AnalyticFacts (curve : WeierstrassCurve ℤ) where
   derivative : Option (DerivativeNumericalFact curve) := none
   /-- A rank result available only with checked arithmetic witnesses and an explicit realization. -/
   rank : Option (ConditionalAnalyticRank curve) := none
+  /-- A reported Taylor leading coefficient checked against the actual enclosure. -/
+  specialValue : Option (SpecialLValueFacts curve) := none
 
 /-- The checked conductor and sign agree with any supplied arithmetic realization. -/
 private theorem realization_matching {curve : WeierstrassCurve ℤ}
