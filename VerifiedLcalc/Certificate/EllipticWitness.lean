@@ -27,6 +27,10 @@ structure DiscriminantWitness (R : Type*) [CommRing R] where
 structure EllipticProofs {R : Type*} [CommRing R] (curve : WeierstrassCurve R) where
   /-- A discriminant value with a proof about the indexed equation. -/
   discriminant : Option { d : R // curve.Δ = d } := none
+  /-- The ordered tuple of b₂, b₄, b₆ and b₈ with a proof about the equation. -/
+  bInvariants : Option { b : R × R × R × R // (curve.b₂, curve.b₄, curve.b₆, curve.b₈) = b } := none
+  /-- The ordered pair of c₄ and c₆ with a proof about the equation. -/
+  cInvariants : Option { c : R × R // (curve.c₄, curve.c₆) = c } := none
 
 /-- Attach a standalone discriminant witness to its own equation. -/
 def DiscriminantWitness.toProofs {R : Type*} [CommRing R] (w : DiscriminantWitness R) :
