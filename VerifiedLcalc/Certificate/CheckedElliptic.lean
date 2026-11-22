@@ -10,6 +10,7 @@ public import VerifiedLcalc.EllipticCurve.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.PointIndependence
 public import VerifiedLcalc.EllipticCurve.TorsionBound
 public import Mathlib.GroupTheory.Torsion
+public import Mathlib.Data.Nat.Factors
 
 /-!
 # Checked data for one integral Weierstrass equation
@@ -201,6 +202,47 @@ structure CyclicTorsionFacts (curve : WeierstrassCurve ℤ) where
     ∃ e : ZMod order ≃+ AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point,
       (e 1 : (curve.baseChange ℚ).toAffine.Point) = generator
 
+/-- A checked two-factor presentation of the full rational torsion subgroup. -/
+structure TwoFactorTorsionFacts (curve : WeierstrassCurve ℤ) where
+  /-- The order of the second supplied generator; the first factor has order two. -/
+  secondOrder : ℕ
+  /-- The second generator has positive exact order, so this is not a sentinel case. -/
+  secondOrder_pos : 0 < secondOrder
+  /-- The second invariant factor is divisible by the first factor. -/
+  first_factor_dvd_second : 2 ∣ secondOrder
+  /-- The order-two rational point in the supplied invariant-factor ordering. -/
+  firstGenerator : (curve.baseChange ℚ).toAffine.Point
+  /-- The rational point whose order is `secondOrder`. -/
+  secondGenerator : (curve.baseChange ℚ).toAffine.Point
+  /-- The actual additive equivalence onto Mathlib's full torsion subgroup. -/
+  equivalence : ZMod 2 × ZMod secondOrder ≃+
+    AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point
+  /-- The first coordinate generator maps to `firstGenerator`. -/
+  maps_first : (equivalence (1, 0) : (curve.baseChange ℚ).toAffine.Point) = firstGenerator
+  /-- The second coordinate generator maps to `secondGenerator`. -/
+  maps_second : (equivalence (0, 1) : (curve.baseChange ℚ).toAffine.Point) = secondGenerator
+  /-- The equivalence certifies the full subgroup cardinality. -/
+  cardinality : Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) =
+    2 * secondOrder
+
+/-- The normalized invariant factors of a checked two-factor presentation. -/
+def TwoFactorTorsionFacts.invariantFactors {curve : WeierstrassCurve ℤ}
+    (facts : TwoFactorTorsionFacts curve) : List ℕ := [2, facts.secondOrder]
+
+/-- The order of the full rational torsion subgroup in a two-factor presentation. -/
+def TwoFactorTorsionFacts.order {curve : WeierstrassCurve ℤ}
+    (facts : TwoFactorTorsionFacts curve) : ℕ := 2 * facts.secondOrder
+
+/-- Exact distinct prime support of a finite rational torsion subgroup. -/
+structure TorsionPrimeSupportFacts (curve : WeierstrassCurve ℤ) where
+  /-- The distinct prime divisors of the exact group order. -/
+  primes : List ℕ
+  /-- Each prime appears at most once. -/
+  nodup : primes.Nodup
+  /-- The list contains exactly the prime divisors of the full subgroup order. -/
+  exact_support : ∀ p, p ∈ primes ↔ p.Prime ∧
+    p ∣ Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point)
+
 /-- Partial divisibility bounds and exact cardinality assertions for the torsion subgroup. -/
 structure TorsionFacts (curve : WeierstrassCurve ℤ) where
   /-- Evidence that the full torsion order divides a checked positive bound. -/
@@ -210,6 +252,10 @@ structure TorsionFacts (curve : WeierstrassCurve ℤ) where
     Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) = n } := none
   /-- The checked cyclic structure, if requested and determined. -/
   cyclicStructure : Option (CyclicTorsionFacts curve) := none
+  /-- The checked `[2, n]` structure and generator-preserving equivalence, if determined. -/
+  twoFactorStructure : Option (TwoFactorTorsionFacts curve) := none
+  /-- Exact distinct prime support, only when the full torsion cardinality is known. -/
+  primeSupport : Option (TorsionPrimeSupportFacts curve) := none
 
 /-- The family-indexed certificate exported by the verification command. -/
 structure EllipticCertificate (curve : WeierstrassCurve ℤ)
