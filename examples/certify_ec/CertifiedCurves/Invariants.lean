@@ -21,8 +21,8 @@ certify_ec Invariants37 from
     semistable := some true
     squarefreeDiscriminant := some true
     localInvariants := some [
-      { prime := 37, discriminantValuation := some 1, jDenominatorValuation := some 1,
-        reductionType := some (-1) }]
+      { prime := 37, discriminantValuation := some 1, conductorValuation := some 1,
+        jDenominatorValuation := some 1, reductionType := some (-1) }]
     conductor := some 37
     rootNumber := some (-1)
     dirichletCoefficients := some [1, -2, -3, 2, -2, 6, -1, 0]
