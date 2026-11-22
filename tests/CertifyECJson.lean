@@ -1,6 +1,12 @@
 import VerifiedLcalc.Certificate.Json
 import VerifiedLcalc.Certificate.CurveDataJson
 
+/-! # Validate the supported elliptic-curve JSON schema
+
+These checks cover data decoding separately from the mathematical certificate
+proofs, including rejection of malformed rank, conductor and schema fields.
+-/
+
 -- Schema checks are data validation, independent of the mathematical certificates.
 #eval do
   let text ← IO.FS.readFile "data/witnesses/11a1.json"
