@@ -1,51 +1,45 @@
-# Certificate contract modules
+# Certificate witnesses
 
-The canonical contract API is collected in `VerifiedLcalc.Certificates`. A
-contract module declares mathematical data carried by a certificate; checking
-algorithms, JSON encodings, and proofs that construct contracts stay in
-`VerifiedLcalc.Certification`, `VerifiedLcalc.Certificate`, and `VerifiedLcalc.Tactic`.
-The umbrella imports these data contracts without the checker modules that
-construct or verify their evidence.
+Import `VerifiedLcalc.Certificate.Witnesses` for the public structures used by
+`certify_ec`. The [witness directory](../VerifiedLcalc/Certificate/Witnesses)
+contains their Lean declarations.
 
-## Current module map
+| Start here | What to read |
+| --- | --- |
+| [EllipticWitness.lean](../VerifiedLcalc/Certificate/Witnesses/EllipticWitness.lean) | `EllipticWitness` holds the integral Weierstrass equation and the optional input for each check. `IntegralCurveProofs` carries additional input proofs. |
+| [EllipticCertificate.lean](../VerifiedLcalc/Certificate/Witnesses/EllipticCertificate.lean) | `EllipticCertificate` is the type of `Name.certificate`. Its fields group the checked equation, rational invariants, algebraic, arithmetic and analytic facts, torsion, and isogeny evidence for the indexed curve. |
+| [CurveProofs.lean](../VerifiedLcalc/Certificate/Witnesses/CurveProofs.lean) | `DiscriminantWitness` pairs a Mathlib curve with a value and the proof `curve.Δ = discriminant`. `EllipticProofs` stores optional checked invariants indexed by one equation. |
 
-| Public type | Canonical module | Definition provenance |
-| --- | --- | --- |
-| `IntegralXSupport` | `VerifiedLcalc.Certificates.IntegralXSupport` | Mathlib's `WeierstrassCurve` and affine equation (`Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic`). |
-| `CompleteIntegralPointFacts` | `VerifiedLcalc.Certificates.IntegralPointCount` | The set of integral points is TauCeti's `WeierstrassCurve.integralPoints`; coordinate completeness and cardinality are certificate evidence. |
-| `AlgebraicRankBounds` | `VerifiedLcalc.Certificates.AlgebraicRank` | Mathlib's `Module.finrank` on the rational affine point module; TauCeti supplies the Mordell–Weil finite-generation instance for nonsingular rational curves. |
-| `RegulatorClaim`, `RegulatorFacts` | `VerifiedLcalc.Certificates.Regulator` | TauCeti's Néron–Tate regulator; the claim is raw decimal data and the facts carry a proved real enclosure. |
-| `SpecialLValueClaim`, `SpecialLValueFacts` | `VerifiedLcalc.Certificates.SpecialValue` (standalone) | The claim is exact reported data; facts state the normalized leading-coefficient enclosure for every `ArithmeticModularRealization` of the indexed curve. This standalone contract depends on the existing mathematical realization type at `VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealization`; it is kept out of the light umbrella until that type has a light contract module. |
-| `DegreeTwoIsogenyFact` | `VerifiedLcalc.Certificates.DegreeTwoIsogeny` | TauCeti's isogeny type, kernel, and degree (`Isogeny.Kernel` and `Isogeny.Degree`). Velu construction and minimum-degree checking remain in `VerifiedLcalc.Certification.DegreeTwoIsogeny`. |
-| `TorsionBoundWitness` | `VerifiedLcalc.Certificates.TorsionFacts` | Submitted prime/count data; the underlying finite-field object is Mathlib's `ZMod` and TauCeti's `WeierstrassCurve.pointCount`. |
-| `TorsionDivisorFacts` | `VerifiedLcalc.Certificates.TorsionFacts` | Mathematical evidence states prime and odd hypotheses, ellipticity of both reductions, the actual point-count gcd, positivity, and divisibility of the full torsion subgroup cardinality. `VerifiedLcalc.Certification.TorsionBoundFacts` adapts the finite computation to these endpoints. |
-| `CyclicTorsionFacts`, `TwoFactorTorsionFacts` | `VerifiedLcalc.Certificates.TorsionFacts` | Use Mathlib `ZMod`, additive equivalences, and the actual `AddCommGroup.torsion` subgroup of TauCeti's rational affine point group. |
-| `TorsionPrimeSupportFacts`, `TorsionFacts` | `VerifiedLcalc.Certificates.TorsionFacts` | The support proposition refers directly to prime divisors of `Nat.card` of the actual full rational torsion subgroup. |
-| `Box`, `RealInterval` | `VerifiedLcalc.Certificates.Enclosures` | Exact rational endpoints; `Box.valid`, `Box.isZero`, and `Box.excludesZero` state the interval predicates directly. |
-| `PrecisionPolicy` | `VerifiedLcalc.Certificates.PrecisionPolicy` | Raw precision bit count and its exact legacy cutoff; the cutoff is a classification threshold, not an evaluator error bound. |
-| `MinimalityWitness`, `TateWitness`, `WildData` | `VerifiedLcalc.Certificates.Transcripts` | Finite arithmetic transcript data. Rechecking and geometric/local compatibility remain in the reduction and Tate cores. |
-| `CentralResult`, `DerivativeResult` | `VerifiedLcalc.Certificates.NumericalData` | Raw numerical outputs, including equation, normalization inputs, coefficient prefix, precision, integral/quadrature enclosure and tail. |
-| `CentralPayloadCorrect`, `DerivativePayloadCorrect` | `VerifiedLcalc.Certificates.NumericalContracts` | Exact predicates relating payloads to the specified central and first-derivative formulae. Evaluators and their correctness proofs remain in the existing implementation modules. |
-| `Witness`, `Certificate` | `VerifiedLcalc.Certificates.Scan` | A typed finite proof that earlier boxes are singleton zero and the selected box excludes zero. The executable scan remains in the legacy module. |
-| `Box.Contains`, `Encloses` | `VerifiedLcalc.Certificates.AnalyticEnclosures` | Exact real and imaginary interval membership for supplied complex values; analytic derivative enclosures remain proof obligations. |
-| `AnalyticCertificate` | `VerifiedLcalc.Certificates.AnalyticRank` | A witnessed rank tied to the same derivative boxes and the analytic order theorem. |
-| `Artifacts.{Normalization,Subject,Settings,BuildIdentity,Request,Artifact,WitnessAccepts,Checked}` | `VerifiedLcalc.Certificates.Artifacts` | Raw request and artifact data plus a pure witness-based acceptance contract. Search and Boolean checking remain in the singular compatibility module. |
-| `NumericalRanks.{Request,Artifact,CutoffAccepts,Checked}` | `VerifiedLcalc.Certificates.NumericalRanks` | Raw threshold-observation data and its exact rational cutoff contract. |
-| `Artifacts.{Subject.Denotes,AnalyticEvidence}`, `NumericalRanks.{SmallDerivatives,Evidence,ExactVanishingHypothesis}` | `VerifiedLcalc.Certificates.AnalyticEvidence` | Mathematical function, derivative-enclosure, and conditional exact-vanishing obligations, independent of the evaluator. |
-| `DiscriminantWitness`, `EllipticProofs` | `VerifiedLcalc.Certificates.CurveWitness` | Use Mathlib's `WeierstrassCurve` discriminant and invariant expressions, with equality proofs indexed by the supplied equation. |
-| `AbcQualityClaim` | `VerifiedLcalc.Certificates.CurveWitness` | Raw submitted rational report, error, and factor list; no checking algorithm is part of the record. |
-| `RationalInvariantFacts` | `VerifiedLcalc.Certificates.RationalInvariants` | Sign, rational j-invariant, and integer-localization predicate are stated directly for the integral equation or its rational base change. |
-| `AbcQualityFacts` | `VerifiedLcalc.Certificates.RationalInvariants` | Refers to TauCeti's `WeierstrassCurve.abcQuality`, exact reduced abc-product factorization, and prime factors. The checker-success boolean remains in the `Certification.CheckedAbcQualityFacts` backend companion because the exact error enclosure does not imply the backend's particular interval test succeeded. |
-| `AffineMembership`, `InfiniteOrderPointFact`, `IndependentPointFacts` | `VerifiedLcalc.Certificates.PointFacts` | Membership is the actual affine Weierstrass equation; rational points lift through TauCeti's `pointOfIntegralSolution`; infinite order and integer linear independence refer to those points. |
-| `TorsionGeneratorOrderFacts` | `VerifiedLcalc.Certificates.PointFacts` | Exact additive orders of the submitted points, indexed by Mathlib's `addOrderOf`. |
-| `GeneratorCountFacts` | `VerifiedLcalc.Certificates.PointFacts` | The claimed count equals the length of the supplied coordinate list; it makes no generation claim. |
-| `IntegralYFiberFacts` | `VerifiedLcalc.Certificates.PointFacts` | Each finite fiber is exactly the set of integer y-coordinates satisfying the supplied Weierstrass equation at its indexed x-coordinate. |
+## Field structures
 
-Existing singular import paths continue to expose migrated records and
-historical `.computed`/`.accepted` projections for compatibility.
-`tests/consumers/CertificateContracts.lean` imports the plural umbrella, checks
-the public declarations, and rejects accidental imports of checker and
-evaluator modules. `tests/consumers/CertificateCompatibility.lean` checks the
-legacy projections through the singular imports.
-`VerifiedLcalc.Certificate.EllipticWitness` reexports the moved curve witness
-declarations for existing import paths.
+| Subject | Witness files and mathematical content |
+| --- | --- |
+| Rational invariants | [RationalInvariants](../VerifiedLcalc/Certificate/Witnesses/RationalInvariants.lean) records the sign, rational j-invariant, and an enclosure for TauCeti's abc quality with its factorization evidence. |
+| Rational and integral points | [PointMembership](../VerifiedLcalc/Certificate/Witnesses/PointMembership.lean) states the affine equation. [PointFacts](../VerifiedLcalc/Certificate/Witnesses/PointFacts.lean) records exact orders, linear independence, generator-list length, and integral y-fibers. [IntegralPoints](../VerifiedLcalc/Certificate/Witnesses/IntegralPoints.lean) covers exhaustive x-coordinate support and the cardinality of TauCeti's set of integral points. |
+| Mordell–Weil rank and regulator | [AlgebraicRank](../VerifiedLcalc/Certificate/Witnesses/AlgebraicRank.lean) gives bounds on Mathlib's integer `Module.finrank` using TauCeti's Mordell–Weil finite-generation instance. [Regulator](../VerifiedLcalc/Certificate/Witnesses/Regulator.lean) states an enclosure for TauCeti's Néron–Tate regulator. |
+| Torsion and isogenies | [Torsion](../VerifiedLcalc/Certificate/Witnesses/Torsion.lean) covers reduction point counts, divisibility, the full torsion subgroup and its invariant factors. [DegreeTwoIsogeny](../VerifiedLcalc/Certificate/Witnesses/DegreeTwoIsogeny.lean) uses TauCeti's isogeny, kernel and degree. |
+| Reduction and arithmetic | [LocalClaims](../VerifiedLcalc/Certificate/Witnesses/LocalClaims.lean) contains supplied local rows and isogeny edge claims. [Transcripts](../VerifiedLcalc/Certificate/Witnesses/Transcripts.lean) contains minimality and tame/wild Tate data. [ArithmeticFacts](../VerifiedLcalc/Certificate/Witnesses/ArithmeticFacts.lean) includes minimal-model facts, local Tamagawa and Kodaira evidence, coefficients and conditional modular level and sign. |
+| L-function and leading coefficient | [AnalyticFacts](../VerifiedLcalc/Certificate/Witnesses/AnalyticFacts.lean) contains verified payloads, enclosures and analytic rank for an explicit realization. [SpecialValue](../VerifiedLcalc/Certificate/Witnesses/SpecialValue.lean) states the reported Taylor leading coefficient and its error bound for that curve. |
+
+The directory also contains the derivative boxes, numerical outputs, precision
+claims, and generic scan and artifact records. [Witnesses.lean](../VerifiedLcalc/Certificate/Witnesses.lean)
+lists the ordinary modules. [AssumedEvidence](../VerifiedLcalc/Certificate/Witnesses/AssumedEvidence.lean)
+and [CurvePrecision](../VerifiedLcalc/Certificate/Witnesses/CurvePrecision.lean)
+have separate imports because their types refer to the modularity assumption.
+
+## Predicates, computations and theorems
+
+A witness field may ask for a proof of a proposition. Give the proof where the
+witness is constructed. Put named predicates, derived instances, constructors
+implemented as functions, verification code, and theorems outside the witness
+directory. For example, the [torsion checker](../VerifiedLcalc/Certification/TorsionBoundFacts.lean)
+constructs evidence about the actual rational torsion subgroup, and the
+[special-value checker](../VerifiedLcalc/Certification/SpecialValue.lean)
+turns derivative enclosures into an error bound for the reported coefficient.
+
+The earlier `VerifiedLcalc.Certificates` and singular import paths continue to
+provide their public APIs. The [layout audit](../tests/consumers/WitnessLayout.lean)
+parses every witness file with Lean and checks where the main types are defined.
+The [import audit](../tests/consumers/CertificateContracts.lean) exercises the
+lightweight compatibility API, and the [projection tests](../tests/consumers/CertificateCompatibility.lean)
+check existing downstream proofs.

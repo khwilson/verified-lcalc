@@ -1,25 +1,12 @@
 module
 
-public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenerated -- shake: keep
+public import VerifiedLcalc.Certificate.Witnesses.AlgebraicRank
 
 /-! # Natural-valued algebraic rank bounds for rational elliptic curves -/
 
 @[expose] public section
 
 namespace VerifiedLcalc.EllipticCurve
-
-/-- Checked lower and upper bounds on the Mordell–Weil rank of a nonsingular
-rational Weierstrass curve. TauCeti supplies finite generation from the
-Mordell–Weil theorem, so the natural-valued `finrank` is the actual rank. -/
-structure AlgebraicRankBounds (W : WeierstrassCurve ℚ) [W.toAffine.IsElliptic] where
-  /-- The claimed lower endpoint. -/
-  lower : ℕ
-  /-- The claimed upper endpoint. -/
-  upper : ℕ
-  /-- The actual rank is at least the lower endpoint. -/
-  lower_le_finrank : lower ≤ Module.finrank ℤ W.toAffine.Point
-  /-- The actual rank is at most the upper endpoint. -/
-  finrank_le_upper : Module.finrank ℤ W.toAffine.Point ≤ upper
 
 /-- A proof of exact natural-valued rank gives the corresponding singleton interval. -/
 def AlgebraicRankBounds.ofFinrankEq {W : WeierstrassCurve ℚ} [W.toAffine.IsElliptic]

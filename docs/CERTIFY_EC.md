@@ -117,9 +117,11 @@ first field to the current command.
 ## Use the checked certificate
 
 Each successful command exports `Name.certificate` indexed by its integral
-Weierstrass equation. Its public data contracts live in
-`VerifiedLcalc/Certificates/`; the import-only umbrella is
-`VerifiedLcalc.Certificates`. These modules use Mathlib and TauCeti objects where
+Weierstrass equation. Its input and output structures are declared in
+[`Certificate/Witnesses/`](../VerifiedLcalc/Certificate/Witnesses).
+Import `VerifiedLcalc.Certificate.Witnesses` to use the structures.
+The [module map](CERTIFICATE_CONTRACT_LAYOUT.md) lists their source files.
+These modules use Mathlib and TauCeti objects where
 available, with local definitions limited to specific certificate encodings
 that upstream does not provide. Proof-only dependencies remain ordinary imports,
 and public re-exports are reserved for declarations in signatures and the

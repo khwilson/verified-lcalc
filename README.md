@@ -49,8 +49,10 @@ set_option maxHeartbeats 10000000
 certify_ec MyCurve from_json "witness.json"
 ```
 
-All inputs use one `EllipticWitness` record: a `WeierstrassCurve ℤ` equation
-and optional fact fields defaulting to `none`. For complete rank candidates,
+All inputs use one `EllipticWitness` record with a `WeierstrassCurve ℤ` equation
+and optional fact fields defaulting to `none`. The [witness directory](VerifiedLcalc/Certificate/Witnesses)
+contains the input record, the checked `EllipticCertificate` exported as
+`Name.certificate`, and their component structures. For complete rank candidates,
 `EllipticWitness.central result minimality localData` and
 `.derivative result minimality localData` populate this same record.
 See [CERTIFY_EC.md](docs/CERTIFY_EC.md) for complete examples,

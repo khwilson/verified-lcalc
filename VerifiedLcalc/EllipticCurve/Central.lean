@@ -1,24 +1,20 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.EllipticCurve.CentralFinite
 public import VerifiedLcalc.EllipticCurve.CentralTail
 public import VerifiedLcalc.EllipticCurve.Coefficients
+public import VerifiedLcalc.Certificate.Witnesses.CentralSeriesEvidence
+
+/-! Soundness results for central-value series evidence. -/
 
 @[expose] public section
 
 namespace VerifiedLcalc.EllipticCurve
-
-/-- Remaining analytic obligations for an actual central value. The series
-must be the convergent split-Mellin exponential series, not the raw Dirichlet
-series evaluated outside its convergence domain. The coefficient majorant and
-prefix identity are mathematical proofs, never unchecked runtime flags. -/
-structure CentralSeriesEvidence (r : CentralResult) (value : ℝ) where
-  series : Nat → ℝ
-  formula : HasSum series value
-  finiteSum : (∑ j ∈ Finset.range r.termLimit, series j) =
-    centralFiniteValue r.coefficients r.rootNumber (2 * Real.pi / Real.sqrt r.conductor)
-  majorant : ∀ j, |series j| ≤ ((1 + r.rootNumber : Int).natAbs : ℝ) *
-    (((j + 1 : Nat) : ℝ) ^ 2 * (r.geometricUpper : ℝ) ^ (j + 1))
 
 /-- Complete interval soundness including argument approximation, signed finite
 summation and analytic tail. It is conditional on the explicit series evidence,
@@ -52,15 +48,18 @@ theorem centralPayload_sound {r : CentralResult} {value : ℝ}
   rw [hbox]
   constructor
   · change (((Numerics.rationalExpSumBounds r.policy.precisionBits
-        ((centralTerms r.coefficients r.rootNumber r.alphaLo r.alphaHi).map Prod.snd)).1 - r.tail : Rat) : ℝ) ≤ value ∧
+        ((centralTerms r.coefficients r.rootNumber r.alphaLo r.alphaHi).map Prod.snd)).1 -
+          r.tail : Rat) : ℝ) ≤ value ∧
       value ≤ (((Numerics.rationalExpSumBounds r.policy.precisionBits
-        ((centralTerms r.coefficients r.rootNumber r.alphaLo r.alphaHi).map Prod.snd)).2 + r.tail : Rat) : ℝ)
+          ((centralTerms r.coefficients r.rootNumber r.alphaLo r.alphaHi).map Prod.snd)).2 +
+            r.tail : Rat) : ℝ)
     push_cast
     have ha := abs_le.mp ht
     constructor <;> linarith [hf.1, hf.2, ha.1, ha.2]
   · change (0 : ℝ) ∈ Set.Icc ((0 : Rat) : ℝ) ((0 : Rat) : ℝ)
     norm_num
 
+/-- The computed box encloses the central value identified by the series evidence. -/
 theorem evaluateCentral_sound {equation : (WeierstrassCurve ℤ)} {conductor : Nat}
     {rootNumber : Int} {limit : Nat} {policy : PrecisionPolicy} {r : CentralResult}
     {value : ℝ}

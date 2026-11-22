@@ -5,23 +5,16 @@ Authors: Kevin Wilson
 -/
 module
 
+public import VerifiedLcalc.Certificate.Witnesses.Enclosures
+
 /-! Primitive exact enclosures stored by certificate payloads. -/
 
 @[expose] public section
 
 namespace VerifiedLcalc
 
-/-- Closed rational rectangle in the real and imaginary coordinates. -/
-structure Box where
-  /-- Lower real endpoint. -/
-  reLo : Rat
-  /-- Upper real endpoint. -/
-  reHi : Rat
-  /-- Lower imaginary endpoint. -/
-  imLo : Rat
-  /-- Upper imaginary endpoint. -/
-  imHi : Rat
-  deriving Repr, DecidableEq
+deriving instance Repr for Box
+deriving instance DecidableEq for Box
 
 /-- Bounds are ordered. -/
 def Box.valid (b : Box) : Bool :=
@@ -41,14 +34,18 @@ def Box.WithinCutoff (b : Box) (eps : Rat) : Prop :=
   0 ≤ eps ∧ b.reLo ≤ b.reHi ∧ b.imLo ≤ b.imHi ∧
     -eps ≤ b.reLo ∧ b.reHi ≤ eps ∧ -eps ≤ b.imLo ∧ b.imHi ≤ eps
 
+/-- The validity check compares both pairs of endpoints. -/
 theorem Box.valid_correct (b : Box) :
     b.valid = true ↔ b.reLo ≤ b.reHi ∧ b.imLo ≤ b.imHi := by
   simp [valid]
 
+/-- The singleton-zero check succeeds exactly when all four endpoints vanish. -/
 theorem Box.isZero_correct (b : Box) :
     b.isZero = true ↔ b.reLo = 0 ∧ b.reHi = 0 ∧ b.imLo = 0 ∧ b.imHi = 0 := by
   simp [isZero]
 
+/-- The exclusion check succeeds exactly when a coordinate interval lies strictly
+to one side of zero. -/
 theorem Box.excludesZero_correct (b : Box) :
     b.excludesZero = true ↔ 0 < b.reLo ∨ b.reHi < 0 ∨ 0 < b.imLo ∨ b.imHi < 0 := by
   simp [excludesZero]
