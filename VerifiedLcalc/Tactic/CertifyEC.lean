@@ -275,8 +275,10 @@ def certifyJson (name : Name) (text : String)
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
         "j_integral", "potential_good_reduction", "torsion_bound", "torsion", "algebraic_rank",
-        "rank_bounds"] ++ algebraicKeys ++ localKeys ++ if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
-          then ["prime"] else []
+        "rank_bounds"] ++
+        algebraicKeys ++ localKeys ++
+        (if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
+          then ["prime"] else [])
       let skipped := object.toList.filterMap fun (key, _) =>
         if known.contains key || (checkedRank && rankKeys.contains key) then none else some key
       unless skipped.isEmpty do
