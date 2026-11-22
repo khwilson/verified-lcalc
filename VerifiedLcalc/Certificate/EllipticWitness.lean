@@ -13,6 +13,25 @@ Optional claims and arithmetic witnesses for the `certify_ec` command.
 namespace VerifiedLcalc
 open EllipticCurve
 
+/-- An integral or scalar-valued discriminant together with its curve and exact proof. -/
+structure DiscriminantWitness (R : Type*) [CommRing R] where
+  /-- The equation whose discriminant is certified. -/
+  curve : WeierstrassCurve R
+  /-- The value of the discriminant. -/
+  discriminant : R
+  /-- The discriminant of the supplied equation equals the supplied value. -/
+  discriminant_eq : curve.Δ = discriminant
+
+/-- Optional proved facts about one fixed Weierstrass equation. -/
+structure EllipticProofs {R : Type*} [CommRing R] (curve : WeierstrassCurve R) where
+  /-- A discriminant value with a proof about the indexed equation. -/
+  discriminant : Option { d : R // curve.Δ = d } := none
+
+/-- Attach a standalone discriminant witness to its own equation. -/
+def DiscriminantWitness.toProofs {R : Type*} [CommRing R] (w : DiscriminantWitness R) :
+    EllipticProofs w.curve :=
+  { discriminant := some ⟨w.discriminant, w.discriminant_eq⟩ }
+
 /-- Optional claims from an LMFDB local row. The reduction codes are 0 for
 additive, 1 for split multiplicative and -1 for nonsplit multiplicative. -/
 structure LocalReductionClaim where
