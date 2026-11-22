@@ -3,6 +3,7 @@ module
 public import VerifiedLcalc.EllipticCurve.MinimalArithmetic
 public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
 public import VerifiedLcalc.Certificate.EllipticWitness
+public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Formula.Chord
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
 
 /-!
@@ -72,6 +73,25 @@ theorem integralCoordinatesValid_sound (w : EllipticWitness)
     (h : w.integralCoordinatesValid = true) (x y : Int)
     (hxy : (x, y) ∈ w.integralCoordinates.getD []) : w.equation.toAffine.Equation x y :=
   affineCoordinatesValid_sound _ _ h x y hxy
+
+/-- The two candidate integral y-coordinates over x, counted once when they coincide. -/
+def integralYFiber (W : WeierstrassCurve ℤ) (x y₀ : ℤ) : Finset ℤ :=
+  {y₀, W.toAffine.negY x y₀}
+
+/-- A single checked root determines the full integer fiber over its x-coordinate. -/
+theorem mem_integralYFiber_iff {W : WeierstrassCurve ℤ} {x y₀ : ℤ}
+    (h₀ : W.toAffine.Equation x y₀) (y : ℤ) :
+    y ∈ integralYFiber W x y₀ ↔ W.toAffine.Equation x y := by
+  simp only [integralYFiber, Finset.mem_insert, Finset.mem_singleton]
+  constructor
+  · rintro (rfl | rfl)
+    · exact h₀
+    · exact (WeierstrassCurve.Affine.equation_neg (W' := W.toAffine) x y₀).mpr h₀
+  · intro hy
+    have hprod : (y - y₀) * (y - W.toAffine.negY x y₀) = 0 := by
+      simpa only [sub_self, zero_mul] using
+        WeierstrassCurve.Affine.Y_sub_Y_mul_Y_sub_negY_eq hy h₀
+    simpa only [sub_eq_zero] using mul_eq_zero.mp hprod
 
 end EllipticWitness
 end VerifiedLcalc

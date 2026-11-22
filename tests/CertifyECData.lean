@@ -44,6 +44,23 @@ example : (RawData.curve.baseChange ℚ).LFunction 3 = -3 :=
 example : RawData.curve.toAffine.Equation 6 14 :=
   RawData.points_on_curve 6 14 (by decide +kernel)
 
+-- The odd linear term gives the two unequal roots 14 and -15 at x = 6.
+example : RawData.integral_y_fiber ⟨4, by decide⟩ = ({14, -15} : Finset ℤ) := by
+  decide +kernel
+example (y : ℤ) : y ∈ RawData.integral_y_fiber ⟨0, by decide⟩ ↔
+    RawData.curve.toAffine.Equation (-1) y :=
+  RawData.integral_y_fiber_complete _ y
+
+certify_ec EmptyFibers from_json_string
+  r#"{"ainvs":[0,0,0,-1,0],"xcoord_integral_points":[]}"#
+example : EmptyFibers.witness.integralFiberRoots = some [] := rfl
+example : EmptyData.witness.integralFiberRoots = none := rfl
+
+certify_ec DirectDoubleRoot from
+  { equation := ⟨0, 0, 0, -1, 0⟩, integralFiberRoots := some [(0, 0)] }
+example : DirectDoubleRoot.integral_y_fiber ⟨0, by decide⟩ = ({0} : Finset ℤ) := by
+  decide +kernel
+
 -- Match the LMFDB exponent convention even when the third coordinate is negative.
 certify_ec RationalGenerators from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"gens":[[1,5,-2]],"torsion_generators":[]}"#
@@ -111,7 +128,9 @@ meta def expectDataRejected (name : Name) (command : Syntax) : CommandElabM Unit
   unless failed do throwError "Invalid curve data accepted: {name}"
   for suffix in [`supplied, `witness, `curve, `nonsingular, `prime_coefficients_valid,
       `ap_correct, `integral_coordinates_valid, `points_on_curve, `curve_isElliptic,
-      `point, `point_integral, `generators.point, `torsion_generators.point] do
+      `point, `point_integral, `integral_fiber_roots, `integral_fiber_roots_eq,
+      `integral_fiber_roots_valid, `integral_y_fiber, `integral_y_fiber_complete,
+      `generators.point, `torsion_generators.point] do
     if env.contains (name ++ suffix) then
       throwError "Failed curve-data certification leaked {name ++ suffix}"
     if env.contains (name ++ `data ++ suffix) then
@@ -138,6 +157,12 @@ run_cmd do
   expectDataRejected `Malformed (← `(certify_ec Malformed from_json_string "{}"))
   expectDataRejected `BadX (← `(certify_ec BadX from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"xcoord_integral_points":[3]}"#))
+  expectDataRejected `NegativeDiscriminantX (← `(certify_ec NegativeDiscriminantX from_json_string
+    r#"{"ainvs":[0,0,0,-1,0],"xcoord_integral_points":[-2]}"#))
+  expectDataRejected `NonintegralX (← `(certify_ec NonintegralX from_json_string
+    r#"{"ainvs":[0,0,0,-1,0],"xcoord_integral_points":[0.5]}"#))
+  expectDataRejected `WrongFiberRoot (← `(certify_ec WrongFiberRoot from
+    { equation := ⟨0, 0, 0, -1, 0⟩, integralFiberRoots := some [(0, 1)] }))
   expectDataRejected `ConflictingCurve (← `(certify_ec ConflictingCurve from
     { equation := Data11.curve, derivativeResult := some Curve37.result }))
   expectDataRejected `MixedBadAP (← `(certify_ec MixedBadAP from

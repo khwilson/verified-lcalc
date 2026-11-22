@@ -212,13 +212,15 @@ def decode (j : Json) : Except String EllipticWitness := do
       let pair ← array row 2
       unless pair.size == 2 do throw "Expected an affine integer coordinate pair"
       integralCoordinates := integralCoordinates.push (← integer pair[0]!, ← integer pair[1]!)
-  if let some rows := optionalData j "xcoord_integral_points" then
-    for row in ← array rows 4096 do
+  let integralFiberRoots ← optionalValue j "xcoord_integral_points" fun rows => do
+    (← array rows 4096).toList.mapM fun row => do
       let x ← integer row
       let b := equation.a₁ * x + equation.a₃
       let c := x ^ 3 + equation.a₂ * x ^ 2 + equation.a₄ * x + equation.a₆
-      let y := (-b + Int.sqrt (b ^ 2 + 4 * c)) / 2
-      integralCoordinates := (integralCoordinates.push (x, y)).push (x, -y - b)
+      return (x, (-b + Int.sqrt (b ^ 2 + 4 * c)) / 2)
+  for (x, y) in integralFiberRoots.getD [] do
+    let b := equation.a₁ * x + equation.a₃
+    integralCoordinates := (integralCoordinates.push (x, y)).push (x, -y - b)
   unless integralCoordinates.size ≤ 8192 do throw "Too many integral coordinates"
   let generatorCoordinates ← optionalValue j "gens" weightedCoordinates
   let torsionGeneratorCoordinates ← optionalValue j "torsion_generators" weightedCoordinates
@@ -228,7 +230,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     then some primeCoefficients.toList else none
   let pointData :=
     if (optionalData j "integral_points").isSome ||
-        (optionalData j "xcoord_integral_points").isSome then
+        integralFiberRoots.isSome then
       some integralCoordinates.toList
     else none
   let minimality ← minimalityField j
@@ -285,6 +287,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     localInvariants
     primeCoefficients := primeData
     integralCoordinates := pointData
+    integralFiberRoots
     generatorCoordinates
     torsionGeneratorCoordinates
     infiniteOrderPoints
