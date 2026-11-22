@@ -28,3 +28,13 @@ example : ProofCarrying37.discriminant_witness.curve.Δ = 37 :=
   ProofCarrying37.discriminant_witness.discriminant_eq
 
 example : FileProofCarrying37.curve.Δ = 37 := FileProofCarrying37.discriminant
+
+example : VerifiedLcalc.EllipticProofs ProofCarrying37.curve := ProofCarrying37.checked_facts
+
+example : ProofCarrying37.checked_facts.bInvariants.map Subtype.val = some (0, -2, 1, -1) := rfl
+example : ProofCarrying37.checked_facts.cInvariants.map Subtype.val = some (48, -216) := rfl
+example : ProofCarrying37.checked_facts.discriminant.map Subtype.val = some 37 := rfl
+
+example : Invariants37.checked_facts.bInvariants.isSome = true := rfl
+example : Invariants37.checked_facts.cInvariants.isSome = true := rfl
+example : Invariants37.checked_facts.discriminant.isSome = true := rfl
