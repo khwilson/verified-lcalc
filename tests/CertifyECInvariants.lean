@@ -33,7 +33,8 @@ example : EllipticCurve.HasEverywherePotentialGoodReduction (PotentialGood.curve
 
 certify_ec NoPotentialGood from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"potential_good_reduction":false}"#
-example : ¬ EllipticCurve.HasEverywherePotentialGoodReduction (NoPotentialGood.curve.baseChange ℚ) :=
+example :
+    ¬ EllipticCurve.HasEverywherePotentialGoodReduction (NoPotentialGood.curve.baseChange ℚ) :=
   fun h => Bool.false_ne_true (NoPotentialGood.potential_good_reduction.mp h)
 example : NoPotentialGood.witness.jIntegral = none := rfl
 

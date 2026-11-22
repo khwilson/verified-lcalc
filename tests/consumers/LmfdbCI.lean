@@ -33,7 +33,8 @@ example : LMFDB.C197a1.curve.Δ = 197 := LMFDB.C197a1.discriminant
 example : ¬ IsLocalization.IsInteger ℤ (LMFDB.C197a1.curve.baseChange ℚ).j :=
   fun h => Bool.false_ne_true (LMFDB.C197a1.j_integral.mp h)
 
-example : ¬ EllipticCurve.HasEverywherePotentialGoodReduction (LMFDB.C197a1.curve.baseChange ℚ) :=
+example :
+    ¬ EllipticCurve.HasEverywherePotentialGoodReduction (LMFDB.C197a1.curve.baseChange ℚ) :=
   fun h => Bool.false_ne_true (LMFDB.C197a1.potential_good_reduction.mp h)
 
 example : (LMFDB.C214a1.curve.baseChange ℚ).j = 357911 / 214 :=
