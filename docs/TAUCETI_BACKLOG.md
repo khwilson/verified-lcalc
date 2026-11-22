@@ -277,3 +277,28 @@ concern Riemann zeta and Dirichlet L-functions.
 The pure log-moment lemma is a candidate for Mathlib’s Mellin transform API.
 The cusp-form adapter and its weight-two normalization belong with TauCeti’s
 modular L-function interfaces.
+
+## TC-14 — forward analytic-to-Mordell--Weil rank implication in ranks zero and one
+
+Status: temporarily assumed in this project by the separately imported
+`Assumptions.LowRankBSD` module. The statement is indexed by one nonsingular
+integral Weierstrass equation, an explicit arithmetic modular realization of
+that same equation, and a proof that its L-function has exact analytic order
+`r` at 1, where `r ≤ 1`; it concludes that the rational point group has
+`Module.finrank ℤ = r`. This is the analytic-to-algebraic direction only.
+
+Upstream candidate: a theorem relating the analytic order at the central point
+of the normalized modular L-function of an elliptic curve over `ℚ` to the
+Mordell--Weil rank in the cases where the exact analytic order is zero or one.
+It must state the modularity/normalization identification and all arithmetic
+hypotheses explicitly, and reuse the canonical Mordell--Weil rank and
+Mathlib/TauCeti L-function definitions. TauCeti's current
+`BirchSwinnertonDyer.analyticOrderAt_eq_finrank` already derives the full
+rank comparison from its full BSD predicate; this proposal concerns making the
+forward low-rank boundary available without importing the leading-coefficient
+conjecture. The two converse implications remain
+conjectural BSD statements; any future theorem in that direction must list
+additional hypotheses (for example suitable Selmer corank and finiteness of
+the Tate--Shafarevich group). Search current TauCeti declarations and open
+upstream work again before proposing an API; this backlog entry does not claim
+the theorem is absent upstream or that the temporary assumption is proved.

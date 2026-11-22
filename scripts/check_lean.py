@@ -16,6 +16,7 @@ AUDITS = (
     "AuditGeneralModularity.lean",
     "AuditDerivative.lean",
     "AuditAssumptions.lean",
+    "AuditLowRankBSD.lean",
     "AuditIntegration.lean",
     "AuditIntervalComponents.lean",
     "tests/VerifiedLcalcTests/Fixtures/Cubic.lean",
@@ -94,6 +95,8 @@ def main() -> None:
         "tests/consumers/CertifiedECInvariantsConsumer.lean",
         "tests/consumers/TwoFactorTorsion.lean",
         "tests/consumers/MordellWeilRank.lean",
+        "tests/consumers/LowRankBSD.lean",
+        "tests/consumers/LowRankBSDDefaultAbsent.lean",
         "tests/consumers/CompleteIntegralPoints.lean",
     ):
         run(["lake", "-f", "lakefile.certificates.lean", "env", "lean", source])
