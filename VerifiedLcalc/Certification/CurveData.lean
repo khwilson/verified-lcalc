@@ -51,17 +51,26 @@ theorem affineCoordinatesValid_sound {R : Type*} [CommRing R] [DecidableEq R]
 def integralCoordinatesValid (w : EllipticWitness) : Bool :=
   affineCoordinatesValid w.equation (w.integralCoordinates.getD [])
 
-/-- Check annihilation and the proper multiples obtained from prime divisors of the claim. -/
-def exactOrderCheck {A : Type*} [AddMonoid A] [DecidableEq A] (P : A) (n : Nat) : Bool :=
-  decide (n ≠ 0) && decide (n • P = 0) &&
-    n.primeFactorsList.all (fun p => decide ((n / p) • P ≠ 0))
+/-! The multiplicative checker is the source declaration for both the monoid API
+and its additive version, so the Bool computation and proof contract stay in
+sync. -/
 
-/-- A checked claim is the additive order in the supplied group. -/
-theorem exactOrderCheck_sound {A : Type*} [AddMonoid A] [DecidableEq A] {P : A} {n : Nat}
-    (h : exactOrderCheck P n = true) : addOrderOf P = n := by
+/-- Check that `P` has the claimed finite order in a monoid, by checking its
+claimed power and the proper powers for each prime divisor of the claim. -/
+@[to_additive exactOrderCheck /-- Check annihilation and the proper multiples
+obtained from prime divisors of the claim. -/]
+def exactOrderCheckMul {A : Type*} [Monoid A] [DecidableEq A] (P : A) (n : Nat) : Bool :=
+  decide (n ≠ 0) && decide (P ^ n = 1) &&
+    n.primeFactorsList.all (fun p => decide (P ^ (n / p) ≠ 1))
+
+/-- A successful check proves the claimed monoid order. -/
+@[to_additive exactOrderCheck_sound /-- A checked claim is the additive order
+in the supplied group. -/]
+theorem exactOrderCheckMul_sound {A : Type*} [Monoid A] [DecidableEq A] {P : A} {n : Nat}
+    (h : exactOrderCheckMul P n = true) : orderOf P = n := by
   obtain ⟨hpositive, hdiv⟩ := Bool.and_eq_true_iff.mp h
   obtain ⟨hn, hzero⟩ := Bool.and_eq_true_iff.mp hpositive
-  apply addOrderOf_eq_of_nsmul_and_div_prime_nsmul (of_decide_eq_true hzero)
+  apply orderOf_eq_of_pow_and_pow_div_prime (of_decide_eq_true hzero)
   intro p hp hpn
   exact of_decide_eq_true (List.all_eq_true.mp hdiv p
     ((Nat.mem_primeFactorsList (of_decide_eq_true hn)).mpr ⟨hp, hpn⟩))
