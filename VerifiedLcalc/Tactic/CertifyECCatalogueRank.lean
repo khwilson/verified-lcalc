@@ -18,12 +18,19 @@ open Lean Elab Command Modularity
 /-- Bind a native analytic-rank field to the independently checked typed rank. -/
 def certifyCatalogueRank (base : Name) : CommandElabM Unit := do
   let some input ← optionalInput (base ++ `witness) `catalogueAnalyticRank | return
-  unless (← getEnv).contains (base ++ `analytic_rank) do
+  let certificate := rootIdent (base ++ `certificate)
+  let available ← liftTermElabM do
+    let projection ← Term.elabTerm (← `(($certificate).analytic.rank)) none
+    let value ← Lean.Meta.whnf projection
+    match value.getAppFn.constName? with
+    | some ``Option.some => pure true
+    | some ``Option.none => pure false
+    | _ => throwError "Expected a closed checked analytic rank option"
+  unless available do
     logInfo m!"Unverified {base} analytic_rank: supply a complete checked analytic payload"
     return
   let witness := rootIdent (base ++ `witness)
   let curve := rootIdent (base ++ `curve)
-  let certificate := rootIdent (base ++ `certificate)
   let val := rootIdent (base ++ `claimed_analytic_rank)
   let fact := rootIdent (base ++ `catalogue_rank)
   let hSome := rootIdent (base ++ `catalogue_rank_available)
