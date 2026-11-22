@@ -1,5 +1,7 @@
 # Prepared TauCeti backlog
 
+The [EC/Q coverage roadmap](roadmaps/LMFDB_Q_CERTIFICATION.md) records a newer TauCeti source audit and additional proposals for individual LMFDB fields. Use its current declarations when implementing the related adapters.
+
 Source audit: TauCeti `d01c9825761c7e6168457c383458afa8668196a7`, Mathlib
 `3440367ed1804626334f13a3a534a9cbb3385a59`. This is a local backlog for upstream
 review; it does not claim external issues or pull requests were created.
@@ -67,14 +69,14 @@ in an upstream proposal.
 
 Status: the canonical `WeierstrassCurve.IsGlobalMinimal` predicate and its
 introduction/elimination interface are now imported from the pinned TauCeti
-`GlobalMinimalModel.lean` excerpt. The project-specific `GloballyMinimalInput`
+`GlobalMinimalModel.lean` module. The project-specific `GloballyMinimalInput`
 definition is removed. Conductor/sign compatibility uses
 `IsGlobalMinimal (𝓞 ℚ) (e.baseChange ℚ)` directly, with the usual ellipticity
 instance.
 
 `EllipticCurve/GlobalMinimality.lean` proves every checked minimality criterion
 over the localization itself, using TauCeti's fraction-field/DVR instances and
-`integers_valuation_localizationAtPrime`. Every validated witness therefore
+`integers_valuation_of_isLocalizationAtPrime`. Every validated witness therefore
 proves canonical global minimality at all height-one primes. The existing
 completion-minimality theorem separately supplies the numerical coefficient
 bridge. Shared finite factorization evidence is proved once. No comparison

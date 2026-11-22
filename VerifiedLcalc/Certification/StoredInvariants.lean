@@ -1,6 +1,9 @@
 module
 
 public import VerifiedLcalc.Certification.WildCertification
+public import VerifiedLcalc.EllipticCurve.Tate.LocalReduction
+public import VerifiedLcalc.Certificate.EllipticWitness
+public import Mathlib.Data.Nat.Squarefree
 
 /-! Bridges from exact stored invariant checks to existing Mathlib/TauCeti
 objects. Only the conductor and root-number bridges use the authorized
@@ -73,6 +76,18 @@ theorem bad_reduction_prime_iff (e : WeierstrassCurve ℤ) (values : List Nat)
     isUnit_iff_ne_zero, not_not, WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ,
     eq_intCast, ZMod.intCast_zmod_eq_zero_iff_dvd] using h p
 
+/-- Repeated factors in the checked factorization detect squarefreeness of
+the absolute minimal discriminant. -/
+theorem squarefree_discriminant_iff_nodup (e : WeierstrassCurve ℤ)
+    (m : MinimalityWitness) (hm : m.Valid e) : Squarefree e.Δ.natAbs ↔ m.primes.Nodup := by
+  have hprime (p : ℕ) (hp : p ∈ m.primes) : p.Prime :=
+    (isPrime_correct p).mp (Bool.and_eq_true_iff.mp (List.all_eq_true.mp hm.1 p hp)).1
+  have hz : e.Δ.natAbs ≠ 0 := by
+    rw [← hm.2]
+    exact (List.prod_pos_iff_forall_pos_nat.mpr fun p hp => (hprime p hp).pos).ne'
+  rw [Nat.squarefree_iff_nodup_primeFactorsList hz]
+  exact (Nat.primeFactorsList_unique hm.2 hprime).nodup_iff.symm
+
 /-- Standalone level identification, with the same explicit temporary
 assumption boundary as analytic-rank certification. No numerical evaluator is needed. -/
 theorem conductor_of_arithmetic_witness (e : WeierstrassCurve ℤ) (hn : e.Δ ≠ 0)
@@ -92,3 +107,75 @@ theorem root_number_of_arithmetic_witness (e : WeierstrassCurve ℤ) (hn : e.Δ 
     (globalMinimal_of_witness e m hm) d hd).trans ((wildSign_eq_fast e d hd).trans h)
 
 end VerifiedLcalc.Certification
+
+namespace VerifiedLcalc
+open EllipticCurve NumberField WeierstrassCurve
+
+/-- Finite checks use the actual integral equation and the reduced rational
+formula for j. A reduction code is meaningful only at a bad prime. -/
+def LocalReductionClaim.check (row : LocalReductionClaim) (e : WeierstrassCurve ℤ) : Bool :=
+  isPrime row.prime &&
+    row.discriminantValuation.all (fun n => padicValNat row.prime e.Δ.natAbs == n) &&
+    row.jDenominatorValuation.all (fun n =>
+      padicValNat row.prime (((e.c₄ : Rat) ^ 3 / (e.Δ : Rat)).den) == n) &&
+    row.reductionType.all (fun code =>
+      !goodReduction e row.prime && singularTrace e row.prime == code)
+
+/-- Optional local claims on a minimal equation. The signed reduction code is
+the trace of the singular reduction (zero for additive and ±1 for the two
+multiplicative types). -/
+def LocalReductionClaim.Spec (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
+    [(e.baseChange ℚ).IsElliptic] : Prop :=
+  ∃ hp : row.prime.Prime,
+    letI : Fact row.prime.Prime := ⟨hp⟩
+    let R := RationalLocalRing row.prime
+    IsMinimal R (e.baseChange ℚ) ∧
+    (∀ n, row.discriminantValuation = some n → e.Δ.natAbs.factorization row.prime = n) ∧
+    (∀ n, row.jDenominatorValuation = some n →
+      (e.baseChange ℚ).j.den.factorization row.prime = n) ∧
+    (∀ k, row.reductionType = some k →
+      ((e.baseChange ℚ).HasAdditiveReduction R ∧ k = 0 ∨
+        (e.baseChange ℚ).HasMultiplicativeReduction R ∧
+          (k = 1 ∧ (e.baseChange ℚ).HasSplitMultiplicativeReduction R ∨
+           k = -1 ∧ ¬ (e.baseChange ℚ).HasSplitMultiplicativeReduction R)) ∧
+      computeFrobeniusTrace e row.prime = k)
+
+/-- Successful finite checks imply the claimed valuations and local reduction predicates. -/
+theorem LocalReductionClaim.check_correct (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
+    [(e.baseChange ℚ).IsElliptic] (hm : IsGlobalMinimal (𝓞 ℚ) (e.baseChange ℚ))
+    (h : row.check e = true) : row.Spec e := by
+  simp only [check, Bool.and_eq_true, Option.all_eq_true, beq_iff_eq, Bool.not_eq_true'] at h
+  obtain ⟨⟨⟨hp, hd⟩, hj⟩, hr⟩ := h
+  have hp := (isPrime_correct _).mp hp
+  let : Fact row.prime.Prime := ⟨hp⟩
+  let hmin := hm.isMinimal (rationalPlace row.prime)
+  have hpad (n : Nat) : padicValNat row.prime n = n.factorization row.prime := by
+    simp only [Nat.padicValNat_def, Nat.multiplicity_eq_factorization hp]
+  have hjFormula := Certification.j_invariant_of_exact_formula e
+    ((e.c₄ : Rat) ^ 3 / (e.Δ : Rat)) rfl
+  refine ⟨hp, hmin, ?_, ?_, ?_⟩
+  · simpa only [hpad] using hd
+  · simpa only [hpad, hjFormula] using hj
+  · intro k hk
+    obtain ⟨hg, ht⟩ := hr k hk
+    have hbad : (row.prime : Int) ∣ e.Δ := by
+      apply Int.dvd_iff_emod_eq_zero.mpr
+      simpa only [goodReduction, decide_eq_false_iff_not, not_not] using hg
+    refine ⟨?_, (singularTrace_correct e row.prime hg).symm.trans ht⟩
+    by_cases hc : (row.prime : Int) ∣ e.c₄
+    · exact Or.inl ⟨(hasAdditiveReduction_at_iff e row.prime).mpr ⟨hbad, hc⟩,
+        ht.symm.trans (by simp [singularTrace, Int.dvd_iff_emod_eq_zero.mp hc])⟩
+    · have hc' : (e.baseChange (ZMod row.prime)).c₄ ≠ 0 := by
+        simpa only [WeierstrassCurve.baseChange, map_c₄, eq_intCast, ne_eq,
+          ZMod.intCast_zmod_eq_zero_iff_dvd] using hc
+      have hs := hasNodeRoot_iff_splits e row.prime hc'
+      have he : singularTrace e row.prime = (if hasNodeRoot e row.prime then 1 else -1) := by
+        simp only [singularTrace, Int.dvd_iff_emod_eq_zero.not.mp hc, ite_false]
+      have hmul := (hasMultiplicativeReduction_at_iff e row.prime).mpr ⟨hbad, hc⟩
+      have hsplit := (hasSplitMultiplicativeReduction_at_iff e row.prime hmul).trans hs.symm
+      refine Or.inr ⟨hmul, ?_⟩
+      by_cases hroot : hasNodeRoot e row.prime = true
+      · exact Or.inl ⟨ht.symm.trans (he.trans (ite_eq_left hroot)), hsplit.mpr hroot⟩
+      · exact Or.inr ⟨ht.symm.trans (he.trans (ite_eq_right hroot)), mt hsplit.mp hroot⟩
+
+end VerifiedLcalc

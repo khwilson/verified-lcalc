@@ -3,9 +3,7 @@ module
 public import VerifiedLcalc.EllipticCurve.MinimalArithmetic
 public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
 public import VerifiedLcalc.Certificate.EllipticWitness
-public import VerifiedLcalc.Upstream.TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
-
-@[expose] public section
+public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
 
 /-!
 # Exact certificates for stored elliptic-curve arithmetic data
@@ -16,6 +14,8 @@ the actual curve's `LFunction p`, including bad primes, without modularity.
 Integral-coordinate certificates establish membership only, on the supplied
 integral equation. They make no completeness or algebraic-rank claim.
 -/
+
+@[expose] public section
 
 namespace VerifiedLcalc
 open EllipticCurve
