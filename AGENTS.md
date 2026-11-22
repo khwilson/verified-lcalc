@@ -55,3 +55,28 @@
   legacy source installers and batch generators are retired. Baseline commit
   `fcdc4f2` preserves them. Do not recreate checked-in bulk proof blobs or
   advertise historical reports as an installed proof cache.
+
+## Pull requests and mathematical review
+
+- Develop one independently reviewable change per PR against `main`. Merge a
+  prerequisite before opening a dependent PR. Sol and Luna implement the
+  changes. The coordinator reviews the diff, theorem statements and CI results.
+- Before adding a mathematical declaration, search the pinned Mathlib and
+  TauCeti sources, current upstream and open TauCeti PRs. Cite the declarations
+  and source revisions used. Record missing general theorems and their intended
+  hypotheses in the local TauCeti roadmap backlog for human upstream planning.
+- Follow Mathlib style and document new public declarations. Explain the
+  witness semantics, prerequisites and the strongest mathematical conclusion
+  each new field exports. Retain attribution when porting an upstream result.
+- Complete the TauCeti quality pass in the PR description and cite the roadmap
+  target for new mathematics. Review the current head against the upstream
+  rubrics for correctness, reuse, scope, hypotheses, API, naming, placement,
+  proof quality, documentation and attribution. Record findings on the PR and
+  recheck affected rubrics after revisions.
+- Merge through a PR after the required GitHub checks pass on the candidate,
+  including the ten-curve certificate suite. Use the ordinary protected-branch
+  merge path. Check the axiom dependencies of new mathematical conclusions
+  against this project's explicit assumptions above.
+
+See the [TauCeti contributor rules](https://github.com/TauCetiProject/TauCeti/blob/main/AGENTS.md)
+and [review rubrics](https://github.com/TauCetiProject/TauCetiReview/tree/main/rubrics).

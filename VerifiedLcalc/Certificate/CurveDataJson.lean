@@ -225,6 +225,8 @@ def decode (j : Json) : Except String EllipticWitness := do
   unless integralCoordinates.size ≤ 8192 do throw "Too many integral coordinates"
   let generatorCoordinates ← optionalValue j "gens" weightedCoordinates
   let torsionGeneratorCoordinates ← optionalValue j "torsion_generators" weightedCoordinates
+  let torsionGeneratorOrders ← optionalValue j "torsion_generator_orders" fun value => do
+    (← array value 4096).toList.mapM nonnegativeInteger
   let numeric ← numericFields j
   let base := numeric.getD { equation }
   let primeData := if (optionalData j "ap").isSome || (optionalData j "aplist").isSome
@@ -268,6 +270,14 @@ def decode (j : Json) : Except String EllipticWitness := do
   let semistable ← optionalValue j "semistable" Json.getBool?
   let squarefreeDiscriminant ← optionalValue j "squarefree_disc" Json.getBool?
   let localInvariants ← localReductionClaims j
+  let torsion ← optionalValue j "torsion" nonnegativeInteger
+  let torsionBound ← optionalValue j "torsion_bound" fun value => do
+    let firstPrime ← nonnegativeInteger (← value.getObjVal? "first_prime")
+    let secondPrime ← nonnegativeInteger (← value.getObjVal? "second_prime")
+    unless firstPrime ≤ 10000 && secondPrime ≤ 10000 do
+      throw "Torsion-bound prime outside supported profile"
+    let bound ← nonnegativeInteger (← value.getObjVal? "bound")
+    return ({ firstPrime, secondPrime, bound } : TorsionBoundWitness)
   return { base with
     equation
     bInvariants
@@ -286,11 +296,14 @@ def decode (j : Json) : Except String EllipticWitness := do
     semistable
     squarefreeDiscriminant
     localInvariants
+    torsionBound
+    torsion
     primeCoefficients := primeData
     integralCoordinates := pointData
     integralFiberRoots
     generatorCoordinates
     torsionGeneratorCoordinates
+    torsionGeneratorOrders
     infiniteOrderPoints
     independentPoints
     minimality
