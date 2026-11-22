@@ -10,10 +10,33 @@ Incorrect supplied evidence or a failed supported check rejects the entire
 certificate. `claimed_*` definitions and `*_input_eq` bindings record input;
 they do not themselves assert that its value is correct.
 
-The field inventory was checked against the live
-[curve schema](https://www.lmfdb.org/api/ec_curvedata/),
-[37.a1 data and related tables](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1),
-and [local-data schema](https://www.lmfdb.org/api/ec_localdata/).
+## What counts as a field
+
+On 2026-11-22 the eight schema tables on the 37.a1 data page displayed **101
+table-qualified columns and 85 distinct column names**. This corrects the count
+of 84 in the original coverage PR. The count takes each table's displayed
+column names once and excludes the database row identifier `id`. An individual
+curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
+· [Original coverage PR](https://github.com/khwilson/verified-lcalc/pull/1)
+
+| Table | Displayed columns | Certificate evidence or roadmap |
+| --- | ---: | --- |
+| `ec_curvedata` | 51 | The checked curve carries equation, rational, algebraic, arithmetic, analytic and torsion facts. The field table below gives the evidence required for each supported claim. |
+| `ec_classdata` | 8 | Checked coefficients concern the represented curve. Minimum degree for a supplied isogeny edge proves one relation. Class-wide transport, the full degree matrix and class size are I1. |
+| `ec_mwbsd` | 13 | Point membership, generator count, rank bounds and integral point fibers are in `certificate.algebraic`. Exhaustive integral-point data requires a proof covering every abscissa. |
+| `ec_localdata` | 10 | Checked local arithmetic facts are indexed by prime. Exact Kodaira and Tamagawa outputs depend on the reduction case. |
+| `ec_galrep` | 7 | G1 specifies evidence for the image of the actual representation in a supplied torsion basis. |
+| `ec_padic` | 5 | G3 specifies the p-adic regulator as a congruence with an explicit precision. |
+| `ec_torsion_growth` | 4 | G2 specifies the field of definition and the full torsion subgroup after base change. |
+| `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
+
+Count coverage by the mathematical assertion and the evidence a consumer can
+project. For example, `ec_curvedata.torsion` is a cardinality over ℚ, while
+`ec_torsion_growth.torsion` gives invariant factors over a specified extension.
+The former can be proved through `certificate.torsion.cardinality`. The latter
+has its own roadmap target. The public contract index lists the canonical Lean
+modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.md)
+· [Roadmap targets](roadmaps/LMFDB_Q_CERTIFICATION.md)
 
 ## Checks implemented
 
@@ -127,8 +150,10 @@ verifies odd primality and good reduction of the supplied equation at both
 primes, then recomputes the gcd. The resulting `torsion_bound` theorem proves
 divisibility and positivity for the bound. A bound of one also exports
 `torsion`, the exact cardinality theorem for the group's trivial case.
-Larger bounds leave a consistent exact-order claim unverified. A raw
-`torsion` value without bound evidence is also unverified.
+A larger bound alone proves divisibility. When the submitted points also give
+a cyclic or two-factor subgroup attaining that bound, the certificate proves
+the exact cardinality and the claimed structure. A raw `torsion` value alone
+supplies neither piece of evidence.
 
 Import `CertifiedCurves.Invariants` for the small reusable 37.a1 example.
 `tests/consumers/CertifiedECInvariantsConsumer.lean` imports its `.olean` theorems
