@@ -25,6 +25,7 @@ deriving instance ToExpr for CentralResult
 deriving instance ToExpr for DerivativeResult
 deriving instance ToExpr for LocalReductionClaim
 deriving instance ToExpr for AbcQualityClaim
+deriving instance ToExpr for TorsionBoundWitness
 deriving instance ToExpr for EllipticWitness
 
 

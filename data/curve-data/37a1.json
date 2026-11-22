@@ -1,5 +1,7 @@
 {
   "schema": "lcalc.ec-data.v1",
+  "torsion": 1,
+  "torsion_bound": {"first_prime": 3, "second_prime": 5, "bound": 1},
   "ainvs": [
     "0",
     "0",
