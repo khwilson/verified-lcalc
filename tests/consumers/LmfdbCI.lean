@@ -80,6 +80,22 @@ example : (LMFDB.C291d1.curve.baseChange ℚ).j = -4096 / 291 :=
   LMFDB.C291d1.j_invariant
 example : LMFDB.C291d1.curve.Δ = -291 := LMFDB.C291d1.discriminant
 
+example : LMFDB.C112a2.integral_y_fiber ⟨0, by decide⟩ = ({0} : Finset ℤ) := by
+  decide +kernel
+
+example (y : ℤ) : y ∈ LMFDB.C112a2.integral_y_fiber ⟨0, by decide⟩ ↔
+    LMFDB.C112a2.curve.toAffine.Equation (-2) y :=
+  LMFDB.C112a2.integral_y_fiber_complete _ y
+
+example : LMFDB.C112a2.integral_y_fiber ⟨2, by decide⟩ = ({2, -2} : Finset ℤ) := by
+  decide +kernel
+
+-- The double root still occupies both of its original integral-coordinate indices.
+example : (LMFDB.C112a2.witness.integralCoordinates.getD [])[0]? = some (-2, 0) := by
+  decide +kernel
+example : (LMFDB.C112a2.witness.integralCoordinates.getD [])[1]? = some (-2, 0) := by
+  decide +kernel
+
 example : LMFDB.C112a2.curve.toAffine.Equation 0 2 :=
   LMFDB.C112a2.points_on_curve 0 2 (by decide +kernel)
 
@@ -106,13 +122,13 @@ example :
       (1 : ℂ) = 1 :=
   Curve112.analytic_rank
 
+example : addOrderOf (LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩) = 2 :=
+  LMFDB.C112a2.torsion_generators.exact_order _
+
 example :
     (Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level.factorization 2 =
       4 :=
   (LMFDB.C112a2.conductor_valuation (2, 4) (by decide +kernel)).2
-
-example : addOrderOf (LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩) = 2 :=
-  LMFDB.C112a2.torsion_generators.exact_order _
 
 example :
     Nat.card (AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) = 2 :=
@@ -136,6 +152,7 @@ run_cmd do
     for axiomName in dependencies do
       unless unconditional.contains axiomName || (conditional && axiomName == modularity) do
         throwError "Unexpected dependency {axiomName} in {lemmaName}"
+  check `LMFDB.C112a2 `integral_y_fiber_complete false
   check `LMFDB.C112a2 `generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.points_on_curve false
   check `LMFDB.C112a2 `torsion_generators.exact_order false

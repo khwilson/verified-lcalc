@@ -155,7 +155,9 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `semistable, `squarefree_discriminant, `local_invariants, `claimed_semistable,
       `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_conductor_valuations,
       `conductor_valuations_input_eq, `conductor_valuation_value_valid, `conductor_valuation,
-      `claimed_torsion_structure, `torsion_structure, `torsion_generators.independence_valid] do
+      `claimed_torsion_structure, `torsion_structure, `torsion_structure_order_consistent,
+      `torsion_point_orders_consistent, `torsion_structure_divisor_consistent,
+      `torsion_structure_normalized, `torsion_generators.independence_valid] do
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
@@ -181,6 +183,20 @@ run_cmd do
     r#"{"ainvs":[0,1,0,-20,0],"torsion":8,"torsion_structure":[2,4],
         "torsion_generators":[[4,0,1],[-2,6,1]],"torsion_generator_orders":[2,4],
         "torsion_bound":{"first_prime":7,"second_prime":11,"bound":8}}"#))
+  invariantRejected `TorsionCountBelowPointOrder (← `(certify_ec TorsionCountBelowPointOrder
+    from_json_string
+    r#"{"ainvs":[0,1,0,0,4],"torsion":1,
+        "torsion_generators":[[-2,0,1]],"torsion_generator_orders":[2],
+        "torsion_bound":{"first_prime":3,"second_prime":5,"bound":2}}"#))
+  invariantRejected `StructureCountMismatch (← `(certify_ec StructureCountMismatch
+    from_json_string r#"{"ainvs":[0,1,0,0,4],"torsion":4,"torsion_structure":[2]}"#))
+  invariantRejected `StructureAboveDivisor (← `(certify_ec StructureAboveDivisor
+    from_json_string r#"{"ainvs":[0,1,0,0,4],"torsion_structure":[4],
+        "torsion_bound":{"first_prime":3,"second_prime":5,"bound":2}}"#))
+  invariantRejected `OrderAboveStructureExponent (← `(certify_ec OrderAboveStructureExponent from
+    { equation := ⟨1, -1, -1, 0, 0⟩, torsionGeneratorCoordinates := some [(0, 0)],
+      torsionGeneratorOrders := some [4], torsion := some 4, torsionStructure := some [2, 2],
+      torsionBound := some ⟨5, 13, 8⟩ }))
   invariantRejected `WrongCyclicStructure (← `(certify_ec WrongCyclicStructure from
     { equation := ⟨1, -1, -1, 0, 0⟩, torsionGeneratorCoordinates := some [(0, 0)],
       torsionGeneratorOrders := some [4], torsion := some 4, torsionStructure := some [2, 2],
