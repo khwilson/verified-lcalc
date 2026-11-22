@@ -197,13 +197,23 @@ theorem identifies each value with the actual curve's `LFunction p`, including
 bad primes. A failed supported check rejects the command and rolls back all
 its declarations; an unsupported local minimality case is not certified.
 
-`integral_points` contains integer `(x,y)` pairs. LMFDB's
-`xcoord_integral_points` is also supported: exact integer square roots produce
-candidate y-coordinates, and every resulting equation is checked in the kernel.
-The resulting rational points use TauCeti's `pointOfIntegralSolution` and
-`integralPoints`. These are membership certificates only. Empty lists do not
-assert absence of points, and a nonempty list asserts neither completeness nor
-an algebraic-rank lower bound. Integrality refers to the supplied equation.
+`integral_points` contains integer `(x,y)` pairs. Each checked pair yields
+membership in TauCeti's `integralPoints` for the supplied equation.
+LMFDB's `xcoord_integral_points` also exports an exact finite y-fiber for each
+listed x. The decoder produces one candidate y per x by completing the square.
+The checker proves its equation and uses Weierstrass negation to recover the
+whole fiber.
+
+For each index `i` into `Name.integral_fiber_roots`, the equivalence
+`Name.integral_y_fiber_complete i y` says that `y` belongs to
+`Name.integral_y_fiber i` exactly when it satisfies the supplied equation at
+that x. A double root counts once in the fiber. The original coordinate list
+keeps its indexing, including repeated roots. Direct Lean input can supply the
+same root witnesses in the optional `integralFiberRoots` field.
+
+These fibers certify completeness only at the listed x-values. An empty list
+checks zero fibers. The theorem gives no global integral-point count or
+algebraic-rank bound.
 
 LMFDB `gens` and `torsion_generators` accept exact weighted triples `[a,b,c]`
 with `c ≠ 0` and decode to `(a/c², b/c³)` in ℚ. The corresponding direct
