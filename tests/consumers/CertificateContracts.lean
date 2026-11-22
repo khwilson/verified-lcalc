@@ -1,8 +1,9 @@
 import VerifiedLcalc.Certificates
+import Lean
 
 /-! This consumer checks the public data contracts without importing certification backends. -/
 
-open VerifiedLcalc
+open VerifiedLcalc Lean Elab Command
 
 #check IntegralXSupport
 #check CompleteIntegralPointFacts

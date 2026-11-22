@@ -26,6 +26,7 @@ AUDITS = (
     "tests/consumers/Additive.lean",
     "tests/consumers/Wild.lean",
     "tests/consumers/CertificateContracts.lean",
+    "tests/OrderCheckGenerality.lean",
     "tests/CyclicTorsionStructure.lean",
     "tests/TwoFactorTorsion.lean",
 )
@@ -49,6 +50,7 @@ def main() -> None:
                 "lakefile.certificates.lean",
                 "build",
                 "CertifiedCurves",
+                "VerifiedLcalc.Certificates",
                 "VerifiedLcalcTests",
                 "VerifiedLcalc.Certification.Precision",
                 "VerifiedLcalcTests.Fixtures.TwoFactorTorsion",
@@ -80,6 +82,7 @@ def main() -> None:
         "tests/GlobalMinimality.lean",
         "tests/IntervalMultiplication.lean",
         "tests/OddPointCount.lean",
+        "tests/OrderCheckGenerality.lean",
         "tests/consumers/CertifiedECConsumer.lean",
         "tests/consumers/CatalogueAnalyticRank.lean",
         "tests/consumers/CertifiedECDataConsumer.lean",

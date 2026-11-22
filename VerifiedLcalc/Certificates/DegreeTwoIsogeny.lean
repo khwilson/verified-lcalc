@@ -13,6 +13,7 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.Degree
 @[expose] public section
 
 namespace VerifiedLcalc
+open TauCeti
 
 /-- A degree-two edge between the specified rational equations, with its minimum-degree proof. -/
 structure DegreeTwoIsogenyFact (source target : WeierstrassCurve ℤ) where
