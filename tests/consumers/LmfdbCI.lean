@@ -33,6 +33,10 @@ example : LMFDB.C197a1.curve.Δ = 197 := LMFDB.C197a1.discriminant
 example : ¬ IsLocalization.IsInteger ℤ (LMFDB.C197a1.curve.baseChange ℚ).j :=
   fun h => Bool.false_ne_true (LMFDB.C197a1.j_integral.mp h)
 
+example :
+    ¬ EllipticCurve.HasEverywherePotentialGoodReduction (LMFDB.C197a1.curve.baseChange ℚ) :=
+  fun h => Bool.false_ne_true (LMFDB.C197a1.potential_good_reduction.mp h)
+
 example : (LMFDB.C214a1.curve.baseChange ℚ).j = 357911 / 214 :=
   LMFDB.C214a1.j_invariant
 example : LMFDB.C214a1.curve.Δ = -214 := LMFDB.C214a1.discriminant
@@ -68,6 +72,9 @@ example : (LMFDB.C288a1.curve.baseChange ℚ).j = 1728 :=
 example : LMFDB.C288a1.curve.Δ = 110592 := LMFDB.C288a1.discriminant
 example : IsLocalization.IsInteger ℤ (LMFDB.C288a1.curve.baseChange ℚ).j :=
   LMFDB.C288a1.j_integral.mpr rfl
+
+example : EllipticCurve.HasEverywherePotentialGoodReduction (LMFDB.C288a1.curve.baseChange ℚ) :=
+  LMFDB.C288a1.potential_good_reduction.mpr rfl
 
 example : (LMFDB.C291d1.curve.baseChange ℚ).j = -4096 / 291 :=
   LMFDB.C291d1.j_invariant
@@ -106,6 +113,8 @@ run_cmd do
   check `LMFDB.C112a2 `dirichlet_coefficients false
   check `LMFDB.C197a1 `j_integral false
   check `LMFDB.C288a1 `j_integral false
+  check `LMFDB.C197a1 `potential_good_reduction false
+  check `LMFDB.C288a1 `potential_good_reduction false
   check `Curve112 `analytic_rank true
   for curve in [`LMFDB.C179a1, `LMFDB.C243a1] do
     for suffix in [`semistable, `squarefree_discriminant, `local_invariants] do

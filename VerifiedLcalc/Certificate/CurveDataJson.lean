@@ -234,6 +234,7 @@ def decode (j : Json) : Except String EllipticWitness := do
   let discriminant ← optionalValue j "discriminant" integer
   let jInvariant ← optionalValue j "jinv" rationalValue
   let jIntegral ← optionalValue j "j_integral" Json.getBool?
+  let potentialGoodReduction ← optionalValue j "potential_good_reduction" Json.getBool?
   let discriminantSign ← optionalValue j "signD" integer
   let minimalDiscriminantAbs ← optionalValue j "absD" nonnegativeInteger
   let conductor ← optionalValue j "conductor" nonnegativeInteger
@@ -258,6 +259,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     discriminant
     jInvariant
     jIntegral
+    potentialGoodReduction
     discriminantSign
     minimalDiscriminantAbs
     conductor
