@@ -23,11 +23,16 @@ See the [build guide](../../docs/BUILD.md) for the current pins.
 - Replaced three unsupported `.toReal` field-notation uses with the explicit
   `Inclusion.IntervalDyadicReal.Dyadic.toReal` function, retaining the same
   mathematical expressions.
+- Removed the interval-level `exp` definition and `exp_mem` tactic rule after
+  adopting the Mathlib version that supplies these names. See
+  [Mathlib's interval exponential](https://github.com/leanprover-community/mathlib4/blob/31ce06eaadf4a200c0e1407c5f10953cf606b8f8/Mathlib/Tactic/Inclusion/Extension/IntervalDyadicReal/Exp.lean).
 
 No `sorry`, custom axiom, or native verification shortcut is permitted here.
 The implementation includes range reduction, fixed-point Taylor evaluation,
 rounded repeated squaring, and Horner/rectangular/binary summation strategies.
-Its final `exp_mem` theorem supplies an interval inclusion rule for `Real.exp`.
+`certify_ec` uses the scalar routine `expBounds` and its theorem
+`expBounds_bounds` to replay the exact endpoints in supplied numerical witnesses.
+The interval tactic examples use Mathlib's `exp_mem` theorem.
 It is not a logarithm, gamma, or incomplete-gamma evaluator. Helpers named
 `expLogSearch` and `expLogBracket` concern integer bit lengths, not `Real.log`.
 

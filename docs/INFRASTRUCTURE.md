@@ -158,8 +158,9 @@ memberships. It also contains kernel-checked uses of `dyadic_interval` for a
 rational cast and a polynomial bound. The default proof route is used; no native
 verification option is enabled.
 
-The pinned inclusion tree itself has no exp/log/gamma extension. Searching
-Ledvinka's unmerged work found:
+The inclusion tree at the time of this audit lacked an exp/log/gamma extension.
+The active Mathlib dependency now provides the interval exponential tactic.
+The earlier audit of Ledvinka's unmerged work covered the following PRs.
 
 - [PR #45193](https://github.com/leanprover-community/mathlib4/pull/45193),
   branch `inclusion-exp`, head `9c80a26d5b6a5b4ec14d6db0aba596463c6b281f`:
