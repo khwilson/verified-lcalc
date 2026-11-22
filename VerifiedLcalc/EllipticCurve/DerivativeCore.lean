@@ -30,7 +30,8 @@ theorem evaluateDerivative_correct {e : (WeierstrassCurve ℤ)} {N M steps cutof
   · simp at h
   · next hn =>
     have hn' : 0 < N ∧ 0 < steps ∧ 1 < cutoff := by omega
-    cases ht : derivativeInfiniteTail (alphaBounds N policy.precisionBits).1 policy.precisionBits cutoff with
+    cases ht : derivativeInfiniteTail (alphaBounds N policy.precisionBits).1
+        policy.precisionBits cutoff with
     | none => simp [ht] at h
     | some tail =>
       cases hf : derivativeFiniteBounds (modelCoefficients e M)
@@ -45,5 +46,6 @@ theorem evaluateDerivative_correct {e : (WeierstrassCurve ℤ)} {N M steps cutof
           apply Option.some.inj
           simpa [ht, hf] using h.symm
         cases h'
-        exact ⟨rfl,rfl,rfl,rfl,rfl,rfl,hn'.1,hn'.2.1,hn'.2.2,rfl,rfl,rfl,ht,hf,rfl⟩
+        exact ⟨rfl, rfl, rfl, rfl, rfl, rfl, hn'.1, hn'.2.1, hn'.2.2, rfl, rfl,
+          rfl, ht, hf, rfl⟩
 end VerifiedLcalc.EllipticCurve
