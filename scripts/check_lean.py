@@ -49,6 +49,7 @@ def main() -> None:
                 "lakefile.certificates.lean",
                 "build",
                 "CertifiedCurves",
+                "VerifiedLcalc.Certificates",
                 "VerifiedLcalcTests",
                 "VerifiedLcalc.Certification.Precision",
                 "VerifiedLcalcTests.Fixtures.TwoFactorTorsion",
