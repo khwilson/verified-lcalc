@@ -121,12 +121,12 @@ Weierstrass equation. Its `equationFacts` and `rational` fields hold exact
 invariants. The `algebraic` field holds membership of supplied points, complete
 integral y-fibers above specified x-coordinates, individual point orders, an
 independent family, and a proved rank lower bound. The `arithmetic` field
-exposes the finite reduction facts and
-separate conditional results. To use a conditional arithmetic result, supply
+exposes finite reduction facts and separate conditional results. To use a conditional arithmetic result, supply
 an explicit `ArithmeticModularRealization` of the equation. The `analytic`
 field keeps checked numerical payloads and separately gives enclosures and
-ranks conditional on an explicit realization. The `torsion` field distinguishes a checked
-divisor and a consistent supplied count from an exact full-subgroup cardinality.
+ranks conditional on an explicit realization. The `torsion` field can carry a
+verified positive multiple of the full subgroup order, a consistent supplied
+count, and an exact cardinality when determined.
 
 For example, the following reads an invariant from a compiled certificate
 using its exact proof. The default handles a missing value using the equation.

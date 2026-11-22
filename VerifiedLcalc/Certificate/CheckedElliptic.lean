@@ -132,7 +132,8 @@ structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).
   rankLowerBound : Option { n : ℕ //
     (n : Cardinal) ≤ Module.rank ℤ (curve.baseChange ℚ).toAffine.Point } := none
 
-/-- A verified divisor of the whole torsion order and an optional consistent raw claim. -/
+/-- A verified positive multiple of the whole torsion order
+and an optional consistent raw claim. -/
 structure TorsionDivisorFacts (curve : WeierstrassCurve ℤ) where
   /-- The odd primes and divisor supplied to the reduction check. -/
   evidence : TorsionBoundWitness
@@ -145,14 +146,14 @@ structure TorsionDivisorFacts (curve : WeierstrassCurve ℤ) where
   /-- A supplied count consistent with the bound. -/
   consistentClaim : Option { n : ℕ // 0 < n ∧ n ∣ evidence.bound } := none
 
-/-- The positive divisor of the full torsion order. -/
+/-- The checked positive multiple of the full torsion order. -/
 def TorsionDivisorFacts.bound {curve : WeierstrassCurve ℤ}
     (facts : TorsionDivisorFacts curve) : ℕ :=
   facts.evidence.bound
 
 /-- Partial divisibility bounds and exact cardinality assertions for the torsion subgroup. -/
 structure TorsionFacts (curve : WeierstrassCurve ℤ) where
-  /-- Evidence giving a positive divisor of the full torsion order. -/
+  /-- Evidence that the full torsion order divides a checked positive bound. -/
   divisor : Option (TorsionDivisorFacts curve) := none
   /-- The exact cardinality of the whole torsion subgroup when determined. -/
   cardinality : Option { n : ℕ //
