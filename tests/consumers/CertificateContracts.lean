@@ -13,6 +13,10 @@ open VerifiedLcalc Lean Elab Command
 #check IntegralXSupport
 #check CompleteIntegralPointFacts
 #check DegreeTwoIsogenyFact
+#check IsogenyClassModel
+#check IsogenyClassOrdering
+#check IsogenyClassEvidence
+#check EllipticCertificate.isogenyClass
 #check Box
 #check PrecisionPolicy
 #check EllipticCurve.MinimalityWitness
@@ -83,6 +87,7 @@ run_cmd do
     `VerifiedLcalc.Verification.IntegralPointCount,
     `VerifiedLcalc.Verification.DegreeTwoIsogeny,
     `VerifiedLcalc.Verification.DegreeTwoIsogenyRaw,
+    `VerifiedLcalc.Verification.IsogenyClass,
     `VerifiedLcalc.Analytic,
     `VerifiedLcalc.Verification.TorsionBoundFacts,
     `VerifiedLcalc.EllipticCurve.TorsionBound,

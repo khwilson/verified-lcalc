@@ -34,6 +34,14 @@ structure EllipticWitness where
   catalogueAnalyticRank : Option Nat := none
   /-- A supplied minimum-degree rational isogeny edge. -/
   isogenyEdge : Option IsogenyEdgeClaim := none
+  /-- The claimed number of rational isomorphism classes. -/
+  classSize : Option Nat := none
+  /-- The claimed maximum of the minimum isogeny degrees between representatives. -/
+  classDegree : Option Nat := none
+  /-- The claimed minimum isogeny degrees in native LMFDB class index order. -/
+  isogenyMatrix : Option (List (List Nat)) := none
+  /-- The claimed distinct minimum isogeny degrees from the input curve's row. -/
+  isogenyDegrees : Option (List Nat) := none
   /-- Claims for the ordered tuple of b₂, b₄, b₆ and b₈. -/
   bInvariants : Option (Int × Int × Int × Int) := none
   /-- Claims for the ordered pair of c₄ and c₆. -/

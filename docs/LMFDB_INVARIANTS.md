@@ -24,7 +24,7 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | Table | Displayed columns | Certificate evidence or roadmap |
 | --- | ---: | --- |
 | `ec_curvedata` | 51 | The checked curve carries equation, rational, algebraic, arithmetic, analytic and torsion facts. The field table below gives the evidence required for each supported claim. |
-| `ec_classdata` | 8 | Checked coefficients concern the represented curve. Minimum degree for a supplied isogeny edge proves one relation. Class-wide transport, the full degree matrix and class size are I1. |
+| `ec_classdata` | 8 | Checked coefficients concern the represented curve. With proved complete class evidence, the command checks the class size, maximum minimum degree and an ordered degree matrix. |
 | `ec_mwbsd` | 13 | Point membership, generator count, rank bounds and integral point fibers are in `certificate.algebraic`. Exhaustive integral-point data requires a proof covering every abscissa. |
 | `ec_localdata` | 10 | Checked local arithmetic facts are indexed by prime. Exact Kodaira and Tamagawa outputs depend on the reduction case. |
 | `ec_galrep` | 7 | G1 specifies evidence for the image of the actual representation in a supplied torsion basis. |
@@ -32,10 +32,10 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | G2 specifies the field of definition and the full torsion subgroup after base change. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The current checked-field inventory covers **33 of 85 distinct LMFDB column
-names**: 18 in `ec_curvedata` (including the rank-zero-scoped `regulator`), 2
-distinct `ec_classdata` coefficient names, 6 in `ec_mwbsd` (including
-`special_value`), and 7 in
+The current checked-field inventory covers **37 of 85 distinct LMFDB column
+names**: 21 in `ec_curvedata` (including the rank-zero-scoped `regulator`), 5
+in `ec_classdata` (including two copies from `ec_curvedata`), 6 in
+`ec_mwbsd` (including `special_value`), and 7 in
 `ec_localdata` (including the required row key `prime`). It covers zero new
 names in `ec_galrep`, `ec_padic`, `ec_torsion_growth`, and `ec_iwasawa`.
 These are distinct names within each table: a shared name across tables is
@@ -80,6 +80,10 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `global_root_number` | `rootNumber` | Identification with that realization's global root/Fricke sign under the same conditions. This is an explicit extension key, not the local-table `root_number`. |
 | `integral_points` | `integralCoordinates` | Point membership on the supplied equation. |
 | `xcoord_integral_points` | `integralFiberRoots` | Complete finite y-fibers at the listed x-values, with a double root represented once. The theorem makes no claim over other x-values. |
+| `class_size` | `classSize` | Exact number of distinct rational isomorphism classes, given a proved complete class model in `with_proofs`. |
+| `class_deg` | `classDegree` | Maximum minimum isogeny degree, computed from the entire proved class matrix. |
+| `isogeny_degrees` | `isogenyDegrees` | Duplicate-free list of minimum degrees from the input curve to all class representatives, checked as a set. |
+| `isogeny_matrix` | `isogenyMatrix` | Square array of minimum degrees with source indexing rows and target indexing columns. Requires reduced minimal representatives in the LMFDB lexicographic coefficient ordering. |
 | `num_int_pts` | `numIntegralPoints` | Exact cardinality theorem from supplied exhaustive `IntegralXSupport`; available at `certificate.algebraic.completeIntegralPoints` with finite-set completeness and `Finite` evidence. Without support it is unverified, but a count below the number of distinct checked points or seed-fiber solutions is rejected. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
 | `rank`, `rank_bounds` | `algebraicRank`, `algebraicRankBounds` | Verify supplied endpoints against a typed proof of bounds on the actual Mordell–Weil rank. A singleton proof gives exact rank. |
@@ -188,6 +192,16 @@ Import `CertifiedCurves.Invariants` for the small reusable 37.a1 example.
 `tests/consumers/CertifiedECInvariantsConsumer.lean` imports its `.olean` theorems
 without rerunning the certification command.
 
+The four class fields are optional exact claims. Supply
+`IntegralCurveProofs.isogenyClass` via `with_proofs` to give the
+distinct and exhaustive representatives, the correspondence with the input
+curve, and attainment and lower bounds for each matrix entry. The complete
+class and any native ordering proof are accessible through
+`certificate.isogenyClass`. The checker computes the class degree and the
+selected row's degree set. It compares a submitted matrix only with a
+proved LMFDB ordering. An edge alone leaves the class fields unverified.
+[LMFDB label ordering](https://www.lmfdb.org/knowledge/show/ec.q.lmfdb_label)
+
 ## Remaining invariant groups
 
 These fields remain unverified metadata unless a check above independently
@@ -200,7 +214,6 @@ missing theorem.
 | Specific additive `kodaira_symbol`, local `root_number`, other `tamagawa_number` branches, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
 | Tighter torsion bounds and `intrinsic_torsion` | Construct tight bounds for the rational torsion group or prove the required torsion pairing statement. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Rank intervals can be supplied as Lean proofs and are checked against the actual rational point group; exact rank requires a singleton interval. `ngens` checks only the length of the supplied generator list, not that it is a basis. Integral-point counts can use supplied exhaustive support; deriving it automatically still needs a bound and complete search. |
-| `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |
 | `cm`, quadratic-twist fields | Actual endomorphism/twist statements and, for a minimal twist, the required minimality comparison. A j-value lookup alone is not a CM certificate. |
 | Modular `degree`, `manin_constant`, `optimality` | Statements about the modular parametrization, not the degree of an arbitrary isogeny. |
 | Heights, periods, regulator, Faltings data, special values, `szpiro_ratio` | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |

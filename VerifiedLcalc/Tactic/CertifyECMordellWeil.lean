@@ -55,11 +55,9 @@ private def certifyRankClaims (base : Name) (curve : Ident) (attachment : Option
   checkRawRankConsistency base claim interval point
   let fact ← if let some input := attachment then do
     let selected ← `(($input).algebraicRank)
-    let value ← liftTermElabM do whnf (← Lean.Elab.Term.elabTerm selected none)
-    match value.getAppFn.constName? with
-    | some ``Option.none => pure none
-    | some ``Option.some => some <$> `(($selected).get (by decide +kernel))
-    | _ => throwError "Expected a closed optional algebraic rank witness"
+    if ← hasOptionalProof selected `algebraic_rank then
+      some <$> `(($selected).get (by decide +kernel))
+    else pure none
   else pure none
   let some fact := fact |
     if claim.isSome || interval.isSome then
@@ -113,11 +111,9 @@ def certifyProofAttachment (base : Name) (input : Option (TSyntax `term)) :
   certifyRankClaims base curve attachment
   let support ← if let some facts := attachment then do
     let selected ← `(($facts).integralXSupport)
-    let value ← liftTermElabM do whnf (← Lean.Elab.Term.elabTerm selected none)
-    match value.getAppFn.constName? with
-    | some ``Option.none => pure none
-    | some ``Option.some => some <$> `(($selected).get (by decide +kernel))
-    | _ => throwError "Expected closed optional integral abscissa support"
+    if ← hasOptionalProof selected `integral_x_support then
+      some <$> `(($selected).get (by decide +kernel))
+    else pure none
   else pure none
   let count ← optionalInput (base ++ `witness) `numIntegralPoints
   certifyCompleteIntegralPoints base support count

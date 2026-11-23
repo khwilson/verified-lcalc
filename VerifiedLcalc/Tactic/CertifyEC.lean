@@ -34,6 +34,9 @@ j-invariant and its integrality, everywhere potential good reduction, minimal ab
 discriminant, bad-prime set/count, anlist, conductor and global root number.
 An `abc_quality_evidence` object supplies a rational error and the factorization
 needed to bound the actual abc quality about the reported `abc_quality` decimal.
+The native isogeny class fields `class_size`, `class_deg`, `isogeny_degrees` and
+`isogeny_matrix` use `IntegralCurveProofs.isogenyClass` supplied with `with_proofs`.
+The matrix requires the reduced minimal models in lexicographic order.
 Prerequisite-dependent claims without the required evidence are reported as unverified. See
 `docs/LMFDB_INVARIANTS.md` for the exact mathematical outputs and trust boundary.
 JSON can supply `ainvs`, `ap` or `aplist`, and `integral_points` or
@@ -241,6 +244,7 @@ def certifyFields (name : Name) (input : TSyntax `term)
   certifyLocalData base
   certifyStoredInvariants base (← certifyProofAttachment base proofs)
   certifyIsogenyEdge base isogeny
+  certifyIsogenyClass base
   if let some result := central then certifyAnalytic base true result
   if let some result := derivative then certifyAnalytic base false result
   certifyRecord base
@@ -288,7 +292,7 @@ def certifyJson (name : Name) (text : String)
         "independent_points", "binvs", "cinvs",
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
-        "num_int_pts",
+        "num_int_pts", "class_size", "class_deg", "isogeny_matrix", "isogeny_degrees",
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
         ["regulator", "regulator_evidence"] ++
         algebraicKeys ++ localKeys ++

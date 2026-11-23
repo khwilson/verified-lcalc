@@ -4,7 +4,7 @@ Start with [`EllipticWitness`](EllipticWitness.lean) for input to `certify_ec` a
 
 The index covers **85 distinct column names** across **101 table-qualified columns** in the eight EC/ℚ tables, excluding the database row identifier `id`. Each name appears once. The table column omits the `ec_` prefix. [LMFDB schema for 37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
 
-All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is still **33 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
+All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is still **37 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
 
 ## Curve data (`ec_curvedata`)
 
@@ -21,8 +21,8 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `ainvs` | `curvedata` | Checked | [`EllipticWitness.equation`](EllipticWitness.lean) supplies the five coefficients as a Mathlib Weierstrass curve over ℤ. [`EllipticCertificate.nonsingular`](EllipticCertificate.lean) proves its discriminant is nonzero. All checked fields are indexed by that equation. |
 | `analytic_rank` | `curvedata` | Checked | [`ConditionalAnalyticRank.correct`](Analytic.lean), stored in [`AnalyticFacts.rank`](Analytic.lean). The catalogue value is compared with the order at 1 for each arithmetic modular realization. The curve evaluators currently certify orders 0 and 1 with full evidence. |
 | `bad_primes` | `curvedata` | Checked | [`MinimalModelArithmeticFacts.badPrimes`](FinitePrimes.lean). Complete, duplicate-free list of bad-reduction primes of the globally minimal model. |
-| `class_deg` | `curvedata`, `classdata` | Structure | [`IsogenyClassFacts.classDegree`](Algebraic.lean). Maximum of the complete matrix of minimum isogeny degrees. |
-| `class_size` | `curvedata`, `classdata` | Structure | [`IsogenyClassFacts.classSize`](Algebraic.lean). Number of distinct rational isomorphism classes, with exhaustive representatives. |
+| `class_deg` | `curvedata`, `classdata` | Checked | [`IsogenyClassFacts.classDegree`](Algebraic.lean). Maximum of the complete matrix of minimum isogeny degrees. Requires a proved complete class model. |
+| `class_size` | `curvedata`, `classdata` | Checked | [`IsogenyClassData.classSize`](Algebraic.lean). Number of distinct rational isomorphism classes, with exhaustive representatives supplied through `with_proofs`. |
 | `cm` | `curvedata` | Structure | [`ComplexMultiplicationFacts.endomorphismRing`](Algebraic.lean). The zero code identifies the geometric endomorphism ring with ℤ. A negative code identifies the quadratic order of that discriminant. |
 | `conductor` | `curvedata`, `classdata`, `mwbsd`, `localdata`, `galrep` | Checked | [`ModularArithmeticFacts.conductor`](Invariants.lean). With verified minimality and local data, the value equals the level of each arithmetic modular realization of this curve. This statement concerns the curve supplied to the certifier. |
 | `degree` | `curvedata`, `torsion_growth` | Mixed | [`ModularParametrizationInput.degree`](Algebraic.lean) is the reported modular degree in `curvedata`. [`TorsionGrowthFacts.degree_eq`](Algebraic.lean) requires a proof of the extension degree in `torsion_growth`. |
@@ -32,7 +32,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `faltings_ratio` | `curvedata` | Report | [`FaltingsInput.ratio`](Algebraic.lean). Reported Néron lattice index relative to the least-height curve in the class. |
 | `intrinsic_torsion` | `curvedata` | Report | [`IntrinsicTorsionInput.order`](Algebraic.lean). Reported order of the radical of the rational torsion pairing. |
 | `iso_nlabel` | `curvedata` | Metadata | [`CatalogueMetadata.isoNlabel`](InputData.lean). Reported catalogue identifier or ordering. |
-| `isogeny_degrees` | `curvedata` | Structure | [`IsogenyClassFacts.isogenyDegrees`](Algebraic.lean). Set of minimum degrees in the represented curve’s row. |
+| `isogeny_degrees` | `curvedata` | Checked | [`IsogenyClassFacts.isogenyDegrees`](Algebraic.lean). Distinct minimum degrees from the input curve, using its row in the proved complete class. |
 | `jinv` | `curvedata` | Checked | [`RationalInvariantFacts.jInvariant`](Invariants.lean). Exact equality with the j-invariant after base change to ℚ. |
 | `lmfdb_iso` | `curvedata`, `classdata`, `padic` | Metadata | [`CatalogueMetadata.lmfdbIso`](InputData.lean). Reported catalogue identifier or ordering. |
 | `lmfdb_label` | `curvedata`, `mwbsd`, `iwasawa`, `torsion_growth`, `localdata`, `galrep` | Metadata | [`CatalogueMetadata.lmfdbLabel`](InputData.lean). Reported catalogue identifier or ordering. |
@@ -68,7 +68,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | --- | --- | --- | --- |
 | `anlist` | `classdata` | Checked | [`ArithmeticFacts.dirichletCoefficients`](FinitePrimes.lean). Consecutive coefficients of the rational curve’s L-function, starting at a₁. The JSON decoder checks and removes the initial a₀ = 0. |
 | `aplist` | `classdata` | Checked | [`ArithmeticFacts.primeCoefficients`](FinitePrimes.lean). Each supplied prime-indexed coefficient agrees with the represented curve’s L-function. |
-| `isogeny_matrix` | `classdata` | Structure | [`IsogenyClassFacts.isogenyMatrix`](Algebraic.lean). Each entry is attained by an isogeny and bounds every degree from below for that ordered pair. |
+| `isogeny_matrix` | `classdata` | Checked | [`IsogenyClassData.isogenyMatrix`](Algebraic.lean). Each entry is attained by an isogeny and bounds every degree from below for that ordered pair. The check requires the canonical LMFDB ordering of reduced minimal models. |
 | `trace_hash` | `classdata` | Metadata | [`CatalogueMetadata.traceHash`](InputData.lean). Reported class fingerprint. |
 
 ## Mordell–Weil and BSD data (`ec_mwbsd`)
