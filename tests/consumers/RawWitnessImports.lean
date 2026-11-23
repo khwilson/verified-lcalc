@@ -8,8 +8,12 @@ open Lean Elab Command
 run_cmd do
   let modules := (← getEnv).allImportedModuleNames
   let witnesses := `VerifiedLcalc.Certificate.Witnesses
+  -- These records describe verified outputs. Importing them used to load modularity,
+  -- regulator and torsion theory solely to read the corresponding optional inputs.
+  let checked := [witnesses ++ `EllipticCertificate, witnesses ++ `SpecialValue,
+    witnesses ++ `Regulator, witnesses ++ `Torsion, witnesses ++ `IntegralPoints]
   for mod in modules do
-    if (`TauCeti).isPrefixOf mod then
-      throwError "raw curve input pulled in TauCeti module {mod}"
+    if checked.contains mod then
+      throwError "raw curve input pulled in checked-output module {mod}"
     if (`VerifiedLcalc).isPrefixOf mod && !witnesses.isPrefixOf mod then
       throwError "raw curve input pulled in project implementation {mod}"
