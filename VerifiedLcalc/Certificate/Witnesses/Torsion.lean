@@ -7,6 +7,7 @@ module
 
 public import Mathlib.Algebra.Field.ZMod
 public import Mathlib.GroupTheory.Torsion
+public import VerifiedLcalc.Certificate.Witnesses.TorsionBoundWitness
 public import TauCeti.AlgebraicGeometry.EllipticCurve.PointCount
 
 /-! # Rational torsion certificate data -/
@@ -14,15 +15,6 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.PointCount
 @[expose] public section
 
 namespace VerifiedLcalc
-
-/-- Two proposed odd primes and the gcd of the corresponding finite-field point counts. -/
-structure TorsionBoundWitness where
-  /-- First proposed prime of good reduction. -/
-  firstPrime : Nat
-  /-- Second proposed prime of good reduction. -/
-  secondPrime : Nat
-  /-- Claimed positive gcd of the two reduced point counts. -/
-  bound : Nat
 
 /-- A positive common point-count divisor bounding the full rational torsion subgroup. -/
 structure TorsionDivisorFacts (curve : WeierstrassCurve ℤ) where

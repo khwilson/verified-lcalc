@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.Scan
-public import Mathlib.Basic.Complex.Basic
+public import VerifiedLcalc.Certificate.Analytic.EnclosurePredicates
 
 import Mathlib.Data.Rat.Cast.Order
 
@@ -17,12 +17,6 @@ import Mathlib.Tactic
 @[expose] public section
 
 namespace VerifiedLcalc
-
-/-- A complex value lies in a box when both real coordinates lie in their
-closed rational intervals. -/
-def Box.Contains (b : Box) (z : ℂ) : Prop :=
-  z.re ∈ Set.Icc (b.reLo : ℝ) (b.reHi : ℝ) ∧
-    z.im ∈ Set.Icc (b.imLo : ℝ) (b.imHi : ℝ)
 
 /-- A singleton-zero rectangle can contain only the complex number zero. -/
 theorem Box.isZero_sound {b : Box} {z : ℂ}
@@ -49,11 +43,6 @@ theorem Box.excludesZero_sound {b : Box} {z : ℂ}
     exact (not_le_of_gt this) hil
   · have : (b.imHi : ℝ) < 0 := by exact_mod_cast h
     exact (not_le_of_gt this) hih
-
-/-- Every box in the list encloses the matching value of a sequence. -/
-def Encloses : List Box → (ℕ → ℂ) → Prop
-  | [], _ => True
-  | b :: bs, a => b.Contains (a 0) ∧ Encloses bs (fun k => a (k + 1))
 
 /-- A finite box witness proves exact vanishing before its index and
 nonvanishing at that index for every sequence enclosed by the boxes. -/

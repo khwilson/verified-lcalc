@@ -17,7 +17,7 @@ contains their Lean declarations.
 | --- | --- |
 | Rational invariants | [RationalInvariants](../VerifiedLcalc/Certificate/Witnesses/RationalInvariants.lean) records the sign, rational j-invariant, and an enclosure for TauCeti's abc quality with its factorization evidence. |
 | Rational and integral points | [PointMembership](../VerifiedLcalc/Certificate/Witnesses/PointMembership.lean) states the affine equation. [PointFacts](../VerifiedLcalc/Certificate/Witnesses/PointFacts.lean) records exact orders, linear independence, generator-list length, and integral y-fibers. [IntegralPoints](../VerifiedLcalc/Certificate/Witnesses/IntegralPoints.lean) covers exhaustive x-coordinate support and the cardinality of TauCeti's set of integral points. |
-| Mordell–Weil rank and regulator | [AlgebraicRank](../VerifiedLcalc/Certificate/Witnesses/AlgebraicRank.lean) gives bounds on Mathlib's integer `Module.finrank` using TauCeti's Mordell–Weil finite-generation instance. [Regulator](../VerifiedLcalc/Certificate/Witnesses/Regulator.lean) states an enclosure for TauCeti's Néron–Tate regulator. |
+| Mordell–Weil rank and regulator | [AlgebraicRank](../VerifiedLcalc/Certificate/Witnesses/AlgebraicRank.lean) gives bounds on Mathlib's integer `Module.finrank` of the rational point group. The structure imports only Mathlib. [Regulator](../VerifiedLcalc/Certificate/Witnesses/Regulator.lean) states an enclosure for TauCeti's Néron–Tate regulator. |
 | Torsion and isogenies | [Torsion](../VerifiedLcalc/Certificate/Witnesses/Torsion.lean) covers reduction point counts, divisibility, the full torsion subgroup and its invariant factors. [DegreeTwoIsogeny](../VerifiedLcalc/Certificate/Witnesses/DegreeTwoIsogeny.lean) uses TauCeti's isogeny, kernel and degree. |
 | Reduction and arithmetic | [LocalClaims](../VerifiedLcalc/Certificate/Witnesses/LocalClaims.lean) contains supplied local rows and isogeny edge claims. [Transcripts](../VerifiedLcalc/Certificate/Witnesses/Transcripts.lean) contains minimality and tame/wild Tate data. [ArithmeticFacts](../VerifiedLcalc/Certificate/Witnesses/ArithmeticFacts.lean) includes minimal-model facts, local Tamagawa and Kodaira evidence, coefficients and conditional modular level and sign. |
 | L-function and leading coefficient | [AnalyticFacts](../VerifiedLcalc/Certificate/Witnesses/AnalyticFacts.lean) contains verified payloads, enclosures and analytic rank for an explicit realization. [SpecialValue](../VerifiedLcalc/Certificate/Witnesses/SpecialValue.lean) states the reported Taylor leading coefficient and its error bound for that curve. |
@@ -52,6 +52,24 @@ Backend files formerly in `VerifiedLcalc.Certification/` are now in
 a single-file compatibility umbrella. There is no `Certificates/` or
 `Certification/` source directory. `VerifiedLcalc.Certificate.Witnesses` and
 `VerifiedLcalc.Tactic.CertifyEC` are the canonical data and command entrypoints.
+
+## Which definitions the checked fields need
+
+The raw `EllipticWitness` uses Mathlib and other witness records. The
+checked `EllipticCertificate` also uses TauCeti's integral points,
+regulator, reduction symbols and Tamagawa numbers. For example, a checked
+local reduction row identifies its signed trace with TauCeti's
+`(e.baseChange (ZMod p)).frobeniusTrace`. Its checker proves the equality
+from the integer computation.
+
+Some checked fields refer to project definitions. For example, a conditional
+analytic rank quantifies over a modular realization with coefficient, conductor and
+root-number compatibility. Central-value and derivative payloads record the
+exact coefficient list, interval computations and error bounds that the
+verifier checked. Their field types name those definitions so clients can
+recover the full statements. See the [arithmetic realization](../VerifiedLcalc/EllipticCurve/Modularity/ArithmeticRealizationData.lean),
+[finite payloads](../VerifiedLcalc/Certificate/Numerical/Payloads.lean)
+and [TauCeti roadmap](TAUCETI_ROADMAP.md).
 
 ## Predicates, computations and theorems
 

@@ -1,14 +1,20 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.UpstreamCandidates.TauCeti.Minimality
 public import VerifiedLcalc.EllipticCurve.MinimalArithmetic
 public import VerifiedLcalc.EllipticCurve.ReductionCore
 
+/-! # Mathematical facts used by local additive reduction proofs -/
+
 @[expose] public section
 open WeierstrassCurve
 open IsDedekindDomain.HeightOneSpectrum IsDiscreteValuationRing
 open scoped WithZero
-
 
 namespace VerifiedLcalc.EllipticCurve
 open NumberField IsDedekindDomain
@@ -22,9 +28,9 @@ theorem rationalPlace_intValuation_gt (p k : ℕ) [Fact p.Prime] (n : ℤ)
   have hi : (rationalPlace p).asIdeal.map Rat.ringOfIntegersEquiv.toRingHom =
       Ideal.span {(p : ℤ)} := by
     rw [← RationalPrimes.integerPlace_asIdeal]
-    change ((HeightOneSpectrum.equivOfRingEquiv Rat.ringOfIntegersEquiv)
-      ((HeightOneSpectrum.equivOfRingEquiv Rat.ringOfIntegersEquiv).symm _)).asIdeal = _
-    rw [Equiv.apply_symm_apply]
+    rw [← Int.ideal_span_absNorm_eq_self
+      (RationalPrimes.integerPlace (rationalPlace p)).asIdeal,
+      RationalPrimes.norm_integerPlace, rationalPlace_norm]
   rw [Ideal.map_pow, hi, Ideal.span_singleton_pow] at hm
   apply h
   exact Ideal.mem_span_singleton.mp (by simpa using hm)
@@ -54,9 +60,9 @@ theorem rationalPlace_intValuation_le (p k : ℕ) [Fact p.Prime] (n : ℤ)
   have hi : (rationalPlace p).asIdeal.map Rat.ringOfIntegersEquiv.toRingHom =
       Ideal.span {(p : ℤ)} := by
     rw [← RationalPrimes.integerPlace_asIdeal]
-    change ((HeightOneSpectrum.equivOfRingEquiv Rat.ringOfIntegersEquiv)
-      ((HeightOneSpectrum.equivOfRingEquiv Rat.ringOfIntegersEquiv).symm _)).asIdeal = _
-    rw [Equiv.apply_symm_apply]
+    rw [← Int.ideal_span_absNorm_eq_self
+      (RationalPrimes.integerPlace (rationalPlace p)).asIdeal,
+      RationalPrimes.norm_integerPlace, rationalPlace_norm]
   have hm : Rat.ringOfIntegersEquiv (n : 𝓞 ℚ) ∈
       ((rationalPlace p).asIdeal ^ k).map Rat.ringOfIntegersEquiv.toRingHom := by
     rw [Ideal.map_pow, hi, Ideal.span_singleton_pow]
@@ -96,8 +102,7 @@ theorem minimal_at_of_discriminant_not_dvd (e : (WeierstrassCurve ℤ))
   apply minimal_of_small_discriminant W Valued.v
     (HeightOneSpectrum.adicCompletionIntegers.integers ℚ v)
   have heq : W.Δ = algebraMap (𝓞 ℚ) K (e.Δ : 𝓞 ℚ) := by
-    simp only [W, WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ, eq_intCast,
-      show e.Δ = e.Δ from rfl, map_intCast]
+    simp only [W, WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ, eq_intCast, map_intCast]
   rw [heq, map_intCast, completion_intCast_valuation]
   exact rationalPlace_intValuation_gt p 12 (e.Δ) h
 
@@ -115,7 +120,8 @@ theorem discriminantMinimalAt_correct (e : (WeierstrassCurve ℤ)) (p : ℕ) :
 invariants. It becomes a statement about the elliptic curve once minimality is proved. -/
 theorem modelReduction_additive_iff (e : (WeierstrassCurve ℤ)) (p : ℕ) :
     modelReduction e p = .additive ↔
-      (WeierstrassCurve.baseChange e (ZMod p)).Δ = 0 ∧ (WeierstrassCurve.baseChange e (ZMod p)).c₄ = 0 := by
+      (WeierstrassCurve.baseChange e (ZMod p)).Δ = 0 ∧
+      (WeierstrassCurve.baseChange e (ZMod p)).c₄ = 0 := by
   simp only [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ,
     WeierstrassCurve.map_c₄, eq_intCast]
   simp only [ZMod.intCast_zmod_eq_zero_iff_dvd, Int.dvd_iff_emod_eq_zero]
@@ -134,7 +140,8 @@ theorem modelReduction_good_iff (e : (WeierstrassCurve ℤ)) (p : ℕ) :
 /-- The multiplicative branch is a nodal cubic: Delta vanishes and c4 does not. -/
 theorem modelReduction_multiplicative_iff (e : (WeierstrassCurve ℤ)) (p : ℕ) :
     modelReduction e p = .multiplicative ↔
-      (WeierstrassCurve.baseChange e (ZMod p)).Δ = 0 ∧ (WeierstrassCurve.baseChange e (ZMod p)).c₄ ≠ 0 := by
+      (WeierstrassCurve.baseChange e (ZMod p)).Δ = 0 ∧
+      (WeierstrassCurve.baseChange e (ZMod p)).c₄ ≠ 0 := by
   simp only [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ,
     WeierstrassCurve.map_c₄, eq_intCast]
   simp only [ne_eq, ZMod.intCast_zmod_eq_zero_iff_dvd, Int.dvd_iff_emod_eq_zero]
@@ -157,8 +164,9 @@ theorem additive_localPolynomial (e : (WeierstrassCurve ℤ))
       ((WeierstrassCurve.baseChange e ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
         ((rationalPlace p).adicCompletion ℚ)))
     (ha : modelReduction e p = .additive) :
-    ((WeierstrassCurve.baseChange e ℚ).baseChange ((rationalPlace p).adicCompletion ℚ)).localPolynomial
-      ((rationalPlace p).adicCompletionIntegers ℚ) = 1 := by
+    ((WeierstrassCurve.baseChange e ℚ).baseChange
+      ((rationalPlace p).adicCompletion ℚ)).localPolynomial
+        ((rationalPlace p).adicCompletionIntegers ℚ) = 1 := by
   rw [minimal_localPolynomial e hn p hmin]
   have ht := additive_trace_zero e p ha
   have hg : goodReduction e p = false := by
@@ -166,6 +174,6 @@ theorem additive_localPolynomial (e : (WeierstrassCurve ℤ))
     cases h : goodReduction e p
     · rfl
     · exact False.elim ((goodReduction_correct e p).mp h hd)
-  simp [computePrimePowerCoefficient, ht, hg]
+  simp [ht, hg]
 
 end VerifiedLcalc.EllipticCurve

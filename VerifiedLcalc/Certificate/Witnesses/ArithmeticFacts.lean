@@ -5,18 +5,11 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.LocalClaims
 public import VerifiedLcalc.Certificate.LocalReductionSpecs
-public import VerifiedLcalc.Certificate.Witnesses.Transcripts
-public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealization
-public import VerifiedLcalc.EllipticCurve.GlobalCoefficients
-public import VerifiedLcalc.EllipticCurve.Tate.LocalReduction
-public import VerifiedLcalc.EllipticCurve.Tate.Tamagawa
-public import VerifiedLcalc.EllipticCurve.Tate.Kodaira
-public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReduction
-public import Mathlib.Data.Nat.Squarefree
-public import Mathlib.Data.Nat.Factors
-public import Mathlib.RingTheory.Localization.Rat
+public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
+public import TauCeti.AlgebraicGeometry.EllipticCurve.Tamagawa.Product
+public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Curve
+public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReductionSpec
 
 /-! # Checked arithmetic fact structures -/
 

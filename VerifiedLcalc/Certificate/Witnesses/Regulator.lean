@@ -14,13 +14,6 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenera
 
 namespace VerifiedLcalc
 
-/-- A stored regulator decimal and optional explicit absolute-error evidence. -/
-structure RegulatorClaim where
-  /-- Exact rational interpretation of the stored decimal. -/
-  reported : Rat
-  /-- Explicit absolute error bound; absence means an exact-value claim. -/
-  error : Option Rat := none
-
 /-- A mathematically proved enclosure for an elliptic-curve regulator. -/
 structure RegulatorFacts (W : WeierstrassCurve ℚ) [W.toAffine.IsElliptic] where
   /-- The center of the reported enclosure. -/

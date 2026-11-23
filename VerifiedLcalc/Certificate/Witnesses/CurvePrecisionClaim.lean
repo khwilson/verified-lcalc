@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.PrecisionPolicy
-public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
+public import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
 
 /-! Identity data for a curve-specific numerical-to-exact precision claim. -/
 

@@ -6,6 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.Regulator
+public import VerifiedLcalc.Certificate.Witnesses.RegulatorClaim
 
 /-! # Compatibility path for regulator facts -/
 

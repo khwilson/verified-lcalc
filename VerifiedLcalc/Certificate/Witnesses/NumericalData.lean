@@ -7,15 +7,13 @@ module
 
 public import VerifiedLcalc.Certificate.Witnesses.Enclosures
 public import VerifiedLcalc.Certificate.Witnesses.PrecisionPolicy
-public import VerifiedLcalc.Certificate.Numerical.Intervals
-public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
+public import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
 
 /-! Raw central-value and first-derivative numerical output records. -/
 
 @[expose] public section
 
 namespace VerifiedLcalc.EllipticCurve
-open Numerics
 
 /-- Finite central-value output. Its numerical interpretation is recorded
 separately by `CentralPayloadCorrect`. -/
@@ -65,7 +63,7 @@ structure DerivativeResult where
   /-- Upper rational bound for the Mellin scale. -/
   alphaHi : Rat
   /-- Enclosure of the normalized derivative integral over `[1, cutoff]`. -/
-  finite : RealInterval
+  finite : Rat × Rat
   /-- Bound on the omitted normalized integral from `cutoff` to infinity. -/
   tail : Rat
   /-- Rational rectangle enclosing the normalized derivative integral. -/

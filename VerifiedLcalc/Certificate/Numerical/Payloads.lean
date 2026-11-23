@@ -1,6 +1,7 @@
 module
 
-public import VerifiedLcalc.EllipticCurve.CoefficientCore
+public import VerifiedLcalc.Certificate.Numerical.CoefficientDefinitions
+public import VerifiedLcalc.Certificate.Numerical.Intervals
 public import VerifiedLcalc.EllipticCurve.CentralDefinitions
 public import VerifiedLcalc.EllipticCurve.DerivativeDefinitions
 

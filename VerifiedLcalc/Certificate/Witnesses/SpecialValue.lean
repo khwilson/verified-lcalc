@@ -5,7 +5,8 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealization
+public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
+public import VerifiedLcalc.Certificate.Witnesses.SpecialValueClaim
 
 /-! # Special-value claim and enclosure data
 
@@ -18,14 +19,6 @@ contract module is available.
 
 namespace VerifiedLcalc
 open Modularity
-
-/-- An exact rational interpretation of a reported Taylor leading coefficient
-and its explicit absolute-error radius. -/
-structure SpecialLValueClaim where
-  /-- Decimal or rational value as reported by the input. -/
-  reported : Rat
-  /-- Explicit claimed maximum absolute error. -/
-  error : Rat
 
 /-- A proved enclosure for the Taylor leading coefficient at the analytic
 order of the actual curve L-function. -/

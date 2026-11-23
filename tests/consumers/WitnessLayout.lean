@@ -14,6 +14,18 @@ run_cmd do
   let env ← getEnv
   let modules := env.allImportedModuleNames
   let root := `VerifiedLcalc.Certificate.Witnesses
+  for mod in modules do
+    if (`VerifiedLcalc.Verification).isPrefixOf mod || (`VerifiedLcalc.Tactic).isPrefixOf mod then
+      throwError "ordinary witness structures imported a checker or command module: {mod}"
+  -- The fields use the realization, reduction invariants and series formula themselves.
+  -- Their proof companions used to enter through public imports of the checked records.
+  for companion in [`VerifiedLcalc.EllipticCurve.Modularity.Realization,
+      `VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealization,
+      `VerifiedLcalc.EllipticCurve.Tate.Kodaira, `VerifiedLcalc.EllipticCurve.Tate.Tamagawa,
+      `VerifiedLcalc.EllipticCurve.CentralFinite, `VerifiedLcalc.EllipticCurve.CentralTail,
+      `VerifiedLcalc.NumericalRankSeparation] do
+    if modules.contains companion then
+      throwError "ordinary witness structures imported proof companion {companion}"
   for optIn in [`VerifiedLcalc.Assumptions.ellipticModularity,
       `VerifiedLcalc.Assumptions.analyticOrder_le_one_implies_finrank] do
     if env.contains optIn then throwError "ordinary witnesses imported the axiom {optIn}"

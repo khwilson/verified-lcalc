@@ -2,6 +2,7 @@ module
 
 public import VerifiedLcalc.Assumptions.Precision
 public import VerifiedLcalc.Verification.NumericalCertification
+public import VerifiedLcalc.NumericalRankSeparation
 
 /-!
 # Conditional numerical rank certification

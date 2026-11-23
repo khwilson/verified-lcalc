@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import TauCeti.AlgebraicGeometry.EllipticCurve.MinimalModel.PotentialGoodReduction
+public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReductionSpec
 public import TauCeti.NumberTheory.Padics.RatCast
 
 /-! # Potential good reduction over the rational numbers
@@ -17,10 +17,6 @@ denominator of the rational j-invariant being one.
 public section
 
 namespace VerifiedLcalc.EllipticCurve
-
-/-- Potential good reduction over the p-adic integers at every rational prime. -/
-def HasEverywherePotentialGoodReduction (W : WeierstrassCurve ℚ) : Prop :=
-  ∀ p : Nat.Primes, (W.baseChange ℚ_[p]).HasPotentialGoodReduction ℤ_[p]
 
 /-- The local integral j-invariant criterion at all primes reduces to a single
 condition on the denominator of the rational j-invariant. -/

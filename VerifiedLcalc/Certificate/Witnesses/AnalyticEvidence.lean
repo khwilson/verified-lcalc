@@ -6,7 +6,8 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Analytic.EvidencePredicates
-public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
+public import VerifiedLcalc.Certificate.Analytic.EnclosurePredicates
+public import VerifiedLcalc.Certificate.Witnesses.NumericalRankData
 
 /-! Structures containing analytic obligations for supplied evidence. -/
 

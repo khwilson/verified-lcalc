@@ -2,19 +2,25 @@ module
 public import VerifiedLcalc.Numerics.RealIntervalCore
 public import VerifiedLcalc.Numerics.RationalExp
 public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
+
+/-! Soundness proofs for exact rational interval and logarithm bounds. -/
+
 @[expose] public section
 namespace VerifiedLcalc.Numerics
 
-def RealInterval.Contains (i : RealInterval) (x : ℝ) : Prop := x ∈ Set.Icc (i.1 : ℝ) (i.2 : ℝ)
-
+/-- Outward dyadic rounding preserves containment of a real value. -/
 theorem roundInterval_sound (bits : Nat) (i : RealInterval) (x : ℝ) (hi : i.Contains x) :
     (roundInterval bits i).Contains x := by
   have hl : (((i.1.toDyadic bits).toRat : Rat) : ℝ) ≤ (i.1 : ℝ) := by
     exact_mod_cast Rat.toRat_toDyadic_le (x := i.1) (prec := bits)
   have hu : ((((-i.2).toDyadic bits).toRat : Rat) : ℝ) ≤ -(i.2 : ℝ) := by
     exact_mod_cast Rat.toRat_toDyadic_le (x := -i.2) (prec := bits)
-  exact ⟨hl.trans hi.1, by change x ≤ ((-(((-i.2).toDyadic bits).toRat) : Rat) : ℝ); push_cast; linarith [hi.2]⟩
+  exact ⟨hl.trans hi.1, by
+    change x ≤ ((-(((-i.2).toDyadic bits).toRat) : Rat) : ℝ)
+    push_cast
+    linarith [hi.2]⟩
 
+/-- Interval addition encloses the sum of two enclosed real values. -/
 theorem intervalAdd_sound (i j : RealInterval) (x y : ℝ)
     (hx : i.Contains x) (hy : j.Contains y) : (intervalAdd i j).Contains (x+y) := by
   exact ⟨by simpa [intervalAdd] using add_le_add hx.1 hy.1,
@@ -34,21 +40,26 @@ private theorem mul_bounds (a b c d x y : ℝ) (hx : a ≤ x ∧ x ≤ b) (hy : 
     · have hh := mul_le_mul_of_nonneg_left hy.1 h
       by_cases hc : 0 ≤ c
       · exact (low _ (by tauto)).trans ((mul_le_mul_of_nonneg_right hx.1 hc).trans hh)
-      · exact (low _ (by tauto)).trans ((mul_le_mul_of_nonpos_right hx.2 (le_of_not_ge hc)).trans hh)
+      · exact (low _ (by tauto)).trans
+          ((mul_le_mul_of_nonpos_right hx.2 (le_of_not_ge hc)).trans hh)
     · have hh := mul_le_mul_of_nonpos_left hy.2 (le_of_not_ge h)
       by_cases hd : 0 ≤ d
       · exact (low _ (by tauto)).trans ((mul_le_mul_of_nonneg_right hx.1 hd).trans hh)
-      · exact (low _ (by tauto)).trans ((mul_le_mul_of_nonpos_right hx.2 (le_of_not_ge hd)).trans hh)
+      · exact (low _ (by tauto)).trans
+          ((mul_le_mul_of_nonpos_right hx.2 (le_of_not_ge hd)).trans hh)
   · by_cases h : 0 ≤ x
     · have hh := mul_le_mul_of_nonneg_left hy.2 h
       by_cases hd : 0 ≤ d
       · exact hh.trans ((mul_le_mul_of_nonneg_right hx.2 hd).trans (high _ (by tauto)))
-      · exact hh.trans ((mul_le_mul_of_nonpos_right hx.1 (le_of_not_ge hd)).trans (high _ (by tauto)))
+      · exact hh.trans
+          ((mul_le_mul_of_nonpos_right hx.1 (le_of_not_ge hd)).trans (high _ (by tauto)))
     · have hh := mul_le_mul_of_nonpos_left hy.1 (le_of_not_ge h)
       by_cases hc : 0 ≤ c
       · exact hh.trans ((mul_le_mul_of_nonneg_right hx.2 hc).trans (high _ (by tauto)))
-      · exact hh.trans ((mul_le_mul_of_nonpos_right hx.1 (le_of_not_ge hc)).trans (high _ (by tauto)))
+      · exact hh.trans
+          ((mul_le_mul_of_nonpos_right hx.1 (le_of_not_ge hc)).trans (high _ (by tauto)))
 
+/-- Interval multiplication encloses the product of two enclosed real values. -/
 theorem intervalMul_sound (i j : RealInterval) (x y : ℝ)
     (hx : i.Contains x) (hy : j.Contains y) : (intervalMul i j).Contains (x*y) := by
   obtain ⟨hxl, hxh⟩ := hx
@@ -108,10 +119,12 @@ theorem intervalMul_sound (i j : RealInterval) (x y : ℝ)
               (mul_le_mul_of_nonpos_right hxl hy0)
     · simpa [RealInterval.Contains] using mul_bounds _ _ _ _ _ _ ⟨hxl, hxh⟩ ⟨hyl, hyh⟩
 
+/-- Horner evaluation of the coefficient list at a real point. -/
 def polynomialValue (q : ℝ) : List Int → ℝ
   | [] => 0
   | a :: cs => a+q*polynomialValue q cs
 
+/-- The computed bounds enclose the polynomial at every point of the argument interval. -/
 theorem polynomialBounds_sound (bits : Nat) (i : RealInterval) (q : ℝ) (hq : i.Contains q)
     (cs : List Int) : (polynomialBounds bits i cs).Contains (polynomialValue q cs) := by
   induction cs with
@@ -141,7 +154,8 @@ theorem mapM_sumIntervalBounds_sound {A : Type} (xs : List A) (bounds : A → Op
       cases hs : xs.mapM bounds with
       | none => simp [hx,hs] at he
       | some rest =>
-        simp [hx,hs] at he
+        have he' : i :: rest = is := by
+          simpa [hx, hs] using he
         subst is
         have hfirst := hb x (by simp) i hx
         have hrest := ih rest hs (fun x hm => hb x (List.mem_cons_of_mem _ hm))
@@ -156,7 +170,7 @@ theorem logBounds_sound (t : Rat) (terms bits : Nat) (ht : 1 ≤ t) :
   have hy1 : y < 1 := (div_lt_one (by linarith)).mpr (by linarith)
   have he : (1+y)/(1-y) = (t : ℝ) := by
     dsimp [y]
-    field_simp <;> ring
+    field_simp; ring
   have hl := Real.sum_range_le_log_div hy0 hy1 terms
   have hu := Real.log_div_le_sum_range_add hy0 hy1 terms
   rw [he] at hl hu

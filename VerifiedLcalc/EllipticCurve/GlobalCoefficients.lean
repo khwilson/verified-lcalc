@@ -3,6 +3,8 @@ module
 public import VerifiedLcalc.EllipticCurve.EulerProduct
 public import VerifiedLcalc.EllipticCurve.RationalPrimes
 public import VerifiedLcalc.EllipticCurve.TauCeti
+public import VerifiedLcalc.EllipticCurve.RationalPlace
+public import TauCeti.NumberTheory.NumberField.Ideal.IntegersRat
 public import TauCeti.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Mathlib.Data.ZMod.QuotientRing
 
@@ -18,26 +20,12 @@ theorem completion_residue_card (v : HeightOneSpectrum (𝓞 ℚ)) :
   rw [Ideal.absNorm_eq_natCard]
   exact (Nat.card_congr (v.residueFieldEquivAdicCompletionIntegers (K := ℚ)).toEquiv).symm
 
-/-- A genuine rational prime ideal with norm p. No numerical conductor or
-reference rank is used in its construction. -/
-noncomputable def rationalPlace (p : ℕ) [Fact p.Prime] : HeightOneSpectrum (𝓞 ℚ) :=
-  (HeightOneSpectrum.equivOfRingEquiv Rat.ringOfIntegersEquiv).symm
-    { asIdeal := Ideal.span {(p : ℤ)}
-      isPrime := (Ideal.span_singleton_prime (by exact_mod_cast (Fact.out : p.Prime).ne_zero)).mpr
-        (Int.prime_iff_natAbs_prime.mpr (by simpa using (Fact.out : p.Prime)))
-      ne_bot := by simp [(Fact.out : p.Prime).ne_zero] }
-
 theorem rationalPlace_norm (p : ℕ) [Fact p.Prime] : (rationalPlace p).asIdeal.absNorm = p := by
-  rw [← RationalPrimes.norm_integerPlace]
-  have hi : RationalPrimes.integerPlace (rationalPlace p) =
-      ({ asIdeal := Ideal.span {(p : ℤ)}
-         isPrime :=
-           (Ideal.span_singleton_prime (by exact_mod_cast (Fact.out : p.Prime).ne_zero)).mpr
-             (Int.prime_iff_natAbs_prime.mpr (by simpa using (Fact.out : p.Prime)))
-         ne_bot := by simp [(Fact.out : p.Prime).ne_zero] } : HeightOneSpectrum ℤ) := by
-    exact Equiv.apply_symm_apply _ _
-  rw [hi]
-  simp
+  rw [rationalPlace, Rat.HeightOneSpectrum.absNorm_asIdeal]
+  change (Rat.HeightOneSpectrum.primesEquiv (R := 𝓞 ℚ)
+    ((Rat.HeightOneSpectrum.primesEquiv (R := 𝓞 ℚ)).symm ⟨p, Fact.out⟩)).val = p
+  exact congrArg Subtype.val
+    ((Rat.HeightOneSpectrum.primesEquiv (R := 𝓞 ℚ)).apply_symm_apply ⟨p, Fact.out⟩)
 
 /-- The global prime-power coefficient is the corresponding local power-series
 coefficient. This discharges Euler-product extraction for Q. -/

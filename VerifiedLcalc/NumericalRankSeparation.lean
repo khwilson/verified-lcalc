@@ -1,18 +1,18 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.NumericalRankSoundness
+public import VerifiedLcalc.Certificate.Analytic.EvidencePredicates
+
+/-! Conditional separation theorems for exact analytic rank bounds. -/
 
 @[expose] public section
 
 namespace VerifiedLcalc.NumericalRanks
-
-/-- A precise additional mathematical hypothesis: every nonzero derivative in
-this prefix has at least one coordinate separated from zero by `gap`.
-This is not implied by working precision or by a numerical enclosure. -/
-def NonzeroDerivativeGap (f : ℂ → ℂ) (center : ℂ) (n : Nat) (gap : Rat) : Prop :=
-  ∀ k < n, iteratedDeriv k f center ≠ 0 →
-    (gap : ℝ) ≤ |(iteratedDeriv k f center).re| ∨
-      (gap : ℝ) ≤ |(iteratedDeriv k f center).im|
 
 /-- The strict margin matters: an enclosure may include its cutoff endpoints. -/
 theorem exactVanishing_of_gap {f : ℂ → ℂ} {center : ℂ} {n : Nat} {eps gap : Rat}

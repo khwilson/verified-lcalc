@@ -8,10 +8,10 @@ module
 public import VerifiedLcalc.Certificate.Witnesses.CurveProofs
 public import VerifiedLcalc.Certificate.Witnesses.LocalClaims
 public import VerifiedLcalc.Certificate.Witnesses.AlgebraicRank
-public import VerifiedLcalc.Certificate.Witnesses.Regulator
-public import VerifiedLcalc.Certificate.Witnesses.SpecialValue
-public import VerifiedLcalc.Certificate.Witnesses.Torsion
-public import VerifiedLcalc.Certificate.Witnesses.IntegralPoints
+public import VerifiedLcalc.Certificate.Witnesses.RegulatorClaim
+public import VerifiedLcalc.Certificate.Witnesses.SpecialValueClaim
+public import VerifiedLcalc.Certificate.Witnesses.TorsionBoundWitness
+public import VerifiedLcalc.Certificate.Witnesses.IntegralXSupport
 public import VerifiedLcalc.Certificate.Witnesses.NumericalData
 public import VerifiedLcalc.Certificate.Witnesses.Transcripts
 
