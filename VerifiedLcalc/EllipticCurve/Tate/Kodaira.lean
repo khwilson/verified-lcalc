@@ -9,6 +9,7 @@ public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import VerifiedLcalc.EllipticCurve.Tate.AdditiveArithmetic
 public import VerifiedLcalc.EllipticCurve.Tate.LocalReduction
 public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Curve
+public import VerifiedLcalc.EllipticCurve.Tate.KodairaSpecs
 
 /-! # Canonical Kodaira symbols at rational primes
 
@@ -23,13 +24,6 @@ namespace VerifiedLcalc.EllipticCurve
 
 open WeierstrassCurve IsDedekindDomain IsDedekindDomain.HeightOneSpectrum
 open scoped WithZero
-
-/-- The index of `Iₙ` in the PARI encoding. Code 1 represents `I₀`;
-code `n + 4` represents `Iₙ` for positive `n`. -/
-def kodairaIIndex (code : Int) : Option Nat :=
-  if code = 1 then some 0
-  else if 5 ≤ code then some (code - 4).toNat
-  else none
 
 /-- Verify that a PARI code belongs to the right family, and its index when
 the reduction is good or multiplicative. Zero is not a valid PARI code. -/
@@ -63,14 +57,6 @@ private theorem discriminantValuation_eq (e : WeierstrassCurve ℤ) (p : Nat)
       (e.Δ : NumberField.RingOfIntegers ℚ)
   rw [hΔ, v.valuation_maximalIdeal_localizationAtPrime, hvcast] at hvaluation
   exact_mod_cast neg_injective (WithZero.exp_injective (hvaluation.symm.trans hv))
-
-/-- The canonical Tate symbol is the claimed `Iₙ`, or lies outside that family
-when the claim is additive. -/
-def KodairaCodeSpec (W : WeierstrassCurve ℚ) [W.IsElliptic] (p : Nat) [Fact p.Prime]
-    (code : Int) : Prop :=
-  match kodairaIIndex code with
-  | some n => W.reductionSymbol (RationalLocalRing p) = .I n
-  | none => ∀ n, W.reductionSymbol (RationalLocalRing p) ≠ .I n
 
 /-- The checked code identifies the strongest currently certified statement
 about the canonical Tate symbol of the supplied locally minimal equation. -/

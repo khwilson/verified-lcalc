@@ -6,7 +6,6 @@ Authors: Kevin Wilson
 module
 
 public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.Regulator.Basic
-public import VerifiedLcalc.Certificate.Witnesses.RegulatorClaim
 public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenerated
 
 /-! # Regulator claim and enclosure data -/
