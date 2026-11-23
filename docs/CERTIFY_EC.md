@@ -119,7 +119,17 @@ first field to the current command.
 Each successful command exports `Name.certificate` indexed by its integral
 Weierstrass equation. Its input and output structures are declared in
 [`Certificate/Witnesses/`](../VerifiedLcalc/Certificate/Witnesses).
-Import `VerifiedLcalc.Certificate.Witnesses` to use the structures.
+Choose the import for the value you are constructing or reading.
+
+```lean
+-- Construct an input record.
+import VerifiedLcalc.Certificate.Witnesses.EllipticWitness
+```
+
+For the checked output type, import
+`VerifiedLcalc.Certificate.Witnesses.EllipticCertificate`. For just the
+Mordell–Weil rank bounds, import `VerifiedLcalc.Certificate.Witnesses.AlgebraicRank`.
+The `VerifiedLcalc.Certificate.Witnesses` umbrella makes all ordinary structures available.
 The [module map](CERTIFICATE_CONTRACT_LAYOUT.md) lists their source files.
 These modules use Mathlib and TauCeti objects where
 available, with local definitions limited to specific certificate encodings
