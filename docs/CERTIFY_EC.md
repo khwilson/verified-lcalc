@@ -593,3 +593,20 @@ same typed edge. The exhibited map has a two-element cyclic rational kernel.
 A source or target label supplied alongside the equations is provenance.
 The fixture checks the edge 112.a2 → 112.a1 in the
 [LMFDB 112.a class](https://www.lmfdb.org/EllipticCurve/Q/112/a/).
+
+## Exceptional primes and finite adelic generators
+
+Submit `nonmax_primes` and `nonmax_rad` with
+`IntegralCurveProofs.nonmaxSupport`. The proof supplies geometric non-CM and
+an actual Tate-module image at every prime. The command compares the submitted
+primes as a finite set, rejects repetitions and composites, and checks the
+radical by multiplying over the proved support. The results are available
+through `Name.certificate.nonmaxPrimes`.
+
+For `adelic_gens`, submit the generator array from the LMFDB prime-zero row
+with the curve equation and either `adelic_level` or `adelic_image`. Use
+`IntegralCurveProofs.adelicGenerators` to give the invertible matrices and
+the proof that they generate the complete image on the geometric torsion at
+the stated modulus. The typed matrices and image evidence are available
+through `Name.certificate.adelicGenerators`.
+[Field semantics and source format](LMFDB_INVARIANTS.md#checks-implemented)

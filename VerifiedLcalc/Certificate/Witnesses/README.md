@@ -42,8 +42,8 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `min_quad_twist_disc` | `curvedata` | Checked | [`MinimumQuadraticTwistFacts.discriminant`](Algebraic.lean). Fundamental discriminant of the same minimum-conductor twist, at `certificate.minimumQuadraticTwist.minimum.discriminant`. Producer tie-breaking remains open. |
 | `modell_images` | `curvedata` | Report | [`GaloisImageClaims.modPrimeImages`](FinitePrimes.lean). List of mod-ℓ image labels. |
 | `modm_images` | `curvedata` | Report | [`GaloisImageClaims.modmImages`](FinitePrimes.lean). List of image labels at the reported moduli. |
-| `nonmax_primes` | `curvedata` | Report | [`GaloisImageClaims.nonmaxPrimes`](FinitePrimes.lean). Exceptional primes under the catalogue’s CM or non-CM convention. |
-| `nonmax_rad` | `curvedata` | Report | [`GaloisImageClaims.nonmaxRadical`](FinitePrimes.lean). Reported product of the distinct exceptional primes. |
+| `nonmax_primes` | `curvedata` | Checked | [`EllipticWitness.nonmaxPrimes`](EllipticWitness.lean) with [`NonmaxPrimeSupportFact`](FinitePrimes.lean). Proves precisely the exceptional primes for geometrically non-CM curves. |
+| `nonmax_rad` | `curvedata` | Checked | [`EllipticWitness.nonmaxRadical`](EllipticWitness.lean) and [`NonmaxPrimeSupportFact.primes`](FinitePrimes.lean). Exact product over the proved support. |
 | `num_bad_primes` | `curvedata` | Checked | [`MinimalModelArithmeticFacts.numBadPrimes`](FinitePrimes.lean). Cardinality of the set of prime factors of the absolute minimal discriminant. |
 | `num_int_pts` | `curvedata` | Checked | [`CompleteIntegralPointFacts.integralPoints_card`](Algebraic.lean). The count covers every affine integral solution on the supplied model. It requires [`IntegralXSupport.covers`](InputData.lean). |
 | `optimality` | `curvedata` | Report | [`ModularParametrizationInput.optimalityCode`](Algebraic.lean). Preserves the producer’s ambiguity codes. |
@@ -104,7 +104,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 
 | LMFDB field | Table(s) | Status | Witness and scope |
 | --- | --- | --- | --- |
-| `adelic_gens` | `galrep` | Report | [`AdelicGaloisImageClaim.adelicGenerators`](FinitePrimes.lean). Matrices at a positive modulus. [`FiniteGaloisImageFact`](FinitePrimes.lean) specifies the proof of a finite-level image in a chosen basis. |
+| `adelic_gens` | `galrep` | Checked | [`EllipticWitness.adelicGenerators`](EllipticWitness.lean) with [`FiniteGaloisImageFact`](FinitePrimes.lean). The matrices generate the entire image on torsion at the reported modulus. |
 | `adelic_image` | `galrep` | Report | [`AdelicGaloisImageClaim.adelicImage`](FinitePrimes.lean). Label for the adelic row (source key 0). |
 | `elladic_image` | `galrep` | Report | [`PrimeGaloisImageClaim.padicImage`](FinitePrimes.lean). Reported label. [`PadicGaloisImageFact`](FinitePrimes.lean) specifies the actual Tate-module image in a chosen basis. |
 | `modell_image` | `galrep` | Report | [`PrimeGaloisImageClaim.modPrimeImage`](FinitePrimes.lean). Reported label. [`FiniteGaloisImageFact`](FinitePrimes.lean) specifies the finite-level image. |

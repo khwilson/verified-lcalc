@@ -24,6 +24,7 @@ AUDITS = (
     "tests/consumers/TorsionBound.lean",
     "tests/consumers/DegreeTwoIsogeny.lean",
     "tests/consumers/IsogenyClass.lean",
+    "tests/consumers/GaloisImage.lean",
     "tests/consumers/Geometry.lean",
     "tests/consumers/SecondMellinDerivative.lean",
     "tests/consumers/Additive.lean",

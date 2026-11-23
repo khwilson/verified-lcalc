@@ -37,7 +37,7 @@ the source schema before creating a witness.
 | `ec_curvedata.analytic_rank`; `ec_mwbsd.special_value` | Vanishing order at 1 and leading coefficient $L^{(r)}(1)/r!$ in arithmetic normalization. Rank 0/1 are supported with full checked numerical payloads. Reference data for higher rank may carry uncertainty. A1. |
 | `ec_mwbsd.heights, real_period, area, tamagawa_product, sha_an`; `ec_curvedata.regulator, sha, sha_primes` | Canonical heights, full real Néron period, complex period lattice area, product of local Tamagawa numbers, determinant for a Mordell–Weil basis, and analytic BSD quotient. Stored integer `sha` is analytic data, potentially rounded, and `sha_primes` lists its prime divisors. L2 and A2–A3. |
 | `ec_curvedata.abc_quality, szpiro_ratio, faltings_height, stable_faltings_height, faltings_ratio, faltings_index` | The coprime abc triple from $j/1728$, the **modified** Szpiro ratio $\log\max(\lvert c_4\rvert^3,\lvert c_6\rvert^2)/\log N$ of a minimal model, the Faltings heights, and the Néron lattice index relative to the least-height curve in the class. The producer's `faltings_index` is an ordering index. A2 and I1. |
-| `ec_galrep.prime, modell_image, elladic_image, adelic_image, adelic_gens`; `ec_curvedata.modell_images, elladic_images, modm_images, adelic_level, adelic_index, adelic_genus, nonmax_primes, nonmax_rad, serre_invariants` | Images in a specified torsion basis up to conjugacy, subgroup presentation, conductor-independent image level and index, genus of the associated modular curve, exceptional primes and their radical, and exceptional triples (prime, Serre weight, Serre conductor). The renderer uses prime 0 for an adelic row. A partial label with unknown component can still convey verified numerical invariants if independently justified. G1. |
+| `ec_galrep.prime, modell_image, elladic_image, adelic_image, adelic_gens`; `ec_curvedata.modell_images, elladic_images, modm_images, adelic_level, adelic_index, adelic_genus, nonmax_primes, nonmax_rad, serre_invariants` | Images in a specified torsion basis up to conjugacy, subgroup presentation, conductor-independent image level and index, genus of the associated modular curve, exceptional primes and their radical, and exceptional triples (prime, Serre weight, Serre conductor). The renderer uses prime 0 for an adelic row. A partial label with unknown component can still convey verified numerical invariants if independently justified. G1 accepts exact finite-image generator evidence and complete non-CM exceptional-support evidence. |
 | `ec_torsion_growth.degree, field, torsion` | Absolute field degree, defining polynomial in ascending coefficient order, and full torsion invariant factors of the base change. G2 distinguishes one field from primitive growth and exhaustivity over a degree range. |
 | `ec_iwasawa.iwdata, iwp0` | Prime-indexed ordinary/multiplicative $(\lambda,\mu)$ or supersingular $(\lambda^+,\lambda^-,\mu)$ data, with explicit missing/additive codes. A positive `iwp0` asserts vanishing of all these analytic invariants for good primes at or above that threshold. G3. |
 | `ec_padic.p, prec, unit, val` | A p-adic regulator residue for the corresponding curve and normalization, indexed by class. Precision means a p-adic ball, not an exact value. G3. |
@@ -313,12 +313,19 @@ the torsion basis and checks its full Galois action. Finite-level evidence
 alone gives a finite-level conclusion. For an ℓ-adic or adelic equality
 prove an inverse-image theorem for the supplied level, including its
 minimality, residual surjectivity outside the checked exceptional primes and
-cross-prime entanglement. A nonmaximal-prime list needs a completeness
-theorem and a convention for the CM case. Fix notation for Serre triples
+cross-prime entanglement. The certificate accepts supplied exact images in
+chosen bases at each prime and a proof of geometric non-CM. An automatic
+producer needs a completeness theorem covering primes outside a finite
+set. For CM curves it also needs the comparison with the maximal subgroup
+allowed by the geometric endomorphism order. Fix notation for Serre triples
 from the producer; derive group index, associated modular-curve genus and
 each triple under the appropriate subgroup and modular-curve comparison.
-Accept conjugate bases, a proper image, and an adelic entanglement example
-where prime-wise images alone lose information.
+The finite-level fixture proves the trivial image on the full 2-torsion
+of `y² = x³ − x` using the three rational nonzero points. The 338.e1 fixture
+has explicit hypotheses giving geometric non-CM and the complete local
+image characterization. A future fixture should prove an adelic entanglement
+example where prime-wise images lose information.
+[Zywina's adelic image computation](https://arxiv.org/abs/2206.14959)
 
 **G2 · Torsion growth.** Given irreducible $f\in\mathbb Q[X]$, build its
 number field, verify $[K:\mathbf Q]=\deg f$, and prove an isomorphism
@@ -363,7 +370,7 @@ were designed against Mathlib `31ce06ea` and TauCeti `e0e414ce`.
 | I1, I2 and G2 | TauCeti’s `Isogeny.degree`, `GeometricEnd`, `QuadraticOrder.toSubalgebra`, and `quadraticTwistOf`. Mathlib’s `AdjoinRoot` and `Int.IsFundamentalDiscr`. | Prove completeness of isogeny classes, compute the geometric endomorphism order, resolve equal-conductor twist choices, and establish the full torsion group over each reported extension. |
 | M1, I3 and A2 | The reports retain the curve, the modular degree and Manin data, and the reported heights and lattice indices. | Define the rational torsion pairing and its radical. Relate the modular quotient, its differential and optimality to the curve. Relate the complex covolume, normalized Faltings heights and class-relative lattice index to its Néron differential. |
 | A3 | TauCeti’s full real period, regulator and Tamagawa product, Mathlib’s torsion subgroup, and the leading coefficient for an explicit realization. | Enclose all factors in the analytic BSD quotient and justify rounding. The algebraic cardinality requires the independent descent and finiteness proof described above. |
-| G1 and G3 | TauCeti’s `torsionGaloisAction` and `tateModuleGaloisRepresentation`, with a supplied basis. The p-adic reports retain source precision and signed Iwasawa branches. | Identify subgroup labels up to conjugacy, prove the simultaneous adelic lift and level, genus, exceptional-prime and Serre data. Construct the normalized p-adic height determinant and ordinary or signed p-adic L-series, including proofs of the large-prime threshold. |
+| G1 and G3 | TauCeti’s `torsionGaloisAction` and `tateModuleGaloisRepresentation`, with a supplied basis. The p-adic reports retain source precision and signed Iwasawa branches. | Prove CM implies integral j for elliptic curves over ℚ. For geometrically non-CM curves over ℚ, prove effective exceptional-support bounds and criteria lifting finite image computations to exact local images. Identify subgroup labels up to conjugacy and prove the simultaneous adelic lift, level, genus, CM maximality and Serre data. TauCeti PR [#45304](https://github.com/TauCetiProject/TauCeti/pull/45304) supplies candidate profinite matrix and level infrastructure. Construct the normalized p-adic height determinant and ordinary or signed p-adic L-series, including proofs of the large-prime threshold. |
 
 Catalogue labels and trace hashes live in a provenance record. Checking a snapshot’s labels and
 ordering belongs in the importer. A claim of mathematical identity needs an isomorphism or an

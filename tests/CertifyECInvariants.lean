@@ -620,8 +620,11 @@ run_cmd do
   let isogeny := #[`isogenyEdge, `classSize, `classDegree, `isogenyDegrees, `isogenyMatrix]
   let geometry := #[`complexMultiplication, `minimumTwistEquation, `minimumTwistDiscriminant,
     `modifiedSzpiroRatio]
+  let galois := #[`nonmaxPrimes, `nonmaxRadical, `adelicGenerators]
   cover ``EllipticWitness
-    (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++ isogeny ++ geometry)
+    (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++
+      isogeny ++ geometry ++ galois)
+  cover ``AdelicGeneratorsClaim #[`modulus, `rows]
   cover ``IsogenyEdgeClaim #[`target, `degree, `kernelX]
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
     `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol, `rootNumber]
