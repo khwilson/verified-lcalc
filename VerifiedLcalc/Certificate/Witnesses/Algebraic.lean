@@ -18,6 +18,7 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.MinimalModel.Reduced
 public import TauCeti.NumberTheory.QuadraticOrder.Basic
 public import TauCeti.AlgebraicGeometry.EllipticCurve.PointCount
 public import Mathlib.GroupTheory.Torsion
+public import Mathlib.Data.PNat.Basic
 public import Mathlib.NumberTheory.FundamentalDiscriminant
 public import Mathlib.RingTheory.AdjoinRoot
 
@@ -26,15 +27,14 @@ public import Mathlib.RingTheory.AdjoinRoot
 * `EllipticCurve.AlgebraicRankBounds` records proved Mordell–Weil rank endpoints over ℚ.
   `RegulatorFacts` encloses the regulator of the nonsingular rational curve.
 * `IndependentPointFacts` proves ℤ-linear independence of selected rational points.
-  `TorsionGeneratorOrderFacts` gives exact orders of the listed rational points.
-  `TorsionWitness` combines point membership, orders and optional full-generation evidence.
+  `TorsionWitness` ties orders and full-generation evidence to the supplied torsion generators.
 * `IntegralYFiberFacts` enumerates all integral ordinates at each supplied abscissa.
   `CompleteIntegralPointFacts` uses exhaustive abscissa support to certify the full affine
   integral point set and its cardinality.
 * `TorsionDivisorFacts` bounds the full rational torsion order by divisibility using good
-  reduction point counts. `CyclicTorsionFacts` and `TwoFactorTorsionFacts` present the full
-  group in the respective cases. `TorsionPrimeSupportFacts` gives its exact prime support.
-  `TorsionFacts` collects optional bounds, cardinality, presentations, and prime support.
+  reduction point counts. `TorsionPresentation` identifies the full group as a product of
+  invariant factors with specified images among the submitted points.
+  `TorsionWitness` collects the generator family and optional group facts.
 * `DegreeTwoIsogenyFact` and `IsogenyClassFacts` record minimum degrees of actual rational
   isogenies. The class witness also requires exhaustive and distinct representatives.
 * `ComplexMultiplicationFacts` identifies the geometric endomorphism ring.
@@ -95,28 +95,6 @@ structure IndependentPointFacts {curve : WeierstrassCurve ℚ}
   indices : Fin rank → Fin n
   /-- Integer linear independence of the corresponding rational points. -/
   independent : LinearIndependent ℤ (fun i => source (indices i))
-
-/-- Positive exact orders aligned with the supplied rational point list. -/
-structure TorsionGeneratorOrderFacts {curve : WeierstrassCurve ℚ} {n : ℕ}
-    (source : Fin n → curve.toAffine.Point) where
-  /-- The order at each source index. -/
-  order : Fin n → ℕ
-  /-- Each order is positive. -/
-  positive : ∀ i, 0 < order i
-  /-- The actual additive order of each supplied coordinate point. -/
-  exactOrder : ∀ i, addOrderOf (source i) = order i
-
-/-- The submitted rational torsion-generator family and the proved properties of those points. -/
-structure TorsionWitness (curve : WeierstrassCurve ℚ) where
-  /-- The number of supplied points. -/
-  n : ℕ
-  /-- The supplied points in their source order. -/
-  points : Fin n → curve.toAffine.Point
-  /-- Positive exact orders at every source index, when proved. -/
-  orders : Option (TorsionGeneratorOrderFacts points) := none
-  /-- The submitted points generate the full rational torsion subgroup, when proved. -/
-  generation : Option (PLift
-    (AddSubgroup.closure (Set.range points) = AddCommGroup.torsion curve.toAffine.Point)) := none
 
 /-- Integral seed points and the complete set of integral y-coordinates over each seed's x. -/
 structure IntegralYFiberFacts (curve : WeierstrassCurve ℤ)
@@ -181,41 +159,24 @@ structure TorsionDivisorFacts (curve : WeierstrassCurve ℤ) where
   /-- A supplied exact count consistent with the bound. -/
   consistentClaim : Option { n : ℕ // 0 < n ∧ n ∣ evidence.bound } := none
 
-/-- Checked invariant factors and a generator-preserving equivalence for cyclic torsion. -/
-structure CyclicTorsionFacts (curve : WeierstrassCurve ℤ) where
-  /-- The supplied invariant factors. -/
-  factors : List ℕ
-  /-- The order of the whole cyclic group. -/
-  order : ℕ
-  /-- The selected rational point, or the identity for trivial torsion. -/
-  generator : (curve.baseChange ℚ).toAffine.Point
-  /-- The canonical factors and an equivalence sending one to the selected point. -/
-  structure_eq : factors = (if order = 1 then [] else [order]) ∧
-    ∃ e : ZMod order ≃+ AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point,
-      (e 1 : (curve.baseChange ℚ).toAffine.Point) = generator
-
-/-- A checked two-factor presentation of the full rational torsion subgroup. -/
-structure TwoFactorTorsionFacts (curve : WeierstrassCurve ℤ) where
-  /-- The order of the second supplied generator; the first factor has order two. -/
-  secondOrder : ℕ
-  /-- The second generator has positive exact order, so this is not a sentinel case. -/
-  secondOrder_pos : 0 < secondOrder
-  /-- The second invariant factor is divisible by the first factor. -/
-  first_factor_dvd_second : 2 ∣ secondOrder
-  /-- The order-two rational point in the supplied invariant-factor ordering. -/
-  firstGenerator : (curve.baseChange ℚ).toAffine.Point
-  /-- The rational point whose order is `secondOrder`. -/
-  secondGenerator : (curve.baseChange ℚ).toAffine.Point
-  /-- The actual additive equivalence onto Mathlib's full torsion subgroup. -/
-  equivalence : ZMod 2 × ZMod secondOrder ≃+
-    AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point
-  /-- The first coordinate generator maps to `firstGenerator`. -/
-  maps_first : (equivalence (1, 0) : (curve.baseChange ℚ).toAffine.Point) = firstGenerator
-  /-- The second coordinate generator maps to `secondGenerator`. -/
-  maps_second : (equivalence (0, 1) : (curve.baseChange ℚ).toAffine.Point) = secondGenerator
-  /-- The equivalence certifies the full subgroup cardinality. -/
-  cardinality : Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) =
-    2 * secondOrder
+/-- A presentation of the full rational torsion subgroup by invariant factors whose standard
+generators map to specified indices of the submitted family. -/
+structure TorsionPresentation {curve : WeierstrassCurve ℚ} {n : ℕ}
+    (source : Fin n → curve.toAffine.Point) where
+  /-- The number of nontrivial invariant factors. -/
+  k : ℕ
+  /-- The order of each cyclic factor. -/
+  factor : Fin k → ℕ
+  /-- Each factor has order greater than one. -/
+  factor_nontrivial : ∀ j, 1 < factor j
+  /-- Earlier factors divide later factors. -/
+  factors_divide : ∀ i j, i < j → factor i ∣ factor j
+  /-- The submitted point index corresponding to each factor's standard generator. -/
+  indices : Fin k → Fin n
+  /-- The invariant-factor product is the full subgroup, with the specified generator images. -/
+  realization :
+    ∃ e : (∀ j, ZMod (factor j)) ≃+ AddCommGroup.torsion curve.toAffine.Point,
+      ∀ j, (e (Pi.single j 1) : curve.toAffine.Point) = source (indices j)
 
 /-- Exact distinct prime support of a finite rational torsion subgroup. -/
 structure TorsionPrimeSupportFacts (curve : WeierstrassCurve ℤ) where
@@ -227,19 +188,27 @@ structure TorsionPrimeSupportFacts (curve : WeierstrassCurve ℤ) where
   exact_support : ∀ p, p ∈ primes ↔ p.Prime ∧
     p ∣ Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point)
 
-/-- The submitted torsion family, partial bounds, and exact facts about the full subgroup. -/
-structure TorsionFacts (curve : WeierstrassCurve ℤ) where
-  /-- The checked submitted torsion-generator family and any proof of full generation. -/
-  family : Option (TorsionWitness (curve.baseChange ℚ)) := none
+/-- The submitted torsion-generator family and optional facts about the rational torsion
+subgroup. Generator orders, generation and the invariant-factor presentation use the same
+source indices. -/
+structure TorsionWitness (curve : WeierstrassCurve ℤ) where
+  /-- The submitted rational points in input order. -/
+  generators : Option (Σ n : ℕ, Fin n → (curve.baseChange ℚ).toAffine.Point) := none
+  /-- Positive exact orders at the submitted indices, when checked. -/
+  orders :
+    let source := generators.getD ⟨0, Fin.elim0⟩
+    Option ((i : Fin source.1) → {m : ℕ+ // addOrderOf (source.2 i) = (m : ℕ)}) := none
+  /-- The submitted points generate the full rational torsion subgroup, when proved. -/
+  generation : Option (PLift
+    (AddSubgroup.closure (Set.range (generators.getD ⟨0, Fin.elim0⟩).2) =
+      AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point)) := none
+  /-- The verified invariant factors and their images in the supplied family. -/
+  presentation : Option (TorsionPresentation (generators.getD ⟨0, Fin.elim0⟩).2) := none
   /-- Evidence that the full torsion order divides a checked positive bound. -/
   divisor : Option (TorsionDivisorFacts curve) := none
   /-- The exact cardinality of the whole torsion subgroup when determined. -/
   cardinality : Option { n : ℕ //
     Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) = n } := none
-  /-- The checked cyclic structure, if requested and determined. -/
-  cyclicStructure : Option (CyclicTorsionFacts curve) := none
-  /-- The checked `[2, n]` structure and generator-preserving equivalence, if determined. -/
-  twoFactorStructure : Option (TwoFactorTorsionFacts curve) := none
   /-- Exact distinct prime support, only when the full torsion cardinality is known. -/
   primeSupport : Option (TorsionPrimeSupportFacts curve) := none
 

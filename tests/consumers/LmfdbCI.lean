@@ -301,20 +301,22 @@ example : LMFDB.C112a2.certificate.algebraic.generators.map
     (fun family => List.ofFn family.2) =
     some [LMFDB.C112a2.generators.point ⟨0, by decide +kernel⟩] := rfl
 
-example : LMFDB.C112a2.certificate.torsion.family.bind (fun family =>
-    family.orders.map TorsionGeneratorOrderFacts.orders) = some [2] := rfl
+example : LMFDB.C112a2.certificate.torsion.orders.map
+    (fun orders => List.ofFn (fun i => ((orders i).val : ℕ))) = some [2] := rfl
 
 private def checkedCyclic :=
-  LMFDB.C112a2.certificate.torsion.cyclicStructure.get (by decide +kernel)
+  LMFDB.C112a2.certificate.torsion.presentation.get (by decide +kernel)
 
-example : checkedCyclic.factors = [2] := rfl
+example : List.ofFn checkedCyclic.factor = [2] := rfl
 
-/-- The compiled aggregate equivalence sends one to the checked rational generator. -/
+/-- The compiled presentation sends the standard generator to the submitted point. -/
 theorem imported_cyclic_torsion_structure :
-    ∃ e : ZMod 2 ≃+ AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point,
-      (e 1 : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =
-        LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩ :=
-  checkedCyclic.structure_eq.2
+    ∃ e : (∀ _ : Fin 1, ZMod 2) ≃+
+        AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point,
+      (e (Pi.single (0 : Fin 1) 1) : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =
+        LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩ := by
+  obtain ⟨e, maps⟩ := checkedCyclic.realization
+  exact ⟨e, maps (0 : Fin 1)⟩
 
 run_cmd do
   for axiomName in ← liftTermElabM (Lean.collectAxioms ``imported_cyclic_torsion_structure) do

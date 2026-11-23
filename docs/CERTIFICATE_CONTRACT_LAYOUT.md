@@ -25,8 +25,11 @@ For `torsion_generators`, checking the order of every point proves that the
 points belong to the torsion subgroup. Proving that they generate it requires
 the additional equality
 `AddSubgroup.closure (Set.range points) = AddCommGroup.torsion G`,
-where `G` is the rational point group. A single point of order five can thus
-certify a group of five elements once the full-generation proof is supplied.
+where `G` is the rational point group. The one `TorsionWitness` holds the
+submitted generator map, optional orders, and optional generation and
+presentation proofs. Its presentation ties each invariant-factor standard
+generator to an index in the submitted family. A single point of order five
+can thus certify a group of five elements once full generation is proved.
 
 | Subject | Witness files and mathematical content |
 | --- | --- |

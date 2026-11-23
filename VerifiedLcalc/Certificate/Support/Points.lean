@@ -19,11 +19,6 @@ def IndependentPointFacts.points {curve : WeierstrassCurve ℚ} [curve.IsEllipti
     (i : Fin facts.rank) : curve.toAffine.Point :=
   source (facts.indices i)
 
-/-- The exact orders in source order, available to list-based consumers. -/
-def TorsionGeneratorOrderFacts.orders {curve : WeierstrassCurve ℚ} {n : ℕ}
-    {source : Fin n → curve.toAffine.Point} (facts : TorsionGeneratorOrderFacts source) : List ℕ :=
-  List.ofFn facts.order
-
 /-- The number of submitted generator coordinates, derived from their checked membership. -/
 def AlgebraicFacts.generatorCount {curve : WeierstrassCurve ℤ}
     [(curve.baseChange ℚ).IsElliptic] (facts : AlgebraicFacts curve) : Option Nat :=

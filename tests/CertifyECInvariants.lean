@@ -222,7 +222,7 @@ run_cmd do
 
 certify_ec NoncyclicTorsion from_json_string
   r#"{"ainvs":[0,0,0,-1,0],"torsion":4,"torsion_structure":[2,2],
-      "torsion_generators":[[0,0,1],[-1,0,1]],"torsion_generator_orders":[2,2],
+      "torsion_generators":[[0,0,1],[-1,0,1],[1,0,1]],"torsion_generator_orders":[2,2,2],
       "torsion_bound":{"first_prime":3,"second_prime":5,"bound":4}}"#
 
 certify_ec SplitLocal from_json_string
@@ -598,18 +598,36 @@ certify_ec FullCyclicFamily from
     torsionGeneratorCoordinates := some [(5, 5), (5, -6)],
     torsionGeneratorOrders := some [5, 5] }
 
-private def fullCyclicFamily := FullCyclicFamily.certificate.torsion.family.get (by decide +kernel)
+private def fullCyclicFamily := FullCyclicFamily.certificate.torsion
+private def fullCyclicPoints := fullCyclicFamily.generators.getD ⟨0, Fin.elim0⟩
+private def fullCyclicPresentation := fullCyclicFamily.presentation.get (by decide +kernel)
 
-example : AddSubgroup.closure (Set.range fullCyclicFamily.points) =
+example : fullCyclicPoints.1 = 2 := rfl
+example : List.ofFn fullCyclicPresentation.factor = [5] := rfl
+example : (fullCyclicPresentation.indices (0 : Fin 1)).val = 0 := rfl
+
+example : AddSubgroup.closure (Set.range fullCyclicPoints.2) =
     AddCommGroup.torsion (FullCyclicFamily.curve.baseChange ℚ).toAffine.Point :=
   (fullCyclicFamily.generation.get (by decide +kernel)).down
 
 certify_ec TrivialTorsionFamily from
   { equation := ⟨0, 0, 1, -1, 0⟩, torsion := some 1, torsionBound := some ⟨3, 5, 1⟩,
-    torsionGeneratorCoordinates := some [], torsionGeneratorOrders := some [] }
+    torsionGeneratorCoordinates := some [] }
 
-example : (TrivialTorsionFamily.certificate.torsion.family.get
-    (by decide +kernel)).generation.isSome := by decide +kernel
+example : TrivialTorsionFamily.certificate.torsion.generation.isSome := by decide +kernel
+example : TrivialTorsionFamily.certificate.torsion.orders.isNone := by decide +kernel
+example : TrivialTorsionFamily.certificate.torsion.generators.map Sigma.fst = some 0 := rfl
+example : TrivialTorsion.certificate.torsion.generators.isNone := by decide +kernel
+example : TrivialTorsion.certificate.torsion.generation.isNone := by decide +kernel
+example : List.ofFn (TrivialTorsion.certificate.torsion.presentation.get
+    (by decide +kernel)).factor = [] := rfl
+
+private def twoByTwo := NoncyclicTorsion.certificate.torsion.presentation.get (by decide +kernel)
+
+example : NoncyclicTorsion.certificate.torsion.generators.map Sigma.fst = some 3 := rfl
+example : NoncyclicTorsion.certificate.torsion.generation.isSome := by decide +kernel
+example : List.ofFn twoByTwo.factor = [2, 2] := rfl
+example : List.ofFn (fun i => (twoByTwo.indices i).val) = [0, 1] := rfl
 
 -- Keep the contract exhaustive as the raw witness gains fields. A field can be
 -- an input prerequisite, rather than a direct certified conclusion.
@@ -669,8 +687,8 @@ example : TamagawaOutsideScope.certificate.arithmetic.tamagawa.length = 0 := by 
 example : ((KodairaAdditive.certificate.arithmetic.minimalModel.get
     (by decide +kernel)).kodaira.map LocalKodairaFact.index) = [none] := by decide +kernel
 
-example : LooseTorsionBound.certificate.torsion.cyclicStructure.isNone = true := rfl
-example : TrivialCyclicStructure.certificate.torsion.cyclicStructure.map
-    CyclicTorsionFacts.factors = some [] := rfl
+example : LooseTorsionBound.certificate.torsion.presentation.isNone = true := rfl
+example : TrivialCyclicStructure.certificate.torsion.presentation.map
+    (fun p => List.ofFn p.factor) = some [] := rfl
 
 example : RawAbcMetadata.certificate.rational.abcQuality.isNone = true := rfl

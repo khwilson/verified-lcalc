@@ -71,7 +71,11 @@ private def independenceFactsTerm (base inputEquality : Name) :
   let indices := rootIdent (child ++ `indices)
   let selected := rootIdent (child ++ `point_indices)
   let independent := rootIdent (child ++ `points_independent)
-  `(some ⟨($indices).length, $selected, $independent⟩)
+  `(some ⟨($indices).length, $selected, by
+    first
+    | exact $independent
+    | let empty : IsEmpty (Fin ($indices).length) := ⟨fun i => Fin.elim0 i⟩
+      exact linearIndependent_empty_type⟩)
 
 private def rankLowerBoundTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let theoremName := base ++ `algebraic_rank_lower_bound
@@ -104,22 +108,7 @@ private def torsionGeneratorOrderTerm (base : Name) : CommandElabM (TSyntax `ter
   let order := rootIdent (child ++ `order)
   let positive := rootIdent (child ++ `order_positive)
   let exactOrder := rootIdent (child ++ `exact_order)
-  `(some ⟨$order, $positive, $exactOrder⟩)
-
-private def torsionWitnessTerm (base : Name) : CommandElabM (TSyntax `term) := do
-  let child := base ++ `torsion_generators
-  unless (← getEnv).contains (child ++ `points_on_curve) do return ← `(none)
-  let coords := rootIdent (child ++ `coordinates)
-  let point := rootIdent (child ++ `point)
-  let orders ← torsionGeneratorOrderTerm base
-  let generation ← if (← getEnv).contains (child ++ `generates_torsion) then
-    `(some ⟨$(rootIdent (child ++ `generates_torsion))⟩)
-  else `(none)
-  `(some {
-    n := ($coords).length
-    points := $point
-    orders := $orders
-    generation := $generation })
+  `(some (fun i => ⟨⟨$order i, $positive i⟩, $exactOrder i⟩))
 
 private def integralYFiberTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let completeName := base ++ `integral_y_fiber_complete
@@ -158,10 +147,20 @@ private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := d
       rankLowerBound := $lowerBound,
       rankBounds := $rankBounds, rank := $exactRank, regulator := $regulator })
 
-private def torsionFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `term) := do
-  let family ← torsionWitnessTerm base
+private def torsionWitnessTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `term) := do
+  let child := base ++ `torsion_generators
+  let generators ← rationalPointsTerm child
+  let orders ← torsionGeneratorOrderTerm base
+  let generation ← if (← getEnv).contains (child ++ `generates_torsion) then
+    `(some ⟨$(rootIdent (child ++ `generates_torsion))⟩)
+  else `(none)
+  let presName := base ++ `torsion_presentation
+  let presentation ← if (← getEnv).contains presName then
+    `(some $(rootIdent presName))
+  else `(none)
   let boundName := base ++ `torsion_bound
-  unless (← getEnv).contains boundName do return ← `({ family := $family })
+  unless (← getEnv).contains boundName do
+    return ← `({ generators := $generators, orders := $orders })
   let evidence := rootIdent (base ++ `claimed_torsion_bound)
   let checkedBound := rootIdent (base ++ `torsion_bound_value_valid)
   let consistent ← if (← getEnv).contains (base ++ `torsion_claim_consistent) then
@@ -179,32 +178,19 @@ private def torsionFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSynt
     let n ← literalSyntax value
     `(some ⟨$n, $(rootIdent exactName)⟩)
   else `(none)
-  let cyclic ← if (← getEnv).contains (base ++ `torsion_structure) &&
-      !(← getEnv).contains (base ++ `torsion_structure_equiv) then
-    `(some ⟨$(rootIdent (base ++ `claimed_torsion_structure)),
-      $(rootIdent (base ++ `cyclic_torsion_order)),
-      $(rootIdent (base ++ `cyclic_torsion_generator)),
-      $(rootIdent (base ++ `torsion_structure))⟩)
-  else `(none)
-  let twoFactor ← if (← getEnv).contains (base ++ `torsion_structure_equiv) then
-    `(some ⟨$(rootIdent (base ++ `torsion_structure_second_order)),
-      $(rootIdent (base ++ `torsion_structure_second_order_positive)),
-      $(rootIdent (base ++ `torsion_structure_first_factor_dvd_second)),
-      $(rootIdent (base ++ `torsion_structure_first_generator)),
-      $(rootIdent (base ++ `torsion_structure_second_generator)),
-      $(rootIdent (base ++ `torsion_structure_equiv)),
-      $(rootIdent (base ++ `torsion_structure_first_image)),
-      $(rootIdent (base ++ `torsion_structure_second_image)),
-      $(rootIdent (base ++ `torsion_structure_cardinality))⟩)
-  else `(none)
   let primeSupport ← if (← getEnv).contains (base ++ `torsion_primes_exact) then
     `(some ⟨$(rootIdent (base ++ `torsion_primes)),
       $(rootIdent (base ++ `torsion_primes_nodup)),
       $(rootIdent (base ++ `torsion_primes_exact))⟩)
   else `(none)
-  `({ family := $family, divisor := $divisor,
-      cardinality := $exactCardinality, cyclicStructure := $cyclic,
-      twoFactorStructure := $twoFactor, primeSupport := $primeSupport })
+  `({
+    generators := $generators
+    orders := $orders
+    generation := $generation
+    presentation := $presentation
+    divisor := $divisor
+    cardinality := $exactCardinality
+    primeSupport := $primeSupport })
 
 private def optionalFactTerm (base field : Name) : CommandElabM (TSyntax `term) := do
   let name := base ++ field
@@ -225,7 +211,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let algebraic ← algebraicFactsTerm base
   let arithmetic ← arithmeticFactsTerm base curve
   let analytic ← analyticFactsTerm base curve
-  let torsion ← torsionFactsTerm base curve
+  let torsion ← torsionWitnessTerm base curve
   let name := base ++ `certificate
   let certificate := rootIdent name
   let edgeName := base ++ `degree_two_isogeny
@@ -254,8 +240,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     tamagawaProduct := $tamagawaProduct
     analyticSha := $analyticSha
     roundedAnalyticSha := $roundedAnalyticSha })
-  if (← getEnv).contains edgeName || (← getEnv).contains className ||
-      (← getEnv).contains (base ++ `torsion_structure_equiv) then
+  if (← getEnv).contains edgeName || (← getEnv).contains className then
     emit (← `(noncomputable def $certificate : EllipticCertificate $curve := $record))
   else
     emit (← `(def $certificate : EllipticCertificate $curve := $record))

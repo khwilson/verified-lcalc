@@ -58,7 +58,7 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   /-- Checked numerical data and explicit-realization analytic results. -/
   analytic : AnalyticFacts curve
   /-- The checked full-group torsion facts. -/
-  torsion : TorsionFacts curve
+  torsion : TorsionWitness curve
   /-- A checked oriented rational isogeny edge and its integral target. -/
   isogeny : Option (Σ target : WeierstrassCurve ℤ, DegreeTwoIsogenyFact curve target) := none
   /-- The complete isogeny class with derived summaries and optional native LMFDB ordering. -/

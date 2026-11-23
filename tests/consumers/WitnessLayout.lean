@@ -40,7 +40,7 @@ run_cmd do
   -- Downstream readers can find each family in its mathematical subject module.
   for (decl, subject) in [(``VerifiedLcalc.LocalTamagawaFact, `FinitePrimes),
       (``VerifiedLcalc.ConditionalAnalyticRank, `Analytic),
-      (``VerifiedLcalc.TorsionFacts, `Algebraic),
+      (``VerifiedLcalc.TorsionWitness, `Algebraic),
       (``VerifiedLcalc.DiscriminantWitness, `Invariants)] do
     let some idx := env.getModuleIdxFor? decl | throwError "missing witness {decl}"
     unless modules[idx.toNat]! == (root ++ subject) do

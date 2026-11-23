@@ -12,7 +12,7 @@ run_cmd do
   -- These records describe verified outputs. Importing them used to load modularity,
   -- regulator and torsion theory solely to read the corresponding optional inputs.
   for output in [`VerifiedLcalc.EllipticCertificate, `VerifiedLcalc.SpecialLValueFacts,
-      `VerifiedLcalc.RegulatorFacts, `VerifiedLcalc.TorsionFacts,
+      `VerifiedLcalc.RegulatorFacts, `VerifiedLcalc.TorsionWitness,
       `VerifiedLcalc.CompleteIntegralPointFacts] do
     if env.contains output then
       throwError "raw curve input pulled in checked output {output}"
