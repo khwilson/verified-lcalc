@@ -559,9 +559,10 @@ run_cmd do
     `torsionGeneratorCoordinates, `infiniteOrderPoints, `independentPoints, `regulator]
   let arithmetic := #[`potentialGoodReduction, `minimalDiscriminantAbs, `conductor, `rootNumber,
     `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
-    `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData]
+    `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData,
+    `tamagawaProduct]
   let analytic := #[`centralResult, `derivativeResult, `catalogueAnalyticRank,
-    `specialLValue]
+    `specialLValue, `realPeriod, `analyticSha, `sha, `shaPrimes]
   let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionPrimes,
     `torsionGeneratorOrders]
   let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do
@@ -580,6 +581,7 @@ run_cmd do
     `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol]
   cover ``AbcQualityClaim #[`reported, `error, `factors]
   cover ``RegulatorClaim #[`reported, `error]
+  cover ``DecimalEnclosureClaim #[`reported, `error]
   cover ``TorsionBoundWitness #[`firstPrime, `secondPrime, `bound]
 
 example : EmptyProofs.certificate.equationFacts.discriminant.isNone = true := rfl
