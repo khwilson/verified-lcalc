@@ -14,6 +14,7 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.Degree
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.Hom.ComplexMultiplication
 public import TauCeti.AlgebraicGeometry.EllipticCurve.QuadraticTwist.Basic
 public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Conductor
+public import TauCeti.AlgebraicGeometry.EllipticCurve.MinimalModel.Reduced
 public import TauCeti.NumberTheory.QuadraticOrder.Basic
 public import TauCeti.AlgebraicGeometry.EllipticCurve.PointCount
 public import Mathlib.GroupTheory.Torsion
@@ -258,9 +259,8 @@ structure DegreeTwoIsogenyFact (source target : WeierstrassCurve ℤ) where
 
 /-! ## Isogeny classes, complex multiplication and twists -/
 
-/-- Complete distinct rational isomorphism representatives of the isogeny class of
-`curve`, with its minimum-degree matrix and the row data for `curve`. -/
-structure IsogenyClassFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
+/-- The common complete class data, with a lower bound for each ordered pair of representatives. -/
+structure IsogenyClassData (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
   /-- The number of rational isomorphism classes. -/
   classSize : ℕ
   /-- The rational equations, in the same order as the rows and columns of the degree matrix. -/
@@ -283,13 +283,43 @@ structure IsogenyClassFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange �
       ∃ (i : Fin classSize) (C : WeierstrassCurve.VariableChange ℚ), C • W = representatives i
   /-- The minimum isogeny degrees indexed by source and target, in that order. -/
   isogenyMatrix : Fin classSize → Fin classSize → ℕ
+  /-- Every isogeny in that direction has degree at least the given entry. -/
+  degree_min : ∀ i j (φ : Isogeny (representatives i).toAffine (representatives j).toAffine),
+    isogenyMatrix i j ≤ φ.degree
+
+/-- The supplied model proves existence of isogenies attaining each minimum degree. -/
+structure IsogenyClassModel (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic]
+    extends IsogenyClassData curve where
+  /-- Each matrix entry is attained by a rational isogeny in its direction. -/
+  attained : ∀ i j, ∃ φ : Isogeny (representatives i).toAffine (representatives j).toAffine,
+    φ.degree = isogenyMatrix i j
+
+/-- Reduced global minimal models in the lexicographic order used by LMFDB's labels.
+This orders the rows and columns of the native LMFDB isogeny matrix. -/
+structure IsogenyClassOrdering {n : ℕ}
+    (representatives : Fin n → WeierstrassCurve ℚ) : Type where
+  /-- The ordered equations are nonsingular. -/
+  elliptic : ∀ i, (representatives i).IsElliptic
+  /-- The representatives are the canonical reduced minimal Weierstrass equations over ℤ. -/
+  reducedMinimal : ∀ i,
+    letI : (representatives i).IsElliptic := elliptic i
+    (representatives i).IsReducedMinimal
+  /-- The five coefficients increase lexicographically. Reduced minimality ensures they
+  lie in ℤ, where their order agrees with the order in ℚ used here. -/
+  ordered : ∀ i j, i < j → List.Lex (· < ·)
+    [(representatives i).a₁, (representatives i).a₂, (representatives i).a₃,
+      (representatives i).a₄, (representatives i).a₆]
+    [(representatives j).a₁, (representatives j).a₂, (representatives j).a₃,
+      (representatives j).a₄, (representatives j).a₆]
+
+/-- Complete distinct rational isomorphism representatives of the isogeny class of
+`curve`, with its minimum-degree matrix and the row data for `curve`. -/
+structure IsogenyClassFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic]
+    extends IsogenyClassData curve where
   /-- Every entry is attained by an actual isogeny in its direction. -/
   isogenies : ∀ i j, Isogeny (representatives i).toAffine (representatives j).toAffine
   /-- The entries equal the degrees of those isogenies. -/
   degree_eq : ∀ i j, (isogenies i j).degree = isogenyMatrix i j
-  /-- Every isogeny in that direction has degree at least the given entry. -/
-  degree_min : ∀ i j (φ : Isogeny (representatives i).toAffine (representatives j).toAffine),
-    isogenyMatrix i j ≤ φ.degree
   /-- The maximum entry over the entire class matrix. -/
   classDegree : ℕ
   /-- The maximum is attained. -/
@@ -300,6 +330,14 @@ structure IsogenyClassFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange �
   isogenyDegrees : Finset ℕ
   /-- The recorded degree set is precisely the set of entries in that row. -/
   isogenyDegrees_eq : isogenyDegrees = Finset.univ.image (isogenyMatrix curveIndex)
+
+/-- Complete isogeny class evidence and optional LMFDB index ordering. -/
+structure IsogenyClassEvidence (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- Pairwise distinct and exhaustive rational representatives with minimum degree proofs. -/
+  model : IsogenyClassModel curve
+  /-- Evidence of the native LMFDB order, required when comparing an ordered matrix. -/
+  ordering : Option (IsogenyClassOrdering model.representatives) := none
 
 /-- Exact description of the endomorphism ring over the separable closure of ℚ.
 The zero code specifies the integer ring and a negative code specifies the quadratic

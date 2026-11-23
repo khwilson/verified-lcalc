@@ -8,6 +8,7 @@ public import VerifiedLcalcTests.Fixtures.BSDPeriod
 public import VerifiedLcalcTests.Fixtures.BSDTamagawa
 public import VerifiedLcalcTests.Fixtures.BSDSha
 public import VerifiedLcalcTests.Fixtures.DegreeTwoIsogeny
+public import VerifiedLcalcTests.Fixtures.IsogenyClass
 public import VerifiedLcalcTests.Fixtures.Curve11Arithmetic
 public import VerifiedLcalcTests.Fixtures.Curve11Central
 public import VerifiedLcalcTests.Fixtures.Curve27a3

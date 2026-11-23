@@ -225,6 +225,10 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let isogeny ← if (← getEnv).contains edgeName then
     `(some ⟨$(rootIdent (base ++ `isogeny_target)), $(rootIdent edgeName)⟩)
   else `(none)
+  let className := base ++ `isogeny_class
+  let isogenyClass ← if (← getEnv).contains className then
+    `(some ⟨$(rootIdent className), ($(rootIdent (base ++ `isogeny_class_evidence))).ordering⟩)
+  else `(none)
   let realPeriod ← optionalFactTerm base `real_period_fact
   let tamagawaProduct ← optionalFactTerm base `tamagawa_product_fact
   let analyticSha ← optionalFactTerm base `analytic_sha_fact
@@ -238,11 +242,12 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     analytic := $analytic
     torsion := $torsion
     isogeny := $isogeny
+    isogenyClass := $isogenyClass
     realPeriod := $realPeriod
     tamagawaProduct := $tamagawaProduct
     analyticSha := $analyticSha
     roundedAnalyticSha := $roundedAnalyticSha })
-  if (← getEnv).contains edgeName ||
+  if (← getEnv).contains edgeName || (← getEnv).contains className ||
       (← getEnv).contains (base ++ `torsion_structure_equiv) then
     emit (← `(noncomputable def $certificate : EllipticCertificate $curve := $record))
   else

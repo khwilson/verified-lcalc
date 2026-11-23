@@ -80,6 +80,30 @@ certify_ec LocalSignMetadata from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"prime":37,"root_number":1,"minimality":[37],
       "local_data":{"at_two":null,"at_three":null}}"#
 example : LocalSignMetadata.witness.rootNumber = none := rfl
+example : LocalSignMetadata.witness.localInvariants =
+    some [{ prime := 37, rootNumber := some 1 }] := rfl
+
+certify_ec LocalSignsFromLean from
+  { LocalSignMetadata.witness with
+    localInvariants := some [{ prime := 37, rootNumber := some 1 },
+      { prime := 37, discriminantValuation := some 1 }, { prime := 2, rootNumber := some 1 }] }
+
+example : ((LocalSignsFromLean.certificate.arithmetic.minimalModel.get
+    (by decide +kernel)).localRootNumbers.map fun f => ((f.prime : ℕ), f.value)) =
+      [(37, 1), (2, 1)] := rfl
+
+certify_ec LocalSignWithoutData from
+  { equation := ⟨0, 0, 1, 0, -1⟩, minimality := some ⟨[3, 3, 3, 3, 3]⟩,
+    localInvariants := some [{ prime := 3, rootNumber := some 1 }] }
+
+example : (LocalSignWithoutData.certificate.arithmetic.minimalModel.get
+    (by decide +kernel)).localRootNumbers = [] := rfl
+
+certify_ec LocalSignWithoutMinimality from
+  { equation := ⟨0, 0, 1, -1, 0⟩, localData := some ⟨none, none⟩,
+    localInvariants := some [{ prime := 37, rootNumber := some 1 }] }
+
+example : LocalSignWithoutMinimality.certificate.arithmetic.minimalModel = none := rfl
 
 certify_ec JSON37 from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"jinv":["110592","37"],"binvs":[0,-2,1,-1],"cinvs":[48,-216],
@@ -282,6 +306,7 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
       `minimal_discriminant_abs, `conductor, `root_number, `dirichlet_coefficients,
       `bad_primes, `bad_reduction_primes, `num_bad_primes,
       `local_invariants_agree, `local_invariants_agree_valid,
+      `local_root_number_inputs_valid, `local_root_number_values_valid, `local_root_numbers,
       `semistable, `squarefree_discriminant, `local_invariants, `tamagawa_numbers, `kodaira_symbols,
       `tamagawa_values_valid, `claimed_semistable,
       `claimed_squarefree_discriminant, `claimed_local_invariants, `claimed_conductor_valuations,
@@ -296,6 +321,20 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
     if env.contains (name ++ suffix) then throwError "Rejected invariant leaked {name ++ suffix}"
 
 run_cmd do
+  invariantRejected `WrongLocalRootNumber (← `(certify_ec WrongLocalRootNumber from
+    { LocalSignMetadata.witness with
+      localInvariants := some [{ prime := 37, rootNumber := some (-1) }] }))
+  invariantRejected `NonSignLocalRootNumber (← `(certify_ec NonSignLocalRootNumber
+    from_json_string r#"{"ainvs":[0,0,1,-1,0],"prime":37,"root_number":0}"#))
+  invariantRejected `CompositeLocalRootPrime (← `(certify_ec CompositeLocalRootPrime from
+    { equation := ⟨0, 0, 1, -1, 0⟩,
+      localInvariants := some [{ prime := 4, rootNumber := some 1 }] }))
+  invariantRejected `ConflictingLocalRootNumbers (← `(certify_ec ConflictingLocalRootNumbers
+    from_json_string
+    r#"{"ainvs":[0,0,1,-1,0],"prime":37,"root_number":1,
+        "local_invariants":[{"prime":37,"root_number":-1}]}"#))
+  invariantRejected `InvalidWildLocalRootData (← `(certify_ec InvalidWildLocalRootData from
+    { LocalSignWithoutData.witness with localData := some ⟨none, none⟩ }))
   invariantRejected `IncompatibleTamagawaRows (← `(certify_ec IncompatibleTamagawaRows
     from_json_string
     r#"{"ainvs":[0,0,8,-16,0],"prime":2,"tamagawa_number":1,
@@ -473,6 +512,11 @@ run_cmd do
         throwError "Insufficient torsion evidence generated a claim"
   if (← getEnv).contains `LocalSignMetadata.root_number then
     throwError "Local root metadata became a global sign theorem"
+  unless (← getEnv).contains `LocalSignMetadata.local_root_numbers do
+    throwError "Top-level local root number was not checked"
+  for name in [`LocalSignWithoutData, `LocalSignWithoutMinimality] do
+    if (← getEnv).contains (name ++ `local_root_numbers) then
+      throwError "Missing local sign evidence generated a theorem"
 
 run_cmd do
   let standard := [``propext, ``Classical.choice, ``Quot.sound]
@@ -573,12 +617,12 @@ run_cmd do
     for field in tracked do
       unless fields.contains field do
         throwError "Remove obsolete witness field {record}.{field} from the certificate inventory"
-  let isogeny := #[`isogenyEdge]
+  let isogeny := #[`isogenyEdge, `classSize, `classDegree, `isogenyDegrees, `isogenyMatrix]
   cover ``EllipticWitness
     (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++ isogeny)
   cover ``IsogenyEdgeClaim #[`target, `degree, `kernelX]
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
-    `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol]
+    `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol, `rootNumber]
   cover ``AbcQualityClaim #[`reported, `error, `factors]
   cover ``RegulatorClaim #[`reported, `error]
   cover ``DecimalEnclosureClaim #[`reported, `error]

@@ -166,7 +166,7 @@ def weightedCoordinates (j : Json) : Except String (List (Rat × Rat)) := do
 /-- Optional data fields that identify a top-level local reduction row. -/
 def localReductionFields : List String :=
   ["discriminant_valuation", "j_denominator_valuation", "reduction_type", "conductor_valuation",
-    "kodaira_symbol", "tamagawa_number"]
+    "kodaira_symbol", "tamagawa_number", "root_number"]
 
 /-- Decode the supported exact fields from one local reduction row. -/
 def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
@@ -181,9 +181,10 @@ def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
   if let some code := kodairaSymbol then
     unless code != 0 do throw "Zero is not a PARI Kodaira code"
   let tamagawaNumber ← optionalValue j "tamagawa_number" nonnegativeInteger
+  let rootNumber ← optionalValue j "root_number" integer
   return {
     prime, discriminantValuation, conductorValuation, jDenominatorValuation
-    reductionType, kodairaSymbol, tamagawaNumber }
+    reductionType, kodairaSymbol, tamagawaNumber, rootNumber }
 
 /-- Decode a local-row list and any top-level local claim. -/
 def localReductionClaims (j : Json) :
@@ -295,6 +296,13 @@ def decode (j : Json) : Except String EllipticWitness := do
   let _ ← j.getObj?
   let equation ← equation j
   let isogenyEdge ← optionalValue j "isogeny_edge" isogenyEdgeClaim
+  let classSize ← optionalValue j "class_size" nonnegativeInteger
+  let classDegree ← optionalValue j "class_deg" nonnegativeInteger
+  let isogenyMatrix ← optionalValue j "isogeny_matrix" fun value => do
+    (← array value 128).toList.mapM fun row => do
+      (← array row 128).toList.mapM nonnegativeInteger
+  let isogenyDegrees ← optionalValue j "isogeny_degrees" fun value => do
+    (← array value 128).toList.mapM nonnegativeInteger
   let catalogueAnalyticRank ← optionalValue j "analytic_rank" nonnegativeInteger
   let mut primeCoefficients : Array (Nat × Int) := #[]
   if let some rows := optionalData j "ap" then
@@ -405,6 +413,10 @@ def decode (j : Json) : Except String EllipticWitness := do
     equation
     specialLValue
     isogenyEdge
+    classSize
+    classDegree
+    isogenyMatrix
+    isogenyDegrees
     catalogueAnalyticRank
     bInvariants
     cInvariants

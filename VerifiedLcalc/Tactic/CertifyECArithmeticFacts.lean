@@ -86,11 +86,16 @@ private def minimalModelFactsTerm (base : Name) (curve : Ident) : CommandElabM (
       intro row hr
       obtain ⟨input, hinput, hEq⟩ := List.mem_map.mp hr
       subst row
-      exact ⟨rfl, rfl, rfl, $hrows input hinput⟩⟩)
+      exact ⟨rfl, rfl, rfl, rfl, $hrows input hinput⟩⟩)
   else `(none)
   let kodaira ← if env.contains (base ++ `kodaira_symbols) then
     `(checkedKodairaFacts $curve $(rootIdent (base ++ `claimed_local_invariants))
       $(rootIdent (base ++ `kodaira_symbols)))
+  else `([])
+  let localRootNumbers ← if env.contains (base ++ `local_root_numbers) then
+    `(checkedLocalRootNumberFacts $curve $(rootIdent (base ++ `claimed_local_invariants))
+      $(rootIdent (base ++ `localData)) $hglobal $(rootIdent (base ++ `local_data_valid))
+      $(rootIdent (base ++ `local_root_numbers)))
   else `([])
   `(some ({
     minimality := ⟨$m, $hm, $hglobal⟩
@@ -100,7 +105,8 @@ private def minimalModelFactsTerm (base : Name) (curve : Ident) : CommandElabM (
     badPrimes := $badPrimes
     numBadPrimes := $numBadPrimes
     localRows := $localRows
-    kodaira := $kodaira } : MinimalModelArithmeticFacts $curve))
+    kodaira := $kodaira
+    localRootNumbers := $localRootNumbers } : MinimalModelArithmeticFacts $curve))
 
 /-- Package verified values and their proofs without retaining unchecked local fields. -/
 def arithmeticFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `term) := do

@@ -24,7 +24,7 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | Table | Displayed columns | Certificate evidence or roadmap |
 | --- | ---: | --- |
 | `ec_curvedata` | 51 | The checked curve carries equation, rational, algebraic, arithmetic, analytic and torsion facts. The field table below gives the evidence required for each supported claim. |
-| `ec_classdata` | 8 | Checked coefficients concern the represented curve. Minimum degree for a supplied isogeny edge proves one relation. Class-wide transport, the full degree matrix and class size are I1. |
+| `ec_classdata` | 8 | Checked coefficients concern the represented curve. With proved complete class evidence, the command checks the class size, maximum minimum degree and an ordered degree matrix. |
 | `ec_mwbsd` | 13 | Point membership, generator count, rank bounds and integral point fibers are in `certificate.algebraic`. Exhaustive integral-point data requires a proof covering every abscissa. |
 | `ec_localdata` | 10 | Checked local arithmetic facts are indexed by prime. Exact Kodaira and Tamagawa outputs depend on the reduction case. |
 | `ec_galrep` | 7 | G1 specifies evidence for the image of the actual representation in a supplied torsion basis. |
@@ -32,16 +32,12 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | G2 specifies the field of definition and the full torsion subgroup after base change. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The current checked-field inventory covers **38 of 85 distinct LMFDB column
-names**: 20 in `ec_curvedata` (including the rank-zero-scoped `regulator`), 2
-distinct `ec_classdata` coefficient names, 9 in `ec_mwbsd` (including
-`special_value`), and 7 in
-`ec_localdata` (including the required row key `prime`). It covers zero new
-names in `ec_galrep`, `ec_padic`, `ec_torsion_growth`, and `ec_iwasawa`.
-These are distinct names within each table: a shared name across tables is
-counted once for that table-qualified contract, and project-only extensions
-are excluded. The numerator counts source fields rather than mathematical
-claims or internal witness fields.
+The command covers **43 of 85 distinct LMFDB column names** with the evidence
+specified below. Counting each name in its first table gives 23 in
+`ec_curvedata`, 3 additional names in `ec_classdata`, 9 in `ec_mwbsd`, and
+8 in `ec_localdata`. Shared names such as `class_size` count once. The
+Galois, p-adic, torsion-growth and Iwasawa tables add no checked names yet.
+Project-specific keys are excluded.
 
 Count coverage by the mathematical assertion and the evidence a consumer can
 project. For example, `ec_curvedata.torsion` is a cardinality over ℚ, while
@@ -73,6 +69,7 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `local_invariants` or a top-level local row | `localInvariants` | Checks each supplied prime and any supplied `discriminant_valuation`, `j_denominator_valuation` or `reduction_type` against the minimal equation, using the checked `minimality`. |
 | `tamagawa_number` | `localInvariants` row field `tamagawaNumber` | Exact intrinsic Tamagawa number at a prime of good or `I₁` reduction. A local test proves minimality at that prime. |
 | `kodaira_symbol` | `localInvariants` row field `kodairaSymbol` | Canonical TauCeti `Iₙ` equality for good or multiplicative reduction. For additive codes the theorem excludes every `Iₙ`. Requires `minimality`. |
+| `root_number` | `localInvariants` row field `rootNumber` | Arithmetic local sign at the row's prime. Requires checked `minimality` and `local_data`. |
 | `ap` / `aplist` | `primeCoefficients` | Actual `LFunction p` coefficients with proved sufficient local minimality checks. |
 | `anlist` | `dirichletCoefficients` | Actual consecutive `LFunction n` coefficients; requires `minimality`. Native JSON starts with a₀=0, which is checked and removed; direct Lean lists start at a₁. |
 | `conductor` | `conductor` | Identification with the chosen modular realization's level; requires `minimality`, `localData`, and the existing modularity/arithmetic-compatibility axiom. |
@@ -80,6 +77,10 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `global_root_number` | `rootNumber` | Identification with that realization's global root/Fricke sign under the same conditions. This is an explicit extension key, not the local-table `root_number`. |
 | `integral_points` | `integralCoordinates` | Point membership on the supplied equation. |
 | `xcoord_integral_points` | `integralFiberRoots` | Complete finite y-fibers at the listed x-values, with a double root represented once. The theorem makes no claim over other x-values. |
+| `class_size` | `classSize` | Exact number of distinct rational isomorphism classes, given a proved complete class model in `with_proofs`. |
+| `class_deg` | `classDegree` | Maximum minimum isogeny degree, computed from the entire proved class matrix. |
+| `isogeny_degrees` | `isogenyDegrees` | Duplicate-free list of minimum degrees from the input curve to all class representatives, checked as a set. |
+| `isogeny_matrix` | `isogenyMatrix` | Square array of minimum degrees with source indexing rows and target indexing columns. Requires reduced minimal representatives in the LMFDB lexicographic coefficient ordering. |
 | `num_int_pts` | `numIntegralPoints` | Exact cardinality theorem from supplied exhaustive `IntegralXSupport`; available at `certificate.algebraic.completeIntegralPoints` with finite-set completeness and `Finite` evidence. Without support it is unverified, but a count below the number of distinct checked points or seed-fiber solutions is rejected. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
 | `rank`, `rank_bounds` | `algebraicRank`, `algebraicRankBounds` | Verify supplied endpoints against a typed proof of bounds on the actual Mordell–Weil rank. A singleton proof gives exact rank. |
@@ -174,8 +175,14 @@ Local claims can be split across rows. When two rows name the same prime,
 any supplied single-valued invariants must agree.
 
 `root_number` in an `ec_localdata` row is **local**, at that row's `prime`.
-It is deliberately not decoded as a global sign. The local reduction table is
-not the same data format as the supplied checked Tate transcripts in `localData`.
+A supplied claim requires a prime and a sign of ±1. With checked `minimality`
+and `local_data`, the command verifies the arithmetic formula, including the
+wild transcript when additive reduction at 2 or 3 requires one. For curves
+requiring no wild transcripts, supply `"local_data":{"at_two":null,"at_three":null}`.
+The sign and its proof are available through `local_root_numbers` and
+`Name.certificate.arithmetic.minimalModel` in `localRootNumbers`.
+Intrinsic local epsilon-factor compatibility still requires a separate theorem.
+Use the separate `global_root_number` key for the global sign.
 
 `torsion_bound` takes an object with exact integer fields `first_prime`,
 `second_prime`, and `bound`. JSON primes are capped at 10000. The checker
@@ -191,6 +198,16 @@ supplies neither piece of evidence.
 Import `CertifiedCurves.Invariants` for the small reusable 37.a1 example.
 `tests/consumers/CertifiedECInvariantsConsumer.lean` imports its `.olean` theorems
 without rerunning the certification command.
+
+The four class fields are optional exact claims. Supply
+`IntegralCurveProofs.isogenyClass` via `with_proofs` to give the
+distinct and exhaustive representatives, the correspondence with the input
+curve, and attainment and lower bounds for each matrix entry. The complete
+class and any native ordering proof are accessible through
+`certificate.isogenyClass`. The checker computes the class degree and the
+selected row's degree set. It compares a submitted matrix only with a
+proved LMFDB ordering. An edge alone leaves the class fields unverified.
+[LMFDB label ordering](https://www.lmfdb.org/knowledge/show/ec.q.lmfdb_label)
 
 ### Real period, Tamagawa product, and analytic quotient
 
@@ -215,10 +232,9 @@ missing theorem.
 
 | Group / fields | Proof work still needed |
 | --- | --- |
-| Specific additive `kodaira_symbol`, local `root_number`, other `tamagawa_number` branches | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
+| Specific additive `kodaira_symbol`, intrinsic local epsilon factors, other `tamagawa_number` branches | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
 | Tighter torsion bounds and `intrinsic_torsion` | Construct tight bounds for the rational torsion group or prove the required torsion pairing statement. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Rank intervals can be supplied as Lean proofs and are checked against the actual rational point group; exact rank requires a singleton interval. `ngens` checks only the length of the supplied generator list, not that it is a basis. Integral-point counts can use supplied exhaustive support; deriving it automatically still needs a bound and complete search. |
-| `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |
 | `cm`, quadratic-twist fields | Actual endomorphism/twist statements and, for a minimal twist, the required minimality comparison. A j-value lookup alone is not a CM certificate. |
 | Modular `degree`, `manin_constant`, `optimality` | Statements about the modular parametrization, not the degree of an arbitrary isogeny. |
 | Heights, periods, regulator, Faltings data, special values, `szpiro_ratio` | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |

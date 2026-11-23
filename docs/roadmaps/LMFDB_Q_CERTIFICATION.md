@@ -29,7 +29,7 @@ the source schema before creating a witness.
 | `ec_curvedata.semistable, squarefree_disc, potential_good_reduction` | Everywhere good or multiplicative reduction, squarefreeness of the absolute minimal discriminant, and potential good reduction at every finite place. L1. Squarefree discriminant and squarefree conductor are distinct predicates. |
 | `ec_localdata.prime, discriminant_valuation, j_denominator_valuation, kodaira_symbol, reduction_type, conductor_valuation, root_number, tamagawa_number` | A prime-indexed row. The valuations are $v_p(\Delta_{\min})$ and $v_p(\operatorname{den}(j))$. Reduction code −1 is nonsplit multiplicative, 0 additive, and 1 split multiplicative on the bad-prime rows. Decode Kodaira codes to typed symbols. The root number is local. L1–L2. |
 | `ec_classdata.aplist, anlist` | Initial primes and consecutive arithmetic Dirichlet coefficients. Supported for the represented curve. Transfer to other class members requires the isogeny theorem in I1. |
-| `ec_classdata.isogeny_matrix, class_size, class_deg`; copies and `ec_curvedata.isogeny_degrees` | Minimum isogeny degrees between indexed representatives, number of rational isomorphism classes, maximum matrix entry, and distinct entries of the represented curve's row, respectively. I1. |
+| `ec_classdata.isogeny_matrix, class_size, class_deg`; copies and `ec_curvedata.isogeny_degrees` | Minimum isogeny degrees between indexed representatives, number of rational isomorphism classes, maximum matrix entry, and distinct entries of the represented curve's row, respectively. Supported with proved complete class evidence and native ordering for the matrix. I1 covers deriving this evidence. |
 | `ec_mwbsd.gens, torsion_generators, ngens, rank_bounds`; `ec_curvedata.rank, torsion, torsion_structure, torsion_primes, intrinsic_torsion` | Weighted triples $(a,b,c)$ with $c\ne0$ represent $(a/c^2,b/c^3)$. Generator count is list length. Rank bounds refer to Mordell–Weil rank. Torsion data concern the full rational torsion subgroup. Intrinsic torsion is the radical of the torsion pairing with values in $\mathbf Q^\times\otimes\mathbf Q/\mathbf Z$. Integral infinite-order and supplied independence proofs already give rank lower bounds. M1–M2. |
 | `ec_mwbsd.xcoord_integral_points`; `ec_curvedata.num_int_pts` | Finite affine integral solutions in the specified model, with one stored x per fiber and the count over all y. Membership and exact fibers over listed x-values are supported. M3 accepts a supplied Lean proof of exhaustive abscissa support and certifies the count; deriving that support automatically remains backlog. |
 | `ec_curvedata.cm, min_quad_twist_ainvs, min_quad_twist_disc` | Geometric endomorphism ring is ℤ when the CM code is zero, otherwise it is the order of the specified discriminant. Twist data give an integral representative minimizing conductor and a quadratic discriminant (1 for the trivial twist). The producer applies further tie rules, including special j values. I2. |
@@ -105,9 +105,10 @@ over ℚₚ, prove its checked finite index equals
 `E.tamagawaNumber` at p, using TauCeti's
 `tamagawaNumber_eq_tateLocalIndex`; use `tamagawaProduct_eq_prod` after
 proving all omitted places good. Distinguish rational component-group size
-from geometric component count. For signs, retain the arithmetic sign of a
-valid transcript and expose a separate intrinsic epsilon-factor conclusion
-only after TC-07. The existing global modular sign compatibility does not
+from geometric component count. The command checks the arithmetic sign of a
+valid transcript on a verified minimal equation and exports `LocalRootNumberFact`
+through the certificate. The separate intrinsic epsilon-factor conclusion
+still needs TC-07. The existing global modular sign compatibility does not
 imply individual epsilon-factor equalities. Accept split/nonsplit $I_n$,
 additive examples with different component counts over the ground and residue
 closure, and wild regression cases.
@@ -191,7 +192,11 @@ duplicate seed/coordinate data, conjugate fibers, and omitted valid x-values.
 
 ## Isogenies, twists and modular parametrizations
 
-**I1 · Isogeny-class graph.** Reuse `TauCeti.Isogeny.degree`,
+**I1 · Isogeny-class graph.** The command now checks the four stored fields given an
+`IsogenyClassModel` with distinct, exhaustive representatives and proofs of attained
+minimum degrees. A stored matrix also requires the canonical order of reduced minimal
+models. The imported fixture is conditional on an explicit exhaustivity premise.
+Deriving the complete model from finite graph data remains open. Reuse `TauCeti.Isogeny.degree`,
 `degree_comp`, Vélu descent and `LFunction_eq`. First prove existence and
 degree for each supplied map, and rational nonisomorphism of distinct
 representatives. To certify a complete graph, prove exhaustivity of rational

@@ -6,6 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Verification.DegreeTwoIsogenyRaw
+public import VerifiedLcalc.Verification.IsogenyClass
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public meta import Lean
 
@@ -67,5 +68,60 @@ def certifyIsogenyEdge (base : Name) (proof : Option (TSyntax `term)) : CommandE
     (← `(IsLeast (Set.range fun φ :
       Isogeny (($source).baseChange ℚ).toAffine (($target).baseChange ℚ).toAffine => φ.degree) 2))
     (← `(($fact).isLeast_degree))
+
+/-- Compare native isogeny-class fields with a proved complete class and its degree data. -/
+def certifyIsogenyClass (base : Name) : CommandElabM Unit := do
+  let size ← bindStored base `classSize `class_size (← `(ℕ))
+  let degree ← bindStored base `classDegree `class_deg (← `(ℕ))
+  let matrix ← bindStored base `isogenyMatrix `isogeny_matrix (← `(List (List ℕ)))
+  let degrees ← bindStored base `isogenyDegrees `isogeny_degrees (← `(List ℕ))
+  if let some n := size then
+    checked (base ++ `class_size_positive) (← `(0 < $n)) (← `(by decide +kernel))
+  if let some n := degree then
+    checked (base ++ `class_deg_positive) (← `(0 < $n)) (← `(by decide +kernel))
+  if let some rows := matrix then
+    checked (base ++ `isogeny_matrix_shape)
+      (← `(0 < ($rows).length ∧
+        ($rows).all (fun row => decide (row.length = ($rows).length) &&
+          row.all (fun d => decide (0 < d))) = true))
+      (← `(by decide +kernel))
+  if let some ds := degrees then
+    checked (base ++ `isogeny_degrees_shape)
+      (← `(0 < ($ds).length ∧ ($ds).Nodup ∧ ($ds).all (fun d => decide (0 < d)) = true))
+      (← `(by decide +kernel))
+  let attachmentName := base ++ `integral_proofs
+  let attachment := rootIdent attachmentName
+  let selected ← `(($attachment).isogenyClass)
+  let provided ← if (← getEnv).contains attachmentName then
+    hasOptionalProof selected `isogeny_class
+  else pure false
+  unless provided do
+    if [size, degree, matrix, degrees].any Option.isSome then
+      logInfo m!"Unverified {base} isogeny class claims: supply complete isogeny class evidence"
+    return
+  let curve := rootIdent (base ++ `curve)
+  let evidence := rootIdent (base ++ `isogeny_class_evidence)
+  let facts := rootIdent (base ++ `isogeny_class)
+  emit (← `(def $evidence : IsogenyClassEvidence $curve := ($selected).get (by rfl)))
+  auditAxioms (base ++ `isogeny_class_evidence)
+  emit (← `(noncomputable def $facts : IsogenyClassFacts $curve := ($evidence).model.toFacts))
+  if let some n := size then
+    checked (base ++ `class_size) (← `(($facts).classSize = $n))
+      (← `(by first | rfl | decide +kernel))
+  if let some n := degree then
+    checked (base ++ `class_deg) (← `(($facts).classDegree = $n))
+      (← `(by first | rfl | decide +kernel))
+  if let some ds := degrees then
+    checked (base ++ `isogeny_degrees) (← `(($facts).isogenyDegrees = ($ds).toFinset))
+      (← `(by first | rfl | decide +kernel))
+  if let some rows := matrix then
+    if ← hasOptionalProof (← `(($evidence).ordering)) `isogeny_matrix_order then
+      let ordered := rootIdent (base ++ `isogeny_matrix_order)
+      emit (← `(def $ordered : IsogenyClassOrdering ($facts).representatives :=
+        (($evidence).ordering).get (by rfl)))
+      checked (base ++ `isogeny_matrix)
+        (← `(($facts).matrixRows = $rows)) (← `(by first | rfl | decide +kernel))
+    else
+      logInfo m!"Unverified {base} isogeny_matrix: supply the native LMFDB ordering"
 
 end VerifiedLcalc.CertifyEC
