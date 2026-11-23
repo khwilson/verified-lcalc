@@ -12,7 +12,7 @@ they do not themselves assert that its value is correct.
 
 ## What counts as a field
 
-The [field-to-witness index](../VerifiedLcalc/Certificate/Witnesses/README.md) maps each column name to its Lean structure or outstanding implementation.
+The [field-to-witness index](../VerifiedLcalc/Certificate/Witnesses/README.md) maps each column name to its Lean structure and distinguishes checked evidence, standalone proof obligations, and reported data.
 
 On 2026-11-22 the eight schema tables on the 37.a1 data page displayed **101
 table-qualified columns and 85 distinct column names**. This corrects the count

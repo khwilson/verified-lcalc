@@ -328,12 +328,32 @@ prove the vanishing claim at every good prime in the stated range.
 To make a separate algebraic claim, specify the cyclotomic Selmer local
 conditions and prove the characteristic-ideal comparison. For regulators define the normalized p-adic height pairing
 and its determinant on an M2 basis, with source-specific prime and
-normalization restrictions. Check a congruence to $p^v u$ modulo
-$p^{v+k}\mathbf Z_p$ **when** k counts relative digits of the unit; pin the
-actual `prec` convention before mapping it. Accept negative valuations,
+normalization restrictions. The stored `prec` is absolute. For valuation $v$ the
+unit has `prec - v` relative digits, and the report represents a congruence to
+$p^v u$ modulo $p^{\mathrm{prec}}\mathbf Z_p$. The renderer reads the class row
+for curve number 1. [LMFDB p-adic regulator renderer](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/elliptic_curve.py#L775-L792)
+Accept negative valuations,
 rank-zero normalization, ordinary and signed examples, and explicit missing
 records. A class join requires evidence for the curve used and for any
 transport along an isogeny.
+
+## From field structures to checked proofs
+
+Every EC/ℚ field now has a [witness or report structure](../../VerifiedLcalc/Certificate/Witnesses/README.md).
+The following upstream targets describe the missing comparisons and constructors. The structures
+were designed against Mathlib `31ce06ea` and TauCeti `e0e414ce`.
+
+| Target | Reused API | Remaining work |
+| --- | --- | --- |
+| L1, L2 and A2 | TauCeti’s `algorithmicConductor`, `reductionSymbol`, `tamagawaNumberAt`, and `minimalRealPeriod` | Relate the algorithmic conductor and local sign to the intrinsic conductor and epsilon factor. Construct full Kodaira and Tamagawa witnesses and enclose the minimal period and modified Szpiro ratio. |
+| I1, I2 and G2 | TauCeti’s `Isogeny.degree`, `GeometricEnd`, `QuadraticOrder.toSubalgebra`, and `quadraticTwistOf`. Mathlib’s `AdjoinRoot` and `Int.IsFundamentalDiscr`. | Prove completeness of isogeny classes, compute the geometric endomorphism order, resolve equal-conductor twist choices, and establish the full torsion group over each reported extension. |
+| M1, I3 and A2 | The reports retain the curve, the modular degree and Manin data, and the reported heights and lattice indices. | Define the rational torsion pairing and its radical. Relate the modular quotient, its differential and optimality to the curve. Relate the complex covolume, normalized Faltings heights and class-relative lattice index to its Néron differential. |
+| A3 | TauCeti’s full real period, regulator and Tamagawa product, Mathlib’s torsion subgroup, and the leading coefficient for an explicit realization. | Enclose all factors in the analytic BSD quotient and justify rounding. The algebraic cardinality requires the independent descent and finiteness proof described above. |
+| G1 and G3 | TauCeti’s `torsionGaloisAction` and `tateModuleGaloisRepresentation`, with a supplied basis. The p-adic reports retain source precision and signed Iwasawa branches. | Identify subgroup labels up to conjugacy, prove the simultaneous adelic lift and level, genus, exceptional-prime and Serre data. Construct the normalized p-adic height determinant and ordinary or signed p-adic L-series, including proofs of the large-prime threshold. |
+
+Catalogue labels and trace hashes live in a provenance record. Checking a snapshot’s labels and
+ordering belongs in the importer. A claim of mathematical identity needs an isomorphism or an
+isogeny as appropriate.
 
 ## Implementation order
 

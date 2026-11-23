@@ -9,6 +9,8 @@ public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic
 
 /-! # Shared input records for elliptic-curve certificates
 
+* `CatalogueMetadata` holds optional LMFDB and Cremona identifiers and the trace fingerprint
+  supplied for an equation.
 * `AbcQualityClaim`, `IsogenyEdgeClaim`, and `RegulatorClaim` describe submitted abc
   approximations, directed isogeny degrees, and regulator values. `IntegralXSupport` proves
   coverage of all integral abscissae, and `AffineMembership` proves the listed coordinates
@@ -29,6 +31,25 @@ public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic
 /-! ## Equation and rational-point inputs -/
 
 namespace VerifiedLcalc
+
+/-- Catalogue references supplied for an integral equation. These fields record provenance. -/
+structure CatalogueMetadata (curve : WeierstrassCurve ℤ) where
+  /-- LMFDB curve label (`lmfdb_label`). -/
+  lmfdbLabel : Option String := none
+  /-- LMFDB isogeny-class label (`lmfdb_iso`). -/
+  lmfdbIso : Option String := none
+  /-- Position of the curve in the LMFDB class ordering (`lmfdb_number`). -/
+  lmfdbNumber : Option ℕ := none
+  /-- Numerical encoding of the LMFDB class label (`iso_nlabel`). -/
+  isoNlabel : Option ℕ := none
+  /-- Cremona curve label (`Clabel`). -/
+  cremonaLabel : Option String := none
+  /-- Cremona isogeny-class label (`Ciso`). -/
+  cremonaIso : Option String := none
+  /-- Position of the curve in the Cremona class ordering (`Cnumber`). -/
+  cremonaNumber : Option ℕ := none
+  /-- Catalogue fingerprint for the traces of this curve's isogeny class (`trace_hash`). -/
+  traceHash : Option ℕ := none
 
 /-- A reported abc quality and evidence for its absolute error bound. -/
 structure AbcQualityClaim where
