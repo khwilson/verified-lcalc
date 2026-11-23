@@ -5,59 +5,27 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.CurveProofs
-public import VerifiedLcalc.Certificate.Witnesses.RationalInvariants
-public import VerifiedLcalc.Certificate.Witnesses.PointFacts
-public import VerifiedLcalc.Certificate.PointAccessors
-public import VerifiedLcalc.Certificate.Witnesses.ArithmeticFacts
-public import VerifiedLcalc.Certificate.Witnesses.AnalyticFacts
-public import VerifiedLcalc.Certificate.Witnesses.Torsion
-public import VerifiedLcalc.Certificate.Witnesses.DegreeTwoIsogeny
-public import VerifiedLcalc.Certificate.Witnesses.IntegralPoints
-public import VerifiedLcalc.Certificate.Witnesses.AlgebraicRank
-public import VerifiedLcalc.Certificate.Witnesses.Regulator
+public import VerifiedLcalc.Certificate.Witnesses.Algebraic
+public import VerifiedLcalc.Certificate.Witnesses.Analytic
+public import VerifiedLcalc.Certificate.Witnesses.FinitePrimes
+public import VerifiedLcalc.Certificate.Witnesses.Invariants
 
-/-! # The public checked elliptic certificate structures -/
+/-! # Proof attachments and checked elliptic-curve certificates -/
 
 @[expose] public section
 
 namespace VerifiedLcalc
+
 open EllipticCurve
 
-/-- Checked point lists, individual orders and algebraic lower bounds. -/
-structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
-  /-- Membership on the supplied integral equation. -/
-  integralPoints : Option (AffineMembership curve) := none
-  /-- Complete integral y-fibers at the specified integral x-coordinates. -/
-  integralYFibers : Option (IntegralYFiberFacts curve) := none
-  /-- Exhaustive finite set and exact cardinality of all affine integral points. -/
-  completeIntegralPoints : Option (CompleteIntegralPointFacts curve) := none
-  /-- Membership for the supplied rational generator coordinates. -/
-  generators : Option (AffineMembership (curve.baseChange ℚ)) := none
-  /-- The checked `ngens` count for the supplied generator coordinates. -/
-  generatorCount : Option (GeneratorCountFacts
-    (generators.getD (AffineMembership.empty (curve.baseChange ℚ))).coordinates) := none
-  /-- Membership for the supplied rational torsion generator coordinates. -/
-  torsionGenerators : Option (AffineMembership (curve.baseChange ℚ)) := none
-  /-- Exact orders of the listed torsion generators, when supplied and checked. -/
-  torsionGeneratorOrders : Option (TorsionGeneratorOrderFacts
-    (torsionGenerators.getD (AffineMembership.empty (curve.baseChange ℚ)))) := none
-  /-- The supplied indexed points checked for infinite order. -/
-  infiniteOrderPoints : Option
-    (List (InfiniteOrderPointFact (integralPoints.getD (AffineMembership.empty curve)))) := none
-  /-- The supplied family checked for integer independence. -/
-  independentPoints : Option
-    (IndependentPointFacts (integralPoints.getD (AffineMembership.empty curve))) := none
-  /-- A proved lower bound for the rational Mordell–Weil rank. -/
-  rankLowerBound : Option { n : ℕ //
-    n ≤ Module.finrank ℤ (curve.baseChange ℚ).toAffine.Point } := none
-  /-- A proved lower and upper bound for the actual rational point group rank. -/
-  rankBounds : Option (AlgebraicRankBounds (curve.baseChange ℚ)) := none
-  /-- An exact algebraic Mordell–Weil rank, when the checked interval is a singleton. -/
-  rank : Option { n : ℕ //
-    Module.finrank ℤ (curve.baseChange ℚ).toAffine.Point = n } := none
-  /-- A stored regulator enclosure checked from an exact algebraic rank of zero. -/
-  regulator : Option (RegulatorFacts (curve.baseChange ℚ)) := none
+/-- Lean proofs accepted alongside raw claims on an integral Weierstrass equation. -/
+structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] extends EllipticProofs curve where
+  /-- Proved endpoints of a Mordell–Weil rank interval on the rational curve. -/
+  algebraicRank : Option (AlgebraicRankBounds (curve.baseChange ℚ)) := none
+  /-- Exhaustive abscissa support for integral points on the supplied equation. -/
+  integralXSupport : Option (IntegralXSupport curve) := none
+
 /-- The family-indexed certificate exported by the verification command. -/
 structure EllipticCertificate (curve : WeierstrassCurve ℤ)
     [(curve.baseChange ℚ).IsElliptic] where

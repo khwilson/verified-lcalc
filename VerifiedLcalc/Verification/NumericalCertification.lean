@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
-public import VerifiedLcalc.Certificate.Witnesses.AssumedEvidence
+public import VerifiedLcalc.Certificate.Witnesses.Assumptions
 public import VerifiedLcalc.NumericalRankSoundness
 public import Mathlib.Analysis.Complex.CauchyIntegral
 

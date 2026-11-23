@@ -37,11 +37,19 @@ run_cmd do
     let mod := modules[idx.toNat]!
     unless root.isPrefixOf mod do
       throwError "{decl} is defined in {mod}; its structure belongs in {root}"
+  -- Downstream readers can find each family in its mathematical subject module.
+  for (decl, subject) in [(``VerifiedLcalc.LocalTamagawaFact, `FinitePrimes),
+      (``VerifiedLcalc.ConditionalAnalyticRank, `Analytic),
+      (``VerifiedLcalc.TorsionFacts, `Algebraic),
+      (``VerifiedLcalc.DiscriminantWitness, `Invariants)] do
+    let some idx := env.getModuleIdxFor? decl | throwError "missing witness {decl}"
+    unless modules[idx.toNat]! == (root ++ subject) do
+      throwError "{decl} belongs in {root ++ subject}"
   let dir : System.FilePath := "VerifiedLcalc/Certificate/Witnesses"
   for path in ← dir.walkDir do
     if path.extension != some "lean" then continue
     let mod := (path.withExtension "").components.foldl Name.str Name.anonymous
-    let optIn := [root ++ `AssumedEvidence, root ++ `CurvePrecision].contains mod
+    let optIn := mod == (root ++ `Assumptions)
     if !optIn && !modules.contains mod then
       throwError "the witness umbrella must import {mod}"
     let source ← IO.FS.readFile path

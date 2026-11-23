@@ -7,26 +7,33 @@ contains their Lean declarations.
 
 | Start here | What to read |
 | --- | --- |
-| [EllipticWitness.lean](../VerifiedLcalc/Certificate/Witnesses/EllipticWitness.lean) | `EllipticWitness` holds the integral Weierstrass equation and the optional input for each check. `IntegralCurveProofs` carries additional input proofs. |
-| [EllipticCertificate.lean](../VerifiedLcalc/Certificate/Witnesses/EllipticCertificate.lean) | `EllipticCertificate` is the type of `Name.certificate`. Its fields group the checked equation, rational invariants, algebraic, arithmetic and analytic facts, torsion, and isogeny evidence for the indexed curve. |
-| [CurveProofs.lean](../VerifiedLcalc/Certificate/Witnesses/CurveProofs.lean) | `DiscriminantWitness` pairs a Mathlib curve with a value and the proof `curve.Δ = discriminant`. `EllipticProofs` stores optional checked invariants indexed by one equation. |
+| [EllipticWitness.lean](../VerifiedLcalc/Certificate/Witnesses/EllipticWitness.lean) | `EllipticWitness` holds the integral Weierstrass equation and the optional input for each check. |
+| [EllipticCertificate.lean](../VerifiedLcalc/Certificate/Witnesses/EllipticCertificate.lean) | `EllipticCertificate` is the type of `Name.certificate`. This file also defines `IntegralCurveProofs` for supplied proofs that span subjects. |
+| [Invariants.lean](../VerifiedLcalc/Certificate/Witnesses/Invariants.lean) | `DiscriminantWitness` and `EllipticProofs`, together with exact rational-invariant claims. |
 
 ## Field structures
 
 | Subject | Witness files and mathematical content |
 | --- | --- |
-| Rational invariants | [RationalInvariants](../VerifiedLcalc/Certificate/Witnesses/RationalInvariants.lean) records the sign, rational j-invariant, and an enclosure for TauCeti's abc quality with its factorization evidence. |
-| Rational and integral points | [PointMembership](../VerifiedLcalc/Certificate/Witnesses/PointMembership.lean) states the affine equation. [PointFacts](../VerifiedLcalc/Certificate/Witnesses/PointFacts.lean) records exact orders, linear independence, generator-list length, and integral y-fibers. [IntegralPoints](../VerifiedLcalc/Certificate/Witnesses/IntegralPoints.lean) covers exhaustive x-coordinate support and the cardinality of TauCeti's set of integral points. |
-| Mordell–Weil rank and regulator | [AlgebraicRank](../VerifiedLcalc/Certificate/Witnesses/AlgebraicRank.lean) gives bounds on Mathlib's integer `Module.finrank` of the rational point group. The structure imports only Mathlib. [Regulator](../VerifiedLcalc/Certificate/Witnesses/Regulator.lean) states an enclosure for TauCeti's Néron–Tate regulator. |
-| Torsion and isogenies | [Torsion](../VerifiedLcalc/Certificate/Witnesses/Torsion.lean) covers reduction point counts, divisibility, the full torsion subgroup and its invariant factors. [DegreeTwoIsogeny](../VerifiedLcalc/Certificate/Witnesses/DegreeTwoIsogeny.lean) uses TauCeti's isogeny, kernel and degree. |
-| Reduction and arithmetic | [LocalClaims](../VerifiedLcalc/Certificate/Witnesses/LocalClaims.lean) contains supplied local rows and isogeny edge claims. [Transcripts](../VerifiedLcalc/Certificate/Witnesses/Transcripts.lean) contains minimality and tame/wild Tate data. [ArithmeticFacts](../VerifiedLcalc/Certificate/Witnesses/ArithmeticFacts.lean) includes minimal-model facts, local Tamagawa and Kodaira evidence, coefficients and conditional modular level and sign. |
-| L-function and leading coefficient | [AnalyticFacts](../VerifiedLcalc/Certificate/Witnesses/AnalyticFacts.lean) contains verified payloads, enclosures and analytic rank for an explicit realization. [SpecialValue](../VerifiedLcalc/Certificate/Witnesses/SpecialValue.lean) states the reported Taylor leading coefficient and its error bound for that curve. |
+| Rational invariants | [InputData.lean](../VerifiedLcalc/Certificate/Witnesses/InputData.lean) defines the reported `AbcQualityClaim`; [Invariants.lean](../VerifiedLcalc/Certificate/Witnesses/Invariants.lean) records the sign, rational j-invariant, and checked abc-quality evidence. |
+| Rational and integral points | [Algebraic.lean](../VerifiedLcalc/Certificate/Witnesses/Algebraic.lean) records point membership, exact orders, linear independence, generator-list length, integral y-fibers, and exhaustive integral-point support. |
+| Mordell–Weil rank and regulator | [Algebraic.lean](../VerifiedLcalc/Certificate/Witnesses/Algebraic.lean) gives bounds on Mathlib's integer `Module.finrank` and states an enclosure for TauCeti's Néron–Tate regulator. |
+| Torsion and isogenies | [Algebraic.lean](../VerifiedLcalc/Certificate/Witnesses/Algebraic.lean) covers rational torsion orders, divisibility, the full torsion subgroup, invariant factors, and degree-two isogeny data. |
+| Reduction and arithmetic | Raw local rows live in [InputData.lean](../VerifiedLcalc/Certificate/Witnesses/InputData.lean); [FinitePrimes.lean](../VerifiedLcalc/Certificate/Witnesses/FinitePrimes.lean) contains their checked local, minimal-model, Tamagawa, Kodaira, and coefficient facts. Conditional conductor and root-number facts are in [Invariants.lean](../VerifiedLcalc/Certificate/Witnesses/Invariants.lean). |
+| L-function and leading coefficient | [Analytic.lean](../VerifiedLcalc/Certificate/Witnesses/Analytic.lean) contains verified payloads, enclosures, analytic rank, and leading-coefficient evidence for an explicit realization. |
 
-The directory also contains the derivative boxes, numerical outputs, precision
-claims, and generic scan and artifact records. [Witnesses.lean](../VerifiedLcalc/Certificate/Witnesses.lean)
-lists the ordinary modules. [AssumedEvidence](../VerifiedLcalc/Certificate/Witnesses/AssumedEvidence.lean)
-and [CurvePrecision](../VerifiedLcalc/Certificate/Witnesses/CurvePrecision.lean)
-have separate imports because their types refer to the modularity assumption.
+The directory is organized by subject: `FinitePrimes`, `Analytic`, `Algebraic`,
+and `Invariants`. The [InputData](../VerifiedLcalc/Certificate/Witnesses/InputData.lean)
+module is the shared foundation for supplied fields, and
+[ArtifactData](../VerifiedLcalc/Certificate/Witnesses/ArtifactData.lean) contains
+the generic request/artifact payloads used by analytic evidence. Meanwhile,
+[EllipticWitness](../VerifiedLcalc/Certificate/Witnesses/EllipticWitness.lean)
+and [EllipticCertificate](../VerifiedLcalc/Certificate/Witnesses/EllipticCertificate.lean)
+are the input and checked-output aggregates. The
+[Witnesses.lean](../VerifiedLcalc/Certificate/Witnesses.lean) umbrella re-exports
+the ordinary structures and excludes assumptions. Import
+[Assumptions](../VerifiedLcalc/Certificate/Witnesses/Assumptions.lean) for
+assumption-dependent evidence and precision claims.
 
 ## Module layout and migration
 
@@ -36,15 +43,15 @@ The former `VerifiedLcalc.Certificates.*` modules now live under
 | Previous module | Current module |
 | --- | --- |
 | `Certificates.Artifacts`, `.ArtifactContracts`, `.ArtifactPrimitives` | `Certificate.Artifacts.Data`, `.Contracts`, `.Primitives` |
-| `Certificates.Scan`, `.ScanPredicate` | `Certificate.Witnesses.Scan`, `Certificate.Artifacts.ScanWitness` |
+| `Certificates.Scan`, `.ScanPredicate` | `Certificate.Witnesses.Analytic` (certificate), `Certificate.Artifacts.ScanWitness` (predicate) |
 | `Certificates.AnalyticEnclosures`, `.AnalyticEvidencePredicates` | `Certificate.Analytic.Enclosures`, `.EvidencePredicates` |
-| `Certificates.AnalyticEvidence`, `.AnalyticRank` | `Certificate.Witnesses.AnalyticEvidence`, `.AnalyticRank` |
+| `Certificates.AnalyticEvidence`, `.AnalyticRank` | `Certificate.Witnesses.Analytic` |
 | `Certificates.Enclosures`, `.NumericalData`, `.NumericalContracts` | `Certificate.Numerical.Intervals`, `.Outputs`, `.Payloads` |
-| `Certificates.NumericalRanks`, `.NumericalRankContracts`, `.PrecisionPolicy` | `Certificate.Numerical.RankData`, `.RankContracts`, `.Precision` |
-| `Certificates.AlgebraicRank`, `.CurveWitness`, `.DegreeTwoIsogeny` | `Certificate.Support.AlgebraicRank`, `.CurveProofs`, `.Isogenies` |
-| `Certificates.IntegralPointCount`, `.IntegralXSupport` | `Certificate.Witnesses.IntegralPoints` |
-| `Certificates.PointFacts`, `.RationalInvariants`, `.Regulator` | `Certificate.Support.Points`, `Certificate.Witnesses.RationalInvariants`, `Certificate.Support.Regulator` |
-| `Certificates.SpecialValue`, `.TorsionFacts`, `.Transcripts`, `.WeierstrassInstances` | `Certificate.Support.SpecialValue`, `.Torsion`, `.Transcripts`, `.WeierstrassInstances` |
+| `Certificates.NumericalRanks`, `.NumericalRankContracts`, `.PrecisionPolicy` | `Certificate.Numerical.RankData`, `.RankContracts`, `.Precision` (with records in `Witnesses.InputData`/`Witnesses.Analytic`) |
+| `Certificates.AlgebraicRank`, `.CurveWitness`, `.DegreeTwoIsogeny` | `Certificate.Support.AlgebraicRank`, `Certificate.Support.CurveProofs`, `Certificate.Support.Isogenies` |
+| `Certificates.IntegralPointCount`, `.IntegralXSupport` | `Certificate.Witnesses.Algebraic`, `Certificate.Witnesses.InputData` |
+| `Certificates.PointFacts`, `.RationalInvariants`, `.Regulator` | `Certificate.Support.Points`, `Certificate.Witnesses.Invariants`, `Certificate.Support.Regulator` |
+| `Certificates.SpecialValue`, `.TorsionFacts`, `.Transcripts`, `.WeierstrassInstances` | `Certificate.Support.SpecialValue`, `Certificate.Support.Torsion`, `Certificate.Support.Transcripts`, `Certificate.Support.WeierstrassInstances` |
 
 Backend files formerly in `VerifiedLcalc.Certification/` are now in
 `VerifiedLcalc.Verification/`; their declarations remain in the

@@ -7,7 +7,7 @@ module
 
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic
 public import Mathlib.Data.Rat.Defs
-public import VerifiedLcalc.Certificate.Witnesses.CurveProofs
+public import VerifiedLcalc.Certificate.Witnesses.Invariants
 
 /-! # Generic curve-indexed proof-carrying data -/
 

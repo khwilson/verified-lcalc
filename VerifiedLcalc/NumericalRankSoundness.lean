@@ -7,7 +7,7 @@ module
 
 public import VerifiedLcalc.NumericalRank
 public import VerifiedLcalc.CertificateSoundness
-public import VerifiedLcalc.Certificate.Witnesses.AnalyticEvidence
+public import VerifiedLcalc.Certificate.Witnesses.Analytic
 public import Mathlib.Tactic.Linarith
 
 /-! Soundness theorems for numerical derivative observations. -/

@@ -5,15 +5,17 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.NumericalRankData
+public import VerifiedLcalc.Certificate.Witnesses.ArtifactData
+public import VerifiedLcalc.Certificate.Analytic.EvidencePredicates
 public import VerifiedLcalc.Certificate.Analytic.EnclosurePredicates
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
 
-/-! Opt-in evidence records requiring a modular interpretation. -/
+/-! # Opt-in analytic evidence for the modularity assumption -/
 
 @[expose] public section
 
 namespace VerifiedLcalc.Certification
+
 open Modularity EllipticCurve
 
 /-- Opt-in elliptic evidence. The continuation comes from the modularity
@@ -44,3 +46,20 @@ structure AssumedNumericalEvidence (expected : NumericalRanks.Request)
     (fun k => iteratedDeriv k (modularWitness equation nonsingular).formL 1)
 
 end VerifiedLcalc.Certification
+
+namespace VerifiedLcalc.Assumptions
+
+open Modularity
+
+/-- Explicit hypotheses associated with exactly one curve, derivative prefix,
+precision policy and gap. Declaring a claim does not supply this proof. -/
+structure CurvePrecisionClaim.Hypotheses (claim : CurvePrecisionClaim)
+    (nonsingular : claim.equation.Δ ≠ 0) : Prop where
+  /-- The stated nonzero gap is larger than the numerical cutoff. -/
+  cutoff_lt_gap : claim.policy.cutoff < claim.nonzeroGap
+  /-- Every derivative in the certified prefix is separated from zero. -/
+  separated : NumericalRanks.NonzeroDerivativeGap
+    (modularWitness claim.equation nonsingular).formL 1
+    claim.derivativeCount claim.nonzeroGap
+
+end VerifiedLcalc.Assumptions

@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.Enclosures
+public import VerifiedLcalc.Certificate.Witnesses.InputData
 import Mathlib.Data.Rat.Cast.Order
 public import Mathlib.Basic.Real.Basic
 

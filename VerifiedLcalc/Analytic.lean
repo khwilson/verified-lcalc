@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Scan
-public import VerifiedLcalc.Certificate.Witnesses.AnalyticRank
+public import VerifiedLcalc.Certificate.Witnesses.Analytic
 public import VerifiedLcalc.Certificate.Analytic.Enclosures
 public import Mathlib.Analysis.Analytic.Order
 public import Mathlib.Analysis.Complex.Basic

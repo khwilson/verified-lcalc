@@ -5,8 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.CurvePrecisionClaim
-public import VerifiedLcalc.Certificate.Witnesses.CurvePrecision
+public import VerifiedLcalc.Certificate.Witnesses.Assumptions
 
 /-! Explicit curve-specific hypotheses for upgrading numerical smallness. -/
 

@@ -5,7 +5,7 @@ Authors: verified-lcalc contributors
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.PointFacts
+public import VerifiedLcalc.Certificate.Witnesses.Algebraic
 public import VerifiedLcalc.Certificate.PointAccessors
 
 /-! # Compatibility imports and point accessors for legacy callers -/

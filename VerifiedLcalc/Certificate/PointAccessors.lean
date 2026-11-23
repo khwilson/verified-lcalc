@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.PointMembership
+public import VerifiedLcalc.Certificate.Witnesses.InputData
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic
 public import Mathlib.GroupTheory.Torsion
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral

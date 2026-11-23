@@ -5,8 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.Regulator
-public import VerifiedLcalc.Certificate.Witnesses.RegulatorClaim
+public import VerifiedLcalc.Certificate.Witnesses.Algebraic
 
 /-! # Compatibility path for regulator facts -/
 

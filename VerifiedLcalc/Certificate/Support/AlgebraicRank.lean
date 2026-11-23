@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.AlgebraicRank
+public import VerifiedLcalc.Certificate.Witnesses.Algebraic
 
 /-! # Natural-valued algebraic rank bounds for rational elliptic curves -/
 

@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.DegreeTwoIsogeny
+public import VerifiedLcalc.Certificate.Witnesses.Algebraic
 
 /-! # Compatibility path and derived theorem for degree-two isogenies -/
 

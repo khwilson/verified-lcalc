@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Verification.StoredInvariants
-public import VerifiedLcalc.Certificate.Witnesses.ArithmeticFacts
+public import VerifiedLcalc.Certificate.Witnesses.FinitePrimes
 
 /-! # Proof-carrying arithmetic data of one rational curve
 
