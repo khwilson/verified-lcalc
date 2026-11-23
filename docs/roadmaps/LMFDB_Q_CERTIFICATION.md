@@ -105,9 +105,10 @@ over ℚₚ, prove its checked finite index equals
 `E.tamagawaNumber` at p, using TauCeti's
 `tamagawaNumber_eq_tateLocalIndex`; use `tamagawaProduct_eq_prod` after
 proving all omitted places good. Distinguish rational component-group size
-from geometric component count. For signs, retain the arithmetic sign of a
-valid transcript and expose a separate intrinsic epsilon-factor conclusion
-only after TC-07. The existing global modular sign compatibility does not
+from geometric component count. The command checks the arithmetic sign of a
+valid transcript on a verified minimal equation and exports `LocalRootNumberFact`
+through the certificate. The separate intrinsic epsilon-factor conclusion
+still needs TC-07. The existing global modular sign compatibility does not
 imply individual epsilon-factor equalities. Accept split/nonsplit $I_n$,
 additive examples with different component counts over the ground and residue
 closure, and wild regression cases.

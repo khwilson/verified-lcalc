@@ -4,7 +4,7 @@ Start with [`EllipticWitness`](EllipticWitness.lean) for input to `certify_ec` a
 
 The index covers **85 distinct column names** across **101 table-qualified columns** in the eight EC/ℚ tables, excluding the database row identifier `id`. Each name appears once. The table column omits the `ec_` prefix. [LMFDB schema for 37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
 
-All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is still **37 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
+All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **38 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
 
 ## Curve data (`ec_curvedata`)
 
@@ -97,7 +97,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `kodaira_symbol` | `localdata` | Mixed | [`LocalKodairaFact.correct`](FinitePrimes.lean) checks Iₙ exactly and excludes every Iₙ for an additive code. [`LocalKodairaSymbolFact.correct`](FinitePrimes.lean) specifies the full intrinsic symbol at the supplied prime. |
 | `prime` | `localdata`, `galrep` | Mixed | [`MinimalModelArithmeticFacts.localRows`](FinitePrimes.lean) proves primality for a checked local row. In `galrep`, [`PrimeGaloisImageClaim.prime`](FinitePrimes.lean) indexes a prime-specific report and [`AdelicGaloisImageClaim`](FinitePrimes.lean) represents the adelic sentinel 0. |
 | `reduction_type` | `localdata` | Checked | [`MinimalModelArithmeticFacts.localRows`](FinitePrimes.lean) checks [`LocalReductionClaim.reductionType`](InputData.lean). On a bad-prime row the code distinguishes additive (0), split multiplicative (1), and nonsplit multiplicative (−1) reduction and agrees with the Frobenius trace. |
-| `root_number` | `localdata` | Structure | [`LocalRootNumberFact.correct`](FinitePrimes.lean). Sign from the local arithmetic formula on a minimal equation. Comparison with the intrinsic local epsilon factor remains open. |
+| `root_number` | `localdata` | Exact arithmetic formula | [`LocalReductionClaim.rootNumber`](InputData.lean) and [`LocalRootNumberFact.correct`](FinitePrimes.lean). With checked minimality and finite transcripts, the command exports the local sign through `certificate.arithmetic.minimalModel` in `localRootNumbers`. Comparison with the intrinsic local epsilon factor remains open. |
 | `tamagawa_number` | `localdata` | Checked | [`LocalTamagawaFact.correct`](FinitePrimes.lean). The record accepts a proof of any intrinsic local factor. The command currently verifies the value one at good or I₁ reduction. |
 
 ## Galois representations (`ec_galrep`)
