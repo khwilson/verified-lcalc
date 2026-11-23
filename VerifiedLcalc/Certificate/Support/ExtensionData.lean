@@ -54,7 +54,8 @@ def CanonicalHeightFacts.pointCoordinates {curve : WeierstrassCurve ℚ}
   Option.map Subtype.val (curve.toAffine.nonsingularPointEquiv point)
 
 /-- The ordered points built from checked affine coordinates recover those coordinates. -/
-theorem CanonicalHeightFacts.pointCoordinates_ofFn_mk {curve : WeierstrassCurve ℚ} [curve.IsElliptic]
+theorem CanonicalHeightFacts.pointCoordinates_ofFn_mk {curve : WeierstrassCurve ℚ}
+    [curve.IsElliptic]
     (coordinates : List (ℚ × ℚ))
     (onCurve : ∀ x y, (x, y) ∈ coordinates → curve.toAffine.Equation x y) :
     List.ofFn (fun i : Fin coordinates.length =>
