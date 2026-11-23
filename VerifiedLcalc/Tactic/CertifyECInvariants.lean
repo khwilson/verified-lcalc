@@ -11,7 +11,7 @@ public meta import Lean
 /-! Internal stored-invariant checks dispatched exclusively by `certify_ec`.
 Absent evidence leaves prerequisite-dependent claims explicitly unverified.
 Finite equation invariants and minimality use only standard Lean axioms;
-conductor/root-number identification retains the documented modularity axiom. -/
+conductor and global root-number identification retain the documented modularity axiom. -/
 
 public meta section
 namespace VerifiedLcalc.CertifyEC

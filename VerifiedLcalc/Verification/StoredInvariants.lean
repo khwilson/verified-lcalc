@@ -11,7 +11,7 @@ public import Mathlib.Data.Nat.Squarefree
 public import Mathlib.RingTheory.Localization.Rat
 
 /-! Bridges from exact stored invariant checks to existing Mathlib/TauCeti
-objects. Only the conductor and root-number bridges use the authorized
+objects. Only the conductor and global root-number bridges use the authorized
 modularity/arithmetic-compatibility assumption. -/
 
 @[expose] public section
@@ -267,8 +267,9 @@ def LocalReductionClaim.checkRootNumber (row : LocalReductionClaim) (e : Weierst
   row.checkRootNumberInput && row.rootNumber.all fun value => wildLocalRoot e d row.prime == value
 
 /-- The executable check certifies the local arithmetic sign for validated transcripts. -/
-theorem LocalReductionClaim.rootNumber_correct (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
-    (d : WildData) (hd : d.Valid e) (h : row.checkRootNumber e d = true) :
+theorem LocalReductionClaim.rootNumber_correct (row : LocalReductionClaim)
+    (e : WeierstrassCurve ℤ) (d : WildData) (hd : d.Valid e)
+    (h : row.checkRootNumber e d = true) :
     row.RootNumberSpec e d := by
   intro value hvalue
   simp only [checkRootNumber, checkRootNumberInput, hvalue, Option.all_some, Bool.and_eq_true,

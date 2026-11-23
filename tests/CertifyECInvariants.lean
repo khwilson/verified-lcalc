@@ -322,10 +322,10 @@ meta def invariantRejected (name : Name) (command : Syntax) : CommandElabM Unit 
 
 run_cmd do
   invariantRejected `WrongLocalRootNumber (← `(certify_ec WrongLocalRootNumber from
-    { equation := ⟨0, 0, 1, -1, 0⟩, minimality := some ⟨[37]⟩, localData := some ⟨none, none⟩,
+    { LocalSignMetadata.witness with
       localInvariants := some [{ prime := 37, rootNumber := some (-1) }] }))
-  invariantRejected `NonSignLocalRootNumber (← `(certify_ec NonSignLocalRootNumber from_json_string
-    r#"{"ainvs":[0,0,1,-1,0],"prime":37,"root_number":0}"#))
+  invariantRejected `NonSignLocalRootNumber (← `(certify_ec NonSignLocalRootNumber
+    from_json_string r#"{"ainvs":[0,0,1,-1,0],"prime":37,"root_number":0}"#))
   invariantRejected `CompositeLocalRootPrime (← `(certify_ec CompositeLocalRootPrime from
     { equation := ⟨0, 0, 1, -1, 0⟩,
       localInvariants := some [{ prime := 4, rootNumber := some 1 }] }))

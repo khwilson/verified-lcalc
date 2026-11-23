@@ -32,10 +32,10 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | G2 specifies the field of definition and the full torsion subgroup after base change. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The current checked-field inventory covers **33 of 85 distinct LMFDB column
+The current checked-field inventory covers **34 of 85 distinct LMFDB column
 names**: 18 in `ec_curvedata` (including the rank-zero-scoped `regulator`), 2
 distinct `ec_classdata` coefficient names, 6 in `ec_mwbsd` (including
-`special_value`), and 7 in
+`special_value`), and 8 in
 `ec_localdata` (including the required row key `prime`). It covers zero new
 names in `ec_galrep`, `ec_padic`, `ec_torsion_growth`, and `ec_iwasawa`.
 These are distinct names within each table: a shared name across tables is
@@ -73,6 +73,7 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `local_invariants` or a top-level local row | `localInvariants` | Checks each supplied prime and any supplied `discriminant_valuation`, `j_denominator_valuation` or `reduction_type` against the minimal equation, using the checked `minimality`. |
 | `tamagawa_number` | `localInvariants` row field `tamagawaNumber` | Exact intrinsic Tamagawa number at a prime of good or `I₁` reduction. A local test proves minimality at that prime. |
 | `kodaira_symbol` | `localInvariants` row field `kodairaSymbol` | Canonical TauCeti `Iₙ` equality for good or multiplicative reduction. For additive codes the theorem excludes every `Iₙ`. Requires `minimality`. |
+| `root_number` | `localInvariants` row field `rootNumber` | Arithmetic local sign at the row's prime. Requires checked `minimality` and `local_data`. |
 | `ap` / `aplist` | `primeCoefficients` | Actual `LFunction p` coefficients with proved sufficient local minimality checks. |
 | `anlist` | `dirichletCoefficients` | Actual consecutive `LFunction n` coefficients; requires `minimality`. Native JSON starts with a₀=0, which is checked and removed; direct Lean lists start at a₁. |
 | `conductor` | `conductor` | Identification with the chosen modular realization's level; requires `minimality`, `localData`, and the existing modularity/arithmetic-compatibility axiom. |
