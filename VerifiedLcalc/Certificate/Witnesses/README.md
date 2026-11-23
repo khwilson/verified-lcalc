@@ -1,6 +1,6 @@
 # LMFDB fields and their Lean witnesses
 
-Start with [`EllipticWitness`](EllipticWitness.lean) for input to `certify_ec` and [`EllipticCertificate`](EllipticCertificate.lean) for the checked output, `Name.certificate`. Each linked projection below identifies the structure that carries a field’s proof. For `ainvs`, the equation itself is the input that indexes the certificate.
+Start with [`EllipticWitness`](EllipticWitness.lean) for input to `certify_ec` and [`EllipticCertificate`](EllipticCertificate.lean) for the checked output, `Name.certificate`. The tables identify each field’s Lean structure and say what evidence it holds. For `ainvs`, the equation itself is the input that indexes the certificate.
 
 The index covers **85 distinct column names** across **101 table-qualified columns** in the eight EC/ℚ tables, excluding the database row identifier `id`. Each name appears once. The table column omits the `ec_` prefix. [LMFDB schema for 37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
 
