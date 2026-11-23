@@ -27,17 +27,17 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_classdata` | 8 | Checked coefficients concern the represented curve. With proved complete class evidence, the command checks the class size, maximum minimum degree and an ordered degree matrix. |
 | `ec_mwbsd` | 13 | Point membership, generator count, rank bounds and integral point fibers are in `certificate.algebraic`. Exhaustive integral-point data requires a proof covering every abscissa. |
 | `ec_localdata` | 10 | Checked local arithmetic facts are indexed by prime. Exact Kodaira and Tamagawa outputs depend on the reduction case. |
-| `ec_galrep` | 7 | G1 specifies evidence for the image of the actual representation in a supplied torsion basis. |
+| `ec_galrep` | 7 | The generator field is checked at the reported finite modulus in a proved torsion basis. G1 covers the remaining image data. |
 | `ec_padic` | 5 | G3 specifies the p-adic regulator as a congruence with an explicit precision. |
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **46 of 85 distinct LMFDB column names** with the evidence
+The command covers **53 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
-has a checker gives 23 in `ec_curvedata`, 3 in `ec_classdata`, 10 in
-`ec_mwbsd`, 8 in `ec_localdata`, and 2 in `ec_torsion_growth`. Shared names
-such as `class_size` count once. The Galois, p-adic and Iwasawa tables add no
-checked names yet. Project-specific keys are excluded.
+has a checker gives 29 in `ec_curvedata`, 3 in `ec_classdata`, 10 in
+`ec_mwbsd`, 8 in `ec_localdata`, 1 in `ec_galrep`, and 2 in
+`ec_torsion_growth`. Shared names such as `class_size` count once.
+Project-specific keys are excluded.
 
 Count coverage by the mathematical assertion and the evidence a consumer can
 project. For example, `ec_curvedata.torsion` is a cardinality over ℚ, while
@@ -57,6 +57,10 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `binvs`, `cinvs` | `bInvariants`, `cInvariants` | Equalities with Mathlib's b₂,b₄,b₆,b₈ and c₄,c₆. These are optional equation-data extensions. |
 | `discriminant` | `discriminant` | Equality with this supplied equation's Mathlib Δ; does not assert minimality. |
 | `abc_quality` with `abc_quality_evidence` | `abcQuality` | Proved absolute error bound between the reported decimal and TauCeti’s real abc quality, using the factorization in the evidence. |
+| `cm` | `complexMultiplication` | Geometric endomorphism ring identification supplied through `with_proofs`. |
+| `min_quad_twist_ainvs` | `minimumTwistEquation` | Globally minimal integral equation of a quadratic twist with the minimum algorithmic conductor. |
+| `min_quad_twist_disc` | `minimumTwistDiscriminant` | Fundamental discriminant identifying the same twist, with 1 for the trivial twist. |
+| `szpiro_ratio` with `szpiro_ratio_evidence` | `modifiedSzpiroRatio` | Directed-log enclosure using the checked minimal equation and TauCeti’s algorithmic conductor norm. |
 | `regulator` with optional `regulator_evidence.error` | `regulator` | With a proved algebraic rank of zero, checks the exact rank-zero regulator value `1` against the reported decimal and explicit error. A report without an error is treated as exact; other ranks remain unverified. |
 | `special_value` with `special_value_evidence.error` | `specialLValue` | Checks the reported arithmetic Taylor leading coefficient against the actual central-value enclosure at order zero or first-derivative enclosure at order one, with explicit nonnegative rational error. Higher orders remain unverified. |
 | `jinv` | `jInvariant` | Equality with Mathlib's actual rational-curve `j`. Accepts an exact numerator/positive-denominator pair, fraction string, or integer. |
@@ -83,6 +87,9 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `class_deg` | `classDegree` | Maximum minimum isogeny degree, computed from the entire proved class matrix. |
 | `isogeny_degrees` | `isogenyDegrees` | Duplicate-free list of minimum degrees from the input curve to all class representatives, checked as a set. |
 | `isogeny_matrix` | `isogenyMatrix` | Square array of minimum degrees with source indexing rows and target indexing columns. Requires reduced minimal representatives in the LMFDB lexicographic coefficient ordering. |
+| `nonmax_primes` | `nonmaxPrimes` | Complete exceptional support of the integral ℓ-adic images of a geometrically non-CM curve. Requires a `NonmaxPrimeSupportFact` through `with_proofs`. |
+| `nonmax_rad` | `nonmaxRadical` | Exact product of the distinct primes in the proved complete support. Requires the same evidence and may be submitted independently. |
+| `adelic_gens` | `adelicGenerators` | Complete image on the full geometric torsion of the reported modulus in a supplied basis. Requires an `FiniteGaloisImageFact` through `with_proofs`. |
 | `num_int_pts` | `numIntegralPoints` | Exact cardinality theorem from supplied exhaustive `IntegralXSupport`; available at `certificate.algebraic.completeIntegralPoints` with finite-set completeness and `Finite` evidence. Without support it is unverified, but a count below the number of distinct checked points or seed-fiber solutions is rejected. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
 | `rank`, `rank_bounds` | `algebraicRank`, `algebraicRankBounds` | Verify supplied endpoints against a typed proof of bounds on the actual Mordell–Weil rank. A singleton proof gives exact rank. |
@@ -98,6 +105,30 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `torsion_bound` | `torsionBound` | Two odd good-reduction primes and the claimed positive gcd of their finite point counts. The full rational torsion order divides that gcd. |
 | `torsion` | `torsion` | Claimed exact order. A gcd of one proves the exact cardinality. For a larger checked bound the claimed order must be positive and divide the bound. |
 | Complete numerical payload | `centralResult`, `derivativeResult` | Existing analytic-rank-zero/one certificates under the documented modularity assumption. |
+
+For `nonmax_primes`, the completeness proof covers every prime and identifies
+the actual integral Tate-module image in a supplied basis at each prime.
+For geometrically non-CM curves, maximality means equality with the full
+`GL₂(ℤ_ℓ)`. The CM convention uses a different maximal subgroup.
+For example, 338.e1 lists 2 and 7 in `nonmax_primes`, and its residual
+`modell_images` lists only a label at 7.
+[LMFDB ℓ-adic search](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/elliptic_curve.py#L1344-L1353)
+· [LMFDB 338.e1](https://www.lmfdb.org/api/ec_curvedata/1373)
+
+For `adelic_gens`, join the prime-zero row to the curve equation. JSON takes the
+modulus from `adelic_level` or the first component of `adelic_image` and checks
+agreement if both are present. The matrix `[[a,b],[c,d]]` has raw encoding
+`[a,b,c,d]` with entries in the range from zero to modulus minus one.
+The checked fact in `certificate.adelicGenerators` identifies the subgroup
+generated by these matrices with the actual action on all torsion at that
+modulus, with columns giving the images of basis vectors. Zywina's
+`FindOpenImage` returns matrices for the torsion representation itself.
+Minimality of the adelic level and the full profinite image require separate
+proofs.
+[LMFDB row renderer](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/web_ec.py#L428-L437)
+· [LMFDB computation export](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/code.yaml)
+· [LMFDB adelic level](https://www.lmfdb.org/knowledge/show/ec.galois_rep_adelic_image)
+· [Zywina's image convention](https://github.com/davidzywina/OpenImage/blob/master/main/FindOpenImage.m#L1428-L1439)
 
 `abc_quality` is stored as a double-precision approximation. With explicit
 evidence, JSON digits are interpreted as an exact rational center. Supply
@@ -225,6 +256,27 @@ using rational interval arithmetic and a strictly positive denominator lower
 endpoint. Rounding rejects intervals touching a half-integer boundary. The
 checked integer and prime support concern the analytic quotient.
 
+### Geometric endomorphisms, minimum twists and modified Szpiro ratio
+
+Use `with_proofs` with an `IntegralCurveProofs` attachment. Its
+`complexMultiplication` field supplies the ring isomorphism over the separable
+closure. The `minimumQuadraticTwist` attachment supplies the fundamental
+discriminant, rational change of variables, globally minimal integral candidate
+and conductor comparison against every quadratic twist. The two raw twist
+claims are compared independently with the fields of that same attachment.
+The optional `certificate.minimumQuadraticTwist.uniqueMinimum` evidence
+proves the reduced model and discriminant are unique in the ordinary non-CM
+case. LMFDB’s ordering for ties, including special j values, requires
+separate evidence. [LMFDB producer](https://github.com/JohnCremona/ecdata/blob/master/scripts/min_quad_twist.py)
+
+For `szpiro_ratio`, supply a `modifiedSzpiroRatio` attachment proving global
+minimality and identifying the norm of TauCeti’s algorithmic conductor. JSON
+accepts an exact decimal center and a `szpiro_ratio_evidence` object whose
+`error` is a nonnegative exact rational. Mathlib’s directed dyadic logarithm
+checks the claimed error against the two logarithms. Each checked result is
+available in the correspondingly named field of `Name.certificate`.
+
+
 ## Remaining invariant groups
 
 These fields remain unverified metadata unless a check above independently
@@ -237,11 +289,11 @@ missing theorem.
 | Specific additive `kodaira_symbol`, intrinsic local epsilon factors, other `tamagawa_number` branches | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
 | Tighter torsion bounds and `intrinsic_torsion` | Construct tight bounds for the rational torsion group or prove the required torsion pairing statement. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Rank intervals can be supplied as Lean proofs and are checked against the actual rational point group; exact rank requires a singleton interval. `ngens` checks only the length of the supplied generator list, not that it is a basis. Integral-point counts can use supplied exhaustive support; deriving it automatically still needs a bound and complete search. |
-| `cm`, quadratic-twist fields | Actual endomorphism/twist statements and, for a minimal twist, the required minimality comparison. A j-value lookup alone is not a CM certificate. |
+| CM and minimum twist evidence production | A geometric endomorphism-ring classifier and a general minimum-conductor twist algorithm. Native ordering among equally good twists is a separate open obligation. |
 | Modular `degree`, `manin_constant`, `optimality` | Statements about the modular parametrization, not the degree of an arbitrary isogeny. |
-| Heights, periods, regulator, Faltings data, special values, `szpiro_ratio` | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |
+| Heights, periods, regulator, Faltings data, special values | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |
 | Algebraic Sha | A separate cohomological/descent proof of finiteness, cardinality, or a primary component. |
-| Galois-image, adelic, nonmaximal-prime, Serre, Iwasawa, and full extension torsion data | The relevant representations, fields, group images, and completeness proofs. |
+| Remaining Galois-image levels, Serre and Iwasawa data, and full extension torsion | The relevant representations, fields, group images, and completeness proofs. |
 | Labels, ordering/index fields, hashes | Catalogue/provenance metadata; not mathematical identity certificates. |
 
 Mazur's classification restricts rational elliptic-curve torsion over `ℚ` to

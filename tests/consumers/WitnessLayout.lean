@@ -39,6 +39,8 @@ run_cmd do
       throwError "{decl} is defined in {mod}; its structure belongs in {root}"
   -- Downstream readers can find each family in its mathematical subject module.
   for (decl, subject) in [(``VerifiedLcalc.LocalTamagawaFact, `FinitePrimes),
+      (``VerifiedLcalc.NonmaxPrimeSupportFact, `FinitePrimes),
+      (``VerifiedLcalc.FiniteGaloisImageFact, `FinitePrimes),
       (``VerifiedLcalc.ConditionalAnalyticRank, `Analytic),
       (``VerifiedLcalc.TorsionFacts, `Algebraic),
       (``VerifiedLcalc.DiscriminantWitness, `Invariants)] do

@@ -373,6 +373,8 @@ structure MinimumQuadraticTwistFacts (curve : WeierstrassCurve ℤ)
     equation.baseChange ℚ
   /-- The reported twist is nonsingular over the rationals. -/
   elliptic : (equation.baseChange ℚ).IsElliptic
+  /-- The reported equation is globally minimal over the integers. -/
+  minimal : WeierstrassCurve.IsGlobalMinimal ℤ (equation.baseChange ℚ)
   /-- No quadratic twist of the original curve has smaller algorithmic conductor norm. -/
   conductor_minimal :
     letI := elliptic
@@ -382,6 +384,32 @@ structure MinimumQuadraticTwistFacts (curve : WeierstrassCurve ℤ)
         letI := hW
         Ideal.absNorm ((equation.baseChange ℚ).algorithmicConductor ℤ) ≤
           Ideal.absNorm (W.algorithmicConductor ℤ)
+
+/-- Proof that the reduced minimum-conductor quadratic twist, including its fundamental
+discriminant, is unique. The domain excludes the producer's CM and exceptional-j cases. -/
+structure UniqueMinimumQuadraticTwist (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] (minimum : MinimumQuadraticTwistFacts curve) : Type where
+  /-- There is no geometric complex multiplication. -/
+  nonCM : Nonempty (ℤ ≃+* (curve.baseChange ℚ).GeometricEnd)
+  /-- The input is in the ordinary quadratic-twist selection domain. -/
+  nonexceptional : (curve.baseChange ℚ).j ≠ 0 ∧ (curve.baseChange ℚ).j ≠ 1728
+  /-- The proposed equation is in reduced minimal form. -/
+  reduced :
+    let := minimum.elliptic
+    WeierstrassCurve.IsReducedMinimal (minimum.equation.baseChange ℚ)
+  /-- Every reduced minimum has precisely the proposed equation and discriminant. -/
+  unique : ∀ other : MinimumQuadraticTwistFacts curve,
+    let := other.elliptic
+    WeierstrassCurve.IsReducedMinimal (other.equation.baseChange ℚ) →
+      other.equation = minimum.equation ∧ other.discriminant = minimum.discriminant
+
+/-- A minimum-conductor witness with optional proof that the reduced minimizer is unique. -/
+structure MinimumQuadraticTwistEvidence (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The submitted minimum-conductor quadratic twist. -/
+  minimum : MinimumQuadraticTwistFacts curve
+  /-- Optional stronger evidence resolving selection without any producer tie-breaking. -/
+  uniqueMinimum : Option (UniqueMinimumQuadraticTwist curve minimum) := none
 
 /-! ## Torsion over number fields and canonical heights -/
 

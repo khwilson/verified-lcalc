@@ -30,6 +30,7 @@ deriving instance ToExpr for DecimalEnclosureClaim
 deriving instance ToExpr for SpecialLValueClaim
 deriving instance ToExpr for TorsionBoundWitness
 deriving instance ToExpr for IsogenyEdgeClaim
+deriving instance ToExpr for AdelicGeneratorsClaim
 deriving instance ToExpr for TorsionGrowthFieldClaim
 deriving instance ToExpr for CanonicalHeightsClaim
 deriving instance ToExpr for EllipticWitness
@@ -119,5 +120,15 @@ def hasOptionalProof (term : TSyntax `term) (label : Name) : CommandElabM Bool :
     | some ``Option.none => pure false
     | some ``Option.some => pure true
     | _ => throwError "Expected a known option constructor for {label}"
+
+/-- Select optional proof evidence from the shared curve-indexed attachment. -/
+def attachedFact (attachment : Option Ident) (field : Name) :
+    CommandElabM (Option (TSyntax `term)) := do
+  let some attachment := attachment | return none
+  let projection := mkIdent field
+  let selected ← `(($attachment).$projection)
+  if ← hasOptionalProof selected field then
+    some <$> `(($selected).get (by rfl))
+  else pure none
 
 end VerifiedLcalc.CertifyEC

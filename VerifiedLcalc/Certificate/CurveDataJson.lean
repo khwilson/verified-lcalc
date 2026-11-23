@@ -35,6 +35,11 @@ def ainvs (j : Json) : Except String (List Int) := do
   unless a.size == 5 do throw "Expected five Weierstrass coefficients"
   a.toList.mapM integer
 
+/-- Assemble an integral Weierstrass equation from its five coefficients in order. -/
+def equationOfAinvs (a : List Int) : Except String (WeierstrassCurve ℤ) := do
+  let [a₁, a₂, a₃, a₄, a₆] := a | throw "Expected five coefficients"
+  return ⟨a₁, a₂, a₃, a₄, a₆⟩
+
 /-- Use top-level or rank-witness `subject.ainvs`, rejecting conflicting models. -/
 def equation (j : Json) : Except String (WeierstrassCurve ℤ) := do
   let nested := optional j "analytic_witness"
@@ -45,8 +50,7 @@ def equation (j : Json) : Except String (WeierstrassCurve ℤ) := do
   let models ← (candidates.filterMap id).mapM ainvs
   let some a := models.head? | throw "Expected ainvs or subject.ainvs"
   unless models.all (· == a) do throw "Conflicting integral equations"
-  let [a₁, a₂, a₃, a₄, a₆] := a | throw "Expected five coefficients"
-  return ⟨a₁, a₂, a₃, a₄, a₆⟩
+  equationOfAinvs a
 
 /-- Keep only a supported object's required fields; extra metadata is not a claim. -/
 def project? (j : Json) (keys : List String) : Option Json := do
@@ -306,6 +310,27 @@ def algebraicRankClaim (j : Json) : Except String (Option Nat) := do
     unless a = b do throw "Conflicting algebraic rank claims"
   return explicit.or native
 
+/-- Decode the finite generator report with its stated LMFDB reduction modulus. -/
+def adelicGeneratorsClaim (j : Json) : Except String (Option AdelicGeneratorsClaim) :=
+  optionalValue j "adelic_gens" fun value => do
+    if let some prime ← optionalValue j "prime" nonnegativeInteger then
+      unless prime == 0 do throw "adelic_gens requires the prime-zero row"
+    let level ← optionalValue j "adelic_level" nonnegativeInteger
+    let labelLevel ← optionalValue j "adelic_image" fun label => do
+      match (← label.getStr?).splitOn "." with
+      | first :: _ :: _ => nonnegativeInteger (.str first)
+      | _ => throw "Expected the level prefix of adelic_image"
+    if let (some m, some n) := (level, labelLevel) then
+      unless m == n do throw "Conflicting adelic_gens moduli"
+    let some modulus := level.orElse (fun _ => labelLevel)
+      | throw "adelic_gens requires adelic_level or adelic_image"
+    let rows ← (← array value 256).toList.mapM fun row => do
+      let entries ← array row 4
+      unless entries.size == 4 do throw "adelic_gens requires four matrix entries per row"
+      return (← nonnegativeInteger entries[0]!, ← nonnegativeInteger entries[1]!,
+        ← nonnegativeInteger entries[2]!, ← nonnegativeInteger entries[3]!)
+    return { modulus, rows }
+
 /-- Decode whichever supported fields are present. Integer square-root
 reconstruction supplies candidate y-coordinates for stored integral x-values;
 the certifier subsequently proves every resulting curve equation. -/
@@ -320,6 +345,10 @@ def decode (j : Json) : Except String EllipticWitness := do
       (← array row 128).toList.mapM nonnegativeInteger
   let isogenyDegrees ← optionalValue j "isogeny_degrees" fun value => do
     (← array value 128).toList.mapM nonnegativeInteger
+  let nonmaxPrimes ← optionalValue j "nonmax_primes" fun value => do
+    (← array value 256).toList.mapM nonnegativeInteger
+  let nonmaxRadical ← optionalValue j "nonmax_rad" nonnegativeInteger
+  let adelicGenerators ← adelicGeneratorsClaim j
   let catalogueAnalyticRank ← optionalValue j "analytic_rank" nonnegativeInteger
   let mut primeCoefficients : Array (Nat × Int) := #[]
   if let some rows := optionalData j "ap" then
@@ -391,6 +420,11 @@ def decode (j : Json) : Except String EllipticWitness := do
   let discriminant ← optionalValue j "discriminant" integer
   let jInvariant ← optionalValue j "jinv" rationalValue
   let abcQuality ← abcQualityClaim j
+  let complexMultiplication ← optionalValue j "cm" integer
+  let minimumTwistEquation ← optionalValue j "min_quad_twist_ainvs" fun value => do
+    equationOfAinvs (← ainvs value)
+  let minimumTwistDiscriminant ← optionalValue j "min_quad_twist_disc" integer
+  let modifiedSzpiroRatio ← decimalEnclosureClaim j "szpiro_ratio"
   let torsionGrowthField ← optionalValue j "torsion_growth" torsionGrowthFieldClaim
   let canonicalHeights ← canonicalHeightsClaim j
   let regulator ← regulatorClaim j
@@ -437,11 +471,18 @@ def decode (j : Json) : Except String EllipticWitness := do
     isogenyMatrix
     isogenyDegrees
     catalogueAnalyticRank
+    nonmaxPrimes
+    nonmaxRadical
+    adelicGenerators
     bInvariants
     cInvariants
     discriminant
     jInvariant
     abcQuality
+    complexMultiplication
+    minimumTwistEquation
+    minimumTwistDiscriminant
+    modifiedSzpiroRatio
     torsionGrowthField
     canonicalHeights
     regulator

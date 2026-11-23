@@ -17,14 +17,6 @@ namespace VerifiedLcalc.CertifyEC
 
 open Lean Elab Command
 
-private def attached (proofs : Option Ident) (field : Name) :
-    CommandElabM (Option (TSyntax `term)) := do
-  let some proofs := proofs | return none
-  let selected ← `(($proofs).$(mkIdent field))
-  if ← hasOptionalProof selected field then
-    some <$> `(($selected).get (by rfl))
-  else pure none
-
 private def certifyTorsionGrowthField (base : Name) (proofs : Option Ident) :
     CommandElabM Unit := do
   let some report ← bindStored base `torsionGrowthField `torsion_growth_field
@@ -41,7 +33,7 @@ private def certifyTorsionGrowthField (base : Name) (proofs : Option Ident) :
   checked (base ++ `torsion_growth_finrank)
     (← `(Module.finrank ℚ (AdjoinRoot ($report).polynomial) = ($report).degree))
     (← `(finrank_quotient_span_eq_natDegree.trans $degree))
-  let some evidence ← attached proofs `torsionGrowthField |
+  let some evidence ← attachedFact proofs `torsionGrowthField |
     logInfo m!"Unverified {base} torsion growth field: supply a proof of strict torsion growth"
     return
   let curve := rootIdent (base ++ `curve)
@@ -67,7 +59,7 @@ private def certifyCanonicalHeights (base : Name) (proofs : Option Ident) : Comm
         errors.length == ($coordinates).length &&
           errors.all (fun radius => decide (0 ≤ radius))) = true))
     (← `(by decide +kernel))
-  let some evidence ← attached proofs `canonicalHeights |
+  let some evidence ← attachedFact proofs `canonicalHeights |
     logInfo m!"Unverified {base} heights: supply proved canonical height enclosures"
     return
   let curve := rootIdent (base ++ `curve)
