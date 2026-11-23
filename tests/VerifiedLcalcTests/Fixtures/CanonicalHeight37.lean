@@ -36,10 +36,10 @@ private theorem affinePoint_not_torsion {x y : ℚ} (h : W.toAffine.Nonsingular 
   intro ht
   have hcard : Nat.card (AddCommGroup.torsion W.toAffine.Point) = 1 :=
     VerifiedLcalcTests.TorsionBound.card_torsion_curve37a1
-  letI := (Nat.card_eq_one_iff_unique.mp hcard).1
+  have hsub := (Nat.card_eq_one_iff_unique.mp hcard).1
   let P : AddCommGroup.torsion W.toAffine.Point := ⟨.some x y h, ht⟩
-  have hz := congrArg Subtype.val (Subsingleton.elim P 0)
-  exact Point.some_ne_zero hz
+  have hz := congrArg Subtype.val (@Subsingleton.elim _ hsub P 0)
+  exact Point.some_ne_zero h hz
 
 private theorem not_vertical {x y : ℚ} (h : W.toAffine.Nonsingular x y) :
     y ≠ W.toAffine.negY x y := by
@@ -99,9 +99,12 @@ private theorem xRep_double {x y : ℚ} (h : W.toAffine.Nonsingular x y) :
     simp only [ha, hbb, hc, hd]
     ext i
     fin_cases i
-    all_goals simp [Function.comp_def, hnB]
-    rw [hA, hB]
-    field_simp; ring
+    · simp only [Nat.succ_eq_add_one, Nat.reduceAdd, neg_mul, sub_neg_eq_add, mul_one,
+        zero_mul, add_zero, mul_neg, Fin.zero_eta, Fin.isValue, Matrix.cons_val_zero,
+        Pi.smul_apply, Function.comp_apply, smul_eq_mul]
+      rw [hA, hB]
+      field_simp; ring
+    · simp [Function.comp_def, hnB]
   exact ⟨hnB, hrep⟩
 
 private theorem abs_doublingCoefficients_le (x : ℚ) :
