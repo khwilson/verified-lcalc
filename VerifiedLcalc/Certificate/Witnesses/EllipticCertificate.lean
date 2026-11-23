@@ -35,6 +35,12 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   integralXSupport : Option (IntegralXSupport curve) := none
   /-- Proof of the complete isogeny class and, optionally, its native LMFDB ordering. -/
   isogenyClass : Option (IsogenyClassEvidence curve) := none
+  /-- Proof identifying the geometric endomorphism ring. -/
+  complexMultiplication : Option (ComplexMultiplicationFacts curve) := none
+  /-- Proof of a globally minimal integral model of a minimum-conductor quadratic twist. -/
+  minimumQuadraticTwist : Option (MinimumQuadraticTwistEvidence curve) := none
+  /-- Minimal model and exact conductor identification for a modified Szpiro enclosure. -/
+  modifiedSzpiroRatio : Option (ModifiedSzpiroRatioEvidence curve) := none
   /-- Proved enclosure for the full minimal real period. -/
   realPeriod : Option (RealPeriodFact curve) := none
   /-- Proved product of all intrinsic finite-place Tamagawa numbers. -/
@@ -64,6 +70,12 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   /-- The complete isogeny class with derived summaries and optional native LMFDB ordering. -/
   isogenyClass : Option (Σ facts : IsogenyClassFacts curve,
     Option (IsogenyClassOrdering facts.representatives)) := none
+  /-- Checked identification of the geometric endomorphism ring. -/
+  complexMultiplication : Option (ComplexMultiplicationFacts curve) := none
+  /-- Checked minimum-conductor twist and its globally minimal integral equation. -/
+  minimumQuadraticTwist : Option (MinimumQuadraticTwistEvidence curve) := none
+  /-- Checked modified Szpiro ratio enclosure. -/
+  modifiedSzpiroRatio : Option (ModifiedSzpiroRatioFacts curve) := none
   /-- Checked full real period enclosure. -/
   realPeriod : Option (RealPeriodFact curve) := none
   /-- Checked product of the intrinsic finite-place Tamagawa numbers. -/

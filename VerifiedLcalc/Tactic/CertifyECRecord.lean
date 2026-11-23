@@ -229,6 +229,9 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let isogenyClass ← if (← getEnv).contains className then
     `(some ⟨$(rootIdent className), ($(rootIdent (base ++ `isogeny_class_evidence))).ordering⟩)
   else `(none)
+  let cm ← optionalFactTerm base `cm_fact
+  let twist ← optionalFactTerm base `minimum_quadratic_twist_evidence
+  let szpiroRatio ← optionalFactTerm base `szpiro_ratio_fact
   let realPeriod ← optionalFactTerm base `real_period_fact
   let tamagawaProduct ← optionalFactTerm base `tamagawa_product_fact
   let analyticSha ← optionalFactTerm base `analytic_sha_fact
@@ -243,6 +246,9 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     torsion := $torsion
     isogeny := $isogeny
     isogenyClass := $isogenyClass
+    complexMultiplication := $cm
+    minimumQuadraticTwist := $twist
+    modifiedSzpiroRatio := $szpiroRatio
     realPeriod := $realPeriod
     tamagawaProduct := $tamagawaProduct
     analyticSha := $analyticSha

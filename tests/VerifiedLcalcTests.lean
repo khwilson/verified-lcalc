@@ -13,6 +13,7 @@ public import VerifiedLcalcTests.Fixtures.Curve11Arithmetic
 public import VerifiedLcalcTests.Fixtures.Curve11Central
 public import VerifiedLcalcTests.Fixtures.Curve27a3
 public import VerifiedLcalcTests.Fixtures.GeneralModularityExamples
+public import VerifiedLcalcTests.Fixtures.Geometry
 public import VerifiedLcalcTests.Fixtures.MordellWeilRank
 public import VerifiedLcalcTests.Fixtures.NegativeSigns
 public import VerifiedLcalcTests.Fixtures.NumericalQuartic

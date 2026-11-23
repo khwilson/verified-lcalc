@@ -32,8 +32,8 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | G2 specifies the field of definition and the full torsion subgroup after base change. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **43 of 85 distinct LMFDB column names** with the evidence
-specified below. Counting each name in its first table gives 23 in
+The command covers **47 of 85 distinct LMFDB column names** with the evidence
+specified below. Counting each name in its first table gives 27 in
 `ec_curvedata`, 3 additional names in `ec_classdata`, 9 in `ec_mwbsd`, and
 8 in `ec_localdata`. Shared names such as `class_size` count once. The
 Galois, p-adic, torsion-growth and Iwasawa tables add no checked names yet.
@@ -55,6 +55,10 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `binvs`, `cinvs` | `bInvariants`, `cInvariants` | Equalities with Mathlib's b₂,b₄,b₆,b₈ and c₄,c₆. These are optional equation-data extensions. |
 | `discriminant` | `discriminant` | Equality with this supplied equation's Mathlib Δ; does not assert minimality. |
 | `abc_quality` with `abc_quality_evidence` | `abcQuality` | Proved absolute error bound between the reported decimal and TauCeti’s real abc quality, using the factorization in the evidence. |
+| `cm` | `complexMultiplication` | Geometric endomorphism ring identification supplied through `with_proofs`. |
+| `min_quad_twist_ainvs` | `minimumTwistEquation` | Globally minimal integral equation of a quadratic twist with the minimum algorithmic conductor. |
+| `min_quad_twist_disc` | `minimumTwistDiscriminant` | Fundamental discriminant identifying the same twist, with 1 for the trivial twist. |
+| `szpiro_ratio` with `szpiro_ratio_evidence` | `modifiedSzpiroRatio` | Directed-log enclosure using the checked minimal equation and TauCeti’s algorithmic conductor norm. |
 | `regulator` with optional `regulator_evidence.error` | `regulator` | With a proved algebraic rank of zero, checks the exact rank-zero regulator value `1` against the reported decimal and explicit error. A report without an error is treated as exact; other ranks remain unverified. |
 | `special_value` with `special_value_evidence.error` | `specialLValue` | Checks the reported arithmetic Taylor leading coefficient against the actual central-value enclosure at order zero or first-derivative enclosure at order one, with explicit nonnegative rational error. Higher orders remain unverified. |
 | `jinv` | `jInvariant` | Equality with Mathlib's actual rational-curve `j`. Accepts an exact numerator/positive-denominator pair, fraction string, or integer. |
@@ -223,6 +227,27 @@ using rational interval arithmetic and a strictly positive denominator lower
 endpoint. Rounding rejects intervals touching a half-integer boundary. The
 checked integer and prime support concern the analytic quotient.
 
+### Geometric endomorphisms, minimum twists and modified Szpiro ratio
+
+Use `with_proofs` with an `IntegralCurveProofs` attachment. Its
+`complexMultiplication` field supplies the ring isomorphism over the separable
+closure. The `minimumQuadraticTwist` attachment supplies the fundamental
+discriminant, rational change of variables, globally minimal integral candidate
+and conductor comparison against every quadratic twist. The two raw twist
+claims are compared independently with the fields of that same attachment.
+The optional `certificate.minimumQuadraticTwist.uniqueMinimum` evidence
+proves the reduced model and discriminant are unique in the ordinary non-CM
+case. LMFDB’s ordering for ties, including special j values, requires
+separate evidence. [LMFDB producer](https://github.com/JohnCremona/ecdata/blob/master/scripts/min_quad_twist.py)
+
+For `szpiro_ratio`, supply a `modifiedSzpiroRatio` attachment proving global
+minimality and identifying the norm of TauCeti’s algorithmic conductor. JSON
+accepts an exact decimal center and a `szpiro_ratio_evidence` object whose
+`error` is a nonnegative exact rational. Mathlib’s directed dyadic logarithm
+checks the claimed error against the two logarithms. Each checked result is
+available in the correspondingly named field of `Name.certificate`.
+
+
 ## Remaining invariant groups
 
 These fields remain unverified metadata unless a check above independently
@@ -235,9 +260,9 @@ missing theorem.
 | Specific additive `kodaira_symbol`, intrinsic local epsilon factors, other `tamagawa_number` branches | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
 | Tighter torsion bounds and `intrinsic_torsion` | Construct tight bounds for the rational torsion group or prove the required torsion pairing statement. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Rank intervals can be supplied as Lean proofs and are checked against the actual rational point group; exact rank requires a singleton interval. `ngens` checks only the length of the supplied generator list, not that it is a basis. Integral-point counts can use supplied exhaustive support; deriving it automatically still needs a bound and complete search. |
-| `cm`, quadratic-twist fields | Actual endomorphism/twist statements and, for a minimal twist, the required minimality comparison. A j-value lookup alone is not a CM certificate. |
+| CM and minimum twist evidence production | A geometric endomorphism-ring classifier and a general minimum-conductor twist algorithm. Native ordering among equally good twists is a separate open obligation. |
 | Modular `degree`, `manin_constant`, `optimality` | Statements about the modular parametrization, not the degree of an arbitrary isogeny. |
-| Heights, periods, regulator, Faltings data, special values, `szpiro_ratio` | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |
+| Heights, periods, regulator, Faltings data, special values | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |
 | Algebraic Sha | A separate cohomological/descent proof of finiteness, cardinality, or a primary component. |
 | Galois-image, adelic, nonmaximal-prime, Serre, Iwasawa, and torsion-growth data | The relevant representations, fields, group images, and completeness proofs. |
 | Labels, ordering/index fields, hashes | Catalogue/provenance metadata; not mathematical identity certificates. |
