@@ -22,9 +22,9 @@ theorem rationalPlace_intValuation_gt (p k : ℕ) [Fact p.Prime] (n : ℤ)
   have hi : (rationalPlace p).asIdeal.map Rat.ringOfIntegersEquiv.toRingHom =
       Ideal.span {(p : ℤ)} := by
     rw [← RationalPrimes.integerPlace_asIdeal]
-    change ((HeightOneSpectrum.equivOfRingEquiv Rat.ringOfIntegersEquiv)
-      ((HeightOneSpectrum.equivOfRingEquiv Rat.ringOfIntegersEquiv).symm _)).asIdeal = _
-    rw [Equiv.apply_symm_apply]
+    rw [← Int.ideal_span_absNorm_eq_self
+      (RationalPrimes.integerPlace (rationalPlace p)).asIdeal,
+      RationalPrimes.norm_integerPlace, rationalPlace_norm]
   rw [Ideal.map_pow, hi, Ideal.span_singleton_pow] at hm
   apply h
   exact Ideal.mem_span_singleton.mp (by simpa using hm)
@@ -54,9 +54,9 @@ theorem rationalPlace_intValuation_le (p k : ℕ) [Fact p.Prime] (n : ℤ)
   have hi : (rationalPlace p).asIdeal.map Rat.ringOfIntegersEquiv.toRingHom =
       Ideal.span {(p : ℤ)} := by
     rw [← RationalPrimes.integerPlace_asIdeal]
-    change ((HeightOneSpectrum.equivOfRingEquiv Rat.ringOfIntegersEquiv)
-      ((HeightOneSpectrum.equivOfRingEquiv Rat.ringOfIntegersEquiv).symm _)).asIdeal = _
-    rw [Equiv.apply_symm_apply]
+    rw [← Int.ideal_span_absNorm_eq_self
+      (RationalPrimes.integerPlace (rationalPlace p)).asIdeal,
+      RationalPrimes.norm_integerPlace, rationalPlace_norm]
   have hm : Rat.ringOfIntegersEquiv (n : 𝓞 ℚ) ∈
       ((rationalPlace p).asIdeal ^ k).map Rat.ringOfIntegersEquiv.toRingHom := by
     rw [Ideal.map_pow, hi, Ideal.span_singleton_pow]

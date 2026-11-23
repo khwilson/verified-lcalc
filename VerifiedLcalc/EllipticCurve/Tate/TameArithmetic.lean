@@ -1,5 +1,6 @@
 module
 
+public import VerifiedLcalc.EllipticCurve.Tate.ArithmeticSpecs
 public import VerifiedLcalc.EllipticCurve.Tate.TameCore
 public import VerifiedLcalc.EllipticCurve.BadPrime
 public import VerifiedLcalc.EllipticCurve.Coefficients
@@ -9,29 +10,10 @@ public import Mathlib.NumberTheory.LegendreSymbol.Basic
 namespace VerifiedLcalc.EllipticCurve
 open NumberField IsDedekindDomain
 
-/-- The valuation-based mathematical condition for negative j-valuation.
-The explicit c4 nonzero guard is essential at j=0. -/
-def NegativeJValuation (e : (WeierstrassCurve ℤ)) (p : ℕ) : Prop :=
-  e.c₄ ≠ 0 ∧ 3 * (e.c₄).natAbs.factorization p <
-    (e.Δ).natAbs.factorization p
-  deriving Decidable
-
 theorem potentiallyMultiplicative_correct (e : (WeierstrassCurve ℤ)) (p : ℕ)
     (hp : p.Prime) : potentiallyMultiplicative e p = true ↔ NegativeJValuation e p := by
   simp only [potentiallyMultiplicative, Bool.and_eq_true, bne_iff_ne,
     decide_eq_true_eq, Nat.padicValNat_def, Nat.multiplicity_eq_factorization hp, NegativeJValuation]
-
-/-- The standard tame additive formula, expressed using mathematical
-factorization valuations and mathlib's Legendre symbol. Its arithmetic-to-
-modular compatibility is an explicitly assumed standard theorem, not part of
-this executable-correctness proof. -/
-noncomputable def tameAdditiveRootSpec (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime] : Int :=
-  if NegativeJValuation e p then legendreSym p (-1)
-  else
-    let v := (e.Δ).natAbs.factorization p % 12
-    if v = 3 ∨ v = 9 then legendreSym p (-2)
-    else if v = 4 ∨ v = 8 then legendreSym p (-3)
-    else legendreSym p (-1)
 
 theorem tameAdditiveRoot_correct (e : (WeierstrassCurve ℤ)) (p : ℕ)
     [Fact p.Prime] (hp : 3 < p) : tameAdditiveRoot e p = tameAdditiveRootSpec e p := by
@@ -42,26 +24,6 @@ theorem tameAdditiveRoot_correct (e : (WeierstrassCurve ℤ)) (p : ℕ)
   · rw [ite_eq_left h, ite_eq_left (hpot.mpr h)]
   · rw [ite_eq_right h, ite_eq_right (mt hpot.mp h)]
     simp only [beq_iff_eq, Bool.or_eq_true]
-
-/-- Conductor exponents in the tame formulas: 0 at good reduction, 1 at a
-multiplicative prime, 2 at an additive prime of residue characteristic >=5. -/
-def tameConductorExponent (e : (WeierstrassCurve ℤ)) (p : ℕ) : ℕ :=
-  if (WeierstrassCurve.baseChange e (ZMod p)).Δ ≠ 0 then 0
-  else if (WeierstrassCurve.baseChange e (ZMod p)).c₄ ≠ 0 then 1 else 2
-
-noncomputable def tameLocalRootSpec (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime] : Int :=
-  if (WeierstrassCurve.baseChange e (ZMod p)).Δ ≠ 0 then 1
-  else if (WeierstrassCurve.baseChange e (ZMod p)).c₄ ≠ 0 then -(computeFrobeniusTrace e p)
-  else tameAdditiveRootSpec e p
-
-/-- Mathematical conductor product, evaluated only under minimality and no
-additive reduction at 2 or 3 when connected to a modular realization. -/
-noncomputable def tameLevel (e : (WeierstrassCurve ℤ)) : ℕ :=
-  ∏ p ∈ (e.Δ).natAbs.primeFactors, p ^ tameConductorExponent e p
-
-noncomputable def tameSign (e : (WeierstrassCurve ℤ)) : Int :=
-  -(∏ p ∈ (e.Δ).natAbs.primeFactors,
-    if hp : p.Prime then @tameLocalRootSpec e p ⟨hp⟩ else 1)
 
 end VerifiedLcalc.EllipticCurve
 
@@ -91,7 +53,8 @@ theorem localRoot_correct (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime]
       cases h' : goodReduction e p
       · rfl
       · exact False.elim (((goodReduction_correct e p).mp h') hd)
-    simp [hd, hc, singularTrace_correct e p hg]
+    rw [if_neg (fun hΔ => hΔ hd), if_pos hc]
+    rw [singularTrace_correct e p hg, computeFrobeniusTrace_correct]
   | additive =>
     obtain ⟨hd, hc⟩ := (modelReduction_additive_iff e p).mp h
     have hp : 3 < p := hs.resolve_left (by simp [h])

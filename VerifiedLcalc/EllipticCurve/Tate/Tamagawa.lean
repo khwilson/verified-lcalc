@@ -7,6 +7,7 @@ module
 
 public import VerifiedLcalc.EllipticCurve.Tate.AdditiveArithmetic
 public import VerifiedLcalc.EllipticCurve.Tate.LocalReduction
+public import VerifiedLcalc.EllipticCurve.Tate.TamagawaSpecs
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Tamagawa.Product
 public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Curve
 import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.LocalIndex
@@ -145,12 +146,6 @@ theorem tamagawaNumberAt_eq_one_of_multiplicative_index_one (e : WeierstrassCurv
   change W.tamagawaNumber V = 1
   rw [← W.tamagawaNumber_smul V D, hD, hlocal, integralModel_baseChange_self,
     tateLocalIndex_I_one]
-
-/-- The exact Tamagawa factor is supported here at good reduction and at
-multiplicative reduction of index one. -/
-def supportsTamagawaOne (e : WeierstrassCurve ℤ) (p : ℕ) : Bool :=
-  decide (¬ (p : ℤ) ∣ e.Δ) ||
-    decide ((p : ℤ) ∣ e.Δ ∧ ¬ (p : ℤ) ^ 2 ∣ e.Δ ∧ ¬ (p : ℤ) ∣ e.c₄)
 
 /-- The finite support test implies that the intrinsic Tamagawa factor is one. -/
 theorem supportsTamagawaOne_correct (e : WeierstrassCurve ℤ) (p : ℕ)

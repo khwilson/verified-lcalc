@@ -5,11 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.PointMembership
 public import VerifiedLcalc.Certificate.PointAccessors
-public import Mathlib.GroupTheory.Torsion
-public import Mathlib.LinearAlgebra.LinearIndependent.Defs
-public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
 
 /-! # Point family and order witness structures -/
 

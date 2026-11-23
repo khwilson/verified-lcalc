@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.RingTheory.LocalRing.ResidueField.Ideal
+public import VerifiedLcalc.EllipticCurve.Tate.RationalLocalRing
 public import VerifiedLcalc.EllipticCurve.BadPrime
 public import VerifiedLcalc.EllipticCurve.GlobalMinimality
 public import VerifiedLcalc.EllipticCurve.Residue
@@ -16,10 +17,6 @@ integral invariants and to the node polynomial over `ZMod p`.
 namespace VerifiedLcalc.EllipticCurve
 open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum
 open WeierstrassCurve
-
-/-- The local ring at the rational prime, using the same localization as global minimality. -/
-abbrev RationalLocalRing (p : Nat) [Fact p.Prime] :=
-  Localization.AtPrime (rationalPlace p).asIdeal
 
 private noncomputable def residueFieldEquivZMod (p : ℕ) [Fact p.Prime] :
     IsLocalRing.ResidueField (RationalLocalRing p) ≃+* ZMod p := by

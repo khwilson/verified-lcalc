@@ -2,6 +2,7 @@ module
 
 public import VerifiedLcalc.Certification.WildCertification
 public import VerifiedLcalc.Certificate.LocalReductionSpecs
+public import VerifiedLcalc.Certificate.LocalInvariantSpecs
 public import VerifiedLcalc.EllipticCurve.Tate.Tamagawa
 public import VerifiedLcalc.EllipticCurve.Tate.Kodaira
 public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReduction
