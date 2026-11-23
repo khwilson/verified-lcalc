@@ -48,7 +48,7 @@ def CurvePrecisionClaim.ofEvidence {expected : NumericalRanks.Request}
     (gap : Rat) : CurvePrecisionClaim :=
   ⟨e.equation, expected.policy, artifact.numericalLowerBound, gap⟩
 
-/-- The precision claim records the equation, policy, derivative count and gap of the given evidence. -/
+/-- The precision claim records the supplied equation, policy, derivative count and gap. -/
 theorem CurvePrecisionClaim.ofEvidence_correct {expected : NumericalRanks.Request}
     {artifact : NumericalRanks.Artifact} (e : AssumedNumericalEvidence expected artifact)
     (gap : Rat) :
