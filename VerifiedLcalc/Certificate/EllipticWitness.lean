@@ -23,6 +23,7 @@ open EllipticCurve
 
 deriving instance Repr, DecidableEq for LocalReductionClaim
 deriving instance Repr, DecidableEq for IsogenyEdgeClaim
+deriving instance Repr, DecidableEq for DecimalEnclosureClaim
 deriving instance Repr, DecidableEq for EllipticWitness
 
 namespace EllipticWitness

@@ -54,6 +54,16 @@ structure EllipticWitness where
   abcQuality : Option AbcQualityClaim := none
   /-- Stored regulator value and any explicit error evidence. -/
   regulator : Option RegulatorClaim := none
+  /-- Reported full real period and optional absolute error radius. -/
+  realPeriod : Option DecimalEnclosureClaim := none
+  /-- Reported product of finite-place Tamagawa numbers. -/
+  tamagawaProduct : Option Nat := none
+  /-- Reported analytic BSD quotient and optional absolute error radius. -/
+  analyticSha : Option DecimalEnclosureClaim := none
+  /-- Reported rounded analytic BSD quotient. -/
+  sha : Option Nat := none
+  /-- Reported distinct prime divisors of the rounded analytic BSD quotient. -/
+  shaPrimes : Option (List Nat) := none
   /-- Whether the rational j-invariant belongs to the image of ℤ. -/
   jIntegral : Option Bool := none
   /-- Whether the curve has potential good reduction at every rational prime. -/

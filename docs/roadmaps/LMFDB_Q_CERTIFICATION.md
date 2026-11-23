@@ -275,7 +275,8 @@ Faltings heights.
 
 The `certify_ec` command checks a stored regulator decimal against the exact
 rank-zero value when an exact algebraic rank proof is supplied. Positive-rank
-regulator enclosures remain part of the height/evaluator work above.
+regulator enclosures remain part of the height/evaluator work above. A supplied
+`RealPeriodFact` already verifies an explicit full-period enclosure.
 
 **A3 · Analytic quotient and algebraic Sha.** Given A1–A2 and L2/M1 evidence,
 enclose the following quotient with a strictly positive denominator.
@@ -292,6 +293,14 @@ finiteness and cardinality, or state the certified primary component using a
 Selmer exact sequence and a complete descent. A rank agreement or rounded
 analytic quotient supplies neither. Accept a nontrivial analytic value and
 a component-level algebraic claim with independent proofs.
+
+The command accepts a proved Tamagawa product and a proved analytic quotient
+through `with_proofs`. `AnalyticShaFact.ofFactors` builds that quotient
+enclosure from the A1, A2, L2 and M1 evidence using rational interval
+multiplication and reciprocal bounds. The finite rounding and prime-support
+checks are executable. Automated production of the individual input bounds,
+including an archimedean evaluator and general finite-place Tamagawa
+computation, remains part of A2 and L2.
 
 ## Galois representations, torsion growth and p-adic data
 

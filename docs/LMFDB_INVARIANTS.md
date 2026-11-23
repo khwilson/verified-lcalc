@@ -32,9 +32,9 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | G2 specifies the field of definition and the full torsion subgroup after base change. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **38 of 85 distinct LMFDB column names** with the evidence
-specified below. Counting each name in its first table gives 21 in
-`ec_curvedata`, 3 additional names in `ec_classdata`, 6 in `ec_mwbsd`, and
+The command covers **43 of 85 distinct LMFDB column names** with the evidence
+specified below. Counting each name in its first table gives 23 in
+`ec_curvedata`, 3 additional names in `ec_classdata`, 9 in `ec_mwbsd`, and
 8 in `ec_localdata`. Shared names such as `class_size` count once. The
 Galois, p-adic, torsion-growth and Iwasawa tables add no checked names yet.
 Project-specific keys are excluded.
@@ -84,6 +84,10 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `num_int_pts` | `numIntegralPoints` | Exact cardinality theorem from supplied exhaustive `IntegralXSupport`; available at `certificate.algebraic.completeIntegralPoints` with finite-set completeness and `Finite` evidence. Without support it is unverified, but a count below the number of distinct checked points or seed-fiber solutions is rejected. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
 | `rank`, `rank_bounds` | `algebraicRank`, `algebraicRankBounds` | Verify supplied endpoints against a typed proof of bounds on the actual Mordell–Weil rank. A singleton proof gives exact rank. |
+| `real_period` | `realPeriod` | A supplied `RealPeriodFact` at `certificate.realPeriod` bounds the full minimal real period, including both real components when present. |
+| `tamagawa_product` | `tamagawaProduct` | A supplied `TamagawaProductFact` at `certificate.tamagawaProduct` proves the exact intrinsic product over all rational finite places. |
+| `sha_an` | `analyticSha` | A supplied or composed `AnalyticShaFact` at `certificate.analyticSha` encloses the analytic BSD quotient for an explicit modular realization, with exact analytic order and positive denominator. |
+| `sha`, `sha_primes` | `sha`, `shaPrimes` | `certificate.roundedAnalyticSha` checks that the quotient enclosure is strictly inside the positive integer's rounding cell and that any listed primes are distinct and exactly its prime support. |
 | `ngens` | `generatorCount` | Length of the checked `gens` list. A basis or spanning claim needs its own evidence. |
 | `torsion_generator_orders` | `torsionGeneratorOrders` | Project-specific list giving an exact additive order for each supplied torsion generator point. |
 | `torsion_structure` | `torsionStructure` | An additive equivalence onto the full rational torsion subgroup, for cyclic factors or two factors `[2, n]` with verified independence and a matching divisor. |
@@ -205,6 +209,20 @@ selected row's degree set. It compares a submitted matrix only with a
 proved LMFDB ordering. An edge alone leaves the class fields unverified.
 [LMFDB label ordering](https://www.lmfdb.org/knowledge/show/ec.q.lmfdb_label)
 
+### Real period, Tamagawa product, and analytic quotient
+
+Submit the Lean proof records using `with_proofs`. JSON decimal reports are
+parsed exactly and any explicit `real_period_evidence.error` or
+`sha_an_evidence.error` must match the radius proved in the attachment.
+If the raw radius is omitted, the certificate retains the attached radius.
+An attached quotient also checks any submitted `analytic_rank` against its
+proved order. Missing attachments leave the corresponding catalogue rows
+unverified. `AnalyticShaFact.ofFactors` composes a proved leading coefficient
+and exact torsion cardinality with period, regulator, and Tamagawa evidence
+using rational interval arithmetic and a strictly positive denominator lower
+endpoint. Rounding rejects intervals touching a half-integer boundary. The
+checked integer and prime support concern the analytic quotient.
+
 ## Remaining invariant groups
 
 These fields remain unverified metadata unless a check above independently
@@ -214,13 +232,13 @@ missing theorem.
 
 | Group / fields | Proof work still needed |
 | --- | --- |
-| Specific additive `kodaira_symbol`, intrinsic local epsilon factors, other `tamagawa_number` branches, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
+| Specific additive `kodaira_symbol`, intrinsic local epsilon factors, other `tamagawa_number` branches | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
 | Tighter torsion bounds and `intrinsic_torsion` | Construct tight bounds for the rational torsion group or prove the required torsion pairing statement. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Rank intervals can be supplied as Lean proofs and are checked against the actual rational point group; exact rank requires a singleton interval. `ngens` checks only the length of the supplied generator list, not that it is a basis. Integral-point counts can use supplied exhaustive support; deriving it automatically still needs a bound and complete search. |
 | `cm`, quadratic-twist fields | Actual endomorphism/twist statements and, for a minimal twist, the required minimality comparison. A j-value lookup alone is not a CM certificate. |
 | Modular `degree`, `manin_constant`, `optimality` | Statements about the modular parametrization, not the degree of an arbitrary isogeny. |
 | Heights, periods, regulator, Faltings data, special values, `szpiro_ratio` | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |
-| `sha`, `sha_an`, `sha_primes` | Cohomological/descent proofs and a precise analytic-vs-algebraic interpretation; no BSD axiom is authorized. |
+| Algebraic Sha | A separate cohomological/descent proof of finiteness, cardinality, or a primary component. |
 | Galois-image, adelic, nonmaximal-prime, Serre, Iwasawa, and torsion-growth data | The relevant representations, fields, group images, and completeness proofs. |
 | Labels, ordering/index fields, hashes | Catalogue/provenance metadata; not mathematical identity certificates. |
 

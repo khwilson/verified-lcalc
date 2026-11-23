@@ -185,6 +185,16 @@ to the relevant `IsTateTerminal` and residue-polynomial hypotheses.
 [Terminal comparison](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Local.lean#L144-L162)
 · [Split and nonsplit indices](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/LocalIndex.lean#L469-L486)
 
+The A3 certificate uses the product indexed by `HeightOneSpectrum ℤ`,
+matching TauCeti's rational BSD quotient. For reuse across local arithmetic
+over different presentations of the rational integers, a useful downstream
+lemma would transport `tamagawaNumberAt` under a valuation-preserving
+`ℚ`-algebra equivalence of completions. Applied to corresponding places of
+`ℤ` and `𝓞 ℚ`, this would identify the two finite products and let the
+factorization checker reuse already verified local values. The good and
+index-one proofs now apply directly to either base ring from the normalized
+discriminant and c₄ valuations.
+
 ## TC-11 — explicit zero-y Vélu quotient equation
 
 Status: proved locally in
@@ -324,3 +334,17 @@ At the pinned TauCeti revision the verifier uses
 [TauCeti change of variables](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Isogeny/VariableChange.lean)
 · [TauCeti reduced minimal models](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/Reduced.lean)
 · [Mathlib finite set maximum](https://github.com/leanprover-community/mathlib4/blob/31ce06eaadf4a200c0e1407c5f10953cf606b8f8/Mathlib/Data/Finset/Max.lean)
+
+## TC-16 — certified full real period evaluation
+
+Pinned TauCeti's `realPeriod_eq_two_mul_pi_div_agm_of_three_real_roots`
+and `realPeriod_eq_two_mul_pi_div_agm_of_one_real_root` give exact formulas
+once the division polynomial's real roots and their order are established.
+For a globally minimal integral model over ℚ, build a computable enclosure
+from rational isolating intervals for the nonsingular division polynomial.
+Both formulas require verified square-root bounds and a positive AGM
+denominator. Repeat the AGM interval updates with rational rounding until
+the target radius is proved. The 17.a2 fixture already uses exact roots and
+a proved AGM enclosure for its supplied decimal.
+
+[Period formulas](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/Analysis/SpecialFunctions/EllipticIntegral/RealPeriod.lean)
