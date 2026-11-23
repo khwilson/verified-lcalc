@@ -21,8 +21,9 @@ example : Geometry37.minimum_quadratic_twist_fact.discriminant = 1 :=
 
 example (d : ℚ) (h : ((Geometry37.curve.baseChange ℚ).quadraticTwistOf 0 (-d)).IsElliptic) :
     letI := h
-    37 ≤ Ideal.absNorm (((Geometry37.curve.baseChange ℚ).quadraticTwistOf 0 (-d)).algorithmicConductor
-      ℤ) := minimum37 d h
+    37 ≤ Ideal.absNorm
+      (((Geometry37.curve.baseChange ℚ).quadraticTwistOf 0 (-d)).algorithmicConductor ℤ) :=
+  minimum37 d h
 
 example : Geometry37.certificate.modifiedSzpiroRatio = some Geometry37.szpiro_ratio_fact := rfl
 

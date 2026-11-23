@@ -33,7 +33,8 @@ theorem conductor37 : Ideal.absNorm ((curve37a1.baseChange ℚ).algorithmicCondu
 still has denominator divisible by 37. -/
 theorem minimum37 (d : ℚ) (h : ((curve37a1.baseChange ℚ).quadraticTwistOf 0 (-d)).IsElliptic) :
     letI := h
-    37 ≤ Ideal.absNorm (((curve37a1.baseChange ℚ).quadraticTwistOf 0 (-d)).algorithmicConductor ℤ) := by
+    37 ≤ Ideal.absNorm
+      (((curve37a1.baseChange ℚ).quadraticTwistOf 0 (-d)).algorithmicConductor ℤ) := by
   let := h
   apply Nat.le_of_dvd (Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr
     (algorithmicConductor_ne_bot ℤ _)))
@@ -88,7 +89,8 @@ class GeometryHypotheses (W : outParam (WeierstrassCurve ℚ)) [W.IsElliptic] : 
       other.equation = twist37.equation ∧ other.discriminant = twist37.discriminant
 
 /-- Transport the supplied endomorphism ring proof to 37.a1. -/
-theorem GeometryHypotheses.ofEquation {W : WeierstrassCurve ℚ} [W.IsElliptic] (h : GeometryHypotheses W) :
+theorem GeometryHypotheses.ofEquation {W : WeierstrassCurve ℚ} [W.IsElliptic]
+    (h : GeometryHypotheses W) :
     Nonempty (ℤ ≃+* (curve37a1.baseChange ℚ).GeometricEnd) := by
   obtain ⟨heq, hEnd, _⟩ := h
   subst W
