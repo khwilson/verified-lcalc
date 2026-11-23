@@ -27,11 +27,16 @@ example (d : ℚ) (h : ((Geometry37.curve.baseChange ℚ).quadraticTwistOf 0 (-d
 example : Geometry37.certificate.modifiedSzpiroRatio = some Geometry37.szpiro_ratio_fact := rfl
 
 example : |Real.log 110592 / Real.log 37 - (3.216246758769211 : ℝ)| ≤ (0.00000000000001 : ℝ) := by
-  have := (Geometry37.certificate.modifiedSzpiroRatio.get (by rfl)).within_error
-  change |Real.log (110592 : ℕ) / Real.log (37 : ℕ) -
-    ((3.216246758769211 : ℚ) : ℝ)| ≤ ((0.00000000000001 : ℚ) : ℝ) at this
-  norm_num at this ⊢
-  exact this
+  let fact := Geometry37.certificate.modifiedSzpiroRatio.get (by rfl)
+  have h := fact.within_error
+  have hnum : max (Geometry37.curve.c₄.natAbs ^ 3) (Geometry37.curve.c₆.natAbs ^ 2) =
+      110592 := by decide +kernel
+  have hconductor : fact.conductor = 37 := by decide +kernel
+  have hreported : fact.reported = 3.216246758769211 := by decide +kernel
+  have herror : fact.error = 0.00000000000001 := by decide +kernel
+  rw [hnum, hconductor, hreported, herror] at h
+  norm_num at h ⊢
+  exact h
 
 certify_ec Reports from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"cm":0,"min_quad_twist_ainvs":[0,0,1,-1,0],
@@ -91,7 +96,7 @@ example (other : MinimumQuadraticTwistFacts Geometry37WithCM.curve) :
     WeierstrassCurve.IsReducedMinimal (other.equation.baseChange ℚ) →
       other.equation = Geometry37WithCM.claimed_min_quad_twist_ainvs ∧
         other.discriminant = Geometry37WithCM.claimed_min_quad_twist_disc := by
-  intro reduced
+  intro _ reduced
   let evidence := Geometry37WithCM.certificate.minimumQuadraticTwist.get (by rfl)
   have hUnique := (evidence.uniqueMinimum.get (by rfl)).unique other reduced
   exact ⟨hUnique.1.trans Geometry37WithCM.min_quad_twist_ainvs,
