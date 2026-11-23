@@ -7,7 +7,7 @@ See LICENSES/PARI-GPL-2.0-or-later.txt and docs/WILD_ARITHMETIC.md.
 -/
 module
 public import VerifiedLcalc.EllipticCurve.Tate.WildTateCore
-public import VerifiedLcalc.Certificates.Transcripts
+public import VerifiedLcalc.Certificate.Support.Transcripts
 public import Mathlib.NumberTheory.LegendreSymbol.ZModChar
 
 /-! # Wild local root-number transcript arithmetic -/

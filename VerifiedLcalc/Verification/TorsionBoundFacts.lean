@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificates.TorsionFacts
+public import VerifiedLcalc.Certificate.Support.Torsion
 public import VerifiedLcalc.EllipticCurve.TorsionBound
 
 /-! # Translate the finite torsion check into mathematical certificate data -/

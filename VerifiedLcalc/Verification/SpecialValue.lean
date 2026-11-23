@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certificates.SpecialValue
+public import VerifiedLcalc.Certificate.Support.SpecialValue
 public import VerifiedLcalc.Certificate.AnalyticFacts
 public import VerifiedLcalc.NumericalRankSoundness
 

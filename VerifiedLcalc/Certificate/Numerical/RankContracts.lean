@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.NumericalRankData
-public import VerifiedLcalc.Certificates.Enclosures
+public import VerifiedLcalc.Certificate.Numerical.Intervals
 
 /-! Mathematical cutoff acceptance predicate for numerical observations. -/
 

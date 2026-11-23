@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificates.CurveWitness
+public import VerifiedLcalc.Certificate.Support.CurveProofs
 public import Mathlib.RingTheory.Localization.Rat
 public import TauCeti.AlgebraicGeometry.EllipticCurve.AbcQuality
 public import VerifiedLcalc.Certificate.Witnesses.RationalInvariants

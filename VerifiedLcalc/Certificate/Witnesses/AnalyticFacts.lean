@@ -8,8 +8,8 @@ module
 public import VerifiedLcalc.Certificate.Witnesses.Enclosures
 public import VerifiedLcalc.Certificate.Witnesses.NumericalData
 public import VerifiedLcalc.Certificate.Witnesses.SpecialValue
-public import VerifiedLcalc.Certificates.NumericalContracts
-public import VerifiedLcalc.Certificates.AnalyticEnclosures
+public import VerifiedLcalc.Certificate.Numerical.Payloads
+public import VerifiedLcalc.Certificate.Analytic.Enclosures
 public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealization
 public import VerifiedLcalc.EllipticCurve.Modularity.Realization
 public import VerifiedLcalc.Certificate.Witnesses.CurvePrecisionClaim

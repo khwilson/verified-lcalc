@@ -1,6 +1,6 @@
 module
-public import VerifiedLcalc.Certification.CentralCertification
-public import VerifiedLcalc.Certification.NegativeSign
+public import VerifiedLcalc.Verification.CentralCertification
+public import VerifiedLcalc.Verification.NegativeSign
 public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
 @[expose] public section
 namespace VerifiedLcalc.Certification

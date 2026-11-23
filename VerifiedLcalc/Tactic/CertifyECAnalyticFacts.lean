@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.AnalyticFacts
-public import VerifiedLcalc.Certification.SpecialValue
+public import VerifiedLcalc.Verification.SpecialValue
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public meta import Lean
 

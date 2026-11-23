@@ -1,6 +1,6 @@
 module
-public import VerifiedLcalc.Certification.DerivativeEvaluator
-public import VerifiedLcalc.Certification.WildCertification
+public import VerifiedLcalc.Verification.DerivativeEvaluator
+public import VerifiedLcalc.Verification.WildCertification
 @[expose] public section
 namespace VerifiedLcalc.Certification
 open Modularity EllipticCurve

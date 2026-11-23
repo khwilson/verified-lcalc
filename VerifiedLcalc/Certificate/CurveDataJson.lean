@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certification.CurveData
+public import VerifiedLcalc.Verification.CurveData
 public import VerifiedLcalc.Certificate.Json
 public import Mathlib.Data.Int.Sqrt
 

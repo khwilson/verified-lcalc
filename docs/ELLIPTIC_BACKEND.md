@@ -49,7 +49,7 @@ and uniqueness. `Euler.lean` proves that the generated series is the inverse of
 `1 - a*T + q*T^2`, including linear factors when q=0. This does not yet identify
 the whole computed coefficient sequence with mathlib's global `LFunction`.
 
-`Certificates/Curve11Arithmetic.lean` is an actual elliptic-curve arithmetic
+`tests/VerifiedLcalcTests/Fixtures/Curve11Arithmetic.lean` is an actual elliptic-curve arithmetic
 certificate: the 11.a2 model has five F₂-points, trace -2, and the computed local
 series inverts its good Euler polynomial. It imports kernel-checked computation
 equations and the universal arithmetic soundness theorems. It makes no analytic

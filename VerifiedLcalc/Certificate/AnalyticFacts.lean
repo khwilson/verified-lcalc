@@ -5,10 +5,10 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certification.GeneralCertification
-public import VerifiedLcalc.Certification.DerivativeEvaluator
-public import VerifiedLcalc.Certification.Precision
-public import VerifiedLcalc.Certificates.SpecialValue
+public import VerifiedLcalc.Verification.GeneralCertification
+public import VerifiedLcalc.Verification.DerivativeEvaluator
+public import VerifiedLcalc.Verification.Precision
+public import VerifiedLcalc.Certificate.Support.SpecialValue
 public import VerifiedLcalc.Certificate.Witnesses.AnalyticFacts
 
 /-!

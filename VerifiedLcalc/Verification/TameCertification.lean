@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certification.CentralCertification
+public import VerifiedLcalc.Verification.CentralCertification
 public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
 
 @[expose] public section

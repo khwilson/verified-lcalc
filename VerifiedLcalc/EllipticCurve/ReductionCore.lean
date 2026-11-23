@@ -1,7 +1,7 @@
 module
 
 public import VerifiedLcalc.EllipticCurve.CoefficientCore
-public import VerifiedLcalc.Certificates.Transcripts
+public import VerifiedLcalc.Certificate.Support.Transcripts
 
 /-! # Reduction classification from checked transcripts -/
 

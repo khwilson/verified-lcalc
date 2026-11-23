@@ -7,7 +7,7 @@ module
 
 public import VerifiedLcalc.EllipticCurve.Modularity.RealizationIndependence
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
-public import VerifiedLcalc.Certification.CentralEvaluator
+public import VerifiedLcalc.Verification.CentralEvaluator
 public import VerifiedLcalc.EllipticCurve.MinimalArithmetic
 public import VerifiedLcalc.Certificate.Witnesses.ArithmeticCompatibility
 

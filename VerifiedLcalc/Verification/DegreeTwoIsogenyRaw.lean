@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certification.DegreeTwoIsogeny
+public import VerifiedLcalc.Verification.DegreeTwoIsogeny
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring

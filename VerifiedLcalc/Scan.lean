@@ -7,7 +7,7 @@ module
 
 public import Std
 public import Init.Data.Rat
-public import VerifiedLcalc.Certificates.Scan
+public import VerifiedLcalc.Certificate.Witnesses.Scan
 
 /-! A conservative rank search on exact rational rectangles. No floating point
 or tolerance test is used. A rectangle containing zero is inconclusive unless

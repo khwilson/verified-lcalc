@@ -100,7 +100,7 @@ The default `VerifiedLcalc` import, runtime executables, original certificates
 and `Audit.lean` do not import the axiom module. Opt in explicitly:
 
 ```
-lake build VerifiedLcalc.Certification.NumericalCertification VerifiedLcalcTests.Fixtures.AssumedCurve11 VerifiedLcalcTests.Fixtures.AssumedCurve37
+lake build VerifiedLcalc.Verification.NumericalCertification VerifiedLcalcTests.Fixtures.AssumedCurve11 VerifiedLcalcTests.Fixtures.AssumedCurve37
 lake env lean AuditAssumptions.lean
 lake env lean tests/consumers/AssumedCurve11.lean
 lake env lean tests/consumers/AssumedCurve37.lean

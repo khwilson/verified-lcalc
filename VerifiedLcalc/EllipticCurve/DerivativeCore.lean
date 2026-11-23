@@ -1,7 +1,7 @@
 module
 public import VerifiedLcalc.EllipticCurve.CentralCore
 public import VerifiedLcalc.EllipticCurve.DerivativeDefinitions
-public import VerifiedLcalc.Certificates.NumericalContracts
+public import VerifiedLcalc.Certificate.Numerical.Payloads
 
 /-! # First-derivative numerical evaluator -/
 

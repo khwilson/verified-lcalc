@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certification.DegreeTwoIsogenyRaw
+public import VerifiedLcalc.Verification.DegreeTwoIsogenyRaw
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public meta import Lean
 

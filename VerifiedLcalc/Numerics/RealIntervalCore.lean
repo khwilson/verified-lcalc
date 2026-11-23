@@ -1,6 +1,6 @@
 module
 public import VerifiedLcalc.Numerics.RationalExpCore
-public import VerifiedLcalc.Certificates.Enclosures
+public import VerifiedLcalc.Certificate.Numerical.Intervals
 
 /-! # Exact rational interval operations -/
 

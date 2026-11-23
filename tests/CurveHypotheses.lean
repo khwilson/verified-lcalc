@@ -1,4 +1,4 @@
-import VerifiedLcalc.Certification.Precision
+import VerifiedLcalc.Verification.Precision
 import VerifiedLcalcTests.Fixtures.NumericalQuartic
 import Lean
 

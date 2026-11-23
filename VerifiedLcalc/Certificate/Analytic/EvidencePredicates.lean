@@ -5,8 +5,8 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificates.AnalyticEnclosures
-public import VerifiedLcalc.Certificates.NumericalRanks
+public import VerifiedLcalc.Certificate.Analytic.Enclosures
+public import VerifiedLcalc.Certificate.Numerical.RankData
 public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 public import Mathlib.Analysis.Complex.Basic
 

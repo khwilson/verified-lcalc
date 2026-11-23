@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate
-public import VerifiedLcalc.Certificates.NumericalRanks
+public import VerifiedLcalc.Certificate.Numerical.RankData
 public import VerifiedLcalc.Precision
 
 /-! # Exact checks for numerical rank observations -/

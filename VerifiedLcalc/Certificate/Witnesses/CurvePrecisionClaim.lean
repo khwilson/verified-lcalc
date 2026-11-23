@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.PrecisionPolicy
-public import VerifiedLcalc.Certificates.WeierstrassInstances
+public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
 
 /-! Identity data for a curve-specific numerical-to-exact precision claim. -/
 

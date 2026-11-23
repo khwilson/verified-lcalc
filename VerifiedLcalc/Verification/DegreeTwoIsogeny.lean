@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificates.DegreeTwoIsogeny
+public import VerifiedLcalc.Certificate.Support.Isogenies
 public import Mathlib.GroupTheory.SpecificGroups.Cyclic.Subgroup
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.Velu.Isogeny
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.VariableChange
