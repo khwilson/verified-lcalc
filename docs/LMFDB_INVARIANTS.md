@@ -33,7 +33,7 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
 The command covers **47 of 85 distinct LMFDB column names** with the evidence
-specified below. Counting each name in its first table gives 23 in
+specified below. Counting each name in its first table gives 27 in
 `ec_curvedata`, 3 additional names in `ec_classdata`, 9 in `ec_mwbsd`, and
 8 in `ec_localdata`. Shared names such as `class_size` count once. The
 Galois, p-adic, torsion-growth and Iwasawa tables add no checked names yet.
