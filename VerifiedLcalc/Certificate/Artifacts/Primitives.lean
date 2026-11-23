@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
+public import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
 
 /-! Non-record exact request discriminants and normalization data. -/
 

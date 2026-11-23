@@ -6,8 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.Enclosures
-public import Mathlib.Order.Interval.Set.Defs
-public import Mathlib.Data.Rat.Cast.Order
+import Mathlib.Data.Rat.Cast.Order
 public import Mathlib.Basic.Real.Basic
 
 /-! Primitive exact enclosures stored by certificate payloads. -/

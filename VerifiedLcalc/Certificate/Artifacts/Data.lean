@@ -9,6 +9,7 @@ public import VerifiedLcalc.Certificate.Artifacts.Primitives
 public import VerifiedLcalc.Certificate.Witnesses.ArtifactData
 public import VerifiedLcalc.Certificate.Artifacts.Contracts
 public import VerifiedLcalc.Certificate.Witnesses.ArtifactChecked
+public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
 
 /-! Compatibility imports and instances for exact artifact records. -/
 
