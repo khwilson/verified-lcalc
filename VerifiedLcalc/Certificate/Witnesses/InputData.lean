@@ -75,7 +75,6 @@ structure TorsionGrowthFieldClaim where
   coefficients : List ℤ
   /-- The claimed absolute field degree. -/
   degree : ℕ
-  deriving Repr, DecidableEq
 
 /-- The decimal heights from `ec_mwbsd`, ordered by the accompanying `gens`. -/
 structure CanonicalHeightsClaim where
@@ -83,7 +82,6 @@ structure CanonicalHeightsClaim where
   reported : List ℚ
   /-- Optional absolute error radii in the same order. -/
   errors : Option (List ℚ) := none
-  deriving Repr, DecidableEq
 
 /-- A stored regulator decimal and optional explicit absolute-error evidence. -/
 structure RegulatorClaim where
