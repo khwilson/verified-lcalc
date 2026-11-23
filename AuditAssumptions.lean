@@ -5,6 +5,8 @@ import VerifiedLcalcTests.Fixtures.AssumedCurve11
 import VerifiedLcalc.Verification.NumericalCertification
 import VerifiedLcalcTests.Fixtures.AssumedCurve37
 
+set_option linter.hashCommand false
+
 -- This audit is opt-in. Its named modularity axiom is an expected dependency.
 -- The default Audit.lean and default certificate modules do not import it.
 #print axioms VerifiedLcalc.Assumptions.ellipticModularity

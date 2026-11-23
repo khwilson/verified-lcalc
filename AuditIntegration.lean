@@ -1,6 +1,8 @@
 import VerifiedLcalc.EllipticCurve.Modularity.Prefix
 import VerifiedLcalc.Verification.CentralEvaluator
 
+set_option linter.hashCommand false
+
 -- These implications accept mathematical witnesses as arguments. They must
 -- not depend on ellipticModularity, sorryAx, or native reduction axioms.
 
