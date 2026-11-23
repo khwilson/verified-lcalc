@@ -6,6 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic
+public import VerifiedLcalc.Certificate.Witnesses.IntegralXSupport
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
 
 /-! # Integral-point support and completeness data -/
@@ -13,13 +14,6 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
 @[expose] public section
 
 namespace VerifiedLcalc
-
-/-- A finite list containing the abscissa of every affine integral solution. -/
-structure IntegralXSupport (curve : WeierstrassCurve ℤ) where
-  /-- The supplied abscissae. -/
-  xs : List ℤ
-  /-- Every affine integral solution has its abscissa on the list. -/
-  covers : ∀ x y : ℤ, curve.toAffine.Equation x y → x ∈ xs
 
 /-- Complete integral coordinates and their exact affine integral-point count. -/
 structure CompleteIntegralPointFacts (curve : WeierstrassCurve ℤ)

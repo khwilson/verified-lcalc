@@ -6,6 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.Regulator.Basic
+public import VerifiedLcalc.Certificate.Witnesses.RegulatorClaim
 public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenerated
 
 /-! # Regulator claim and enclosure data -/
@@ -13,13 +14,6 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenera
 @[expose] public section
 
 namespace VerifiedLcalc
-
-/-- A stored regulator decimal and optional explicit absolute-error evidence. -/
-structure RegulatorClaim where
-  /-- Exact rational interpretation of the stored decimal. -/
-  reported : Rat
-  /-- Explicit absolute error bound; absence means an exact-value claim. -/
-  error : Option Rat := none
 
 /-- A mathematically proved enclosure for an elliptic-curve regulator. -/
 structure RegulatorFacts (W : WeierstrassCurve ℚ) [W.toAffine.IsElliptic] where

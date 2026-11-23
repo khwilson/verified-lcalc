@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenerated
+public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point
 
 /-! # Algebraic rank interval data -/
 
@@ -14,8 +14,7 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenera
 namespace VerifiedLcalc.EllipticCurve
 
 /-- Checked lower and upper bounds on the Mordell–Weil rank of a nonsingular
-rational Weierstrass curve. TauCeti supplies finite generation from the
-Mordell–Weil theorem, so the natural-valued `finrank` is the actual rank. -/
+rational Weierstrass curve. -/
 structure AlgebraicRankBounds (W : WeierstrassCurve ℚ) [W.toAffine.IsElliptic] where
   /-- The claimed lower endpoint. -/
   lower : ℕ
