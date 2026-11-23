@@ -9,7 +9,16 @@ public import VerifiedLcalc.Certificate.Witnesses.InputData
 public import VerifiedLcalc.Certificate.Artifacts.Primitives
 public import VerifiedLcalc.Certificate.Numerical.Precision
 
-/-! # Numerical requests and recorded derivative boxes -/
+/-! # Numerical requests and recorded derivative boxes
+
+* `Artifacts.Settings` records precision, term limit, and maximum derivative order.
+  `Artifacts.BuildIdentity` identifies the toolchain, dependencies, and producer.
+* `Artifacts.Request` identifies the subject and normalization, settings, build, and format.
+  `Artifacts.Artifact` records its proposed exact order and derivative boxes for later checking.
+* `NumericalRanks.Request` adds a cutoff policy to a computation request.
+  `NumericalRanks.Artifact` records the derivative boxes and the proposed length of the
+  initial segment within the cutoff.
+-/
 
 @[expose] public section
 

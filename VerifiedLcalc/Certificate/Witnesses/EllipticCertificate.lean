@@ -10,7 +10,14 @@ public import VerifiedLcalc.Certificate.Witnesses.Analytic
 public import VerifiedLcalc.Certificate.Witnesses.FinitePrimes
 public import VerifiedLcalc.Certificate.Witnesses.Invariants
 
-/-! # Proof attachments and checked elliptic-curve certificates -/
+/-! # Proof attachments and checked elliptic-curve certificates
+
+* `IntegralCurveProofs` extends the equation invariant proofs with optional Mordell–Weil rank
+  bounds over ℚ and exhaustive integral abscissa support for the given equation.
+* `EllipticCertificate` is the checked result indexed by the supplied integral equation and
+  exported as `Name.certificate`. It carries nonsingularity, equation and rational invariants,
+  algebraic, arithmetic, analytic and torsion facts, and an optional directed isogeny.
+-/
 
 @[expose] public section
 

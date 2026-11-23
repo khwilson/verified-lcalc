@@ -10,7 +10,19 @@ public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
 public import TauCeti.AlgebraicGeometry.EllipticCurve.AbcQuality
 public import Mathlib.RingTheory.Localization.Rat
 
-/-! # Global invariants of an elliptic curve -/
+/-! # Global invariants of an elliptic curve
+
+* `DiscriminantWitness` packages an equation with its exact discriminant.
+  `EllipticProofs` provides optional proofs of discriminant, b-invariants and c-invariants for
+  an indexed equation over a commutative ring.
+* `RationalInvariantFacts` records discriminant sign, rational j-invariant and its
+  integrality, and abc quality. `AbcQualityFacts` supplies a factorization and quality
+  enclosure for j distinct from 0 and 1728.
+* `ModularArithmeticFacts` records conductor, root number, and conductor exponents at supplied
+  primes, conditional on an explicit arithmetic modular realization.
+  `Certification.ArithmeticCompatibility` pairs one realization with its conductor and
+  root number equalities.
+-/
 
 @[expose] public section
 

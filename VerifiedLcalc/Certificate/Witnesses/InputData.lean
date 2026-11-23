@@ -7,7 +7,22 @@ module
 
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic
 
-/-! # Shared input records for elliptic-curve certificates -/
+/-! # Shared input records for elliptic-curve certificates
+
+* `AbcQualityClaim`, `IsogenyEdgeClaim`, and `RegulatorClaim` describe submitted abc
+  approximations, directed isogeny degrees, and regulator values. `IntegralXSupport` proves
+  coverage of all integral abscissae, and `AffineMembership` proves the listed coordinates
+  satisfy the equation. `TorsionBoundWitness` proposes two good primes and a point-count gcd.
+* `LocalReductionClaim` holds optional entries for a single prime.
+  `EllipticCurve.MinimalityWitness` supplies discriminant factors,
+  `EllipticCurve.TateWitness` supplies a local Tate transcript, and `EllipticCurve.WildData`
+  bundles the optional transcripts at 2 and 3.
+* `Box` records a rational rectangle, `PrecisionPolicy` fixes binary precision, and
+  `SpecialLValueClaim` reports a Taylor leading coefficient and absolute error radius.
+  `EllipticCurve.CentralResult` and `EllipticCurve.DerivativeResult` carry the finite central
+  and first-derivative evaluator outputs. `Assumptions.CurvePrecisionClaim` specifies
+  the curve, cutoff policy, derivative prefix, and proposed nonzero gap for an exact upgrade.
+-/
 
 @[expose] public section
 

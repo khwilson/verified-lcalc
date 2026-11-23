@@ -7,7 +7,12 @@ module
 
 public import VerifiedLcalc.Certificate.Witnesses.InputData
 
-/-! # The input record for certify_ec -/
+/-! # The input record for certify_ec
+
+`EllipticWitness` is the common submission record for Lean and JSON inputs. It contains the
+integral Weierstrass equation and optional claims and finite witnesses for the verifier.
+An absent list omits a check, while a submitted empty list asks the verifier to check that list.
+-/
 
 @[expose] public section
 

@@ -17,7 +17,26 @@ public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
 public import Mathlib.Analysis.Analytic.Order
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
-/-! # L-values, derivatives and analytic rank -/
+/-! # L-values, derivatives and analytic rank
+
+* `VerifiedLcalc.Certificate` certifies a finite scan of given boxes.
+  `AnalyticCertificate` also proves the exact analytic order for the specified function
+  and center. `SpecialLValueFacts` bounds the error in a reported Taylor leading coefficient
+  for any arithmetic modular realization of the given curve.
+* `EllipticCurve.CentralSeriesEvidence` gives the convergent split Mellin series, its finite
+  sum, and a summand bound used to enclose the central value.
+* `Artifacts.Checked` certifies the finite exact-rank artifact contract.
+  `NumericalRanks.Checked` certifies the finite cutoff contract. `Artifacts.AnalyticEvidence`
+  and `NumericalRanks.Evidence` supply the function, analyticity, and actual derivative
+  enclosures for their respective artifacts.
+* `CentralCurveEnclosure` and `DerivativeCurveEnclosure` bind the central and scaled
+  first-derivative bounds to the real parts of the corresponding values for any explicit
+  arithmetic modular realization. `CentralNumericalFact` and `DerivativeNumericalFact`
+  retain finite payload checks, zero exclusion, and optional actual containment.
+* `ConditionalAnalyticRank` gives the exact order at 1 for any explicit arithmetic modular
+  realization. `CurvePrecisionFact` gives a checked derivative prefix within a cutoff for a
+  fixed realization. `AnalyticFacts` collects optional payloads, rank, and special values.
+-/
 
 @[expose] public section
 
