@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certification.GeneralCertification
+public import VerifiedLcalc.Verification.GeneralCertification
 public import VerifiedLcalcTests.Fixtures.AssumedCurve37
 public import VerifiedLcalc.EllipticCurve.SemistableArithmetic
 

@@ -5,24 +5,24 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificates.DegreeTwoIsogeny
-public import VerifiedLcalc.Certificates.IntegralPointCount
-public import VerifiedLcalc.Certificates.TorsionFacts
-public import VerifiedLcalc.Certificates.AlgebraicRank
-public import VerifiedLcalc.Certificates.Regulator
-public import VerifiedLcalc.Certificates.Enclosures
-public import VerifiedLcalc.Certificates.PrecisionPolicy
-public import VerifiedLcalc.Certificates.Transcripts
-public import VerifiedLcalc.Certificates.NumericalData
-public import VerifiedLcalc.Certificates.NumericalContracts
-public import VerifiedLcalc.Certificates.Scan
-public import VerifiedLcalc.Certificates.AnalyticEnclosures
-public import VerifiedLcalc.Certificates.AnalyticRank
-public import VerifiedLcalc.Certificates.Artifacts
-public import VerifiedLcalc.Certificates.NumericalRanks
-public import VerifiedLcalc.Certificates.AnalyticEvidence
-public import VerifiedLcalc.Certificates.CurveWitness
-public import VerifiedLcalc.Certificates.RationalInvariants
-public import VerifiedLcalc.Certificates.PointFacts
+public import VerifiedLcalc.Certificate.Support.Isogenies
+public import VerifiedLcalc.Certificate.Witnesses.IntegralPoints
+public import VerifiedLcalc.Certificate.Support.Torsion
+public import VerifiedLcalc.Certificate.Support.AlgebraicRank
+public import VerifiedLcalc.Certificate.Support.Regulator
+public import VerifiedLcalc.Certificate.Numerical.Intervals
+public import VerifiedLcalc.Certificate.Numerical.Precision
+public import VerifiedLcalc.Certificate.Support.Transcripts
+public import VerifiedLcalc.Certificate.Numerical.Outputs
+public import VerifiedLcalc.Certificate.Numerical.Payloads
+public import VerifiedLcalc.Certificate.Witnesses.Scan
+public import VerifiedLcalc.Certificate.Analytic.Enclosures
+public import VerifiedLcalc.Certificate.Witnesses.AnalyticRank
+public import VerifiedLcalc.Certificate.Artifacts.Data
+public import VerifiedLcalc.Certificate.Numerical.RankData
+public import VerifiedLcalc.Certificate.Witnesses.AnalyticEvidence
+public import VerifiedLcalc.Certificate.Support.CurveProofs
+public import VerifiedLcalc.Certificate.Witnesses.RationalInvariants
+public import VerifiedLcalc.Certificate.Support.Points
 
 /-! # Mathematical certificate contracts -/

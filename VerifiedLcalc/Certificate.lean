@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Scan
-public import VerifiedLcalc.Certificates.Artifacts
+public import VerifiedLcalc.Certificate.Artifacts.Data
 
 /-! # Structural checks for numerical certificate artifacts -/
 

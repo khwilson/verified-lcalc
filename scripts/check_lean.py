@@ -60,7 +60,7 @@ def main() -> None:
                 "CertifiedCurves",
                 "VerifiedLcalc.Certificates",
                 "VerifiedLcalcTests",
-                "VerifiedLcalc.Certification.Precision",
+                "VerifiedLcalc.Verification.Precision",
                 "VerifiedLcalcTests.Fixtures.TwoFactorTorsion",
             ]
         )

@@ -15,7 +15,7 @@ strict margin between the numerical cutoff and that gap.
 
 Canonical modular witnesses and analytic proofs live in
 `EllipticCurve/Modularity/`. Certification and the conditional precision-upgrade
-proofs live in `Certification/`. They must not be presented as assumptions.
+proofs live in `Verification/`. They must not be presented as assumptions.
 
 Prefer conditional theorems taking the precision hypothesis as a parameter.
 A downstream project choosing to postulate an instance must put that named

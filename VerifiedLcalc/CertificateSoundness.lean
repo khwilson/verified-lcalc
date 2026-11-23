@@ -7,7 +7,7 @@ module
 
 public import VerifiedLcalc.Certificate
 public import VerifiedLcalc.Analytic
-public import VerifiedLcalc.Certificates.AnalyticEvidence
+public import VerifiedLcalc.Certificate.Witnesses.AnalyticEvidence
 
 /-! Soundness theorems for finite analytic artifacts. -/
 

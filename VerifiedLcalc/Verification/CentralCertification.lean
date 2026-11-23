@@ -4,7 +4,7 @@ public import VerifiedLcalc.EllipticCurve.Modularity.Prefix
 public import VerifiedLcalc.EllipticCurve.SemistableArithmetic
 public import VerifiedLcalc.EllipticCurve.Tate.AdditiveArithmetic
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
-public import VerifiedLcalc.Certification.CentralEvaluator
+public import VerifiedLcalc.Verification.CentralEvaluator
 
 @[expose] public section
 namespace VerifiedLcalc.Certification

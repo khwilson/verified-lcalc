@@ -7,9 +7,9 @@ module
 
 public import VerifiedLcalc.Certificate.Witnesses.Enclosures
 public import VerifiedLcalc.Certificate.Witnesses.PrecisionPolicy
-public import VerifiedLcalc.Certificates.PrecisionPolicy
-public import VerifiedLcalc.Certificates.ArtifactPrimitives
-public import VerifiedLcalc.Certificates.WeierstrassInstances
+public import VerifiedLcalc.Certificate.Numerical.Precision
+public import VerifiedLcalc.Certificate.Artifacts.Primitives
+public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
 
 /-! Raw exact request and artifact records. -/
 

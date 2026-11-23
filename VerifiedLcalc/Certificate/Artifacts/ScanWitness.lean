@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificates.Enclosures
+public import VerifiedLcalc.Certificate.Numerical.Intervals
 
 /-! Finite mathematical witness predicate for ordered derivative boxes. -/
 

@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certificates.WeierstrassInstances
+public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
 public import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCountOdd
 public import Mathlib.Data.ZMod.Basic
 public import Mathlib.Data.Nat.Prime.Defs

@@ -1,7 +1,7 @@
 module
 
 public import VerifiedLcalc.Assumptions.Precision
-public import VerifiedLcalc.Certification.NumericalCertification
+public import VerifiedLcalc.Verification.NumericalCertification
 
 @[expose] public section
 open VerifiedLcalc.Certification

@@ -6,8 +6,8 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.NumericalRankData
-public import VerifiedLcalc.Certificates.Artifacts
-public import VerifiedLcalc.Certificates.NumericalRankContracts
+public import VerifiedLcalc.Certificate.Artifacts.Data
+public import VerifiedLcalc.Certificate.Numerical.RankContracts
 public import VerifiedLcalc.Certificate.Witnesses.NumericalRankChecked
 
 /-! Compatibility imports and instances for numerical-rank records. -/

@@ -5,11 +5,11 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certification.StoredInvariants
+public import VerifiedLcalc.Verification.StoredInvariants
 public import VerifiedLcalc.Numerics.RealInterval
 public import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Log
 public import TauCeti.AlgebraicGeometry.EllipticCurve.AbcQuality
-public import VerifiedLcalc.Certificates.RationalInvariants
+public import VerifiedLcalc.Certificate.Witnesses.RationalInvariants
 
 /-!
 # Certified error bounds for elliptic-curve abc quality

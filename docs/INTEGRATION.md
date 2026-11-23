@@ -45,13 +45,13 @@ provenance](../VerifiedLcalc/Upstream/TauCeti/README.md) records those revisions
 
 ## First complete conditional numerical certificate
 
-`Certificates/AssumedCurve11Central.lean` proves
+`tests/VerifiedLcalcTests/Fixtures/AssumedCurve11Central.lean` proves
 
     analyticOrderAt AssumedCurve11.continuedL 1 = 0.
 
 It has no remaining arithmetic or numerical proof arguments. Its only custom
 axiom is the existing `ellipticModularity` assumption. It uses the saved
-53-bit, eight-term payload from `Certificates/Curve11Central.lean`.
+53-bit, eight-term payload from `tests/VerifiedLcalcTests/Fixtures/Curve11Central.lean`.
 
 The good-prime fields of the modular realization identify the coefficients at
 2, 3, 5 and 7 with our checked point counts. The actual coefficient at 2 is -2,

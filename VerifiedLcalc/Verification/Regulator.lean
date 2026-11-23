@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certificates.Regulator
+public import VerifiedLcalc.Certificate.Support.Regulator
 import Mathlib.LinearAlgebra.Dimension.Torsion.Basic
 
 /-! # Rank-zero regulator verification -/

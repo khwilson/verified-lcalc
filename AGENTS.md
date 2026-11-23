@@ -26,7 +26,7 @@
   `Assumptions/Precision.lean`, and the separately authorized
   `Assumptions/LowRankBSD.lean`. `Precision.lean` supplies explicit hypothesis
   records, not a blanket gap axiom. Mathematical proofs belong in
-  `EllipticCurve/Modularity/` and `Certification/`, not in the assumption files.
+  `EllipticCurve/Modularity/` and `Verification/`, not in the assumption files.
 - User-authorized exception (2026-11-22): the isolated opt-in
   `Assumptions/LowRankBSD.lean` may assume only the forward analytic-to-algebraic
   rank implications for exact analytic order zero and one over Q, using the

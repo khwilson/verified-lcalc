@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificates.WeierstrassInstances
+public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
 
 /-! Non-record exact request discriminants and normalization data. -/
 

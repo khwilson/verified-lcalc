@@ -1,7 +1,8 @@
 # Lean and downloader regression tests
 
 `VerifiedLcalcTests/Fixtures/` contains the small hand-written mathematical
-fixtures formerly stored under `VerifiedLcalc/Certificates/`. The separate
+fixtures, separate from the certificate structures in
+`VerifiedLcalc/Certificate/Witnesses/`. The separate
 `VerifiedLcalcTests` Lake library has `srcDir := "tests"`. Production modules
 must not import it. `consumers/` checks reuse of compiled fixture theorems.
 

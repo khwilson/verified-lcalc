@@ -1,7 +1,7 @@
 module
 
-public import VerifiedLcalc.Certification.TameNegativeSign
-public import VerifiedLcalc.Certification.WildCertification
+public import VerifiedLcalc.Verification.TameNegativeSign
+public import VerifiedLcalc.Verification.WildCertification
 
 @[expose] public section
 open VerifiedLcalc.Certification

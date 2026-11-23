@@ -5,9 +5,9 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificates.ArtifactPrimitives
+public import VerifiedLcalc.Certificate.Artifacts.Primitives
 public import VerifiedLcalc.Certificate.Witnesses.ArtifactData
-public import VerifiedLcalc.Certificates.ArtifactContracts
+public import VerifiedLcalc.Certificate.Artifacts.Contracts
 public import VerifiedLcalc.Certificate.Witnesses.ArtifactChecked
 
 /-! Compatibility imports and instances for exact artifact records. -/

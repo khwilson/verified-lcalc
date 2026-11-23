@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificates.ScanPredicate
+public import VerifiedLcalc.Certificate.Artifacts.ScanWitness
 
 /-! Typed finite rank certificate records. -/
 

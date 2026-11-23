@@ -5,8 +5,8 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificates.IntegralPointCount
-public import VerifiedLcalc.Certification.CurveData
+public import VerifiedLcalc.Certificate.Witnesses.IntegralPoints
+public import VerifiedLcalc.Verification.CurveData
 public import Mathlib.Data.Finset.Union
 
 /-! # Complete integral-point counts from supplied abscissa support -/

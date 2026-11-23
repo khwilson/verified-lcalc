@@ -1,7 +1,7 @@
 module
 
-public import VerifiedLcalc.Certificates.Enclosures
-public import VerifiedLcalc.Certificates.PrecisionPolicy
+public import VerifiedLcalc.Certificate.Numerical.Intervals
+public import VerifiedLcalc.Certificate.Numerical.Precision
 public import VerifiedLcalc.Scan
 
 /-! # Precision cutoffs for exact rational boxes -/

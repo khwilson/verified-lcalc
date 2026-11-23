@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certification.WildCertification
+public import VerifiedLcalc.Verification.WildCertification
 public import VerifiedLcalc.Certificate.LocalReductionSpecs
 public import VerifiedLcalc.EllipticCurve.Tate.Tamagawa
 public import VerifiedLcalc.EllipticCurve.Tate.Kodaira

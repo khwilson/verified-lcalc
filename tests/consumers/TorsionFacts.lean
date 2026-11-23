@@ -1,4 +1,4 @@
-import VerifiedLcalc.Certificates.TorsionFacts
+import VerifiedLcalc.Certificate.Support.Torsion
 import Lean
 
 /-! The public torsion data import without the checker or proof adapter. -/
@@ -14,7 +14,7 @@ example (curve : WeierstrassCurve ℤ) : Type := TorsionFacts curve
 
 run_cmd do
   let imported := (← getEnv).allImportedModuleNames
-  for backend in [`VerifiedLcalc.Certification.TorsionBoundFacts,
+  for backend in [`VerifiedLcalc.Verification.TorsionBoundFacts,
     `VerifiedLcalc.EllipticCurve.TorsionBound] do
     if imported.contains backend then
       throwError m!"torsion contract imported backend module {backend}"

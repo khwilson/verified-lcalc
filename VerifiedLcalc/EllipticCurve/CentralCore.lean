@@ -1,8 +1,8 @@
 module
 
-public import VerifiedLcalc.Certificates.NumericalData
+public import VerifiedLcalc.Certificate.Numerical.Outputs
 public import VerifiedLcalc.EllipticCurve.CentralDefinitions
-public import VerifiedLcalc.Certificates.NumericalContracts
+public import VerifiedLcalc.Certificate.Numerical.Payloads
 
 /-! # Central-value numerical evaluator -/
 
