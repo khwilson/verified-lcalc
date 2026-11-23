@@ -1,8 +1,8 @@
 module
 
 public import VerifiedLcalc.Certificate.Numerical.Outputs
-public import VerifiedLcalc.EllipticCurve.CentralDefinitions
 public import VerifiedLcalc.Numerics.RealIntervalCore
+public import VerifiedLcalc.Numerics.RationalExpCore
 
 /-! Exact quadrature and tail formulas used by derivative payload specifications.
 Evaluator search and correctness theorems live in `DerivativeCore`. -/

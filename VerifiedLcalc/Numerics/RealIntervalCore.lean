@@ -1,5 +1,5 @@
 module
-public import VerifiedLcalc.Numerics.RationalExpCore
+public import VerifiedLcalc.Upstream.LedvinkaExponentialCore
 public import VerifiedLcalc.Certificate.Numerical.Intervals
 
 /-! # Exact rational interval operations -/

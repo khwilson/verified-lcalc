@@ -1,6 +1,7 @@
 module
 
 public import VerifiedLcalc.EllipticCurve.CentralCore
+public import VerifiedLcalc.Certificate.Numerical.CentralFormula
 public import VerifiedLcalc.Numerics.RationalExp
 public import Mathlib.Analysis.Real.Pi.Bounds
 public import Mathlib.Data.Nat.Sqrt
@@ -59,12 +60,6 @@ theorem alphaBounds_correct (conductor bits : Nat) (hn : 0 < conductor) :
     have h1 := mul_le_mul_of_nonneg_left hsroot (show 0 ≤ 2 * Real.pi by positivity)
     have h2 := mul_le_mul_of_nonneg_right hp.2 (le_of_lt (mul_pos hs hr))
     nlinarith
-
-noncomputable def centralFiniteValue (coefficients : List Int) (rootNumber : Int)
-    (alpha : ℝ) : ℝ :=
-  (coefficients.zipIdx.map fun (a, j) =>
-    ((1 + rootNumber : Int) : ℝ) * (a : ℝ) / (j + 1 : Nat) *
-      Real.exp (-alpha * (j + 1 : Nat))).sum
 
 /-- The list evaluator's indexing agrees with the mathematical prefix sum. -/
 theorem centralFiniteValue_map_range (a : ℕ → ℤ) (limit : ℕ) (w : ℤ) (alpha : ℝ) :

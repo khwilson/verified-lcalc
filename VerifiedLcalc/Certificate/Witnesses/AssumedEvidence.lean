@@ -7,9 +7,10 @@ module
 
 public import VerifiedLcalc.Certificate.Artifacts.Data
 public import VerifiedLcalc.Certificate.Numerical.RankData
-public import VerifiedLcalc.Certificate.Analytic.Enclosures
+public import VerifiedLcalc.Certificate.Analytic.EnclosurePredicates
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
-public import Mathlib.Analysis.Complex.CauchyIntegral
+public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
+public import Mathlib.Analysis.Complex.Basic
 
 /-! Opt-in evidence records requiring a modular interpretation. -/
 
