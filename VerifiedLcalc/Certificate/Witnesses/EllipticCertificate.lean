@@ -13,10 +13,10 @@ public import VerifiedLcalc.Certificate.Witnesses.Invariants
 /-! # Proof attachments and checked elliptic-curve certificates
 
 * `IntegralCurveProofs` extends the equation invariant proofs with optional Mordell–Weil rank
-  bounds over ℚ and exhaustive integral abscissa support for the given equation.
+  bounds over ℚ, exhaustive integral abscissa support, and complete class evidence.
 * `EllipticCertificate` is the checked result indexed by the supplied integral equation and
   exported as `Name.certificate`. It carries nonsingularity, equation and rational invariants,
-  algebraic, arithmetic, analytic and torsion facts, and an optional directed isogeny.
+  algebraic, arithmetic, analytic, torsion and isogeny facts.
 -/
 
 @[expose] public section
@@ -32,6 +32,8 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   algebraicRank : Option (AlgebraicRankBounds (curve.baseChange ℚ)) := none
   /-- Exhaustive abscissa support for integral points on the supplied equation. -/
   integralXSupport : Option (IntegralXSupport curve) := none
+  /-- Proof of the complete isogeny class and, optionally, its native LMFDB ordering. -/
+  isogenyClass : Option (IsogenyClassEvidence curve) := none
 
 /-- The family-indexed certificate exported by the verification command. -/
 structure EllipticCertificate (curve : WeierstrassCurve ℤ)
@@ -52,5 +54,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   torsion : TorsionFacts curve
   /-- A checked oriented rational isogeny edge and its integral target. -/
   isogeny : Option (Σ target : WeierstrassCurve ℤ, DegreeTwoIsogenyFact curve target) := none
+  /-- The complete isogeny class with derived summaries and optional native LMFDB ordering. -/
+  isogenyClass : Option (Σ facts : IsogenyClassFacts curve,
+    Option (IsogenyClassOrdering facts.representatives)) := none
 
 end VerifiedLcalc

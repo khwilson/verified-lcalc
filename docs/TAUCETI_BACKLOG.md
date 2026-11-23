@@ -302,3 +302,25 @@ additional hypotheses (for example suitable Selmer corank and finiteness of
 the Tate--Shafarevich group). Search current TauCeti declarations and open
 upstream work again before proposing an API; this backlog entry does not claim
 the theorem is absent upstream or that the temporary assumption is proved.
+
+
+## TC-15 — finite certificates for complete rational isogeny classes
+
+`certify_ec` accepts distinct and exhaustive representatives with proofs of
+attainment and minimality for every ordered pair. To construct that evidence
+from finite data, prove that minimum-degree isogenies have cyclic kernels
+by removing a multiplication factor when the kernel is noncyclic. Then prove
+that the cyclic isogenies decompose into rational prime-degree steps. At each
+vertex, certify that all rational prime-degree quotients are represented, using a
+proved bound on the possible primes and exhaustion of Galois-stable cyclic
+kernels. Then prove lower bounds on all isogeny degrees between each pair
+from the finite evidence, including composite degrees. The fixture for
+37.a1 explicitly takes the single representative's exhaustivity as a premise.
+
+At the pinned TauCeti revision the verifier uses
+`Isogeny.degree_comp`, `Isogeny.degree_variableChangeIsogeny`, and
+`WeierstrassCurve.IsReducedMinimal`. It uses the pinned Mathlib
+`Finset.max'_mem` and `Finset.le_max'` to derive the maximum.
+[TauCeti change of variables](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Isogeny/VariableChange.lean)
+· [TauCeti reduced minimal models](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/Reduced.lean)
+· [Mathlib finite set maximum](https://github.com/leanprover-community/mathlib4/blob/31ce06eaadf4a200c0e1407c5f10953cf606b8f8/Mathlib/Data/Finset/Max.lean)

@@ -94,4 +94,27 @@ def optionalInput (w : Name) (field : Name) : CommandElabM (Option (TSyntax `ter
   | _ => throwError "Expected closed optional data for {field}"
 
 
+/-- Bind an optional raw value and prove its equality with the submitted field. -/
+def bindStored (base field label : Name) (type : TSyntax `term) :
+    CommandElabM (Option Ident) := do
+  let some input ← optionalInput (base ++ `witness) field | return none
+  let value := rootIdent (base ++ Name.mkSimple s!"claimed_{label}")
+  emit (← `(def $value : $type := $input))
+  let w := rootIdent (base ++ `witness)
+  let projection := rootIdent (``EllipticWitness ++ field)
+  checked (base ++ Name.mkSimple s!"{label}_input_eq")
+    (← `($projection $w = some $value)) (← `(by rfl))
+  return some value
+
+/-- Inspect an optional proof attachment in the current section, including its local instances. -/
+def hasOptionalProof (term : TSyntax `term) (label : Name) : CommandElabM Bool :=
+  runTermElabM fun _ => do
+    let expr ← Term.elabTerm term none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    let value ← whnf (← instantiateMVars expr)
+    match value.getAppFn.constName? with
+    | some ``Option.none => pure false
+    | some ``Option.some => pure true
+    | _ => throwError "Expected a known option constructor for {label}"
+
 end VerifiedLcalc.CertifyEC
