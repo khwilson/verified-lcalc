@@ -29,7 +29,8 @@ example : Squarefree LMFDB.C179a1.curve.Δ.natAbs :=
 example :
     LocalReductionClaim.Spec
       { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
-        reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1 }
+        reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1,
+        rootNumber := some (-1) }
       LMFDB.C179a1.curve :=
   LMFDB.C179a1.local_invariants _ (by decide +kernel)
 
@@ -38,7 +39,8 @@ example :
     (LMFDB.C179a1.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 179) = 1 := by
   let row : LocalReductionClaim :=
     { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
-      reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1 }
+      reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1,
+      rootNumber := some (-1) }
   obtain ⟨_, h⟩ := LMFDB.C179a1.tamagawa_numbers row (by decide +kernel) 1 rfl
   exact h (by decide +kernel)
 
@@ -50,7 +52,8 @@ example :
     (LMFDB.C179a1.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 179) = .I 1 := by
   let row : LocalReductionClaim :=
     { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
-      reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1 }
+      reductionType := some 1, kodairaSymbol := some 5, tamagawaNumber := some 1,
+      rootNumber := some (-1) }
   obtain ⟨_, h⟩ := LMFDB.C179a1.kodaira_symbols row (by decide +kernel)
   exact h 5 rfl
 
@@ -88,7 +91,7 @@ example : ¬ Squarefree LMFDB.C243a1.curve.Δ.natAbs :=
 example :
     LocalReductionClaim.Spec
       { prime := 3, discriminantValuation := some 5, jDenominatorValuation := some 0,
-        reductionType := some 0 } LMFDB.C243a1.curve :=
+        reductionType := some 0, rootNumber := some 1 } LMFDB.C243a1.curve :=
   LMFDB.C243a1.local_invariants _ (by decide +kernel)
 
 example : (LMFDB.C254a1.curve.baseChange ℚ).j = 15438249 / 1016 :=
@@ -178,6 +181,22 @@ example : ∃ e : ZMod 2 ≃+ AddCommGroup.torsion (LMFDB.C112a2.curve.baseChang
       LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩ :=
   LMFDB.C112a2.torsion_structure.2
 
+private def wildLocalSign : LocalRootNumberFact LMFDB.C243a1.curve :=
+  (LMFDB.C243a1.certificate.arithmetic.minimalModel.get (by decide +kernel)).localRootNumbers[0]
+
+/-- The aggregate retains the checked wild arithmetic sign at 3. -/
+theorem imported_wild_local_root_number :
+    letI : Fact (Nat.Prime 3) := ⟨by decide +kernel⟩
+    wildLocalRootSpec LMFDB.C243a1.curve LMFDB.C243a1.localData 3 = 1 :=
+  wildLocalSign.correct
+
+/-- The aggregate retains the checked split multiplicative sign at 179. -/
+theorem imported_tame_local_root_number :
+    letI : Fact (Nat.Prime 179) := ⟨by decide +kernel⟩
+    wildLocalRootSpec LMFDB.C179a1.curve LMFDB.C179a1.localData 179 = -1 :=
+  ((LMFDB.C179a1.certificate.arithmetic.minimalModel.get
+    (by decide +kernel)).localRootNumbers[0]).correct
+
 run_cmd do
   let unconditional := [``propext, ``Classical.choice, ``Quot.sound]
   let modularity := ``Assumptions.ellipticModularity
@@ -198,6 +217,10 @@ run_cmd do
   check `LMFDB.C112a2 `torsion_generators.points_on_curve false
   check `LMFDB.C179a1 `tamagawa_numbers false
   check `LMFDB.C179a1 `kodaira_symbols false
+  check `LMFDB.C179a1 `local_root_numbers false
+  check `LMFDB.C243a1 `local_root_numbers false
+  check Name.anonymous `imported_wild_local_root_number false
+  check Name.anonymous `imported_tame_local_root_number false
   for axiomName in ← liftTermElabM (Lean.collectAxioms ``LMFDB.C179a1.certificate) do
     unless unconditional.contains axiomName do
       throwError "Unexpected aggregate dependency {axiomName}"

@@ -9,7 +9,7 @@
   "squarefree_disc": false,
   "local_invariants": [
     {"prime": 3, "discriminant_valuation": 5,
-     "j_denominator_valuation": 0, "reduction_type": 0}
+     "j_denominator_valuation": 0, "reduction_type": 0, "root_number": 1}
   ],
   "minimality": [3, 3, 3, 3, 3],
   "discriminant": -243,

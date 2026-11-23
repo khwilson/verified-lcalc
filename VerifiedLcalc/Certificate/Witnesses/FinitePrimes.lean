@@ -123,9 +123,11 @@ structure MinimalModelArithmeticFacts (curve : WeierstrassCurve ℤ)
   /-- Checked local rows. Level exponents belong to the modular subrecord. -/
   localRows : Option { rows : List LocalReductionClaim // ∀ row ∈ rows,
     row.conductorValuation = none ∧ row.kodairaSymbol = none ∧
-      row.tamagawaNumber = none ∧ row.Spec curve } := none
+      row.tamagawaNumber = none ∧ row.rootNumber = none ∧ row.Spec curve } := none
   /-- Checked canonical Kodaira facts at the supplied primes. -/
   kodaira : List (LocalKodairaFact curve) := []
+  /-- Checked arithmetic local signs at the supplied primes on this minimal model. -/
+  localRootNumbers : List (LocalRootNumberFact curve) := []
 
 /-- Optional arithmetic facts indexed by the same nonsingular integral equation. -/
 structure ArithmeticFacts (curve : WeierstrassCurve ℤ)

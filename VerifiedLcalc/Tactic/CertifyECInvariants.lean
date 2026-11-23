@@ -69,8 +69,34 @@ private def certifyRankZeroRegulator (base : Name) : CommandElabM Unit := do
   emit (← `(def $fact : RegulatorFacts (($curve).baseChange ℚ) :=
     Certification.rankZeroRegulatorFacts (($curve).baseChange ℚ) $claim $rankZero $valid))
 
+/-- Check local signs with the validated minimal model and wild data. -/
+private def certifyLocalRootNumbers (base : Name) (curve rows : Ident)
+    (hasEvidence : Bool) : CommandElabM Unit := do
+  let hasClaims := mkApp (mkConst ``hasLocalRootNumberClaim)
+    (mkConst (base ++ `claimed_local_invariants))
+  let hasClaims ← liftTermElabM <| whnf hasClaims
+  unless hasClaims.isConstOf ``Bool.true do return
+  checked (base ++ `local_root_number_inputs_valid)
+    (← `(($rows).all LocalReductionClaim.checkRootNumberInput = true))
+    (← `(by decide +kernel))
+  unless hasEvidence do
+    logInfo m!"Unverified {base} local root_number: supply minimality and localData evidence"
+    return
+  let d := rootIdent (base ++ `localData)
+  let hd := rootIdent (base ++ `local_data_valid)
+  let hv := rootIdent (base ++ `local_root_number_values_valid)
+  checked (base ++ `local_root_number_values_valid)
+    (← `(($rows).all (fun row => row.checkRootNumber $curve $d) = true))
+    (← `(by decide +kernel))
+  checked (base ++ `local_root_numbers)
+    (← `(∀ row ∈ $rows, LocalReductionClaim.RootNumberSpec row $curve $d))
+    (← `(by
+      intro row hrow
+      exact LocalReductionClaim.rootNumber_correct row $curve $d $hd
+        (List.all_eq_true.mp $hv row hrow)))
+
 private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
-    (hasMinimality : Bool) : CommandElabM Unit := do
+    (hasMinimality hasLocalData : Bool) : CommandElabM Unit := do
   let hglobal := rootIdent (base ++ `global_minimal)
   if let some claim ← bindStored base `semistable `semistable (← `(Bool)) then
     if hasMinimality then
@@ -104,6 +130,7 @@ private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
     checked (base ++ `local_invariants_agree)
       (← `(∀ a ∈ $rows, ∀ b ∈ $rows, LocalReductionClaim.Compatible a b))
       (← `(localReductionClaimsAgree_correct $rows $hagree))
+    certifyLocalRootNumbers base curve rows (hasMinimality && hasLocalData)
     let hTam := rootIdent (base ++ `tamagawa_values_valid)
     checked (base ++ `tamagawa_values_valid)
       (← `(($rows).all (fun row => row.checkTamagawa $curve) = true)) (← `(by decide +kernel))
@@ -513,7 +540,7 @@ def certifyStoredInvariants (base : Name)
   let hm := rootIdent (base ++ `minimality_valid)
   let d := rootIdent (base ++ `localData)
   let hd := rootIdent (base ++ `local_data_valid)
-  certifyReductionInvariants base curve hn m hm hasMinimality
+  certifyReductionInvariants base curve hn m hm hasMinimality hasLocalData
   if let some values ← bindStored base `badPrimes `bad_primes (← `(List Nat)) then
     if hasMinimality then
       let hv := rootIdent (base ++ `bad_primes_value_valid)

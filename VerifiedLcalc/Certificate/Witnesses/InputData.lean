@@ -118,6 +118,8 @@ structure LocalReductionClaim where
   tamagawaNumber : Option Nat := none
   /-- Claimed PARI Kodaira code. Additive codes request a family check. -/
   kodairaSymbol : Option Int := none
+  /-- Claimed arithmetic local sign at this prime. -/
+  rootNumber : Option Int := none
 
 end VerifiedLcalc
 
