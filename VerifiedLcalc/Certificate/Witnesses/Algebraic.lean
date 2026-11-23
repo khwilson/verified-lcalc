@@ -14,7 +14,23 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.Degree
 public import TauCeti.AlgebraicGeometry.EllipticCurve.PointCount
 public import Mathlib.GroupTheory.Torsion
 
-/-! # Rational and integral points, Mordell–Weil invariants and isogenies -/
+/-! # Rational and integral points, Mordell–Weil invariants and isogenies
+
+* `EllipticCurve.AlgebraicRankBounds` records proved Mordell–Weil rank endpoints over ℚ.
+  `RegulatorFacts` encloses the regulator of the nonsingular rational curve.
+* `IndependentPointFacts` proves ℤ-linear independence of selected rational points.
+  `TorsionGeneratorOrderFacts` gives exact orders of the listed rational points.
+  `GeneratorCountFacts` certifies the length of the submitted list.
+* `IntegralYFiberFacts` enumerates all integral ordinates at each supplied abscissa.
+  `CompleteIntegralPointFacts` uses exhaustive abscissa support to certify the full affine
+  integral point set and its cardinality.
+* `TorsionDivisorFacts` bounds the full rational torsion order by divisibility using good
+  reduction point counts. `CyclicTorsionFacts` and `TwoFactorTorsionFacts` present the full
+  group in the respective cases. `TorsionPrimeSupportFacts` gives its exact prime support.
+  `TorsionFacts` collects optional bounds, cardinality, presentations, and prime support.
+* `DegreeTwoIsogenyFact` proves an isogeny and its minimum degree in the specified direction.
+  `AlgebraicFacts` collects optional checked points, orders, rank bounds, and regulator data.
+-/
 
 @[expose] public section
 

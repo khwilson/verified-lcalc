@@ -10,7 +10,16 @@ public import VerifiedLcalc.Certificate.Analytic.EvidencePredicates
 public import VerifiedLcalc.Certificate.Analytic.EnclosurePredicates
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
 
-/-! # Opt-in analytic evidence for the modularity assumption -/
+/-! # Opt-in analytic evidence for the modularity assumption
+
+* `Certification.AssumedExactEvidence` matches an exact-rank artifact request to a
+  nonsingular curve with arithmetic normalization and requires actual derivative enclosures
+  for the L-function of the canonical modular realization.
+* `Certification.AssumedNumericalEvidence` requires the corresponding subject match and
+  actual enclosures for a numerical cutoff artifact.
+* `Assumptions.CurvePrecisionClaim.Hypotheses` requires proof that the gap exceeds the cutoff
+  and that every nonzero derivative in the specified prefix meets the gap for that realization.
+-/
 
 @[expose] public section
 

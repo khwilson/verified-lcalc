@@ -11,7 +11,16 @@ public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReductionSpec
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Tamagawa.Product
 public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Curve
 
-/-! # Reduction at finite primes and arithmetic coefficients -/
+/-! # Reduction at finite primes and arithmetic coefficients
+
+* `LocalTamagawaFact` identifies the intrinsic Tamagawa number at a specified rational prime.
+  `LocalKodairaFact` gives the exact `Iₙ` index or excludes the entire `Iₙ` family.
+* `MinimalModelArithmeticFacts` starts with checked global minimality and collects
+  discriminant, bad-prime, semistability, and local reduction data on that model.
+* `ArithmeticFacts` collects optional minimal-model facts, intrinsic Tamagawa factors,
+  finite transcript validity, potential good reduction, and prime-indexed and consecutive
+  L-function coefficients. Its modular facts require an explicit arithmetic realization.
+-/
 
 @[expose] public section
 
