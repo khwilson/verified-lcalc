@@ -313,7 +313,7 @@ the Tate--Shafarevich group). Search current TauCeti declarations and open
 upstream work again before proposing an API; this backlog entry does not claim
 the theorem is absent upstream or that the temporary assumption is proved.
 
-## TC-15 — certified full real period evaluation
+## TC-16 — certified full real period evaluation
 
 Pinned TauCeti's `realPeriod_eq_two_mul_pi_div_agm_of_three_real_roots`
 and `realPeriod_eq_two_mul_pi_div_agm_of_one_real_root` give exact formulas

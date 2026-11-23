@@ -20,11 +20,9 @@ private def attachedFact (attachment : Option Ident) (field : Name) :
   let some attachment := attachment | return none
   let projection := mkIdent field
   let selected ← `(($attachment).$projection)
-  let value ← liftTermElabM do whnf (← Term.elabTerm selected none)
-  match value.getAppFn.constName? with
-  | some ``Option.none => return none
-  | some ``Option.some => return some (← `(($selected).get (by decide +kernel)))
-  | _ => throwError "Expected a closed optional attachment for {field}"
+  if ← hasOptionalProof selected field then
+    some <$> `(($selected).get (by rfl))
+  else pure none
 
 private def validateEnclosureRadius (base label : Name)
     (report : Option (TSyntax `term)) : CommandElabM Unit := do
@@ -40,7 +38,7 @@ private def checkEnclosureReport (base : Name) (label : Name)
       (← `(let report : DecimalEnclosureClaim := $raw
         report.reported = ($fact).reported ∧
           report.error.getD ($fact).error.val = ($fact).error.val))
-      (← `(by decide +kernel))
+      (← `(by constructor <;> first | rfl | decide +kernel))
 
 private def certifyRealPeriod (base : Name) (curve : Ident)
     (attachment : Option Ident) : CommandElabM Unit := do
@@ -63,7 +61,7 @@ private def certifyTamagawaProduct (base : Name) (curve : Ident)
     return
   if let some value := report then
     checked (base ++ `tamagawa_product_report_matches)
-      (← `((($fact).value : Nat) = $value)) (← `(by decide +kernel))
+      (← `((($fact).value : Nat) = $value)) (← `(by first | rfl | decide +kernel))
   let name := rootIdent (base ++ `tamagawa_product_fact)
   emit (← `(def $name : TamagawaProductFact $curve := $fact))
 
@@ -94,11 +92,21 @@ private def validateShaReports (base : Name)
   return some (n, support)
 
 private def certifyRoundedSha (base : Name) (curve : Ident) (analytic : Ident)
-    (n : Ident) (support : TSyntax `term) : CommandElabM Unit := do
+    (n : Ident) (support : TSyntax `term) (report : Option (TSyntax `term)) :
+    CommandElabM Unit := do
   let rounds := base ++ `sha_rounds
+  let proof ← if report.isSome then
+    let agreement := rootIdent (base ++ `sha_an_report_matches)
+    `(by
+      first
+      | decide +kernel
+      | rw [← ($agreement).1, ← ($agreement).2]
+        simp only [Option.getD_some]
+        decide +kernel)
+  else `(by decide +kernel)
   checked rounds
     (← `(|($analytic).reported - ($n : ℚ)| + ($analytic).error.val < 1 / 2))
-    (← `(by decide +kernel))
+    proof
   let rounded := rootIdent (base ++ `rounded_analytic_sha_fact)
   emit (← `(def $rounded : RoundedAnalyticShaFact $curve :=
     ⟨$analytic, $n, $(rootIdent (base ++ `sha_positive)), $(rootIdent rounds), $support⟩))
@@ -115,14 +123,14 @@ private def certifyAnalyticSha (base : Name) (curve : Ident)
     if report.isSome || value.isSome || primes.isSome then
       logInfo m!"Unverified {base} analytic BSD quotient: supply a proved enclosure"
     return
-  checkEnclosureReport base `sha_an_report_matches report fact
   if let some order ← optionalInput w `catalogueAnalyticRank then
     checked (base ++ `sha_an_order_matches)
-      (← `((($fact).order : Nat) = $order)) (← `(by decide +kernel))
+      (← `((($fact).order : Nat) = $order)) (← `(by first | rfl | decide +kernel))
   let analytic := rootIdent (base ++ `analytic_sha_fact)
   emit (← `(def $analytic : AnalyticShaFact $curve := $fact))
+  checkEnclosureReport base `sha_an_report_matches report (← `($analytic))
   if let some (n, support) := rounded then
-    certifyRoundedSha base curve analytic n support
+    certifyRoundedSha base curve analytic n support report
   else if primes.isSome then
     logInfo m!"Unverified {base} sha_primes: supply the rounded quotient sha"
 

@@ -426,12 +426,8 @@ private def certifyProofFact (base field label : Name) (proofs : Option Ident)
   let proved ← if let some facts := proofs then do
     let projection := rootIdent (``EllipticProofs ++ field)
     let selected ← `($projection $facts)
-    let provided ← liftTermElabM do
-      whnf (← Lean.Elab.Term.elabTerm selected none)
-    match provided.getAppFn.constName? with
-    | some ``Option.none => pure none
-    | some ``Option.some => some <$> `(($selected).getD ⟨$lhs, rfl⟩)
-    | _ => throwError "Expected closed optional proof data for {label}"
+    if ← hasOptionalProof selected label then some <$> `(($selected).getD ⟨$lhs, rfl⟩)
+    else pure none
   else pure none
   let value := rootIdent (base ++ Name.mkSimple s!"claimed_{label}")
   let some proof ← (match claimed, proved with

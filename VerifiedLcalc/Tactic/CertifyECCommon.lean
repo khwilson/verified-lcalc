@@ -95,4 +95,15 @@ def optionalInput (w : Name) (field : Name) : CommandElabM (Option (TSyntax `ter
   | _ => throwError "Expected closed optional data for {field}"
 
 
+/-- Inspect an optional proof attachment in the current section, including its local instances. -/
+def hasOptionalProof (term : TSyntax `term) (label : Name) : CommandElabM Bool :=
+  runTermElabM fun _ => do
+    let expr ← Term.elabTerm term none
+    Term.synthesizeSyntheticMVarsNoPostponing
+    let value ← whnf (← instantiateMVars expr)
+    match value.getAppFn.constName? with
+    | some ``Option.none => pure false
+    | some ``Option.some => pure true
+    | _ => throwError "Expected a known option constructor for {label}"
+
 end VerifiedLcalc.CertifyEC
