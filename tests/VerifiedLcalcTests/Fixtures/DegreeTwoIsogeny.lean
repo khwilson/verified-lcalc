@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certification.DegreeTwoIsogenyRaw
+public import VerifiedLcalc.Verification.DegreeTwoIsogenyRaw
 
 /-! # The degree-two isogeny from LMFDB 112.a2 to 112.a1 -/
 

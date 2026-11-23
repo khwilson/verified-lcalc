@@ -1,7 +1,7 @@
 module
 public import VerifiedLcalc.EllipticCurve.CentralCore
 public import VerifiedLcalc.EllipticCurve.DerivativeDefinitions
-public import VerifiedLcalc.Certificates.NumericalContracts
+public import VerifiedLcalc.Certificate.Numerical.Payloads
 
 /-! # First-derivative numerical evaluator -/
 
@@ -20,6 +20,8 @@ def evaluateDerivative (equation : (WeierstrassCurve ℤ)) (conductor limit step
     return ⟨equation,conductor,policy,limit,steps,cutoff,cs,a.1,a.2,finite,tail,
       ⟨finite.1-tail,finite.2+tail,0,0⟩⟩
 
+/-- A successful derivative evaluation records its inputs and satisfies the finite payload
+specification. -/
 theorem evaluateDerivative_correct {e : (WeierstrassCurve ℤ)} {N M steps cutoff : Nat}
     {policy : PrecisionPolicy} {r : DerivativeResult}
     (h : evaluateDerivative e N M steps cutoff policy = some r) :

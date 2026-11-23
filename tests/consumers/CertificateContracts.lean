@@ -79,12 +79,12 @@ end MordellWeilInstance
 
 run_cmd do
   let imported := (← getEnv).allImportedModuleNames
-  for backend in [`VerifiedLcalc.Certification.CurveData,
-    `VerifiedLcalc.Certification.IntegralPointCount,
-    `VerifiedLcalc.Certification.DegreeTwoIsogeny,
-    `VerifiedLcalc.Certification.DegreeTwoIsogenyRaw,
+  for backend in [`VerifiedLcalc.Verification.CurveData,
+    `VerifiedLcalc.Verification.IntegralPointCount,
+    `VerifiedLcalc.Verification.DegreeTwoIsogeny,
+    `VerifiedLcalc.Verification.DegreeTwoIsogenyRaw,
     `VerifiedLcalc.Analytic,
-    `VerifiedLcalc.Certification.TorsionBoundFacts,
+    `VerifiedLcalc.Verification.TorsionBoundFacts,
     `VerifiedLcalc.EllipticCurve.TorsionBound,
     `VerifiedLcalc.Scan,
     `VerifiedLcalc.CertificateSoundness,
@@ -93,9 +93,9 @@ run_cmd do
     `VerifiedLcalc.Certificate,
     `VerifiedLcalc.EllipticCurve.CentralCore,
     `VerifiedLcalc.EllipticCurve.DerivativeCore,
-    `VerifiedLcalc.Certification.CentralEvaluator,
-    `VerifiedLcalc.Certification.AbcQuality,
-    `VerifiedLcalc.Certification.StoredInvariants,
-    `VerifiedLcalc.Certification.DerivativeEvaluator] do
+    `VerifiedLcalc.Verification.CentralEvaluator,
+    `VerifiedLcalc.Verification.AbcQuality,
+    `VerifiedLcalc.Verification.StoredInvariants,
+    `VerifiedLcalc.Verification.DerivativeEvaluator] do
     if imported.contains backend then
       throwError m!"contract umbrella imported backend module {backend}"

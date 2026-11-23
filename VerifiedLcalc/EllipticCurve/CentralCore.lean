@@ -1,8 +1,8 @@
 module
 
-public import VerifiedLcalc.Certificates.NumericalData
+public import VerifiedLcalc.Certificate.Numerical.Outputs
 public import VerifiedLcalc.EllipticCurve.CentralDefinitions
-public import VerifiedLcalc.Certificates.NumericalContracts
+public import VerifiedLcalc.Certificate.Numerical.Payloads
 
 /-! # Central-value numerical evaluator -/
 
@@ -28,6 +28,8 @@ def evaluateCentral (equation : (WeierstrassCurve ℤ)) (conductor : Nat)
         centralBox coefficients rootNumber alpha.1 alpha.2 policy.precisionBits tail⟩
   else none
 
+/-- A successful tail computation establishes the ratio condition and returns the geometric tail
+bound. -/
 theorem squareTailBound_correct {q : Rat} {limit : Nat} {tail : Rat}
     (h : squareTailBound q limit = some tail) :
     0 ≤ q ∧ squareTailRatio q limit < 1 ∧
@@ -40,6 +42,8 @@ theorem squareTailBound_correct {q : Rat} {limit : Nat} {tail : Rat}
     exact ⟨hc.1, hc.2, rfl⟩
   · simp at h
 
+/-- A successful central evaluation records its inputs and satisfies the finite payload
+specification. -/
 theorem evaluateCentral_correct {equation : (WeierstrassCurve ℤ)} {conductor : Nat}
     {rootNumber : Int} {limit : Nat} {policy : PrecisionPolicy} {r : CentralResult}
     (h : evaluateCentral equation conductor rootNumber limit policy = some r) :

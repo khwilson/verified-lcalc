@@ -7,7 +7,7 @@ module
 
 public import Std
 public import Init.Data.Rat
-public import VerifiedLcalc.Certificates.Scan
+public import VerifiedLcalc.Certificate.Witnesses.Scan
 
 /-! A conservative rank search on exact rational rectangles. No floating point
 or tolerance test is used. A rectangle containing zero is inconclusive unless
@@ -70,6 +70,7 @@ def certify (bs : List Box) : Option (Certificate bs) :=
   | none => none
   | some n => some ⟨n, scan_correct bs n h⟩
 
+/-- A scan certificate recovers the computed rank and witnesses the scan predicate. -/
 theorem certify_correct (bs : List Box) (c : Certificate bs)
     (_h : certify bs = some c) : scan bs = some c.rank ∧ Witness bs c.rank :=
   ⟨Certificate.computed c, c.sound⟩

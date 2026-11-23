@@ -1,7 +1,7 @@
 module
 
-public import VerifiedLcalc.Certification.AbcQuality
-public import VerifiedLcalc.Certification.Regulator
+public import VerifiedLcalc.Verification.AbcQuality
+public import VerifiedLcalc.Verification.Regulator
 public import VerifiedLcalc.EllipticCurve.TorsionBound
 public import VerifiedLcalc.EllipticCurve.TorsionStructure
 public import VerifiedLcalc.EllipticCurve.TwoFactorTorsion

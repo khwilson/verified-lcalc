@@ -1,7 +1,7 @@
 module
 
 public import VerifiedLcalc.Certificate.CheckedElliptic
-public import VerifiedLcalc.Certification.TorsionBoundFacts
+public import VerifiedLcalc.Verification.TorsionBoundFacts
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public import VerifiedLcalc.Tactic.CertifyECArithmeticFacts
 public import VerifiedLcalc.Tactic.CertifyECAnalyticFacts

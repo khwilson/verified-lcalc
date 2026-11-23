@@ -7,8 +7,8 @@ module
 
 public import VerifiedLcalc.Certificate.Witnesses.Enclosures
 public import VerifiedLcalc.Certificate.Witnesses.PrecisionPolicy
-public import VerifiedLcalc.Certificates.Enclosures
-public import VerifiedLcalc.Certificates.WeierstrassInstances
+public import VerifiedLcalc.Certificate.Numerical.Intervals
+public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
 
 /-! Raw central-value and first-derivative numerical output records. -/
 

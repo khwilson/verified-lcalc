@@ -1,7 +1,8 @@
 # Certificate witnesses
 
 Import `VerifiedLcalc.Certificate.Witnesses` for the public structures used by
-`certify_ec`. The [witness directory](../VerifiedLcalc/Certificate/Witnesses)
+`certify_ec`. The command entry point is
+`VerifiedLcalc.Tactic.CertifyEC`. The [witness directory](../VerifiedLcalc/Certificate/Witnesses)
 contains their Lean declarations.
 
 | Start here | What to read |
@@ -27,18 +28,43 @@ lists the ordinary modules. [AssumedEvidence](../VerifiedLcalc/Certificate/Witne
 and [CurvePrecision](../VerifiedLcalc/Certificate/Witnesses/CurvePrecision.lean)
 have separate imports because their types refer to the modularity assumption.
 
+## Module layout and migration
+
+The former `VerifiedLcalc.Certificates.*` modules now live under
+`VerifiedLcalc.Certificate.*`, grouped by purpose:
+
+| Previous module | Current module |
+| --- | --- |
+| `Certificates.Artifacts`, `.ArtifactContracts`, `.ArtifactPrimitives` | `Certificate.Artifacts.Data`, `.Contracts`, `.Primitives` |
+| `Certificates.Scan`, `.ScanPredicate` | `Certificate.Witnesses.Scan`, `Certificate.Artifacts.ScanWitness` |
+| `Certificates.AnalyticEnclosures`, `.AnalyticEvidencePredicates` | `Certificate.Analytic.Enclosures`, `.EvidencePredicates` |
+| `Certificates.AnalyticEvidence`, `.AnalyticRank` | `Certificate.Witnesses.AnalyticEvidence`, `.AnalyticRank` |
+| `Certificates.Enclosures`, `.NumericalData`, `.NumericalContracts` | `Certificate.Numerical.Intervals`, `.Outputs`, `.Payloads` |
+| `Certificates.NumericalRanks`, `.NumericalRankContracts`, `.PrecisionPolicy` | `Certificate.Numerical.RankData`, `.RankContracts`, `.Precision` |
+| `Certificates.AlgebraicRank`, `.CurveWitness`, `.DegreeTwoIsogeny` | `Certificate.Support.AlgebraicRank`, `.CurveProofs`, `.Isogenies` |
+| `Certificates.IntegralPointCount`, `.IntegralXSupport` | `Certificate.Witnesses.IntegralPoints` |
+| `Certificates.PointFacts`, `.RationalInvariants`, `.Regulator` | `Certificate.Support.Points`, `Certificate.Witnesses.RationalInvariants`, `Certificate.Support.Regulator` |
+| `Certificates.SpecialValue`, `.TorsionFacts`, `.Transcripts`, `.WeierstrassInstances` | `Certificate.Support.SpecialValue`, `.Torsion`, `.Transcripts`, `.WeierstrassInstances` |
+
+Backend files formerly in `VerifiedLcalc.Certification/` are now in
+`VerifiedLcalc.Verification/`; their declarations remain in the
+`VerifiedLcalc.Certification` namespace. `VerifiedLcalc.Certificates` remains as
+a single-file compatibility umbrella. There is no `Certificates/` or
+`Certification/` source directory. `VerifiedLcalc.Certificate.Witnesses` and
+`VerifiedLcalc.Tactic.CertifyEC` are the canonical data and command entrypoints.
+
 ## Predicates, computations and theorems
 
 A witness field may ask for a proof of a proposition. Give the proof where the
 witness is constructed. Put named predicates, derived instances, constructors
 implemented as functions, verification code, and theorems outside the witness
-directory. For example, the [torsion checker](../VerifiedLcalc/Certification/TorsionBoundFacts.lean)
+directory. For example, the [torsion checker](../VerifiedLcalc/Verification/TorsionBoundFacts.lean)
 constructs evidence about the actual rational torsion subgroup, and the
-[special-value checker](../VerifiedLcalc/Certification/SpecialValue.lean)
+[special-value checker](../VerifiedLcalc/Verification/SpecialValue.lean)
 turns derivative enclosures into an error bound for the reported coefficient.
 
-The earlier `VerifiedLcalc.Certificates` and singular import paths continue to
-provide their public APIs. The [layout audit](../tests/consumers/WitnessLayout.lean)
+The `VerifiedLcalc.Certificates` umbrella remains available for existing
+consumers. The [layout audit](../tests/consumers/WitnessLayout.lean)
 parses every witness file with Lean and checks where the main types are defined.
 The [import audit](../tests/consumers/CertificateContracts.lean) exercises the
 lightweight compatibility API, and the [projection tests](../tests/consumers/CertificateCompatibility.lean)

@@ -1,4 +1,4 @@
-import VerifiedLcalc.Certification.CurveData
+import VerifiedLcalc.Verification.CurveData
 
 /-!
 # Generic multiplicative and additive order checks

@@ -1,4 +1,4 @@
-import VerifiedLcalc.Certification.CurveData
+import VerifiedLcalc.Verification.CurveData
 import VerifiedLcalc.EllipticCurve.TorsionBound
 import VerifiedLcalc.EllipticCurve.TwoFactorTorsion
 import Lean

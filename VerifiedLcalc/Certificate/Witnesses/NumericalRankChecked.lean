@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.NumericalRankData
-public import VerifiedLcalc.Certificates.NumericalRankContracts
+public import VerifiedLcalc.Certificate.Numerical.RankContracts
 
 /-! A checked numerical observation paired with its cutoff contract. -/
 

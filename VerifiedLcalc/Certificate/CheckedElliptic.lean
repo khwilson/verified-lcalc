@@ -1,18 +1,18 @@
 module
 
-public import VerifiedLcalc.Certification.DegreeTwoIsogeny
+public import VerifiedLcalc.Verification.DegreeTwoIsogeny
 public import VerifiedLcalc.Certificate.Witnesses.EllipticCertificate
-public import VerifiedLcalc.Certification.CurveData
-public import VerifiedLcalc.Certification.IntegralPointCount
-public import VerifiedLcalc.Certification.TorsionBoundFacts
+public import VerifiedLcalc.Verification.CurveData
+public import VerifiedLcalc.Verification.IntegralPointCount
+public import VerifiedLcalc.Verification.TorsionBoundFacts
 public import VerifiedLcalc.Certificate.ArithmeticFacts
-public import VerifiedLcalc.Certificates.RationalInvariants
-public import VerifiedLcalc.Certificates.PointFacts
-public import VerifiedLcalc.Certificates.TorsionFacts
-public import VerifiedLcalc.Certification.AbcQuality
+public import VerifiedLcalc.Certificate.Witnesses.RationalInvariants
+public import VerifiedLcalc.Certificate.Support.Points
+public import VerifiedLcalc.Certificate.Support.Torsion
+public import VerifiedLcalc.Verification.AbcQuality
 public import VerifiedLcalc.Certificate.AnalyticFacts
-public import VerifiedLcalc.Certificates.Regulator
-public import VerifiedLcalc.Certificates.AlgebraicRank
+public import VerifiedLcalc.Certificate.Support.Regulator
+public import VerifiedLcalc.Certificate.Support.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.PointIndependence
 public import Mathlib.GroupTheory.Torsion
 public import Mathlib.Data.Nat.Factors

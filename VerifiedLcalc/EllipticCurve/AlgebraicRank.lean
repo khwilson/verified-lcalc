@@ -3,7 +3,7 @@ module
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point
 public import Mathlib.LinearAlgebra.Dimension.Finite
 public import Mathlib.GroupTheory.OrderOfElement
-public import VerifiedLcalc.Certificates.AlgebraicRank
+public import VerifiedLcalc.Certificate.Support.AlgebraicRank
 import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenerated
 
 /-!

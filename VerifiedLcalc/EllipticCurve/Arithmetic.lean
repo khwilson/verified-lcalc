@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certificates.WeierstrassInstances
+public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
 public import VerifiedLcalc.UpstreamCandidates.TauCeti.PointCountOdd
 public import Mathlib.Data.ZMod.Basic
 public import Mathlib.Data.Nat.Prime.Defs
@@ -51,6 +51,8 @@ def analysePrime (e : (WeierstrassCurve ℤ)) (p : Nat) : Option PrimeData :=
     some ⟨p, computePointCount e p, computeFrobeniusTrace e p⟩
   else none
 
+/-- A successful prime analysis certifies good reduction and returns its computed point count and
+trace. -/
 theorem analysePrime_correct (e : (WeierstrassCurve ℤ)) (p : Nat) (d : PrimeData)
     (h : analysePrime e p = some d) :
     isPrime p = true ∧ goodReduction e p = true ∧

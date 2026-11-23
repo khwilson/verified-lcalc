@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificates.AnalyticEvidencePredicates
+public import VerifiedLcalc.Certificate.Analytic.EvidencePredicates
 public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 
 /-! Structures containing analytic obligations for supplied evidence. -/

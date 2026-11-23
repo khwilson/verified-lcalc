@@ -1,9 +1,11 @@
-import VerifiedLcalc.Certification.CentralCertification
+import VerifiedLcalc.Verification.CentralCertification
 import VerifiedLcalcTests.Fixtures.AssumedCurve11Central
-import VerifiedLcalc.Certification.NegativeSign
+import VerifiedLcalc.Verification.NegativeSign
 import VerifiedLcalcTests.Fixtures.AssumedCurve11
-import VerifiedLcalc.Certification.NumericalCertification
+import VerifiedLcalc.Verification.NumericalCertification
 import VerifiedLcalcTests.Fixtures.AssumedCurve37
+
+set_option linter.hashCommand false
 
 -- This audit is opt-in. Its named modularity axiom is an expected dependency.
 -- The default Audit.lean and default certificate modules do not import it.

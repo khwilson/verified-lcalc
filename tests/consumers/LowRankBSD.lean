@@ -1,4 +1,4 @@
-import VerifiedLcalc.Certification.LowRankBSD
+import VerifiedLcalc.Verification.LowRankBSD
 import VerifiedLcalcTests.Fixtures.AssumedCurve11Central
 import CertifiedCurves
 

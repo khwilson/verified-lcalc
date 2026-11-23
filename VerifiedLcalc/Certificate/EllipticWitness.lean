@@ -1,12 +1,12 @@
 module
 
-public import VerifiedLcalc.Certificate.IntegralXSupport
-public import VerifiedLcalc.Certificates.CurveWitness
-public import VerifiedLcalc.Certificates.SpecialValue
+public import VerifiedLcalc.Certificate.Witnesses.IntegralPoints
+public import VerifiedLcalc.Certificate.Support.CurveProofs
+public import VerifiedLcalc.Certificate.Support.SpecialValue
 public import VerifiedLcalc.Certificate.Witnesses.EllipticWitness
-public import VerifiedLcalc.Certificates.TorsionFacts
-public import VerifiedLcalc.Certificates.AlgebraicRank
-public import VerifiedLcalc.Certificates.Regulator
+public import VerifiedLcalc.Certificate.Support.Torsion
+public import VerifiedLcalc.Certificate.Support.AlgebraicRank
+public import VerifiedLcalc.Certificate.Support.Regulator
 public import VerifiedLcalc.EllipticCurve.AlgebraicRank
 public import VerifiedLcalc.EllipticCurve.DerivativeCore
 public import VerifiedLcalc.EllipticCurve.Tate.WildRootCore

@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Scan
-public import VerifiedLcalc.Certificates.Artifacts
+public import VerifiedLcalc.Certificate.Artifacts.Data
 
 /-! # Structural checks for numerical certificate artifacts -/
 
@@ -27,6 +27,7 @@ instance (expected : Request) (artifact : Artifact) :
   unfold Accepts
   infer_instance
 
+/-- Executable artifact acceptance agrees with the witness specification. -/
 theorem accepts_iff_witnessAccepts (expected : Request) (artifact : Artifact) :
     Accepts expected artifact ↔ WitnessAccepts expected artifact := by
   constructor
@@ -39,6 +40,7 @@ theorem accepts_iff_witnessAccepts (expected : Request) (artifact : Artifact) :
 def check (expected : Request) (artifact : Artifact) : Bool :=
   decide (Accepts expected artifact)
 
+/-- The Boolean artifact check succeeds exactly when the request accepts the artifact. -/
 theorem check_correct (expected : Request) (artifact : Artifact) :
     check expected artifact = true ↔ Accepts expected artifact := by
   simp [check]
@@ -59,6 +61,8 @@ def validate (expected : Request) (artifact : Artifact) : Option (Checked expect
     some ⟨artifact, (accepts_iff_witnessAccepts _ _).mp ((check_correct _ _).mp h)⟩
   else none
 
+/-- Successful validation preserves the supplied artifact and proves acceptance for this request.
+-/
 theorem validate_correct {expected : Request} {artifact : Artifact} {c : Checked expected}
     (h : validate expected artifact = some c) :
     c.artifact = artifact ∧ Accepts expected artifact := by

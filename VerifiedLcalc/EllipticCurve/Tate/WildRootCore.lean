@@ -7,7 +7,7 @@ See LICENSES/PARI-GPL-2.0-or-later.txt and docs/WILD_ARITHMETIC.md.
 -/
 module
 public import VerifiedLcalc.EllipticCurve.Tate.WildTateCore
-public import VerifiedLcalc.Certificates.Transcripts
+public import VerifiedLcalc.Certificate.Support.Transcripts
 public import Mathlib.NumberTheory.LegendreSymbol.ZModChar
 
 /-! # Wild local root-number transcript arithmetic -/
@@ -164,6 +164,7 @@ def wildData? (e : (WeierstrassCurve ℤ)) : Option WildData :=
   let d : WildData := ⟨tateWitness? e 2, tateWitness? e 3⟩
   if d.Valid e then some d else none
 
+/-- The extracted wild data carry valid local Tate transcripts for the supplied equation. -/
 theorem wildData?_sound (e : (WeierstrassCurve ℤ)) (d : WildData)
     (h : wildData? e = some d) : d.Valid e := by
   unfold wildData? at h
