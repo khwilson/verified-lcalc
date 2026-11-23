@@ -1,6 +1,10 @@
 module
+
 public import VerifiedLcalc.Verification.NegativeSign
 public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
+
+/-! # Central vanishing and a rank bound from a negative tame root number -/
+
 @[expose] public section
 namespace VerifiedLcalc.Certification
 open Modularity EllipticCurve
@@ -12,7 +16,7 @@ theorem central_zero_of_tame_negative (e : (WeierstrassCurve ℤ))
     (hn : e.Δ ≠ 0) (v : MinimalityWitness) (hv : v.Valid e)
     (ht : tameAtWild e = true) (hw : tameSignFast e = -1) :
     (modularWitness e hn).formL 1 = 0 := by
-  letI : (e.baseChange ℚ).IsElliptic := ⟨by
+  let : (e.baseChange ℚ).IsElliptic := ⟨by
     apply isUnit_iff_ne_zero.mpr
     simpa only [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ, eq_intCast] using
       (show (e.Δ : ℚ) ≠ 0 by exact_mod_cast hn)⟩
@@ -20,6 +24,7 @@ theorem central_zero_of_tame_negative (e : (WeierstrassCurve ℤ))
   exact ((arithmeticModularWitness e hn).tameSign_eq (globalMinimal_of_witness e v hv) ht).trans
     ((tameSign_eq_fast e ht).trans hw)
 
+/-- A verified negative tame root number gives analytic order at least one at the center. -/
 theorem rank_lower_bound_of_tame_negative (e : (WeierstrassCurve ℤ))
     (hn : e.Δ ≠ 0) (v : MinimalityWitness) (hv : v.Valid e)
     (ht : tameAtWild e = true) (hw : tameSignFast e = -1) :

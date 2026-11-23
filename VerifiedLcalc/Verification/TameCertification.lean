@@ -3,6 +3,8 @@ module
 public import VerifiedLcalc.Verification.CentralCertification
 public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
 
+/-! # Analytic rank zero from a central enclosure and tame local data -/
+
 @[expose] public section
 namespace VerifiedLcalc.Certification
 open Modularity EllipticCurve
@@ -17,7 +19,7 @@ theorem certifyTameCentralModel (r : CentralResult)
     (hw : tameSignFast r.equation = r.rootNumber)
     (hp : CentralPayloadCorrect r) (hz : r.box.excludesZero = true) :
     analyticOrderAt (modularWitness r.equation hn).formL (1 : ℂ) = 0 := by
-  letI : (r.equation.baseChange ℚ).IsElliptic := ⟨by
+  let : (r.equation.baseChange ℚ).IsElliptic := ⟨by
     apply isUnit_iff_ne_zero.mpr
     simpa only [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ, eq_intCast] using
       (show (r.equation.Δ : ℚ) ≠ 0 by exact_mod_cast hn)⟩

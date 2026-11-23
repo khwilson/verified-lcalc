@@ -3,6 +3,8 @@ module
 public import VerifiedLcalc.EllipticCurve.Modularity.CentralSeries
 public import VerifiedLcalc.EllipticCurve.Central
 
+/-! # Soundness of central-value enclosures for a modular realization -/
+
 @[expose] public section
 namespace VerifiedLcalc.Modularity
 open EllipticCurve
@@ -20,7 +22,8 @@ theorem centralPayload_exp_le {r : CentralResult} (h : CentralPayloadCorrect r) 
 
 /-- Assemble actual series, prefix identity and tail majorant. Only the finite
 coefficient prefix needs identification; the actual global bound is proved. -/
-noncomputable def ModularRealization.centralSeriesEvidence_of_coefficients {e : (WeierstrassCurve ℤ)}
+noncomputable def ModularRealization.centralSeriesEvidence_of_coefficients
+    {e : WeierstrassCurve ℤ}
     (m : ModularRealization e) (r : CentralResult) (hr : CentralPayloadCorrect r)
     (_he : r.equation = e) (hN : r.conductor = m.level) (hw : r.rootNumber = m.rootNumber)
     (hc : r.coefficients = (List.range r.termLimit).map
@@ -49,7 +52,7 @@ noncomputable def ModularRealization.centralSeriesEvidence_of_coefficients {e : 
     have hq : Real.exp (-alpha) ≤ (r.geometricUpper : ℝ) := by
       simpa only [alpha, hN] using centralPayload_exp_le hr
     have hpow : Real.exp (-alpha * (j + 1 : ℕ)) ≤ (r.geometricUpper : ℝ) ^ (j + 1) := by
-      rw [show -alpha * (j + 1 : ℕ) = (j + 1 : ℕ) * (-alpha) by ring, Real.exp_nat_mul]
+      rw [show -alpha * (j + 1 : ℕ) = (j + 1 : ℕ) * (-alpha) by ring, Real.exp_natCast_mul]
       exact pow_le_pow_left₀ (Real.exp_nonneg _) hq _
     have habs : |1 + (m.rootNumber : ℝ)| = ((1 + r.rootNumber : ℤ).natAbs : ℝ) := by
       simp [hw]
