@@ -72,8 +72,12 @@ certify_ec EmptyGeneratorCount from
 example : EmptyGeneratorCount.generators.coordinates.length = 0 :=
   EmptyGeneratorCount.generators.count_valid
 
+example : EmptyGeneratorCount.certificate.algebraic.generatorCount = some 0 := rfl
+
 certify_ec UnwitnessedGeneratorCount from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"ngens":1}"#
+example : UnwitnessedGeneratorCount.certificate.algebraic.generatorCount = none := rfl
+
 run_cmd do
   if (← getEnv).contains `UnwitnessedGeneratorCount.generators.count_valid then
     throwError "An unsupported generator count became a theorem"

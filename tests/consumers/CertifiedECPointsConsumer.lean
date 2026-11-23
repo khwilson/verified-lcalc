@@ -56,6 +56,8 @@ section RationalGenerator
 
 open VerifiedLcalcTests.RationalIndependence
 
+example : Rank189Lean.certificate.algebraic.generatorCount = some 1 := rfl
+
 private def rationalFamily :=
   Rank189.certificate.algebraic.independentGeneratorPoints.get (by decide +kernel)
 
