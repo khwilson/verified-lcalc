@@ -618,8 +618,10 @@ run_cmd do
       unless fields.contains field do
         throwError "Remove obsolete witness field {record}.{field} from the certificate inventory"
   let isogeny := #[`isogenyEdge, `classSize, `classDegree, `isogenyDegrees, `isogenyMatrix]
+  let galois := #[`nonmaxPrimes, `nonmaxRadical, `adelicGenerators]
   cover ``EllipticWitness
-    (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++ isogeny)
+    (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++ isogeny ++ galois)
+  cover ``AdelicGeneratorsClaim #[`modulus, `rows]
   cover ``IsogenyEdgeClaim #[`target, `degree, `kernelX]
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
     `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol, `rootNumber]
