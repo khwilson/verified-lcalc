@@ -49,11 +49,11 @@ private theorem fixes_two (σ : K ≃ₐ[ℚ] K)
       simpa only [two_zsmul] using ht
     have hy := (Affine.Point.some_add_self_eq_zero_iff h).mp hadd
     rw [Affine.evalEval_polynomialY] at hy
-    simp [W, E, model, baseChange] at hy
-    have ey : y = 0 := by simpa using hy
+    have hy₂ : 2 * y = 0 := by simpa [W, E, model, baseChange] using hy
+    have ey : y = 0 := (mul_eq_zero.mp hy₂).resolve_left two_ne_zero
     subst y
-    have eqn := (Affine.equation_iff _ _).mp h.1
-    simp [W, E, model, baseChange] at eqn
+    have eqn : 0 = x ^ 3 - x := by
+      simpa [W, E, model, baseChange, sub_eq_add_neg] using (Affine.equation_iff _ _).mp h.1
     have hprod : x * (x - 1) * (x + 1) = 0 := by linear_combination -eqn
     rw [Affine.Point.map_some, Affine.Point.some.injEq]
     simp only [AlgEquiv.coe_toAlgHom, map_zero, and_true]
