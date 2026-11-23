@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.EllipticCurve.Modularity.Realization
+public import VerifiedLcalc.EllipticCurve.Modularity.RealizationData
 
 /-! Conductor and root-number compatibility witness data. -/
 
