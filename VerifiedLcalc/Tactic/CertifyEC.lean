@@ -5,6 +5,7 @@ public import VerifiedLcalc.Tactic.CertifyECData
 public import VerifiedLcalc.Tactic.CertifyECPoints
 public import VerifiedLcalc.Tactic.CertifyECInvariants
 public import VerifiedLcalc.Tactic.CertifyECIsogeny
+public import VerifiedLcalc.Tactic.CertifyECGalois
 public import VerifiedLcalc.Tactic.CertifyECRecord
 public import VerifiedLcalc.Tactic.CertifyECCatalogueRank
 public import VerifiedLcalc.Tactic.CertifyECMordellWeil
@@ -37,6 +38,9 @@ needed to bound the actual abc quality about the reported `abc_quality` decimal.
 The native isogeny class fields `class_size`, `class_deg`, `isogeny_degrees` and
 `isogeny_matrix` use `IntegralCurveProofs.isogenyClass` supplied with `with_proofs`.
 The matrix requires the reduced minimal models in lexicographic order.
+The Galois fields `nonmax_primes` and `nonmax_rad` use complete non-CM
+`IntegralCurveProofs.nonmaxSupport`. The field `adelic_gens` uses
+`IntegralCurveProofs.adelicGenerators` at the reported finite modulus.
 Prerequisite-dependent claims without the required evidence are reported as unverified. See
 `docs/LMFDB_INVARIANTS.md` for the exact mathematical outputs and trust boundary.
 JSON can supply `ainvs`, `ap` or `aplist`, and `integral_points` or
@@ -253,6 +257,8 @@ def certifyFields (name : Name) (input : TSyntax `term)
   certifyStoredInvariants base (← certifyProofAttachment base proofs)
   certifyIsogenyEdge base isogeny
   certifyIsogenyClass base
+  certifyNonmaxPrimes base
+  certifyAdelicGenerators base
   if let some result := central then certifyAnalytic base true result
   if let some result := derivative then certifyAnalytic base false result
   certifyRecord base
@@ -301,12 +307,13 @@ def certifyJson (name : Name) (text : String)
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
         "num_int_pts", "class_size", "class_deg", "isogeny_matrix", "isogeny_degrees",
+        "nonmax_primes", "nonmax_rad", "adelic_gens",
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
         ["regulator", "regulator_evidence", "real_period", "real_period_evidence",
           "tamagawa_product", "sha_an", "sha_an_evidence", "sha", "sha_primes"] ++
         algebraicKeys ++ localKeys ++
-          if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
-          then ["prime"] else []
+          if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
+              (CurveDataJson.optionalData j "adelic_gens").isSome then ["prime"] else []
       let checkedAbcQuality := (← getEnv).contains (base ++ `abc_quality)
       let checkedSpecialValue := (← getEnv).contains (base ++ `special_value_valid)
       let skipped := object.toList.filterMap fun (key, _) =>

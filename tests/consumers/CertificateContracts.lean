@@ -22,6 +22,11 @@ open VerifiedLcalc Lean Elab Command
 #check IsogenyClassOrdering
 #check IsogenyClassEvidence
 #check EllipticCertificate.isogenyClass
+#check NonmaxPrimeSupportFact
+#check AdelicGeneratorsClaim
+#check FiniteGaloisImageFact
+#check EllipticCertificate.nonmaxPrimes
+#check EllipticCertificate.adelicGenerators
 #check Box
 #check PrecisionPolicy
 #check EllipticCurve.MinimalityWitness
@@ -97,6 +102,8 @@ run_cmd do
     `VerifiedLcalc.Verification.DegreeTwoIsogeny,
     `VerifiedLcalc.Verification.DegreeTwoIsogenyRaw,
     `VerifiedLcalc.Verification.IsogenyClass,
+    `VerifiedLcalc.Certificate.Support.GaloisImage,
+    `VerifiedLcalc.Tactic.CertifyECGalois,
     `VerifiedLcalc.Analytic,
     `VerifiedLcalc.Verification.TorsionBoundFacts,
     `VerifiedLcalc.EllipticCurve.TorsionBound,

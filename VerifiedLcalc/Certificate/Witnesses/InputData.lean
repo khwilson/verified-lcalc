@@ -32,6 +32,13 @@ public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic
 
 namespace VerifiedLcalc
 
+/-- A finite generator report from the prime-zero Galois row. -/
+structure AdelicGeneratorsClaim where
+  /-- Reported reduction modulus, obtained from the source image level. -/
+  modulus : ℕ
+  /-- Row-major quadruples of least nonnegative matrix entries. -/
+  rows : List (ℕ × ℕ × ℕ × ℕ)
+
 /-- Catalogue references supplied for an integral equation. These fields record provenance. -/
 structure CatalogueMetadata (curve : WeierstrassCurve ℤ) where
   /-- LMFDB curve label (`lmfdb_label`). -/

@@ -42,6 +42,12 @@ structure EllipticWitness where
   isogenyMatrix : Option (List (List Nat)) := none
   /-- The claimed distinct minimum isogeny degrees from the input curve's row. -/
   isogenyDegrees : Option (List Nat) := none
+  /-- The reported complete exceptional-prime list. -/
+  nonmaxPrimes : Option (List Nat) := none
+  /-- The reported product of the exceptional primes. -/
+  nonmaxRadical : Option Nat := none
+  /-- The matrix generators reported for the adelic image reduced at its stated modulus. -/
+  adelicGenerators : Option AdelicGeneratorsClaim := none
   /-- Claims for the ordered tuple of b₂, b₄, b₆ and b₈. -/
   bInvariants : Option (Int × Int × Int × Int) := none
   /-- Claims for the ordered pair of c₄ and c₆. -/
