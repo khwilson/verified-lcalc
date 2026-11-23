@@ -391,3 +391,18 @@ separately from results using `ellipticModularity` or explicit precision
 hypotheses. Use the prescribed Lean and Python validation targets for
 implementation PRs. Stored expected ranks and rounded data may be compared
 with finished results. Witness construction uses independent evidence.
+
+### Geometric endomorphisms, minimum twists and modified Szpiro ratio
+
+The verifier accepts Lean proofs of the full geometric endomorphism ring and
+of minimum-conductor quadratic twists, including global minimality of the
+candidate model. It compares any corresponding exact JSON fields against the
+same proof record. A separate optional proof identifies the unique reduced
+minimizer and fundamental discriminant for an ordinary non-CM curve. The
+producer’s selection for exceptional or tied cases remains open.
+
+The modified Szpiro ratio has a directed-log checker from a minimal model,
+its proved algorithmic conductor norm and an explicit rational error bound.
+For 37.a1 the tests prove that the conductor norm is 37, give its trivial
+twist as a global minimum and verify a numerical enclosure independently of
+modularity. [TauCeti backlog TC-17](../TAUCETI_BACKLOG.md#tc-17--geometric-cm-and-minimum-conductor-quadratic-twists)

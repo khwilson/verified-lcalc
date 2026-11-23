@@ -7,6 +7,7 @@ module
 
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public import VerifiedLcalc.Tactic.CertifyECBSD
+public import VerifiedLcalc.Tactic.CertifyECGeometry
 public import VerifiedLcalc.Tactic.CertifyECIntegralPoints
 
 /-! Verify Lean rank evidence and bind it to the raw claims for the same equation. -/
@@ -111,6 +112,7 @@ def certifyProofAttachment (base : Name) (input : Option (TSyntax `term)) :
       | exact { toEllipticProofs := $raw }))
     pure name
   certifyBSDFacts base attachment
+  certifyGeometryFacts base attachment
   certifyRankClaims base curve attachment
   let support ← if let some facts := attachment then do
     let selected ← `(($facts).integralXSupport)

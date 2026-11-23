@@ -118,4 +118,14 @@ def hasOptionalProof (term : TSyntax `term) (label : Name) : CommandElabM Bool :
     | some ``Option.some => pure true
     | _ => throwError "Expected a known option constructor for {label}"
 
+/-- Select optional proof evidence from the shared curve-indexed attachment. -/
+def attachedFact (attachment : Option Ident) (field : Name) :
+    CommandElabM (Option (TSyntax `term)) := do
+  let some attachment := attachment | return none
+  let projection := mkIdent field
+  let selected ← `(($attachment).$projection)
+  if ← hasOptionalProof selected field then
+    some <$> `(($selected).get (by rfl))
+  else pure none
+
 end VerifiedLcalc.CertifyEC

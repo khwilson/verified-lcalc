@@ -348,3 +348,32 @@ the target radius is proved. The 17.a2 fixture already uses exact roots and
 a proved AGM enclosure for its supplied decimal.
 
 [Period formulas](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/Analysis/SpecialFunctions/EllipticIntegral/RealPeriod.lean)
+
+## TC-17 — geometric CM and minimum-conductor quadratic twists
+
+Status: geometric endomorphism ring and minimum-conductor witnesses are accepted
+by the certificate verifier. The proof of the conductor lower bound from the
+denominator of j is in
+[`ConductorDenominator.lean`](../VerifiedLcalc/UpstreamCandidates/TauCeti/ConductorDenominator.lean).
+The reduced equation of 37.a1 attains this bound across its quadratic twists.
+
+Target: TauCeti `Isogeny/Hom/ComplexMultiplication.lean` for the geometric
+endomorphism classification over the separable closure of ℚ. A classifier
+should prove that the full ring is ℤ or a specified order, including the
+exhaustivity of possible endomorphisms.
+
+Target: TauCeti `QuadraticTwist/` and
+`TateAlgorithm/Reduction/Conductor.lean` for an exhaustive finite candidate
+reduction over ℚ. Prove that at least one candidate attains the global
+minimum and describe equal-conductor candidates. The catalogue's choice
+among tied or exceptional candidates needs its own comparison. The denominator
+lemma reuses `exists_smul_eq_reducedMinimalModel`, `variableChange_j`,
+`algorithmicConductor_smul`, and
+`IsGlobalMinimal.dvd_absNorm_algorithmicConductor_iff`.
+[Pinned reduced-model API](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/Reduced.lean) · [Pinned conductor API](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/Reduction/Conductor.lean)
+
+The modified Szpiro checker uses Mathlib's `lowerLog_spec` and the exact
+algorithmic conductor norm, with global minimality and the norm identification
+supplied as proofs. A useful future bridge would derive the latter from a
+checked finite Tate transcript without invoking modularity.
+[Pinned directed logarithm](https://github.com/leanprover-community/mathlib4/blob/31ce06eaadf4a200c0e1407c5f10953cf606b8f8/Mathlib/Tactic/Inclusion/Extension/IntervalDyadicReal/Log.lean)

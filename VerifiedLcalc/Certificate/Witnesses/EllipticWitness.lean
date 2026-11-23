@@ -52,6 +52,14 @@ structure EllipticWitness where
   jInvariant : Option Rat := none
   /-- An error bound on the reported abc quality. -/
   abcQuality : Option AbcQualityClaim := none
+  /-- Catalogue code for the geometric endomorphism ring. -/
+  complexMultiplication : Option Int := none
+  /-- Claimed integral model of a minimum-conductor quadratic twist. -/
+  minimumTwistEquation : Option (WeierstrassCurve ℤ) := none
+  /-- Claimed fundamental discriminant of a minimum-conductor quadratic twist. -/
+  minimumTwistDiscriminant : Option Int := none
+  /-- Reported modified Szpiro ratio and optional absolute error radius. -/
+  modifiedSzpiroRatio : Option DecimalEnclosureClaim := none
   /-- Stored regulator value and any explicit error evidence. -/
   regulator : Option RegulatorClaim := none
   /-- Reported full real period and optional absolute error radius. -/
