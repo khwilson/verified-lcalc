@@ -27,15 +27,16 @@ example : ∃ basis : Module.Basis (Fin 2) (ZMod 2)
     (AddSubgroup.torsionBy W.toAffine.Point ((2 : ℕ) : ℤ)),
     ∀ g : Matrix.GeneralLinearGroup (Fin 2) (ZMod 2),
       g = 1 ↔ ∃ σ : K ≃ₐ[ℚ] K, ∀ P,
-        basis.equivFun (Multiplicative.toAdd (E.torsionGaloisAction 2 σ) P) =
+        basis.equivFun (Multiplicative.toAdd (E.torsionGaloisAction ((2 : ℕ) : ℤ) σ) P) =
           g.val *ᵥ basis.equivFun P := by
   obtain ⟨basis, correct⟩ := (ExactModTwo.certificate.adelicGenerators.get (by rfl)).correct
   refine ⟨basis, fun g => ?_⟩
   have h := correct g
   change g ∈ Subgroup.closure
       {a | a ∈ ([1] : List (Matrix.GeneralLinearGroup (Fin 2) (ZMod 2)))} ↔ _ at h
-  simpa only [List.mem_singleton, Set.ofPred_eq_eq_singleton, Subgroup.closure_singleton_one,
-    Subgroup.mem_bot] using h
+  simp only [List.mem_singleton, Set.ofPred_eq_eq_singleton, Subgroup.closure_singleton_one,
+    Subgroup.mem_bot] at h
+  exact h
 
 section
 
