@@ -14,6 +14,9 @@ run_cmd do
   let env ← getEnv
   let modules := env.allImportedModuleNames
   let root := `VerifiedLcalc.Certificate.Witnesses
+  for mod in modules do
+    if (`VerifiedLcalc.Verification).isPrefixOf mod || (`VerifiedLcalc.Tactic).isPrefixOf mod then
+      throwError "ordinary witness structures imported a checker or command module: {mod}"
   for optIn in [`VerifiedLcalc.Assumptions.ellipticModularity,
       `VerifiedLcalc.Assumptions.analyticOrder_le_one_implies_finrank] do
     if env.contains optIn then throwError "ordinary witnesses imported the axiom {optIn}"
