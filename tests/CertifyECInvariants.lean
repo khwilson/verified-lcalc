@@ -600,7 +600,8 @@ run_cmd do
   let rational := #[`discriminantSign, `jInvariant, `jIntegral, `abcQuality]
   let algebraic := #[`integralCoordinates, `integralFiberRoots, `numIntegralPoints,
     `generatorCoordinates, `generatorCount, `algebraicRank, `algebraicRankBounds,
-    `torsionGeneratorCoordinates, `infiniteOrderPoints, `independentPoints, `regulator]
+    `torsionGeneratorCoordinates, `infiniteOrderPoints, `independentPoints, `regulator,
+    `canonicalHeights]
   let arithmetic := #[`potentialGoodReduction, `minimalDiscriminantAbs, `conductor, `rootNumber,
     `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
     `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData,
@@ -608,7 +609,7 @@ run_cmd do
   let analytic := #[`centralResult, `derivativeResult, `catalogueAnalyticRank,
     `specialLValue, `realPeriod, `analyticSha, `sha, `shaPrimes]
   let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionPrimes,
-    `torsionGeneratorOrders]
+    `torsionGeneratorOrders, `torsionGrowthField]
   let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do
     let fields := Lean.getStructureFields (← getEnv) record
     for field in fields do
@@ -627,6 +628,8 @@ run_cmd do
   cover ``RegulatorClaim #[`reported, `error]
   cover ``DecimalEnclosureClaim #[`reported, `error]
   cover ``TorsionBoundWitness #[`firstPrime, `secondPrime, `bound]
+  cover ``TorsionGrowthFieldClaim #[`coefficients, `degree]
+  cover ``CanonicalHeightsClaim #[`reported, `errors]
 
 example : EmptyProofs.certificate.equationFacts.discriminant.isNone = true := rfl
 example : JZero.certificate.equationFacts.discriminant.map Subtype.val = some (-432) := rfl

@@ -385,31 +385,41 @@ structure MinimumQuadraticTwistFacts (curve : WeierstrassCurve ℤ)
 
 /-! ## Torsion over number fields and canonical heights -/
 
-/-- The full torsion group over the field presented by a specified irreducible rational
-polynomial. This describes one field and makes no primitive-growth or exhaustivity claim. -/
-structure TorsionGrowthFacts (curve : WeierstrassCurve ℤ) where
-  /-- The defining polynomial decoded from its ascending coefficient list. -/
+/-- A field presentation and a new torsion point over that field. -/
+structure TorsionGrowthFieldFact (curve : WeierstrassCurve ℤ) where
+  /-- The defining polynomial over ℚ. -/
   polynomial : Polynomial ℚ
-  /-- Irreducibility makes Mathlib's root-adjoining algebra a field. -/
+  /-- The polynomial presents a field by adjoining a root. -/
   irreducible : Irreducible polynomial
-  /-- The absolute degree of that field over ℚ. -/
-  degree : ℕ
-  /-- The reported degree equals the field degree. -/
-  degree_eq : Module.finrank ℚ (AdjoinRoot polynomial) = degree
+  /-- A finite-order point over this field outside the image of the rational points. -/
+  growth :
+    letI : Fact (Irreducible polynomial) := ⟨irreducible⟩
+    let K := AdjoinRoot polynomial
+    letI : DecidableEq K := Classical.decEq K
+    ∃ P : (curve.baseChange K).toAffine.Point, IsOfFinAddOrder P ∧
+      ∀ Q : (curve.baseChange ℚ).toAffine.Point,
+        WeierstrassCurve.Affine.Point.map (Algebra.ofId ℚ K) Q ≠ P
+
+/-- The full torsion group over a presented growth field.
+This describes one field and makes no primitive-growth or exhaustivity claim. -/
+structure TorsionGrowthFacts (curve : WeierstrassCurve ℤ)
+    extends TorsionGrowthFieldFact curve where
   /-- Nonsingularity after base change to the presented field. -/
   elliptic :
     letI : Fact (Irreducible polynomial) := ⟨irreducible⟩
     (curve.baseChange (AdjoinRoot polynomial)).IsElliptic
-  /-- The invariant factors in divisibility order, omitting factors of one. -/
-  torsion : List ℕ
+  /-- The number of nontrivial invariant factors. -/
+  factorCount : ℕ
+  /-- The invariant factors in divisibility order. -/
+  factor : Fin factorCount → ℕ
   /-- All factors have order at least two. -/
-  factors_nontrivial : ∀ n ∈ torsion, 2 ≤ n
+  factors_nontrivial : ∀ i, 2 ≤ factor i
   /-- Earlier invariant factors divide later ones. -/
-  factors_divide : torsion.Pairwise (· ∣ ·)
+  factors_divide : ∀ i j, i < j → factor i ∣ factor j
   /-- The product of cyclic groups is additively equivalent to the full torsion subgroup. -/
   equivalence :
     letI : Fact (Irreducible polynomial) := ⟨irreducible⟩
-    (∀ i : Fin torsion.length, ZMod (torsion.get i)) ≃+
+    (∀ i, ZMod (factor i)) ≃+
       AddCommGroup.torsion (curve.baseChange (AdjoinRoot polynomial)).toAffine.Point
 
 /-- Rational enclosures for the actual heights of the supplied rational points, in
@@ -470,6 +480,9 @@ structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).
   /-- The checked `ngens` count for the supplied generator coordinates. -/
   generatorCount : Option (GeneratorCountFacts
     (generators.getD (AffineMembership.empty (curve.baseChange ℚ))).coordinates) := none
+  /-- Checked Néron–Tate height enclosures for the generator list in its supplied order. -/
+  heights : Option (CanonicalHeightFacts
+    (generators.getD (AffineMembership.empty (curve.baseChange ℚ)))) := none
   /-- Membership for the supplied rational torsion generator coordinates. -/
   torsionGenerators : Option (AffineMembership (curve.baseChange ℚ)) := none
   /-- Exact orders of the listed torsion generators, when supplied and checked. -/

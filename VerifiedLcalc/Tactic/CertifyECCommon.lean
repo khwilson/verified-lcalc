@@ -30,6 +30,8 @@ deriving instance ToExpr for DecimalEnclosureClaim
 deriving instance ToExpr for SpecialLValueClaim
 deriving instance ToExpr for TorsionBoundWitness
 deriving instance ToExpr for IsogenyEdgeClaim
+deriving instance ToExpr for TorsionGrowthFieldClaim
+deriving instance ToExpr for CanonicalHeightsClaim
 deriving instance ToExpr for EllipticWitness
 
 

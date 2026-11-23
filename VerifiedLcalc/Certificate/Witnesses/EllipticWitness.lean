@@ -52,6 +52,10 @@ structure EllipticWitness where
   jInvariant : Option Rat := none
   /-- An error bound on the reported abc quality. -/
   abcQuality : Option AbcQualityClaim := none
+  /-- The field and degree from one torsion growth row. -/
+  torsionGrowthField : Option TorsionGrowthFieldClaim := none
+  /-- Reported canonical heights in the order of `generatorCoordinates`. -/
+  canonicalHeights : Option CanonicalHeightsClaim := none
   /-- Stored regulator value and any explicit error evidence. -/
   regulator : Option RegulatorClaim := none
   /-- Reported full real period and optional absolute error radius. -/

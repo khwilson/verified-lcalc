@@ -69,6 +69,22 @@ structure IsogenyEdgeClaim where
   /-- Optional x-coordinate of a kernel point with y=0. -/
   kernelX : Option Rat := none
 
+/-- The field presentation and absolute degree from one `ec_torsion_growth` row. -/
+structure TorsionGrowthFieldClaim where
+  /-- Integral coefficients in ascending order. -/
+  coefficients : List ℤ
+  /-- The claimed absolute field degree. -/
+  degree : ℕ
+  deriving Repr, DecidableEq
+
+/-- The decimal heights from `ec_mwbsd`, ordered by the accompanying `gens`. -/
+structure CanonicalHeightsClaim where
+  /-- The decoded height centers in generator order. -/
+  reported : List ℚ
+  /-- Optional absolute error radii in the same order. -/
+  errors : Option (List ℚ) := none
+  deriving Repr, DecidableEq
+
 /-- A stored regulator decimal and optional explicit absolute-error evidence. -/
 structure RegulatorClaim where
   /-- Exact rational interpretation of the stored decimal. -/

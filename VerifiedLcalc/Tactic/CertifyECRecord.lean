@@ -130,12 +130,20 @@ private def completeIntegralPointsTerm (base : Name) : CommandElabM (TSyntax `te
     return ← `(some $(rootIdent name))
   `(none)
 
+private def optionalFactTerm (base field : Name) : CommandElabM (TSyntax `term) := do
+  let name := base ++ field
+  if (← getEnv).contains name then
+    `(some $(rootIdent name))
+  else
+    `(none)
+
 private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let integral ← integralMembershipTerm base
   let fibers ← integralYFiberTerm base
   let completeIntegralPoints ← completeIntegralPointsTerm base
   let generators ← rationalMembershipTerm (base ++ `generators)
   let generatorCount ← generatorCountTerm base
+  let heights ← optionalFactTerm base `canonical_heights_fact
   let torsionGenerators ← rationalMembershipTerm (base ++ `torsion_generators)
   let torsionOrders ← torsionGeneratorOrderTerm base
   let infinite ← infiniteOrderFactsTerm base
@@ -146,7 +154,7 @@ private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := d
   let regulator ← regulatorFactsTerm base
   `({ integralPoints := $integral, integralYFibers := $fibers,
       completeIntegralPoints := $completeIntegralPoints, generators := $generators,
-      generatorCount := $generatorCount,
+      generatorCount := $generatorCount, heights := $heights,
       torsionGenerators := $torsionGenerators, torsionGeneratorOrders := $torsionOrders,
       infiniteOrderPoints := $infinite,
       independentPoints := $independent, rankLowerBound := $lowerBound,
@@ -199,13 +207,6 @@ private def torsionFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSynt
       cardinality := $exactCardinality, cyclicStructure := $cyclic,
       twoFactorStructure := $twoFactor, primeSupport := $primeSupport })
 
-private def optionalFactTerm (base field : Name) : CommandElabM (TSyntax `term) := do
-  let name := base ++ field
-  if (← getEnv).contains name then
-    `(some $(rootIdent name))
-  else
-    `(none)
-
 /-- Emit the indexed public certificate with a standard-axiom dependency audit. -/
 def certifyRecord (base : Name) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
@@ -219,6 +220,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let arithmetic ← arithmeticFactsTerm base curve
   let analytic ← analyticFactsTerm base curve
   let torsion ← torsionFactsTerm base curve
+  let torsionGrowthField ← optionalFactTerm base `torsion_growth_field_fact
   let name := base ++ `certificate
   let certificate := rootIdent name
   let edgeName := base ++ `degree_two_isogeny
@@ -241,6 +243,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     arithmetic := $arithmetic
     analytic := $analytic
     torsion := $torsion
+    torsionGrowthField := $torsionGrowthField
     isogeny := $isogeny
     isogenyClass := $isogenyClass
     realPeriod := $realPeriod

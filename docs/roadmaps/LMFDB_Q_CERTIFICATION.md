@@ -259,10 +259,16 @@ Reuse
 `minimalRealPeriod`, `canonicalHeightQuadratic`,
 `Point.exists_abs_naiveHeight_nsmul_div_sq_sub_le`,
 `regulator_eq_abs_det_neronTateGramMatrix`, `abcQuality`, and the
-modified expression in `Szpiro.lean`. Prove a computable rational error
-bound for the height limit, including the factor relating that normalization
-to the stored heights, then enclose the pairing and determinant for an M2
-basis. Prove period integrals with tail/error bounds for both real-component
+modified expression in `Szpiro.lean`. The command accepts proved enclosures
+for the `gens` height list. The [Cremona producer](https://github.com/JohnCremona/ecdata/blob/6fedd3ab463a70e52061ebc0b04832ad19fd2e01/scripts/files.py#L157-L166)
+applies Sage `Point.height` in list order. Sage uses the larger BSD normalization
+and illustrates the limit of the logarithmic x-coordinate height divided by
+the square of the multiplication factor. TauCeti’s
+`Point.tendsto_naiveHeight_two_pow_nsmul_div_four_pow` supplies this same
+doubling limit over ℚ. The reusable upstream gap is a computable bound on the
+difference between the canonical and naïve heights on a nonsingular rational
+Weierstrass model, with explicit dependence on that model. Use it to enclose
+the pairing and determinant for an M2 basis. Prove period integrals with tail/error bounds for both real-component
 types, plus a comparison between the complex area integral and covolume of
 the Néron period lattice. Use the verified metrics to evaluate Faltings height
 and the change to semistable base change for stable height. An exact Faltings
@@ -320,10 +326,12 @@ each triple under the appropriate subgroup and modular-curve comparison.
 Accept conjugate bases, a proper image, and an adelic entanglement example
 where prime-wise images alone lose information.
 
-**G2 · Torsion growth.** Given irreducible $f\in\mathbb Q[X]$, build its
-number field, verify $[K:\mathbf Q]=\deg f$, and prove an isomorphism
-between the full torsion of (E_K) and the given finite product of cyclic
-groups. Generalize M1 using reduction at good places with checked residue
+**G2 · Torsion growth.** The command proves the polynomial degree and
+root-adjoining dimension, and checks supplied irreducibility and a new
+finite-order point outside the image of rational base change. It exports
+these results for the one presented number field. The full-group target
+requires an isomorphism between the full torsion of $E_K$ and the given
+finite product of cyclic groups. Generalize M1 using reduction at good places with checked residue
 degrees. A complete growth assertion over a prescribed degree set requires
 a proved order bound, classification of the relevant torsion-field stabilizers
 from G1, a check that no proper subfield has the same growth, and identification of the represented fields up to the stated
