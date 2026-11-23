@@ -572,7 +572,7 @@ run_cmd do
     for field in tracked do
       unless fields.contains field do
         throwError "Remove obsolete witness field {record}.{field} from the certificate inventory"
-  let isogeny := #[`isogenyEdge]
+  let isogeny := #[`isogenyEdge, `classSize, `classDegree, `isogenyDegrees, `isogenyMatrix]
   cover ``EllipticWitness
     (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++ isogeny)
   cover ``IsogenyEdgeClaim #[`target, `degree, `kernelX]

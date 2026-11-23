@@ -22,10 +22,7 @@ example (h : Exhaustive) :
 
 section
 
-set_option linter.concreteInstances false
-set_option linter.unusedSectionVars false
-
-variable [h : Fact Exhaustive]
+variable {E : WeierstrassCurve ℚ} [h : SingletonModel E]
 
 example : Class37.certificate.isogenyClass =
     some ⟨Class37.isogeny_class, some Class37.isogeny_matrix_order⟩ := rfl
@@ -102,23 +99,20 @@ run_cmd do
 
 section
 
-set_option linter.concreteInstances false
-set_option linter.unusedSectionVars false
-
-variable [h : Fact Exhaustive]
+variable {E : WeierstrassCurve ℚ} [h : SingletonModel E]
 
 run_cmd do
   rejectClass `WrongSize (← `(certify_ec WrongSize from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"class_size":2}"#
-      with_proofs (proofAttachment h.out))) (some "class_size")
+      with_proofs (proofAttachment h.complete))) (some "class_size")
   rejectClass `WrongClassDegree (← `(certify_ec WrongClassDegree from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"class_deg":2}"#
-      with_proofs (proofAttachment h.out))) (some "class_deg")
+      with_proofs (proofAttachment h.complete))) (some "class_deg")
   rejectClass `WrongMatrix (← `(certify_ec WrongMatrix from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"isogeny_matrix":[[2]]}"#
-      with_proofs (proofAttachment h.out))) (some "isogeny_matrix")
+      with_proofs (proofAttachment h.complete))) (some "isogeny_matrix")
   rejectClass `WrongDegrees (← `(certify_ec WrongDegrees from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"isogeny_degrees":[2]}"#
-      with_proofs (proofAttachment h.out))) (some "isogeny_degrees")
+      with_proofs (proofAttachment h.complete))) (some "isogeny_degrees")
 
 end

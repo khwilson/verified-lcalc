@@ -4,6 +4,7 @@ Part of verified-lcalc.
 Authors: Kevin Wilson
 -/
 import VerifiedLcalc.Certificates
+import VerifiedLcalc.Certificate.Witnesses
 import Lean
 
 /-! This consumer checks the public data contracts without importing certification backends. -/
