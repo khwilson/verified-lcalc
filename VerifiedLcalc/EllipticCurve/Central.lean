@@ -8,7 +8,7 @@ module
 public import VerifiedLcalc.EllipticCurve.CentralFinite
 public import VerifiedLcalc.EllipticCurve.CentralTail
 public import VerifiedLcalc.EllipticCurve.Coefficients
-public import VerifiedLcalc.Certificate.Witnesses.CentralSeriesEvidence
+public import VerifiedLcalc.Certificate.Witnesses.Analytic
 
 /-! Soundness results for central-value series evidence. -/
 

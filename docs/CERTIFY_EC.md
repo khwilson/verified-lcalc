@@ -128,18 +128,20 @@ import VerifiedLcalc.Certificate.Witnesses.EllipticWitness
 
 For the checked output type, import
 `VerifiedLcalc.Certificate.Witnesses.EllipticCertificate`. For just the
-Mordell–Weil rank bounds, import `VerifiedLcalc.Certificate.Witnesses.AlgebraicRank`.
+Mordell–Weil rank bounds, import
+`VerifiedLcalc.Certificate.Witnesses.Algebraic`.
 The `VerifiedLcalc.Certificate.Witnesses` umbrella makes all ordinary structures available.
-The raw input imports Mathlib and sibling witness structures. For example,
-its rank bounds use Mathlib’s `Module.finrank` on the rational point group,
-and its special-value claim stores the reported value and error as rationals.
+The raw input contains optional supplied claims; checked rank bounds are part of
+`IntegralCurveProofs`.
 The [import regression](../tests/consumers/RawWitnessImports.lean) checks
 the raw input’s dependency boundary in Lean.
 
-The checked output includes upstream types such as TauCeti’s regulator and
-project types such as the modular realization used in conditional L-value
-statements. The [module map](CERTIFICATE_CONTRACT_LAYOUT.md) lists the
-structures by subject.
+The [module map](CERTIFICATE_CONTRACT_LAYOUT.md) lists the structures by
+subject. The witness source is organized into `FinitePrimes`,
+`Analytic`, `Algebraic`, and `Invariants`, with shared supplied-field records
+under `InputData` and the two aggregate records at the witness root. The
+ordinary umbrella excludes assumption-dependent declarations; import
+`Certificate.Witnesses.Assumptions` when those declarations are needed.
 
 The checked certificate’s `equationFacts` and `rational` fields hold exact invariants. The `algebraic`
 field holds membership of supplied points, complete

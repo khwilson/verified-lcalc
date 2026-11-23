@@ -5,31 +5,20 @@ Authors: Kevin Wilson
 -/
 module
 
+public import VerifiedLcalc.Certificate.Witnesses.Invariants
 public import VerifiedLcalc.Certificate.LocalReductionSpecs
-public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
+public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReductionSpec
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Tamagawa.Product
 public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Curve
-public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReductionSpec
 
-/-! # Checked arithmetic fact structures -/
+/-! # Reduction at finite primes and arithmetic coefficients -/
 
 @[expose] public section
 
 namespace VerifiedLcalc
+
 open EllipticCurve NumberField WeierstrassCurve
 
-/-- Arithmetic facts conditional on an explicit modular realization of the curve. -/
-structure ModularArithmeticFacts (curve : WeierstrassCurve ℤ) where
-  /-- The checked level of the modular realization. -/
-  conductor : Option { n : ℕ //
-    ∀ M : Modularity.ArithmeticModularRealization curve, M.level = n } := none
-  /-- The checked root number of the modular realization. -/
-  rootNumber : Option { w : ℤ //
-    ∀ M : Modularity.ArithmeticModularRealization curve, M.rootNumber = w } := none
-  /-- Checked prime-power exponents of the level, for the supplied primes only. -/
-  conductorValuations : Option { rows : List (ℕ × ℕ) //
-    ∀ M : Modularity.ArithmeticModularRealization curve,
-      ∀ row ∈ rows, row.1.Prime ∧ M.level.factorization row.1 = row.2 } := none
 /-- An intrinsic local Tamagawa factor with its completed-field equality. -/
 structure LocalTamagawaFact (curve : WeierstrassCurve ℤ) where
   /-- The prime at which the factor was checked. -/
@@ -40,6 +29,7 @@ structure LocalTamagawaFact (curve : WeierstrassCurve ℤ) where
   correct :
     letI : Fact (prime : ℕ).Prime := ⟨prime.property⟩
     (curve.baseChange ℚ).tamagawaNumberAt (rationalPlace (prime : ℕ)) = value
+
 /-- An exact multiplicative-family index, or a proof of additive reduction at this prime. -/
 structure LocalKodairaFact (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
   /-- The prime at which the reduction symbol was checked. -/
@@ -52,6 +42,7 @@ structure LocalKodairaFact (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ
     match index with
     | some n => (curve.baseChange ℚ).reductionSymbol (RationalLocalRing (prime : ℕ)) = .I n
     | none => ∀ n, (curve.baseChange ℚ).reductionSymbol (RationalLocalRing (prime : ℕ)) ≠ .I n
+
 /-- Arithmetic facts about a verified globally minimal integral model of the curve. -/
 structure MinimalModelArithmeticFacts (curve : WeierstrassCurve ℤ)
     [(curve.baseChange ℚ).IsElliptic] where
@@ -79,6 +70,7 @@ structure MinimalModelArithmeticFacts (curve : WeierstrassCurve ℤ)
       row.tamagawaNumber = none ∧ row.Spec curve } := none
   /-- Checked canonical Kodaira facts at the supplied primes. -/
   kodaira : List (LocalKodairaFact curve) := []
+
 /-- Optional arithmetic facts indexed by the same nonsingular integral equation. -/
 structure ArithmeticFacts (curve : WeierstrassCurve ℤ)
     [(curve.baseChange ℚ).IsElliptic] where

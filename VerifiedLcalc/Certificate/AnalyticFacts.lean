@@ -9,7 +9,7 @@ public import VerifiedLcalc.Verification.GeneralCertification
 public import VerifiedLcalc.Verification.DerivativeEvaluator
 public import VerifiedLcalc.Verification.Precision
 public import VerifiedLcalc.Certificate.Support.SpecialValue
-public import VerifiedLcalc.Certificate.Witnesses.AnalyticFacts
+public import VerifiedLcalc.Certificate.Witnesses.Analytic
 
 /-!
 # Typed numerical and analytic evidence

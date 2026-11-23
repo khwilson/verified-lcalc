@@ -9,7 +9,7 @@ public import VerifiedLcalc.EllipticCurve.Modularity.RealizationIndependence
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
 public import VerifiedLcalc.Verification.CentralEvaluator
 public import VerifiedLcalc.EllipticCurve.MinimalArithmetic
-public import VerifiedLcalc.Certificate.Witnesses.ArithmeticCompatibility
+public import VerifiedLcalc.Certificate.Witnesses.Invariants
 
 /-! Soundness results for explicit modular arithmetic compatibility. -/
 

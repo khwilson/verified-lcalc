@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.Transcripts
+public import VerifiedLcalc.Certificate.Witnesses.InputData
 
 /-! # Compatibility path for finite reduction transcripts -/
 

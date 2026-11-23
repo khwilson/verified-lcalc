@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.Torsion
+public import VerifiedLcalc.Certificate.Witnesses.Algebraic
 
 /-! # Compatibility path and derived torsion projections -/
 

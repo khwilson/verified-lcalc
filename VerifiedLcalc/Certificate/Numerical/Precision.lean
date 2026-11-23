@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.PrecisionPolicy
+public import VerifiedLcalc.Certificate.Witnesses.InputData
 
 /-! Immutable precision configuration shared by numerical certificates. -/
 

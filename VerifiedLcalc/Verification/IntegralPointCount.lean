@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.IntegralPoints
+public import VerifiedLcalc.Certificate.Witnesses.Algebraic
 public import VerifiedLcalc.Verification.CurveData
 public import Mathlib.Data.Finset.Union
 

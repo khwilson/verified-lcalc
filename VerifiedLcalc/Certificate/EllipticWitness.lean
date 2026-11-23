@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.IntegralPoints
+public import VerifiedLcalc.Certificate.Witnesses.EllipticCertificate
 public import VerifiedLcalc.Certificate.Support.CurveProofs
 public import VerifiedLcalc.Certificate.Support.SpecialValue
 public import VerifiedLcalc.Certificate.Witnesses.EllipticWitness

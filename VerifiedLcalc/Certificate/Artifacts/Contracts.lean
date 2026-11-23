@@ -5,8 +5,8 @@ Authors: Kevin Wilson
 -/
 module
 
+public import VerifiedLcalc.Certificate.Artifacts.ScanWitness
 public import VerifiedLcalc.Certificate.Witnesses.ArtifactData
-public import VerifiedLcalc.Certificate.Witnesses.Scan
 
 /-! Mathematical acceptance predicate for exact artifact data. -/
 

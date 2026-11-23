@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.NumericalData
+public import VerifiedLcalc.Certificate.Witnesses.InputData
 public import VerifiedLcalc.Certificate.Numerical.Intervals
 public import VerifiedLcalc.Certificate.Numerical.Precision
 public import VerifiedLcalc.Certificate.Support.WeierstrassInstances

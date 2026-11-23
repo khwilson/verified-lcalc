@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.LocalClaims
+public import VerifiedLcalc.Certificate.Witnesses.InputData
 public import VerifiedLcalc.EllipticCurve.Tate.RationalLocalRing
 public import Mathlib.Algebra.Field.ZMod
 public import TauCeti.AlgebraicGeometry.EllipticCurve.PointCount

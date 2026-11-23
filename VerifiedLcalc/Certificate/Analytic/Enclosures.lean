@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.Scan
+public import VerifiedLcalc.Certificate.Artifacts.ScanWitness
 public import VerifiedLcalc.Certificate.Analytic.EnclosurePredicates
 
 import Mathlib.Data.Rat.Cast.Order

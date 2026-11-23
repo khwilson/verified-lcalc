@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.Enclosures
+public import VerifiedLcalc.Certificate.Witnesses.InputData
 public import Mathlib.Basic.Complex.Basic
 
 /-! Exact coordinate-rectangle semantics used by analytic witness structures. -/

@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.SpecialValue
+public import VerifiedLcalc.Certificate.Witnesses.Analytic
 
 /-! # Compatibility path for special-value facts -/
 
