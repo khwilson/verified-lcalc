@@ -32,6 +32,13 @@ public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic
 
 namespace VerifiedLcalc
 
+/-- A finite generator report from the prime-zero Galois row. -/
+structure AdelicGeneratorsClaim where
+  /-- Reported reduction modulus, obtained from the source image level. -/
+  modulus : ℕ
+  /-- Row-major quadruples of least nonnegative matrix entries. -/
+  rows : List (ℕ × ℕ × ℕ × ℕ)
+
 /-- Catalogue references supplied for an integral equation. These fields record provenance. -/
 structure CatalogueMetadata (curve : WeierstrassCurve ℤ) where
   /-- LMFDB curve label (`lmfdb_label`). -/
@@ -68,6 +75,20 @@ structure IsogenyEdgeClaim where
   degree : Nat
   /-- Optional x-coordinate of a kernel point with y=0. -/
   kernelX : Option Rat := none
+
+/-- The field presentation and absolute degree from one `ec_torsion_growth` row. -/
+structure TorsionGrowthFieldClaim where
+  /-- Integral coefficients in ascending order. -/
+  coefficients : List ℤ
+  /-- The claimed absolute field degree. -/
+  degree : ℕ
+
+/-- The decimal heights from `ec_mwbsd`, ordered by the accompanying `gens`. -/
+structure CanonicalHeightsClaim where
+  /-- The decoded height centers in generator order. -/
+  reported : List ℚ
+  /-- Optional absolute error radii in the same order. -/
+  errors : Option (List ℚ) := none
 
 /-- A stored regulator decimal and optional explicit absolute-error evidence. -/
 structure RegulatorClaim where

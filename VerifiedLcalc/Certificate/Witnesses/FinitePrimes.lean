@@ -11,6 +11,7 @@ public import VerifiedLcalc.EllipticCurve.Tate.ArithmeticSpecs
 public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReductionSpec
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Galois
+public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.Hom.ComplexMultiplication
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.MulByInt.Torsion.Structure
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Tamagawa.Product
 public import TauCeti.AlgebraicGeometry.EllipticCurve.TateModule.Galois
@@ -28,6 +29,8 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Cu
   finite transcript validity, potential good reduction, and prime-indexed and consecutive
   L-function coefficients. Its modular facts require an explicit arithmetic realization.
 * `FiniteGaloisImageFact` and `PadicGaloisImageFact` give exact images in supplied bases.
+* `NonmaxPrimeSupportFact` proves complete non-CM exceptional support and determines
+  the radical as the product of those primes.
 * `AdelicGaloisImageClaim`, `PrimeGaloisImageClaim`, `SerreInvariantClaim` and
   `GaloisImageClaims` hold producer data whose interpretation needs further comparison theorems.
 -/
@@ -160,20 +163,19 @@ structure FiniteGaloisImageFact (curve : WeierstrassCurve ℤ)
     [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)] where
   /-- The torsion modulus. -/
   modulus : ℕ+
-  /-- The ordered basis of the geometric torsion over the residue ring. -/
-  basis : Module.Basis (Fin 2) (ZMod (modulus : ℕ))
-    (AddSubgroup.torsionBy ((curve.baseChange ℚ).baseChange (AlgebraicClosure ℚ)).toAffine.Point
-      ((modulus : ℕ) : ℤ))
   /-- Invertible matrices generating the image in the supplied basis. -/
   generators : List (Matrix.GeneralLinearGroup (Fin 2) (ZMod (modulus : ℕ)))
-  /-- Membership is equivalent to acting on the geometric torsion as a rational Galois
-  automorphism in the supplied basis. -/
-  correct : ∀ g, g ∈ Subgroup.closure {g | g ∈ generators} ↔
-    ∃ σ : AlgebraicClosure ℚ ≃ₐ[ℚ] AlgebraicClosure ℚ, ∀ P,
-      basis.equivFun
-          (Multiplicative.toAdd
-            ((curve.baseChange ℚ).torsionGaloisAction ((modulus : ℕ) : ℤ) σ) P) =
-        (g : Matrix (Fin 2) (Fin 2) (ZMod (modulus : ℕ))) *ᵥ basis.equivFun P
+  /-- In an ordered basis over the residue ring, membership is equivalent to acting
+  on the full geometric torsion as a rational Galois automorphism. -/
+  correct : ∃ basis : Module.Basis (Fin 2) (ZMod (modulus : ℕ))
+      (AddSubgroup.torsionBy ((curve.baseChange ℚ).baseChange (AlgebraicClosure ℚ)).toAffine.Point
+        ((modulus : ℕ) : ℤ)),
+    ∀ g, g ∈ Subgroup.closure {g | g ∈ generators} ↔
+      ∃ σ : AlgebraicClosure ℚ ≃ₐ[ℚ] AlgebraicClosure ℚ, ∀ P,
+        basis.equivFun
+            (Multiplicative.toAdd
+              ((curve.baseChange ℚ).torsionGaloisAction ((modulus : ℕ) : ℤ) σ) P) =
+          (g : Matrix (Fin 2) (Fin 2) (ZMod (modulus : ℕ))) *ᵥ basis.equivFun P
 
 /-- The exact image on the full Tate module over the algebraic closure of the rationals.
 The subgroup carries the entire prime-adic conclusion. -/
@@ -250,5 +252,18 @@ structure GaloisImageClaims (curve : WeierstrassCurve ℤ) where
   nonmaxRadical : Option ℕ+ := none
   /-- The producer's list of exceptional-prime Serre triples. -/
   serreInvariants : Option (List (SerreInvariantClaim curve)) := none
+
+/-- Complete non-CM exceptional support for the local integral Tate-module images. -/
+structure NonmaxPrimeSupportFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The geometric endomorphism ring consists of the integer multiplications. -/
+  nonCM : ¬ (curve.baseChange ℚ).HasGeometricCM
+  /-- The complete finite set of exceptional primes. -/
+  primes : Finset Nat.Primes
+  /-- At each rational prime, the actual integral Tate-module image in a supplied basis
+  is proper precisely when the prime belongs to the finite set. -/
+  complete :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    ∀ p : Nat.Primes, ∃ image : PadicGaloisImageFact curve p, p ∈ primes ↔ image.image ≠ ⊤
 
 end VerifiedLcalc

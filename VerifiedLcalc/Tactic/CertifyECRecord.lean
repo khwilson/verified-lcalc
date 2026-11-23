@@ -128,11 +128,19 @@ private def completeIntegralPointsTerm (base : Name) : CommandElabM (TSyntax `te
     return ← `(some $(rootIdent name))
   `(none)
 
+private def optionalFactTerm (base field : Name) : CommandElabM (TSyntax `term) := do
+  let name := base ++ field
+  if (← getEnv).contains name then
+    `(some $(rootIdent name))
+  else
+    `(none)
+
 private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let integral ← integralPointsTerm base
   let fibers ← integralYFiberTerm base
   let completeIntegralPoints ← completeIntegralPointsTerm base
   let generators ← rationalPointsTerm (base ++ `generators)
+  let heights ← optionalFactTerm base `canonical_heights_fact
   let infinite ← infiniteOrderFactsTerm base
   let independent ← independenceFactsTerm base `independent_points_eq
   let independentGenerators ← independenceFactsTerm base `independent_generator_points_eq
@@ -142,6 +150,7 @@ private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := d
   let regulator ← regulatorFactsTerm base
   `({ integralPoints := $integral, integralYFibers := $fibers,
       completeIntegralPoints := $completeIntegralPoints, generators := $generators,
+      heights := $heights,
       infiniteOrderPoints := $infinite,
       independentPoints := $independent, independentGeneratorPoints := $independentGenerators,
       rankLowerBound := $lowerBound,
@@ -192,13 +201,6 @@ private def torsionWitnessTerm (base : Name) (curve : Ident) : CommandElabM (TSy
     cardinality := $exactCardinality
     primeSupport := $primeSupport })
 
-private def optionalFactTerm (base field : Name) : CommandElabM (TSyntax `term) := do
-  let name := base ++ field
-  if (← getEnv).contains name then
-    `(some $(rootIdent name))
-  else
-    `(none)
-
 /-- Emit the indexed public certificate with a standard-axiom dependency audit. -/
 def certifyRecord (base : Name) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
@@ -212,6 +214,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let arithmetic ← arithmeticFactsTerm base curve
   let analytic ← analyticFactsTerm base curve
   let torsion ← torsionWitnessTerm base curve
+  let torsionGrowthField ← optionalFactTerm base `torsion_growth_field_fact
   let name := base ++ `certificate
   let certificate := rootIdent name
   let edgeName := base ++ `degree_two_isogeny
@@ -222,6 +225,11 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let isogenyClass ← if (← getEnv).contains className then
     `(some ⟨$(rootIdent className), ($(rootIdent (base ++ `isogeny_class_evidence))).ordering⟩)
   else `(none)
+  let nonmaxPrimes ← optionalFactTerm base `nonmax_prime_support
+  let adelicGenerators ← optionalFactTerm base `adelic_generator_fact
+  let cm ← optionalFactTerm base `cm_fact
+  let twist ← optionalFactTerm base `minimum_quadratic_twist_evidence
+  let szpiroRatio ← optionalFactTerm base `szpiro_ratio_fact
   let realPeriod ← optionalFactTerm base `real_period_fact
   let tamagawaProduct ← optionalFactTerm base `tamagawa_product_fact
   let analyticSha ← optionalFactTerm base `analytic_sha_fact
@@ -234,8 +242,14 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     arithmetic := $arithmetic
     analytic := $analytic
     torsion := $torsion
+    torsionGrowthField := $torsionGrowthField
     isogeny := $isogeny
     isogenyClass := $isogenyClass
+    nonmaxPrimes := $nonmaxPrimes
+    adelicGenerators := $adelicGenerators
+    complexMultiplication := $cm
+    minimumQuadraticTwist := $twist
+    modifiedSzpiroRatio := $szpiroRatio
     realPeriod := $realPeriod
     tamagawaProduct := $tamagawaProduct
     analyticSha := $analyticSha

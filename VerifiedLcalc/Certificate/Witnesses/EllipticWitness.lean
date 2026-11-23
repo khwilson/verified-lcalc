@@ -42,6 +42,12 @@ structure EllipticWitness where
   isogenyMatrix : Option (List (List Nat)) := none
   /-- The claimed distinct minimum isogeny degrees from the input curve's row. -/
   isogenyDegrees : Option (List Nat) := none
+  /-- The reported complete exceptional-prime list. -/
+  nonmaxPrimes : Option (List Nat) := none
+  /-- The reported product of the exceptional primes. -/
+  nonmaxRadical : Option Nat := none
+  /-- The matrix generators reported for the adelic image reduced at its stated modulus. -/
+  adelicGenerators : Option AdelicGeneratorsClaim := none
   /-- Claims for the ordered tuple of b₂, b₄, b₆ and b₈. -/
   bInvariants : Option (Int × Int × Int × Int) := none
   /-- Claims for the ordered pair of c₄ and c₆. -/
@@ -52,6 +58,18 @@ structure EllipticWitness where
   jInvariant : Option Rat := none
   /-- An error bound on the reported abc quality. -/
   abcQuality : Option AbcQualityClaim := none
+  /-- Catalogue code for the geometric endomorphism ring. -/
+  complexMultiplication : Option Int := none
+  /-- Claimed integral model of a minimum-conductor quadratic twist. -/
+  minimumTwistEquation : Option (WeierstrassCurve ℤ) := none
+  /-- Claimed fundamental discriminant of a minimum-conductor quadratic twist. -/
+  minimumTwistDiscriminant : Option Int := none
+  /-- Reported modified Szpiro ratio and optional absolute error radius. -/
+  modifiedSzpiroRatio : Option DecimalEnclosureClaim := none
+  /-- The field and degree from one torsion growth row. -/
+  torsionGrowthField : Option TorsionGrowthFieldClaim := none
+  /-- Reported canonical heights in the order of `generatorCoordinates`. -/
+  canonicalHeights : Option CanonicalHeightsClaim := none
   /-- Stored regulator value and any explicit error evidence. -/
   regulator : Option RegulatorClaim := none
   /-- Reported full real period and optional absolute error radius. -/

@@ -596,3 +596,44 @@ same typed edge. The exhibited map has a two-element cyclic rational kernel.
 A source or target label supplied alongside the equations is provenance.
 The fixture checks the edge 112.a2 → 112.a1 in the
 [LMFDB 112.a class](https://www.lmfdb.org/EllipticCurve/Q/112/a/).
+
+## Exceptional primes and finite adelic generators
+
+Submit `nonmax_primes` and `nonmax_rad` with
+`IntegralCurveProofs.nonmaxSupport`. The proof supplies geometric non-CM and
+an actual Tate-module image at every prime. The command compares the submitted
+primes as a finite set, rejects repetitions and composites, and checks the
+radical by multiplying over the proved support. The results are available
+through `Name.certificate.nonmaxPrimes`.
+
+For `adelic_gens`, submit the generator array from the LMFDB prime-zero row
+with the curve equation and either `adelic_level` or `adelic_image`. Use
+`IntegralCurveProofs.adelicGenerators` to give the invertible matrices and
+the proof that they generate the complete image on the geometric torsion at
+the stated modulus. The typed matrices and image evidence are available
+through `Name.certificate.adelicGenerators`.
+[Field semantics and source format](LMFDB_INVARIANTS.md#checks-implemented)
+
+## Canonical heights and a torsion growth field
+
+Use the LMFDB `ec_mwbsd` fields `gens` and `heights` together. The height
+array accepts exact decimal numbers, decimal strings, and Sage real-literal
+objects. An optional `"heights_evidence":{"errors":[...]}` supplies explicit
+absolute error radii in generator order. Attach `IntegralCurveProofs.canonicalHeights`
+with the indexed Lean proofs for those points, centers, and optional radii.
+`Name.certificate.algebraic.heights` exports the enclosures for the checked
+`gens` points. The submitted digits alone supply no error estimate. The height
+is the BSD normalization, the limit of the logarithmic x-coordinate height of
+the doubled points divided by the corresponding powers of four.
+
+Place one native `ec_torsion_growth` row under the JSON key `torsion_growth`.
+For example, the row for `y² = x³ + x` over ℚ(i) has
+`"torsion_growth":{"field":[1,0,1],"degree":2,"torsion":[2,2]}`.
+`field` gives integral coefficients in ascending order. The command proves
+the dimension of the root-adjoining algebra from the submitted degree and
+requires `IntegralCurveProofs.torsionGrowthField` to prove irreducibility and
+give a new finite-order point for this curve. Construct the proof with
+`TorsionGrowthFieldClaim.polynomial` for the same coefficient vector.
+`Name.certificate.torsionGrowthField` exports the field, the degree proof,
+and the strict growth proof. Full extension torsion invariant factors and
+primitivity over proper subfields require additional evidence.

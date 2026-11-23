@@ -4,7 +4,7 @@ Start with [`EllipticWitness`](EllipticWitness.lean) for input to `certify_ec` a
 
 The index covers **85 distinct column names** across **101 table-qualified columns** in the eight EC/ℚ tables, excluding the database row identifier `id`. Each name appears once. The table column omits the `ec_` prefix. [LMFDB schema for 37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
 
-All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **43 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
+All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **53 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
 
 ## Curve data (`ec_curvedata`)
 
@@ -23,9 +23,9 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `bad_primes` | `curvedata` | Checked | [`MinimalModelArithmeticFacts.badPrimes`](FinitePrimes.lean). Complete, duplicate-free list of bad-reduction primes of the globally minimal model. |
 | `class_deg` | `curvedata`, `classdata` | Checked | [`IsogenyClassFacts.classDegree`](Algebraic.lean). Maximum of the complete matrix of minimum isogeny degrees. Requires a proved complete class model. |
 | `class_size` | `curvedata`, `classdata` | Checked | [`IsogenyClassData.classSize`](Algebraic.lean). Number of distinct rational isomorphism classes, with exhaustive representatives supplied through `with_proofs`. |
-| `cm` | `curvedata` | Structure | [`ComplexMultiplicationFacts.endomorphismRing`](Algebraic.lean). The zero code identifies the geometric endomorphism ring with ℤ. A negative code identifies the quadratic order of that discriminant. |
+| `cm` | `curvedata` | Checked | [`ComplexMultiplicationFacts.endomorphismRing`](Algebraic.lean). The zero code identifies the geometric endomorphism ring with ℤ. A negative code identifies the quadratic order of that discriminant. Requires a geometric ring proof in `with_proofs`. Available at `certificate.complexMultiplication`. |
 | `conductor` | `curvedata`, `classdata`, `mwbsd`, `localdata`, `galrep` | Checked | [`ModularArithmeticFacts.conductor`](Invariants.lean). With verified minimality and local data, the value equals the level of each arithmetic modular realization of this curve. This statement concerns the curve supplied to the certifier. |
-| `degree` | `curvedata`, `torsion_growth` | Mixed | [`ModularParametrizationInput.degree`](Algebraic.lean) is the reported modular degree in `curvedata`. [`TorsionGrowthFacts.degree_eq`](Algebraic.lean) requires a proof of the extension degree in `torsion_growth`. |
+| `degree` | `curvedata`, `torsion_growth` | Mixed | [`ModularParametrizationInput.degree`](Algebraic.lean) is the reported modular degree in `curvedata`. [`TorsionGrowthFieldFact.degree_eq`](../Support/ExtensionData.lean) checks the absolute degree of the extension in `torsion_growth`. |
 | `elladic_images` | `curvedata` | Report | [`GaloisImageClaims.padicImages`](FinitePrimes.lean). List of ℓ-adic image labels. |
 | `faltings_height` | `curvedata` | Report | [`FaltingsInput.height`](Algebraic.lean). Report in the catalogue’s Faltings-height normalization. |
 | `faltings_index` | `curvedata` | Report | [`FaltingsInput.orderingIndex`](Algebraic.lean). Reported position in the isogeny class’s height ordering. |
@@ -38,12 +38,12 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `lmfdb_label` | `curvedata`, `mwbsd`, `iwasawa`, `torsion_growth`, `localdata`, `galrep` | Metadata | [`CatalogueMetadata.lmfdbLabel`](InputData.lean). Reported catalogue identifier or ordering. |
 | `lmfdb_number` | `curvedata` | Metadata | [`CatalogueMetadata.lmfdbNumber`](InputData.lean). Reported catalogue identifier or ordering. |
 | `manin_constant` | `curvedata` | Report | [`ModularParametrizationInput.maninConstant`](Algebraic.lean). Reported differential scaling of the modular parametrization. |
-| `min_quad_twist_ainvs` | `curvedata` | Structure | [`MinimumQuadraticTwistFacts.equation`](Algebraic.lean). Requires a rational isomorphism with the proposed twist and minimal algorithmic conductor among quadratic twists. Producer tie-breaking remains open. |
-| `min_quad_twist_disc` | `curvedata` | Structure | [`MinimumQuadraticTwistFacts.discriminant`](Algebraic.lean). Fundamental discriminant of the given minimum-conductor twist. Producer tie-breaking remains open. |
+| `min_quad_twist_ainvs` | `curvedata` | Checked | [`MinimumQuadraticTwistFacts.equation`](Algebraic.lean). Requires a globally minimal integral model, a rational change of variables and minimum algorithmic conductor among quadratic twists. Available at `certificate.minimumQuadraticTwist.minimum`. Its optional `uniqueMinimum` evidence proves uniqueness in the ordinary non-CM case. Producer tie-breaking remains open. |
+| `min_quad_twist_disc` | `curvedata` | Checked | [`MinimumQuadraticTwistFacts.discriminant`](Algebraic.lean). Fundamental discriminant of the same minimum-conductor twist, at `certificate.minimumQuadraticTwist.minimum.discriminant`. Producer tie-breaking remains open. |
 | `modell_images` | `curvedata` | Report | [`GaloisImageClaims.modPrimeImages`](FinitePrimes.lean). List of mod-ℓ image labels. |
 | `modm_images` | `curvedata` | Report | [`GaloisImageClaims.modmImages`](FinitePrimes.lean). List of image labels at the reported moduli. |
-| `nonmax_primes` | `curvedata` | Report | [`GaloisImageClaims.nonmaxPrimes`](FinitePrimes.lean). Exceptional primes under the catalogue’s CM or non-CM convention. |
-| `nonmax_rad` | `curvedata` | Report | [`GaloisImageClaims.nonmaxRadical`](FinitePrimes.lean). Reported product of the distinct exceptional primes. |
+| `nonmax_primes` | `curvedata` | Checked | [`EllipticWitness.nonmaxPrimes`](EllipticWitness.lean) with [`NonmaxPrimeSupportFact`](FinitePrimes.lean). Proves precisely the exceptional primes for geometrically non-CM curves. |
+| `nonmax_rad` | `curvedata` | Checked | [`EllipticWitness.nonmaxRadical`](EllipticWitness.lean) and [`NonmaxPrimeSupportFact.primes`](FinitePrimes.lean). Exact product over the proved support. |
 | `num_bad_primes` | `curvedata` | Checked | [`MinimalModelArithmeticFacts.numBadPrimes`](FinitePrimes.lean). Cardinality of the set of prime factors of the absolute minimal discriminant. |
 | `num_int_pts` | `curvedata` | Checked | [`CompleteIntegralPointFacts.integralPoints_card`](Algebraic.lean). The count covers every affine integral solution on the supplied model. It requires [`IntegralXSupport.covers`](InputData.lean). |
 | `optimality` | `curvedata` | Report | [`ModularParametrizationInput.optimalityCode`](Algebraic.lean). Preserves the producer’s ambiguity codes. |
@@ -57,7 +57,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `signD` | `curvedata` | Checked | [`RationalInvariantFacts.discriminantSign`](Invariants.lean). Sign of the integral equation’s discriminant. |
 | `squarefree_disc` | `curvedata` | Checked | [`MinimalModelArithmeticFacts.squarefreeDiscriminant`](FinitePrimes.lean). The Boolean characterizes squarefreeness of the absolute minimal discriminant. |
 | `stable_faltings_height` | `curvedata` | Report | [`FaltingsInput.stableHeight`](Algebraic.lean). Report in the stable Faltings-height normalization. |
-| `szpiro_ratio` | `curvedata` | Structure | [`ModifiedSzpiroRatioFacts.within_error`](Invariants.lean). Enclosure for the modified ratio using the minimal model’s c-invariants and the norm of TauCeti’s algorithmic conductor. |
+| `szpiro_ratio` | `curvedata` | Checked | [`ModifiedSzpiroRatioFacts.within_error`](Invariants.lean). Enclosure for the modified ratio using the minimal model’s c-invariants and the norm of TauCeti’s algorithmic conductor. Requires arithmetic evidence and an explicit radius. Available at `certificate.modifiedSzpiroRatio`. |
 | `torsion` | `curvedata`, `torsion_growth` | Mixed | [`TorsionWitness.cardinality`](Algebraic.lean) is the checked rational torsion order in `curvedata`. [`TorsionGrowthFacts.equivalence`](Algebraic.lean) specifies the full torsion group over the stated extension in `torsion_growth`. |
 | `torsion_primes` | `curvedata` | Checked | [`TorsionPrimeSupportFacts.exact_support`](Algebraic.lean). Distinct prime divisors of the verified rational torsion order. |
 | `torsion_structure` | `curvedata` | Checked | [`TorsionWitness.presentation`](Algebraic.lean). The verified product of invariant factors is the full subgroup. Each standard generator maps to a specified supplied point. |
@@ -77,7 +77,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | --- | --- | --- | --- |
 | `area` | `mwbsd` | Report | [`ComplexPeriodAreaReport.reported`](Analytic.lean). Reported covolume for the Néron differential. |
 | `gens` | `mwbsd` | Checked | [`AlgebraicFacts.generators`](Algebraic.lean) is an indexed family of Mathlib rational points, in input order. Spanning the Mordell–Weil group is a separate assertion. The optional generator-index request checks supplied integer independence at `certificate.algebraic.independentGeneratorPoints`. |
-| `heights` | `mwbsd` | Structure | [`CanonicalHeightFacts.within_error`](Algebraic.lean). Enclosures for the actual canonical heights in the order of the supplied points. |
+| `heights` | `mwbsd` | Checked | [`CanonicalHeightFacts.within_error`](Algebraic.lean) in `certificate.algebraic.heights`. The enclosures are indexed by the checked `gens` points in order. |
 | `ngens` | `mwbsd` | Checked | [`AlgebraicFacts.generators`](Algebraic.lean). Length of the supplied and checked generator list, checked against `ngens` at ingestion. |
 | `rank_bounds` | `mwbsd` | Checked | [`EllipticCurve.AlgebraicRankBounds`](Algebraic.lean), stored in [`AlgebraicFacts.rankBounds`](Algebraic.lean). Both endpoints bound Mathlib’s integer-module finrank of the rational points. |
 | `real_period` | `mwbsd` | Checked | [`RealPeriodFact.correct`](Analytic.lean). Enclosure for the full minimal real period, including all real components. Available at `certificate.realPeriod`. |
@@ -104,7 +104,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 
 | LMFDB field | Table(s) | Status | Witness and scope |
 | --- | --- | --- | --- |
-| `adelic_gens` | `galrep` | Report | [`AdelicGaloisImageClaim.adelicGenerators`](FinitePrimes.lean). Matrices at a positive modulus. [`FiniteGaloisImageFact`](FinitePrimes.lean) specifies the proof of a finite-level image in a chosen basis. |
+| `adelic_gens` | `galrep` | Checked | [`EllipticWitness.adelicGenerators`](EllipticWitness.lean) with [`FiniteGaloisImageFact`](FinitePrimes.lean). The matrices generate the entire image on torsion at the reported modulus. |
 | `adelic_image` | `galrep` | Report | [`AdelicGaloisImageClaim.adelicImage`](FinitePrimes.lean). Label for the adelic row (source key 0). |
 | `elladic_image` | `galrep` | Report | [`PrimeGaloisImageClaim.padicImage`](FinitePrimes.lean). Reported label. [`PadicGaloisImageFact`](FinitePrimes.lean) specifies the actual Tate-module image in a chosen basis. |
 | `modell_image` | `galrep` | Report | [`PrimeGaloisImageClaim.modPrimeImage`](FinitePrimes.lean). Reported label. [`FiniteGaloisImageFact`](FinitePrimes.lean) specifies the finite-level image. |
@@ -122,7 +122,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 
 | LMFDB field | Table(s) | Status | Witness and scope |
 | --- | --- | --- | --- |
-| `field` | `torsion_growth` | Structure | [`TorsionGrowthFacts.polynomial`](Algebraic.lean). Irreducible defining polynomial for the field obtained by adjoining one of its roots. |
+| `field` | `torsion_growth` | Checked | [`TorsionGrowthFieldFact.polynomial`](Algebraic.lean) in `certificate.torsionGrowthField`. The integral coefficient list presents a field with a torsion point outside the image of rational base change. |
 
 ## Iwasawa data (`ec_iwasawa`)
 

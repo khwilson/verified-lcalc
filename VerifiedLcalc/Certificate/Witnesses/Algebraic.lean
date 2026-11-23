@@ -347,6 +347,8 @@ structure MinimumQuadraticTwistFacts (curve : WeierstrassCurve ℤ)
     equation.baseChange ℚ
   /-- The reported twist is nonsingular over the rationals. -/
   elliptic : (equation.baseChange ℚ).IsElliptic
+  /-- The reported equation is globally minimal over the integers. -/
+  minimal : WeierstrassCurve.IsGlobalMinimal ℤ (equation.baseChange ℚ)
   /-- No quadratic twist of the original curve has smaller algorithmic conductor norm. -/
   conductor_minimal :
     letI := elliptic
@@ -357,33 +359,69 @@ structure MinimumQuadraticTwistFacts (curve : WeierstrassCurve ℤ)
         Ideal.absNorm ((equation.baseChange ℚ).algorithmicConductor ℤ) ≤
           Ideal.absNorm (W.algorithmicConductor ℤ)
 
+/-- Proof that the reduced minimum-conductor quadratic twist, including its fundamental
+discriminant, is unique. The domain excludes the producer's CM and exceptional-j cases. -/
+structure UniqueMinimumQuadraticTwist (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] (minimum : MinimumQuadraticTwistFacts curve) : Type where
+  /-- There is no geometric complex multiplication. -/
+  nonCM : Nonempty (ℤ ≃+* (curve.baseChange ℚ).GeometricEnd)
+  /-- The input is in the ordinary quadratic-twist selection domain. -/
+  nonexceptional : (curve.baseChange ℚ).j ≠ 0 ∧ (curve.baseChange ℚ).j ≠ 1728
+  /-- The proposed equation is in reduced minimal form. -/
+  reduced :
+    let := minimum.elliptic
+    WeierstrassCurve.IsReducedMinimal (minimum.equation.baseChange ℚ)
+  /-- Every reduced minimum has precisely the proposed equation and discriminant. -/
+  unique : ∀ other : MinimumQuadraticTwistFacts curve,
+    let := other.elliptic
+    WeierstrassCurve.IsReducedMinimal (other.equation.baseChange ℚ) →
+      other.equation = minimum.equation ∧ other.discriminant = minimum.discriminant
+
+/-- A minimum-conductor witness with optional proof that the reduced minimizer is unique. -/
+structure MinimumQuadraticTwistEvidence (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The submitted minimum-conductor quadratic twist. -/
+  minimum : MinimumQuadraticTwistFacts curve
+  /-- Optional stronger evidence resolving selection without any producer tie-breaking. -/
+  uniqueMinimum : Option (UniqueMinimumQuadraticTwist curve minimum) := none
+
 /-! ## Torsion over number fields and canonical heights -/
 
-/-- The full torsion group over the field presented by a specified irreducible rational
-polynomial. This describes one field and makes no primitive-growth or exhaustivity claim. -/
-structure TorsionGrowthFacts (curve : WeierstrassCurve ℤ) where
-  /-- The defining polynomial decoded from its ascending coefficient list. -/
+/-- A field presentation and a new torsion point over that field. -/
+structure TorsionGrowthFieldFact (curve : WeierstrassCurve ℤ) where
+  /-- The defining polynomial over ℚ. -/
   polynomial : Polynomial ℚ
-  /-- Irreducibility makes Mathlib's root-adjoining algebra a field. -/
+  /-- The polynomial presents a field by adjoining a root. -/
   irreducible : Irreducible polynomial
-  /-- The absolute degree of that field over ℚ. -/
-  degree : ℕ
-  /-- The reported degree equals the field degree. -/
-  degree_eq : Module.finrank ℚ (AdjoinRoot polynomial) = degree
+  /-- A finite-order point over this field outside the image of the rational points. -/
+  growth :
+    letI : Fact (Irreducible polynomial) := ⟨irreducible⟩
+    let K := AdjoinRoot polynomial
+    letI : DecidableEq K := Classical.decEq K
+    ∃ P : (curve.baseChange K).toAffine.Point, IsOfFinAddOrder P ∧
+      ∀ Q : (curve.baseChange ℚ).toAffine.Point,
+        WeierstrassCurve.Affine.Point.map (Algebra.ofId ℚ K) Q ≠ P
+
+/-- The full torsion group over a presented growth field.
+This describes one field and makes no primitive-growth or exhaustivity claim. -/
+structure TorsionGrowthFacts (curve : WeierstrassCurve ℤ)
+    extends TorsionGrowthFieldFact curve where
   /-- Nonsingularity after base change to the presented field. -/
   elliptic :
     letI : Fact (Irreducible polynomial) := ⟨irreducible⟩
     (curve.baseChange (AdjoinRoot polynomial)).IsElliptic
-  /-- The invariant factors in divisibility order, omitting factors of one. -/
-  torsion : List ℕ
+  /-- The number of nontrivial invariant factors. -/
+  factorCount : ℕ
+  /-- The invariant factors in divisibility order. -/
+  factor : Fin factorCount → ℕ
   /-- All factors have order at least two. -/
-  factors_nontrivial : ∀ n ∈ torsion, 2 ≤ n
+  factors_nontrivial : ∀ i, 2 ≤ factor i
   /-- Earlier invariant factors divide later ones. -/
-  factors_divide : torsion.Pairwise (· ∣ ·)
+  factors_divide : ∀ i j, i < j → factor i ∣ factor j
   /-- The product of cyclic groups is additively equivalent to the full torsion subgroup. -/
   equivalence :
     letI : Fact (Irreducible polynomial) := ⟨irreducible⟩
-    (∀ i : Fin torsion.length, ZMod (torsion.get i)) ≃+
+    (∀ i, ZMod (factor i)) ≃+
       AddCommGroup.torsion (curve.baseChange (AdjoinRoot polynomial)).toAffine.Point
 
 /-- Rational enclosures for the actual heights of the supplied rational points, in
@@ -441,6 +479,8 @@ structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).
   completeIntegralPoints : Option (CompleteIntegralPointFacts curve) := none
   /-- Membership for the supplied rational generator coordinates. -/
   generators : Option (Σ n : ℕ, Fin n → (curve.baseChange ℚ).toAffine.Point) := none
+  /-- Checked Néron–Tate height enclosures for the generator list in its supplied order. -/
+  heights : Option (CanonicalHeightFacts (generators.getD ⟨0, Fin.elim0⟩).2) := none
   /-- The supplied indexed integral points checked for infinite order. -/
   infiniteOrderPoints :
     let source := integralPoints.getD ⟨0, Fin.elim0⟩

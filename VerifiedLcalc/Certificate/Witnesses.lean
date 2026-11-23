@@ -16,7 +16,8 @@ choose a module under `VerifiedLcalc.Certificate.Witnesses`.
 * `InputData` defines shared claims, transcripts, numerical payloads, and point evidence.
   `ArtifactData` defines requests and recorded derivative boxes.
 * `Invariants` covers Weierstrass invariants, abc quality, and conductor and root number
-  compatibility. `FinitePrimes` covers local reduction, minimal models, and coefficients.
+  compatibility. `FinitePrimes` covers local reduction, minimal models, coefficients,
+  and Galois images.
 * `Algebraic` covers points, Mordell–Weil bounds, the regulator, torsion, and isogenies.
   `Analytic` covers finite checks, analytic enclosures, special values, and rank.
 * `EllipticWitness` defines the command input. `EllipticCertificate` defines the optional Lean

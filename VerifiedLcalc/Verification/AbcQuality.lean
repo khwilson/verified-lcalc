@@ -44,7 +44,8 @@ def logNatBounds (n : ℕ) : RealInterval :=
   let lo := (lowerLog ((n : ℤ) : Dyadic) 64).toRat
   (lo, lo + (Dyadic.step 64).toRat)
 
-private theorem logNatBounds_sound (n : ℕ) : (logNatBounds n).Contains (Real.log n) := by
+/-- The directed bounds contain the actual logarithm. -/
+theorem logNatBounds_sound (n : ℕ) : (logNatBounds n).Contains (Real.log n) := by
   simpa [logNatBounds, RealInterval.Contains] using lowerLog_spec ((n : ℤ) : Dyadic) 64
 
 /-- Check an error bound on a quotient enclosed by two rational intervals. -/
@@ -55,7 +56,8 @@ def ratioErrorValid (num den : RealInterval) (reported error : ℚ) : Bool :=
     (intervalMul (lo, lo) den).2 ≤ num.1 ∧
     num.2 ≤ (intervalMul (hi, hi) den).1)
 
-private theorem ratioErrorValid_sound {num den : RealInterval} {n d : ℝ}
+/-- A successful interval check proves the requested error bound on the real quotient. -/
+theorem ratioErrorValid_sound {num den : RealInterval} {n d : ℝ}
     (hn : num.Contains n) (hd : den.Contains d) {reported error : ℚ}
     (h : ratioErrorValid num den reported error = true) :
     |n / d - (reported : ℝ)| ≤ (error : ℝ) := by

@@ -89,9 +89,9 @@ structure RationalInvariantFacts (curve : WeierstrassCurve ℤ)
 
 /-! ## Conductor and root number -/
 
-/-- An enclosure for the LMFDB modified Szpiro ratio. The numerator uses the minimal
-equation's c-invariants and the denominator uses the algorithmic conductor. -/
-structure ModifiedSzpiroRatioFacts (curve : WeierstrassCurve ℤ)
+/-- Arithmetic evidence fixing the numerator model and denominator for the modified Szpiro
+ratio. The conductor identification uses TauCeti's algorithmic conductor ideal. -/
+structure ModifiedSzpiroRatioEvidence (curve : WeierstrassCurve ℤ)
     [(curve.baseChange ℚ).IsElliptic] where
   /-- The supplied equation is globally minimal over the integers. -/
   minimal : WeierstrassCurve.IsGlobalMinimal ℤ (curve.baseChange ℚ)
@@ -99,6 +99,12 @@ structure ModifiedSzpiroRatioFacts (curve : WeierstrassCurve ℤ)
   conductor : ℕ
   /-- Identification of the conductor with the norm of TauCeti's conductor ideal. -/
   conductor_eq : Ideal.absNorm ((curve.baseChange ℚ).algorithmicConductor ℤ) = conductor
+
+
+/-- An enclosure for the LMFDB modified Szpiro ratio. The numerator uses the minimal
+equation's c-invariants and the denominator uses the algorithmic conductor. -/
+structure ModifiedSzpiroRatioFacts (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] extends ModifiedSzpiroRatioEvidence curve where
   /-- The logarithm of the conductor is positive. -/
   one_lt_conductor : 1 < conductor
   /-- Rational center of the reported enclosure. -/

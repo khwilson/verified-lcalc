@@ -637,7 +637,7 @@ run_cmd do
   let algebraic := #[`integralCoordinates, `integralFiberRoots, `numIntegralPoints,
     `generatorCoordinates, `generatorCount, `algebraicRank, `algebraicRankBounds,
     `torsionGeneratorCoordinates, `infiniteOrderPoints, `independentPoints,
-    `independentGeneratorPoints, `regulator]
+    `independentGeneratorPoints, `regulator, `canonicalHeights]
   let arithmetic := #[`potentialGoodReduction, `minimalDiscriminantAbs, `conductor, `rootNumber,
     `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
     `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData,
@@ -645,7 +645,7 @@ run_cmd do
   let analytic := #[`centralResult, `derivativeResult, `catalogueAnalyticRank,
     `specialLValue, `realPeriod, `analyticSha, `sha, `shaPrimes]
   let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionPrimes,
-    `torsionGeneratorOrders]
+    `torsionGeneratorOrders, `torsionGrowthField]
   let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do
     let fields := Lean.getStructureFields (← getEnv) record
     for field in fields do
@@ -655,8 +655,13 @@ run_cmd do
       unless fields.contains field do
         throwError "Remove obsolete witness field {record}.{field} from the certificate inventory"
   let isogeny := #[`isogenyEdge, `classSize, `classDegree, `isogenyDegrees, `isogenyMatrix]
+  let geometry := #[`complexMultiplication, `minimumTwistEquation, `minimumTwistDiscriminant,
+    `modifiedSzpiroRatio]
+  let galois := #[`nonmaxPrimes, `nonmaxRadical, `adelicGenerators]
   cover ``EllipticWitness
-    (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++ isogeny)
+    (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++
+      isogeny ++ geometry ++ galois)
+  cover ``AdelicGeneratorsClaim #[`modulus, `rows]
   cover ``IsogenyEdgeClaim #[`target, `degree, `kernelX]
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
     `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol, `rootNumber]
@@ -664,6 +669,8 @@ run_cmd do
   cover ``RegulatorClaim #[`reported, `error]
   cover ``DecimalEnclosureClaim #[`reported, `error]
   cover ``TorsionBoundWitness #[`firstPrime, `secondPrime, `bound]
+  cover ``TorsionGrowthFieldClaim #[`coefficients, `degree]
+  cover ``CanonicalHeightsClaim #[`reported, `errors]
 
 example : EmptyProofs.certificate.equationFacts.discriminant.isNone = true := rfl
 example : JZero.certificate.equationFacts.discriminant.map Subtype.val = some (-432) := rfl

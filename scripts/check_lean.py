@@ -24,6 +24,8 @@ AUDITS = (
     "tests/consumers/TorsionBound.lean",
     "tests/consumers/DegreeTwoIsogeny.lean",
     "tests/consumers/IsogenyClass.lean",
+    "tests/consumers/GaloisImage.lean",
+    "tests/consumers/Geometry.lean",
     "tests/consumers/SecondMellinDerivative.lean",
     "tests/consumers/Additive.lean",
     "tests/consumers/Wild.lean",
@@ -105,6 +107,7 @@ def main() -> None:
         "tests/consumers/CertificateCompatibility.lean",
         "tests/consumers/SpecialLValue.lean",
         "tests/consumers/BSDFields.lean",
+        "tests/consumers/ExtensionData.lean",
         "tests/consumers/SpecialValueContract.lean",
     ):
         run(["lake", "-f", "lakefile.certificates.lean", "env", "lean", source])

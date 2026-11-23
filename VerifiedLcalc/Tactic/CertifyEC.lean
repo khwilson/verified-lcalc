@@ -38,6 +38,9 @@ needed to bound the actual abc quality about the reported `abc_quality` decimal.
 The native isogeny class fields `class_size`, `class_deg`, `isogeny_degrees` and
 `isogeny_matrix` use `IntegralCurveProofs.isogenyClass` supplied with `with_proofs`.
 The matrix requires the reduced minimal models in lexicographic order.
+The Galois fields `nonmax_primes` and `nonmax_rad` use complete non-CM
+`IntegralCurveProofs.nonmaxSupport`. The field `adelic_gens` uses
+`IntegralCurveProofs.adelicGenerators` at the reported finite modulus.
 Prerequisite-dependent claims without the required evidence are reported as unverified. See
 `docs/LMFDB_INVARIANTS.md` for the exact mathematical outputs and trust boundary.
 JSON can supply `ainvs`, `ap` or `aplist`, and `integral_points` or
@@ -312,23 +315,36 @@ def certifyJson (name : Name) (text : String)
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
         "num_int_pts", "class_size", "class_deg", "isogeny_matrix", "isogeny_degrees",
+        "nonmax_primes", "nonmax_rad", "adelic_gens",
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
-        ["regulator", "regulator_evidence", "real_period", "real_period_evidence",
-          "tamagawa_product", "sha_an", "sha_an_evidence", "sha", "sha_primes"] ++
+        ["torsion_growth", "heights", "heights_evidence", "regulator", "regulator_evidence",
+          "real_period", "real_period_evidence", "tamagawa_product", "sha_an", "sha_an_evidence",
+          "sha", "sha_primes"] ++
         algebraicKeys ++ localKeys ++
-          if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
-          then ["prime"] else []
+          if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
+              (CurveDataJson.optionalData j "adelic_gens").isSome then ["prime"] else []
       let checkedAbcQuality := (← getEnv).contains (base ++ `abc_quality)
+      let checkedCM := (← getEnv).contains (base ++ `cm)
+      let checkedTwistEquation := (← getEnv).contains (base ++ `min_quad_twist_ainvs)
+      let checkedTwistDiscriminant := (← getEnv).contains (base ++ `min_quad_twist_disc)
+      let checkedSzpiro := (← getEnv).contains (base ++ `szpiro_ratio_fact)
       let checkedSpecialValue := (← getEnv).contains (base ++ `special_value_valid)
       let skipped := object.toList.filterMap fun (key, _) =>
         if known.contains key || (checkedRank && rankKeys.contains key) ||
             (checkedCatalogueRank && key == "analytic_rank") ||
             (checkedAbcQuality && ["abc_quality", "abc_quality_evidence"].contains key) ||
+            (checkedCM && key == "cm") ||
+            (checkedTwistEquation && key == "min_quad_twist_ainvs") ||
+            (checkedTwistDiscriminant && key == "min_quad_twist_disc") ||
+            (checkedSzpiro && ["szpiro_ratio", "szpiro_ratio_evidence"].contains key) ||
             (checkedSpecialValue && ["special_value", "special_value_evidence"].contains key)
           then none
         else some key
       unless skipped.isEmpty do
         logInfo m!"Unverified metadata (no claim emitted): {skipped}"
+      if ((CurveDataJson.optionalData j "torsion_growth").bind fun row =>
+          CurveDataJson.optionalData row "torsion").isSome then
+        logInfo m!"Unverified {base} torsion_growth.torsion: extension invariant factors"
 
 private def readJsonWitnessFile (file : TSyntax `str) : CommandElabM String := do
   let source := System.FilePath.mk (← read).fileName
