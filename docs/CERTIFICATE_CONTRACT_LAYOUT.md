@@ -43,7 +43,7 @@ The former `VerifiedLcalc.Certificates.*` modules now live under
 | `Certificates.NumericalRanks`, `.NumericalRankContracts`, `.PrecisionPolicy` | `Certificate.Numerical.RankData`, `.RankContracts`, `.Precision` |
 | `Certificates.AlgebraicRank`, `.CurveWitness`, `.DegreeTwoIsogeny` | `Certificate.Support.AlgebraicRank`, `.CurveProofs`, `.Isogenies` |
 | `Certificates.IntegralPointCount`, `.IntegralXSupport` | `Certificate.Witnesses.IntegralPoints` |
-| `Certificates.PointFacts`, `.RationalInvariants`, `.Regulator` | `Certificate.Support.Points`, `.RationalInvariants`, `.Regulator` |
+| `Certificates.PointFacts`, `.RationalInvariants`, `.Regulator` | `Certificate.Support.Points`, `Certificate.Witnesses.RationalInvariants`, `Certificate.Support.Regulator` |
 | `Certificates.SpecialValue`, `.TorsionFacts`, `.Transcripts`, `.WeierstrassInstances` | `Certificate.Support.SpecialValue`, `.Torsion`, `.Transcripts`, `.WeierstrassInstances` |
 
 Backend files formerly in `VerifiedLcalc.Certification/` are now in

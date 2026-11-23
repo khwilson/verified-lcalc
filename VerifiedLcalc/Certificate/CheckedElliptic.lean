@@ -6,7 +6,7 @@ public import VerifiedLcalc.Verification.CurveData
 public import VerifiedLcalc.Verification.IntegralPointCount
 public import VerifiedLcalc.Verification.TorsionBoundFacts
 public import VerifiedLcalc.Certificate.ArithmeticFacts
-public import VerifiedLcalc.Certificate.Support.RationalInvariants
+public import VerifiedLcalc.Certificate.Witnesses.RationalInvariants
 public import VerifiedLcalc.Certificate.Support.Points
 public import VerifiedLcalc.Certificate.Support.Torsion
 public import VerifiedLcalc.Verification.AbcQuality

@@ -22,7 +22,7 @@ public import VerifiedLcalc.Certificate.Artifacts.Data
 public import VerifiedLcalc.Certificate.Numerical.RankData
 public import VerifiedLcalc.Certificate.Witnesses.AnalyticEvidence
 public import VerifiedLcalc.Certificate.Support.CurveProofs
-public import VerifiedLcalc.Certificate.Support.RationalInvariants
+public import VerifiedLcalc.Certificate.Witnesses.RationalInvariants
 public import VerifiedLcalc.Certificate.Support.Points
 
 /-! # Mathematical certificate contracts -/
