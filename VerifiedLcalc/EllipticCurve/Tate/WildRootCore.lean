@@ -164,6 +164,7 @@ def wildData? (e : (WeierstrassCurve ℤ)) : Option WildData :=
   let d : WildData := ⟨tateWitness? e 2, tateWitness? e 3⟩
   if d.Valid e then some d else none
 
+/-- The extracted wild data carry valid local Tate transcripts for the supplied equation. -/
 theorem wildData?_sound (e : (WeierstrassCurve ℤ)) (d : WildData)
     (h : wildData? e = some d) : d.Valid e := by
   unfold wildData? at h
