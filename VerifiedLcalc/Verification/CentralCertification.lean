@@ -6,6 +6,15 @@ public import VerifiedLcalc.EllipticCurve.Tate.AdditiveArithmetic
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
 public import VerifiedLcalc.Verification.CentralEvaluator
 
+/-!
+# Central analytic certification
+
+These theorems turn checked central-value evidence into vanishing of the
+analytic order. The general-model result keeps the required level and sign
+identities explicit; the semistable variants derive the coefficient prefix
+from the corresponding arithmetic theorem.
+-/
+
 @[expose] public section
 namespace VerifiedLcalc.Certification
 open Modularity EllipticCurve
@@ -18,7 +27,8 @@ theorem certifyMinimalCentralModel (r : CentralResult)
     (hn : r.equation.Δ ≠ 0)
     (hmin : ∀ (p : ℕ) [Fact p.Prime],
       WeierstrassCurve.IsMinimal ((rationalPlace p).adicCompletionIntegers ℚ)
-        ((WeierstrassCurve.baseChange r.equation ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
+        ((WeierstrassCurve.baseChange r.equation
+          ((rationalPlace p).adicCompletionIntegers ℚ)).baseChange
           ((rationalPlace p).adicCompletion ℚ)))
     (hN : (modularWitness r.equation hn).level = r.conductor)
     (hw : (modularWitness r.equation hn).rootNumber = r.rootNumber)

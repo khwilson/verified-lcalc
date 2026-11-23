@@ -82,6 +82,7 @@ theorem minimal_prime_mem_iff (e : WeierstrassCurve ℤ) (m : MinimalityWitness)
     exact mem_list_primes_of_dvd_prod (Nat.prime_iff.mp hprime)
       (fun q hq => Nat.prime_iff.mp (hp q hq)) (by rw [hm.2]; exact Int.natCast_dvd.mp hdiv)
 
+/-- The primes in a valid minimality witness are exactly the prime factors of the discriminant. -/
 theorem minimal_primes_toFinset (e : WeierstrassCurve ℤ) (hn : e.Δ ≠ 0)
     (m : MinimalityWitness) (hm : m.Valid e) : m.primes.toFinset = e.Δ.natAbs.primeFactors := by
   have hz : e.Δ.natAbs ≠ 0 := by simpa using hn

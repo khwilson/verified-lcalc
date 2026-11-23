@@ -2,6 +2,8 @@ import VerifiedLcalc.Verification.Precision
 import VerifiedLcalcTests.Fixtures.NumericalQuartic
 import Lean
 
+/-! # Exact analytic rank under explicit derivative-gap hypotheses -/
+
 open Lean Elab Command VerifiedLcalc VerifiedLcalc.NumericalRanks
 
 /-- This conclusion explicitly requires the named additional gap hypothesis.
@@ -41,7 +43,8 @@ theorem cutoff_boundary_is_not_zero :
     subst k
     left
     norm_num
-  · apply (analyticAt_const : AnalyticAt ℂ (fun _ : ℂ => (1 / 33554432 : ℂ)) 0).analyticOrderAt_eq_zero.mpr
+  · apply (analyticAt_const :
+      AnalyticAt ℂ (fun _ : ℂ => (1 / 33554432 : ℂ)) 0).analyticOrderAt_eq_zero.mpr
     norm_num
 
 -- The generic bridge must have no project-specific mathematical assumptions.
