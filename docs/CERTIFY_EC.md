@@ -150,8 +150,9 @@ set when exhaustive abscissa support is supplied, individual point orders, an
 independent family, and proved rank bounds for the actual rational point group.
 `certificate.algebraic.rankBounds` contains the checked interval, while
 `certificate.algebraic.rank` is present only when the interval proves an exact
-rank. `certificate.algebraic.generatorCount` proves that `ngens` is the length
-of the supplied `gens` list; it does not claim that the list is a basis. The
+rank. `certificate.algebraic.generatorCount` reads the size of the checked
+rational point family. If the input supplies `ngens`, the command verifies
+that it equals this size. The
 `arithmetic` field
 exposes finite reduction facts and separate conditional results. To use a conditional arithmetic result, supply
 an explicit `ArithmeticModularRealization` of the equation. The `analytic`
@@ -160,14 +161,16 @@ ranks conditional on an explicit realization. The `torsion` field can carry a
 verified positive multiple of the full subgroup order, a consistent supplied
 count, and an exact cardinality when determined.
 
-The `torsion.cyclicStructure` projection gives the checked cyclic factors,
-order, and rational generator. For factors `[2, n]`,
-`torsion.twoFactorStructure` holds the actual `AddEquiv` from
-`ZMod 2 × ZMod n` onto Mathlib's full torsion subgroup, with proofs that the
-coordinate generators map to the supplied rational points. When an exact full
-torsion order is proved, `torsion.primeSupport` gives the distinct prime list,
-its nodup proof, and a theorem characterizing its members by primality and
-divisibility of the subgroup cardinality.
+`certificate.torsion` is a single `TorsionWitness`. Its `generators` field
+holds the submitted family of rational points in order. When `orders` is
+present, applying it to an index gives the positive order and its proof for
+that point. The `generation` field proves that these points generate the full
+rational torsion subgroup. The `presentation` field identifies that subgroup
+with a product of cyclic groups and names the submitted point corresponding
+to each standard generator. For a presentation with factors `[2, 4]`, two
+generators describe all eight elements. For trivial torsion the factor family
+is empty. Given an exact group order, `primeSupport` records its distinct prime
+divisors and a proof of completeness.
 
 The `rational.abcQuality` projection holds the exact reported value and error,
 the validated factorization, and the certified bound on the actual quality.
