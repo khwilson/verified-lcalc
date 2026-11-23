@@ -4,6 +4,8 @@ public import VerifiedLcalcTests.Fixtures.AssumedCurve11
 public import VerifiedLcalcTests.Fixtures.Curve11Central
 public import VerifiedLcalc.Verification.CentralEvaluator
 
+/-! # Conditional central-value enclosure for the conductor-eleven curve -/
+
 @[expose] public section
 open VerifiedLcalc
 namespace VerifiedLcalcTests.Fixtures.AssumedCurve11Central
