@@ -4,7 +4,7 @@ Start with [`EllipticWitness`](EllipticWitness.lean) for input to `certify_ec` a
 
 The index covers **85 distinct column names** across **101 table-qualified columns** in the eight EC/ℚ tables, excluding the database row identifier `id`. Each name appears once. The table column omits the `ec_` prefix. [LMFDB schema for 37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
 
-All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **47 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
+All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **53 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
 
 ## Curve data (`ec_curvedata`)
 
@@ -25,7 +25,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `class_size` | `curvedata`, `classdata` | Checked | [`IsogenyClassData.classSize`](Algebraic.lean). Number of distinct rational isomorphism classes, with exhaustive representatives supplied through `with_proofs`. |
 | `cm` | `curvedata` | Checked | [`ComplexMultiplicationFacts.endomorphismRing`](Algebraic.lean). The zero code identifies the geometric endomorphism ring with ℤ. A negative code identifies the quadratic order of that discriminant. Requires a geometric ring proof in `with_proofs`. Available at `certificate.complexMultiplication`. |
 | `conductor` | `curvedata`, `classdata`, `mwbsd`, `localdata`, `galrep` | Checked | [`ModularArithmeticFacts.conductor`](Invariants.lean). With verified minimality and local data, the value equals the level of each arithmetic modular realization of this curve. This statement concerns the curve supplied to the certifier. |
-| `degree` | `curvedata`, `torsion_growth` | Mixed | [`ModularParametrizationInput.degree`](Algebraic.lean) is the reported modular degree in `curvedata`. [`TorsionGrowthFacts.degree_eq`](Algebraic.lean) requires a proof of the extension degree in `torsion_growth`. |
+| `degree` | `curvedata`, `torsion_growth` | Mixed | [`ModularParametrizationInput.degree`](Algebraic.lean) is the reported modular degree in `curvedata`. [`TorsionGrowthFieldFact.degree_eq`](../Support/ExtensionData.lean) checks the absolute degree of the extension in `torsion_growth`. |
 | `elladic_images` | `curvedata` | Report | [`GaloisImageClaims.padicImages`](FinitePrimes.lean). List of ℓ-adic image labels. |
 | `faltings_height` | `curvedata` | Report | [`FaltingsInput.height`](Algebraic.lean). Report in the catalogue’s Faltings-height normalization. |
 | `faltings_index` | `curvedata` | Report | [`FaltingsInput.orderingIndex`](Algebraic.lean). Reported position in the isogeny class’s height ordering. |
@@ -77,7 +77,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | --- | --- | --- | --- |
 | `area` | `mwbsd` | Report | [`ComplexPeriodAreaReport.reported`](Analytic.lean). Reported covolume for the Néron differential. |
 | `gens` | `mwbsd` | Checked | [`AlgebraicFacts.generators`](Algebraic.lean) holds [`AffineMembership`](InputData.lean). Each decoded rational point lies on the curve. Spanning the Mordell–Weil group is a separate assertion. |
-| `heights` | `mwbsd` | Structure | [`CanonicalHeightFacts.within_error`](Algebraic.lean). Enclosures for the actual canonical heights in the order of the supplied points. |
+| `heights` | `mwbsd` | Checked | [`CanonicalHeightFacts.within_error`](Algebraic.lean) in `certificate.algebraic.heights`. The enclosures are indexed by the checked `gens` points in order. |
 | `ngens` | `mwbsd` | Checked | [`GeneratorCountFacts.length_eq`](Algebraic.lean). Length of the supplied and checked generator list. |
 | `rank_bounds` | `mwbsd` | Checked | [`EllipticCurve.AlgebraicRankBounds`](Algebraic.lean), stored in [`AlgebraicFacts.rankBounds`](Algebraic.lean). Both endpoints bound Mathlib’s integer-module finrank of the rational points. |
 | `real_period` | `mwbsd` | Checked | [`RealPeriodFact.correct`](Analytic.lean). Enclosure for the full minimal real period, including all real components. Available at `certificate.realPeriod`. |
@@ -122,7 +122,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 
 | LMFDB field | Table(s) | Status | Witness and scope |
 | --- | --- | --- | --- |
-| `field` | `torsion_growth` | Structure | [`TorsionGrowthFacts.polynomial`](Algebraic.lean). Irreducible defining polynomial for the field obtained by adjoining one of its roots. |
+| `field` | `torsion_growth` | Checked | [`TorsionGrowthFieldFact.polynomial`](Algebraic.lean) in `certificate.torsionGrowthField`. The integral coefficient list presents a field with a torsion point outside the image of rational base change. |
 
 ## Iwasawa data (`ec_iwasawa`)
 

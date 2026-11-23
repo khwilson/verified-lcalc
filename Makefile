@@ -38,6 +38,7 @@ test-certificates: certificates
 	lake -f lakefile.certificates.lean env lean tests/consumers/SpecialLValue.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/BSDFields.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/Geometry.lean
+	lake -f lakefile.certificates.lean env lean tests/consumers/ExtensionData.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/SpecialValueContract.lean
 
 .PHONY: test-lean

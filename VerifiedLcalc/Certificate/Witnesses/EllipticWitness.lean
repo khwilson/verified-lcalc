@@ -66,6 +66,10 @@ structure EllipticWitness where
   minimumTwistDiscriminant : Option Int := none
   /-- Reported modified Szpiro ratio and optional absolute error radius. -/
   modifiedSzpiroRatio : Option DecimalEnclosureClaim := none
+  /-- The field and degree from one torsion growth row. -/
+  torsionGrowthField : Option TorsionGrowthFieldClaim := none
+  /-- Reported canonical heights in the order of `generatorCoordinates`. -/
+  canonicalHeights : Option CanonicalHeightsClaim := none
   /-- Stored regulator value and any explicit error evidence. -/
   regulator : Option RegulatorClaim := none
   /-- Reported full real period and optional absolute error radius. -/

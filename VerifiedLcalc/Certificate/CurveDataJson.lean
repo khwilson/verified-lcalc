@@ -227,6 +227,23 @@ def regulatorErrorValue (j : Json) : Except String Rat := do
   unless 0 ≤ value do throw "Expected a nonnegative regulator error"
   return value
 
+/-- Decode one scoped torsion growth row without reading the rational torsion order. -/
+def torsionGrowthFieldClaim (j : Json) : Except String TorsionGrowthFieldClaim := do
+  let coefficients ← (← array (← j.getObjVal? "field") 256).toList.mapM integer
+  let degree ← nonnegativeInteger (← j.getObjVal? "degree")
+  return ⟨coefficients, degree⟩
+
+/-- Decode the height array and its optional exact error radii. -/
+def canonicalHeightsClaim (j : Json) : Except String (Option CanonicalHeightsClaim) := do
+  let evidence := optionalData j "heights_evidence"
+  let some raw := optionalData j "heights" | do
+    if evidence.isSome then throw "heights_evidence requires heights"
+    return none
+  let reported ← (← array raw 4096).toList.mapM exactReportedDecimal
+  let errors ← evidence.mapM fun value => do
+    (← array (← value.getObjVal? "errors") 4096).toList.mapM regulatorErrorValue
+  return some ⟨reported, errors⟩
+
 /-- Decode a stored regulator report and optional explicit error evidence. -/
 def regulatorClaim (j : Json) : Except String (Option RegulatorClaim) := do
   let evidence := optionalData j "regulator_evidence"
@@ -408,6 +425,8 @@ def decode (j : Json) : Except String EllipticWitness := do
     equationOfAinvs (← ainvs value)
   let minimumTwistDiscriminant ← optionalValue j "min_quad_twist_disc" integer
   let modifiedSzpiroRatio ← decimalEnclosureClaim j "szpiro_ratio"
+  let torsionGrowthField ← optionalValue j "torsion_growth" torsionGrowthFieldClaim
+  let canonicalHeights ← canonicalHeightsClaim j
   let regulator ← regulatorClaim j
   let realPeriod ← decimalEnclosureClaim j "real_period"
   let tamagawaProduct ← optionalValue j "tamagawa_product" nonnegativeInteger
@@ -464,6 +483,8 @@ def decode (j : Json) : Except String EllipticWitness := do
     minimumTwistEquation
     minimumTwistDiscriminant
     modifiedSzpiroRatio
+    torsionGrowthField
+    canonicalHeights
     regulator
     realPeriod
     tamagawaProduct

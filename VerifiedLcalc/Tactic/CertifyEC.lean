@@ -306,8 +306,9 @@ def certifyJson (name : Name) (text : String)
         "num_int_pts", "class_size", "class_deg", "isogeny_matrix", "isogeny_degrees",
         "nonmax_primes", "nonmax_rad", "adelic_gens",
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
-        ["regulator", "regulator_evidence", "real_period", "real_period_evidence",
-          "tamagawa_product", "sha_an", "sha_an_evidence", "sha", "sha_primes"] ++
+        ["torsion_growth", "heights", "heights_evidence", "regulator", "regulator_evidence",
+          "real_period", "real_period_evidence", "tamagawa_product", "sha_an", "sha_an_evidence",
+          "sha", "sha_primes"] ++
         algebraicKeys ++ localKeys ++
           if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
               (CurveDataJson.optionalData j "adelic_gens").isSome then ["prime"] else []
@@ -330,6 +331,9 @@ def certifyJson (name : Name) (text : String)
         else some key
       unless skipped.isEmpty do
         logInfo m!"Unverified metadata (no claim emitted): {skipped}"
+      if ((CurveDataJson.optionalData j "torsion_growth").bind fun row =>
+          CurveDataJson.optionalData row "torsion").isSome then
+        logInfo m!"Unverified {base} torsion_growth.torsion: extension invariant factors"
 
 private def readJsonWitnessFile (file : TSyntax `str) : CommandElabM String := do
   let source := System.FilePath.mk (← read).fileName

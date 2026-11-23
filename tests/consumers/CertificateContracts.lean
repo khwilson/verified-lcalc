@@ -32,6 +32,10 @@ open VerifiedLcalc Lean Elab Command
 #check EllipticCertificate.modifiedSzpiroRatio
 #check ModifiedSzpiroRatioEvidence
 #check MinimumQuadraticTwistEvidence.uniqueMinimum
+#check EllipticCertificate.torsionGrowthField
+#check AlgebraicFacts.heights
+#check TorsionGrowthFieldFact.growth
+#check CanonicalHeightFacts.within_error
 #check Box
 #check PrecisionPolicy
 #check EllipticCurve.MinimalityWitness

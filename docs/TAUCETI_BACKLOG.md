@@ -400,3 +400,21 @@ containment theorem for the resulting adelic image.
 [Pinned finite action](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Point/Galois.lean)
 · [Pinned Tate-module action](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateModule/Galois.lean)
 · [Candidate profinite API](https://github.com/TauCetiProject/TauCeti/pull/45304)
+
+## TC-19 — explicit canonical-height error over ℚ
+
+The certificate command checks a supplied enclosure against
+`WeierstrassCurve.Affine.Point.canonicalHeight` in the logarithmic
+x-coordinate normalization. The 37.a1 fixture proves one such enclosure
+using an upper bound for the doubling map and exact evaluation at 8P.
+
+The reusable target is an explicit, computable nonnegative bound depending
+on an integral nonsingular Weierstrass equation over ℚ for
+`|P.canonicalHeight - P.naiveHeight|`, uniform in the rational point P.
+The pinned TauCeti result `Point.abs_canonicalHeight_sub_naiveHeight_le`
+provides an existential constant. Combine upper and lower height estimates
+for the projective duplication map on the given equation with the
+canonical-height doubling law. An explicit uniform bound then gives an
+error divided by `4^n` when enclosing the height using the naive height of
+`2^n • P`. Include points at infinity, torsion, and nonminimal equations
+in the specification unless a particular bound explicitly assumes minimality.

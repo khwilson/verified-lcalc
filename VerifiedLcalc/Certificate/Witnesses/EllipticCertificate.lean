@@ -47,6 +47,11 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   minimumQuadraticTwist : Option (MinimumQuadraticTwistEvidence curve) := none
   /-- Minimal model and exact conductor identification for a modified Szpiro enclosure. -/
   modifiedSzpiroRatio : Option (ModifiedSzpiroRatioEvidence curve) := none
+  /-- Evidence of strict torsion growth in the field presented by the submitted polynomial. -/
+  torsionGrowthField : Option (TorsionGrowthFieldFact curve) := none
+  /-- A proved height enclosure indexed by its ordered rational point list. -/
+  canonicalHeights : Option (Σ source : AffineMembership (curve.baseChange ℚ),
+    CanonicalHeightFacts source) := none
   /-- Proved enclosure for the full minimal real period. -/
   realPeriod : Option (RealPeriodFact curve) := none
   /-- Proved product of all intrinsic finite-place Tamagawa numbers. -/
@@ -71,6 +76,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   analytic : AnalyticFacts curve
   /-- The checked full-group torsion facts. -/
   torsion : TorsionFacts curve
+  /-- The checked field presentation and absolute degree for one torsion growth row. -/
+  torsionGrowthField : Option (TorsionGrowthFieldFact curve) := none
   /-- A checked oriented rational isogeny edge and its integral target. -/
   isogeny : Option (Σ target : WeierstrassCurve ℤ, DegreeTwoIsogenyFact curve target) := none
   /-- The complete isogeny class with derived summaries and optional native LMFDB ordering. -/

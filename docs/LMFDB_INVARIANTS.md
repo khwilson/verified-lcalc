@@ -29,14 +29,14 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_localdata` | 10 | Checked local arithmetic facts are indexed by prime. Exact Kodaira and Tamagawa outputs depend on the reduction case. |
 | `ec_galrep` | 7 | The generator field is checked at the reported finite modulus in a proved torsion basis. G1 covers the remaining image data. |
 | `ec_padic` | 5 | G3 specifies the p-adic regulator as a congruence with an explicit precision. |
-| `ec_torsion_growth` | 4 | G2 specifies the field of definition and the full torsion subgroup after base change. |
+| `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **50 of 85 distinct LMFDB column names** with the evidence
-specified below. Counting each name in its first table gives 29 in
-`ec_curvedata`, 3 additional names in `ec_classdata`, 9 in `ec_mwbsd`,
-8 in `ec_localdata`, and 1 in `ec_galrep`. Shared names such as
-`class_size` count once.
+The command covers **53 of 85 distinct LMFDB column names** with the evidence
+specified below. Assigning each name to one table where its interpretation
+has a checker gives 29 in `ec_curvedata`, 3 in `ec_classdata`, 10 in
+`ec_mwbsd`, 8 in `ec_localdata`, 1 in `ec_galrep`, and 2 in
+`ec_torsion_growth`. Shared names such as `class_size` count once.
 Project-specific keys are excluded.
 
 Count coverage by the mathematical assertion and the evidence a consumer can
@@ -51,6 +51,8 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 
 | JSON data | Lean witness field | Mathematical output / required evidence |
 | --- | --- | --- |
+| `heights` | `canonicalHeights` | `certificate.algebraic.heights` bounds the actual canonical heights of the ordered `gens` points using supplied Lean enclosures. |
+| `torsion_growth.field`, `torsion_growth.degree` | `torsionGrowthField` | `certificate.torsionGrowthField` gives an irreducible polynomial, absolute degree, and a new torsion point over that field for this curve. |
 | `ainvs` | `equation` | Actual Mathlib `WeierstrassCurve ℤ`; nonsingularity is checked. |
 | `binvs`, `cinvs` | `bInvariants`, `cInvariants` | Equalities with Mathlib's b₂,b₄,b₆,b₈ and c₄,c₆. These are optional equation-data extensions. |
 | `discriminant` | `discriminant` | Equality with this supplied equation's Mathlib Δ; does not assert minimality. |
@@ -291,7 +293,7 @@ missing theorem.
 | Modular `degree`, `manin_constant`, `optimality` | Statements about the modular parametrization, not the degree of an arbitrary isogeny. |
 | Heights, periods, regulator, Faltings data, special values | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |
 | Algebraic Sha | A separate cohomological/descent proof of finiteness, cardinality, or a primary component. |
-| Galois-image, adelic, nonmaximal-prime, Serre, Iwasawa, and torsion-growth data | The relevant representations, fields, group images, and completeness proofs. |
+| Remaining Galois-image levels, Serre and Iwasawa data, and full extension torsion | The relevant representations, fields, group images, and completeness proofs. |
 | Labels, ordering/index fields, hashes | Catalogue/provenance metadata; not mathematical identity certificates. |
 
 Mazur's classification restricts rational elliptic-curve torsion over `ℚ` to
