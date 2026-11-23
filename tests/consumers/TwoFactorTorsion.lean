@@ -34,6 +34,14 @@ example : (checkedStructure.equivalence (0, 1) :
     (C120b4.curve.baseChange ℚ).toAffine.Point) = checkedStructure.secondGenerator :=
   checkedStructure.maps_second
 
+private def family := C120b4.certificate.torsion.family.get (by decide +kernel)
+
+example : (family.orders.get (by decide +kernel)).orders = [2, 4] := rfl
+
+example : AddSubgroup.closure (Set.range family.membership.point) =
+    AddCommGroup.torsion (C120b4.curve.baseChange ℚ).toAffine.Point :=
+  (family.generation.get (by decide +kernel)).down
+
 private def checkedPrimeSupport : TorsionPrimeSupportFacts C120b4.curve :=
   C120b4.certificate.torsion.primeSupport.get (by decide +kernel)
 
@@ -50,7 +58,8 @@ run_cmd do
   for name in [`C120b4.torsion_structure_equiv,
       `C120b4.torsion_structure_first_image, `C120b4.torsion_structure_second_image,
       `C120b4.torsion_structure_cardinality, `C120b4.torsion_primes_exact,
-      `C120b4.certificate, ``imported_prime_support] do
+      `C120b4.certificate, `C120b4.torsion_generators.generates_torsion,
+      ``imported_prime_support] do
     for ax in ← liftTermElabM <| Lean.collectAxioms name do
       unless standard.contains ax do
         throwError "Unexpected torsion-structure axiom {ax} in {name}"

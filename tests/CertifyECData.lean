@@ -101,6 +101,18 @@ certify_ec TorsionOrderFour from
 example : addOrderOf (TorsionOrderFour.torsion_generators.point ⟨0, by decide⟩) = 4 :=
   TorsionOrderFour.torsion_generators.exact_order _
 
+private def membershipOnly :=
+  TorsionGeneratorCoordinates.certificate.torsion.family.get (by decide +kernel)
+
+example : membershipOnly.membership.coordinates = [(5, 5)] := rfl
+example : membershipOnly.orders.isNone := by decide +kernel
+example : membershipOnly.generation.isNone := by decide +kernel
+
+private def ordersOnly := TorsionOrderThree.certificate.torsion.family.get (by decide +kernel)
+
+example : (ordersOnly.orders.get (by decide +kernel)).order ⟨0, by decide +kernel⟩ = 3 := rfl
+example : ordersOnly.generation.isNone := by decide +kernel
+
 certify_ec OnlyAP from
   { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := some [(2, -2)] }
 certify_ec OnlyPoints from

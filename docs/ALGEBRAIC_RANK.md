@@ -42,8 +42,8 @@ obstruction.
 
 ## Families of points
 
-Use `independentPoints` in the same witness and attach its independence proof
-with `with_independence`. The proof can use the infinite-order facts checked
+Use `independentPoints` to select indices from `integralCoordinates`, and
+attach its independence proof with `with_independence`. The proof can use the infinite-order facts checked
 inside that same command:
 
 ```lean
@@ -79,6 +79,32 @@ request without a proof, or a proof without a requested family, is rejected.
 Infinite-order and independence requests may be supplied together in one record;
 the checked infinite-order facts are available to the independence proof, as
 shown in `CertifiedCurves.Direct`.
+
+To select from rational `generatorCoordinates` instead, use
+`independentGeneratorPoints`. The JSON key is `independent_generator_points`,
+with the coordinate list in `gens`. For example, on 189.b1, the following raw
+input selects the point `(-143/4, -3/8)`.
+
+```json
+{
+  "ainvs": [0, 0, 1, -3834, -91375],
+  "gens": [[-143, -3, 2]],
+  "independent_generator_points": [0]
+}
+```
+
+The two index fields are mutually exclusive. A witness may include both
+coordinate lists. The chosen index field determines the family checked by
+the supplied proof. The verified result is
+`Name.certificate.algebraic.independentGeneratorPoints` for the rational
+generator list, or `Name.certificate.algebraic.independentPoints` for the
+integral list. In either case `rank` counts the selected entries and
+`indices : Fin rank → Fin sourceSize` selects the points in proof order.
+
+The compiled 189.b1 example applies TauCeti’s Nagell–Lutz theorem to the
+nonintegral abscissa and excludes order two using the doubling equation.
+The supplied proof gives a Mordell–Weil rank lower bound of one.
+[Pinned Nagell–Lutz theorem](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/NagellLutz.lean#L265)
 
 The same interface accepts a family of any size. Duplicate or dependent points
 cannot satisfy this obligation. Knowing that each point has infinite order is

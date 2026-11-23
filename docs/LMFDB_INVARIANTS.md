@@ -89,10 +89,11 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `sha_an` | `analyticSha` | A supplied or composed `AnalyticShaFact` at `certificate.analyticSha` encloses the analytic BSD quotient for an explicit modular realization, with exact analytic order and positive denominator. |
 | `sha`, `sha_primes` | `sha`, `shaPrimes` | `certificate.roundedAnalyticSha` checks that the quotient enclosure is strictly inside the positive integer's rounding cell and that any listed primes are distinct and exactly its prime support. |
 | `ngens` | `generatorCount` | Length of the checked `gens` list. A basis or spanning claim needs its own evidence. |
-| `torsion_generator_orders` | `torsionGeneratorOrders` | Project-specific list giving an exact additive order for each supplied torsion generator point. |
+| `torsion_generator_orders` | `torsionGeneratorOrders` | Project-specific raw order list. The checked torsion family gives the positive exact order at each coordinate index. |
 | `torsion_structure` | `torsionStructure` | An additive equivalence onto the full rational torsion subgroup, for cyclic factors or two factors `[2, n]` with verified independence and a matching divisor. |
 | `torsion_primes` | `torsionPrimes` | Ascending distinct prime support of the exact full rational torsion cardinality; checked only after that cardinality is proved. |
-| Point-index requests | `infiniteOrderPoints`, `independentPoints` | Infinite order and algebraic-rank lower bounds, with an explicit independence proof for a requested family. |
+| `infinite_order_points`, `independent_points` | `infiniteOrderPoints`, `independentPoints` | Integral-coordinate indices for the infinite-order checker or the supplied independence proof. |
+| `independent_generator_points` | `independentGeneratorPoints` | Rational generator indices for the supplied independence proof. |
 | `torsion_bound` | `torsionBound` | Two odd good-reduction primes and the claimed positive gcd of their finite point counts. The full rational torsion order divides that gcd. |
 | `torsion` | `torsion` | Claimed exact order. A gcd of one proves the exact cardinality. For a larger checked bound the claimed order must be positive and divide the bound. |
 | Complete numerical payload | `centralResult`, `derivativeResult` | Existing analytic-rank-zero/one certificates under the documented modularity assumption. |
@@ -209,7 +210,15 @@ selected row's degree set. It compares a submitted matrix only with a
 proved LMFDB ordering. An edge alone leaves the class fields unverified.
 [LMFDB label ordering](https://www.lmfdb.org/knowledge/show/ec.q.lmfdb_label)
 
-### Real period, Tamagawa product, and analytic quotient
+#The members of `certificate.torsion.family` share the same point indices.
+Coordinates alone give affine membership. Verified positive orders give
+torsion membership at every index. With a checked matching cyclic or
+two-factor presentation, `family.generation` proves that the closure of
+the supplied points equals the full rational torsion subgroup. An optional
+`ngens` is compared with the length of the checked rational generator list.
+The certificate derives the count from that list.
+
+## Real period, Tamagawa product, and analytic quotient
 
 Submit the Lean proof records using `with_proofs`. JSON decimal reports are
 parsed exactly and any explicit `real_period_evidence.error` or

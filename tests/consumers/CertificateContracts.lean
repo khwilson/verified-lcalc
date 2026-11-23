@@ -61,7 +61,9 @@ example (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] :
 example {R : Type} [CommRing R] (curve : WeierstrassCurve R) :
     Type := AffineMembership curve
 example (curve : WeierstrassCurve ℤ) : Type := IntegralYFiberFacts curve
-example (coordinates : List (Rat × Rat)) : Type := GeneratorCountFacts coordinates
+example (curve : WeierstrassCurve ℚ) : Type := TorsionWitness curve
+example (curve : WeierstrassCurve ℚ) [curve.IsElliptic] {n : Nat}
+    (source : Fin n → curve.toAffine.Point) : Type := IndependentPointFacts source
 example (curve : WeierstrassCurve ℤ) : Type := TorsionDivisorFacts curve
 example (curve : WeierstrassCurve ℤ) : Type := CyclicTorsionFacts curve
 example (curve : WeierstrassCurve ℤ) : Type := TwoFactorTorsionFacts curve

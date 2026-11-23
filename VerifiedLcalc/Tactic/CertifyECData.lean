@@ -112,24 +112,44 @@ private def certifyTorsionOrders (base : Name) (witness : TSyntax `term) : Comma
   let hlen := CertifyEC.rootIdent (torsion ++ `orders_length)
   CertifyEC.checked (torsion ++ `orders_length)
     (← `(($orders).length = ($coords).length)) (← `(by decide +kernel))
+  let order := CertifyEC.rootIdent (torsion ++ `order)
+  CertifyEC.emit (← `(def $order (i : Fin ($coords).length) : Nat :=
+    ($orders).get (Fin.cast ($hlen).symm i)))
+  let hrange := CertifyEC.rootIdent (torsion ++ `orders_in_range)
   try
     CertifyEC.checked (torsion ++ `orders_in_range)
       (← `(($orders).all (fun n => decide (0 < n ∧ n ≤ 256)) = true)) (← `(by decide +kernel))
   catch _ =>
     throwError "Torsion generator orders must be between 1 and 256"
+  CertifyEC.checked (torsion ++ `order_positive)
+    (← `(∀ i, 0 < $order i))
+    (← `(by
+      intro i
+      exact (of_decide_eq_true (List.all_eq_true.mp $hrange _
+        (List.get_mem $orders (Fin.cast ($hlen).symm i)))).1))
   let hcheck := CertifyEC.rootIdent (torsion ++ `orders_valid)
   CertifyEC.checked (torsion ++ `orders_valid)
     (← `((List.finRange ($coords).length).all (fun i =>
-      EllipticWitness.exactOrderCheck ($point i) (($orders).get (Fin.cast ($hlen).symm i))) =
+      EllipticWitness.exactOrderCheck ($point i) ($order i)) =
       true))
     (← `(by decide +kernel))
   CertifyEC.checked (torsion ++ `exact_order)
     (← `(∀ i : Fin ($coords).length,
-      addOrderOf ($point i) = ($orders).get (Fin.cast ($hlen).symm i)))
+      addOrderOf ($point i) = $order i))
     (← `(by
       intro i
       exact EllipticWitness.exactOrderCheck_sound
         (List.all_eq_true.mp $hcheck i (List.mem_finRange i))))
+  let positive := CertifyEC.rootIdent (torsion ++ `order_positive)
+  let exactOrder := CertifyEC.rootIdent (torsion ++ `exact_order)
+  CertifyEC.checked (torsion ++ `point_mem_torsion)
+    (← `(∀ i, $point i ∈ AddCommGroup.torsion _))
+    (← `(by
+      intro i
+      apply (AddCommGroup.mem_torsion _).mpr
+      apply addOrderOf_pos_iff.mp
+      rw [$exactOrder:term]
+      exact $positive i))
 
 /-- Check supplied arithmetic data and export ordinary definitions and theorems. -/
 def certify (name : Name) (input : TSyntax `term) (announce := true) : CommandElabM Unit := do

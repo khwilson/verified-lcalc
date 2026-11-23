@@ -15,10 +15,19 @@ public import VerifiedLcalc.Certificate.PointAccessors
 namespace VerifiedLcalc
 
 /-- The actual rational points selected by the verified source indices. -/
-def IndependentPointFacts.points {curve : WeierstrassCurve ℤ}
-    [(curve.baseChange ℚ).IsElliptic] {source : AffineMembership curve}
-    (facts : IndependentPointFacts source)
-    (i : Fin facts.indices.length) : (curve.baseChange ℚ).toAffine.Point :=
-  source.rationalPoint ⟨facts.indices[i], facts.indicesValid _ (List.getElem_mem i.isLt)⟩
+def IndependentPointFacts.points {curve : WeierstrassCurve ℚ} [curve.IsElliptic]
+    {n : Nat} {source : Fin n → curve.toAffine.Point} (facts : IndependentPointFacts source)
+    (i : Fin facts.rank) : curve.toAffine.Point :=
+  source (facts.indices i)
+
+/-- The exact orders in source order, available to list-based consumers. -/
+def TorsionGeneratorOrderFacts.orders {curve : WeierstrassCurve ℚ} [curve.IsElliptic]
+    {source : AffineMembership curve} (facts : TorsionGeneratorOrderFacts source) : List ℕ :=
+  List.ofFn facts.order
+
+/-- The number of submitted generator coordinates, derived from their checked membership. -/
+def AlgebraicFacts.generatorCount {curve : WeierstrassCurve ℤ}
+    [(curve.baseChange ℚ).IsElliptic] (facts : AlgebraicFacts curve) : Option Nat :=
+  facts.generators.map fun membership => membership.coordinates.length
 
 end VerifiedLcalc

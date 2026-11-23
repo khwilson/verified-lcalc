@@ -593,6 +593,24 @@ run_cmd do
   | .error _ => pure ()
   | .ok _ => throwError "Nonzero anlist origin accepted"
 
+certify_ec FullCyclicFamily from
+  { equation := ⟨0, -1, 1, -10, -20⟩, torsion := some 5, torsionBound := some ⟨3, 5, 5⟩,
+    torsionGeneratorCoordinates := some [(5, 5), (5, -6)],
+    torsionGeneratorOrders := some [5, 5] }
+
+private def fullCyclicFamily := FullCyclicFamily.certificate.torsion.family.get (by decide +kernel)
+
+example : AddSubgroup.closure (Set.range fullCyclicFamily.membership.point) =
+    AddCommGroup.torsion (FullCyclicFamily.curve.baseChange ℚ).toAffine.Point :=
+  (fullCyclicFamily.generation.get (by decide +kernel)).down
+
+certify_ec TrivialTorsionFamily from
+  { equation := ⟨0, 0, 1, -1, 0⟩, torsion := some 1, torsionBound := some ⟨3, 5, 1⟩,
+    torsionGeneratorCoordinates := some [], torsionGeneratorOrders := some [] }
+
+example : (TrivialTorsionFamily.certificate.torsion.family.get
+    (by decide +kernel)).generation.isSome := by decide +kernel
+
 -- Keep the contract exhaustive as the raw witness gains fields. A field can be
 -- an input prerequisite, rather than a direct certified conclusion.
 run_cmd do
@@ -600,7 +618,8 @@ run_cmd do
   let rational := #[`discriminantSign, `jInvariant, `jIntegral, `abcQuality]
   let algebraic := #[`integralCoordinates, `integralFiberRoots, `numIntegralPoints,
     `generatorCoordinates, `generatorCount, `algebraicRank, `algebraicRankBounds,
-    `torsionGeneratorCoordinates, `infiniteOrderPoints, `independentPoints, `regulator]
+    `torsionGeneratorCoordinates, `infiniteOrderPoints, `independentPoints,
+    `independentGeneratorPoints, `regulator]
   let arithmetic := #[`potentialGoodReduction, `minimalDiscriminantAbs, `conductor, `rootNumber,
     `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
     `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData,

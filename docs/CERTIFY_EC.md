@@ -447,7 +447,7 @@ order must divide the last factor, or one for the empty list.
 Generation and independence require separate evidence.
 
 The same `certify_ec` command establishes stronger facts when
-`infiniteOrderPoints` or `independentPoints` is supplied in the witness.
+`infiniteOrderPoints`, `independentPoints`, or `independentGeneratorPoints` is supplied in the witness.
 The latter uses a `with_independence` proof clause. See
 [ALGEBRAIC_RANK.md](ALGEBRAIC_RANK.md) and `CertifiedCurves.Direct`.
 
@@ -469,7 +469,7 @@ The combined example assumes `import CertifiedCurves.Json`. There is one
 aggregate input type, `VerifiedLcalc.EllipticWitness`: a required
 `equation : WeierstrassCurve ℤ` and optional `primeCoefficients`,
 `integralCoordinates`, `centralResult`, `derivativeResult`, `minimality`, and
-`localData`, plus point-index lists `infiniteOrderPoints` and `independentPoints`.
+`localData`, plus point-index lists `infiniteOrderPoints`, `independentPoints`, and `independentGeneratorPoints`.
 All optional fields default to `none`. `some []` records an
 explicitly supplied empty list; it does not assert completeness. JSON omission
 or `null` represents absent arithmetic lists. Complete rank-witness JSON can

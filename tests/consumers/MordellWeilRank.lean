@@ -26,13 +26,13 @@ example : RankOneRegulator.certificate.algebraic.rank.isSome := by decide
 example : RankOneRegulator.certificate.algebraic.regulator.isNone := by decide
 
 /-- `ngens` proves the length of the checked submitted generator list only. -/
-example : (Exact.certificate.algebraic.generatorCount.map fun facts => facts.count) = some 1 := by
+example : Exact.certificate.algebraic.generatorCount = some 1 := by
   rfl
 
 theorem imported_rank_certificate_summary :
     (Exact.certificate.algebraic.rankBounds.get (by decide)).lower = 1 ∧
     (Exact.certificate.algebraic.rank.get (by decide)).val = 1 ∧
-    (Exact.certificate.algebraic.generatorCount.get (by decide)).count = 1 := by
+    Exact.certificate.algebraic.generatorCount.get (by decide) = 1 := by
   exact ⟨rfl, rfl, rfl⟩
 
 theorem imported_rank_interval_from_certificate :
@@ -43,8 +43,8 @@ theorem imported_rank_interval_from_certificate :
 
 theorem imported_generator_count_from_certificate :
     (Exact.certificate.algebraic.generators.get (by decide)).coordinates.length =
-      (Exact.certificate.algebraic.generatorCount.get (by decide)).count :=
-  (Exact.certificate.algebraic.generatorCount.get (by decide)).length_eq
+      Exact.certificate.algebraic.generatorCount.get (by decide) :=
+  rfl
 
 example : (0 : Nat) ≤ Module.finrank ℤ (Partial.curve.baseChange ℚ).toAffine.Point ∧
     Module.finrank ℤ (Partial.curve.baseChange ℚ).toAffine.Point ≤ 2 :=

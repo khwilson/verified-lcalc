@@ -300,8 +300,8 @@ run_cmd do
 example : LMFDB.C112a2.certificate.algebraic.generators.map AffineMembership.coordinates =
     some [(0, 2)] := rfl
 
-example : LMFDB.C112a2.certificate.algebraic.torsionGeneratorOrders.map
-    TorsionGeneratorOrderFacts.orders = some [2] := rfl
+example : LMFDB.C112a2.certificate.torsion.family.bind (fun family =>
+    family.orders.map TorsionGeneratorOrderFacts.orders) = some [2] := rfl
 
 private def checkedCyclic :=
   LMFDB.C112a2.certificate.torsion.cyclicStructure.get (by decide +kernel)
