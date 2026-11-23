@@ -4,6 +4,7 @@ Part of verified-lcalc.
 Authors: Kevin Wilson
 -/
 import VerifiedLcalcTests.Fixtures.GaloisImage
+import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.MulByInt.Torsion.Structure
 import Lean
 
 /-! # Imported Galois image proofs, missing evidence and rollback -/
@@ -23,7 +24,7 @@ example : (ExactModTwo.certificate.adelicGenerators.get (by rfl)).matrixRows =
     [(1, 0, 0, 1)] := ExactModTwo.adelic_gens.2
 
 example : ∃ basis : Module.Basis (Fin 2) (ZMod 2)
-    (AddSubgroup.torsionBy W.toAffine.Point (2 : ℤ)),
+    (AddSubgroup.torsionBy W.toAffine.Point ((2 : ℕ) : ℤ)),
     ∀ g : Matrix.GeneralLinearGroup (Fin 2) (ZMod 2),
       g = 1 ↔ ∃ σ : K ≃ₐ[ℚ] K, ∀ P,
         basis.equivFun (Multiplicative.toAdd (E.torsionGaloisAction 2 σ) P) =
