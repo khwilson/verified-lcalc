@@ -10,8 +10,8 @@ public import VerifiedLcalc.EllipticCurve.Tate.LocalReduction
 public import VerifiedLcalc.EllipticCurve.Tate.Tamagawa
 public import VerifiedLcalc.EllipticCurve.Tate.Kodaira
 public import VerifiedLcalc.EllipticCurve.GlobalCoefficients
-public import VerifiedLcalc.EllipticCurve.BadPrime
 public import Mathlib.RingTheory.Localization.Rat
+public import TauCeti.AlgebraicGeometry.EllipticCurve.PointCount
 
 /-! # Mathematical specifications for local row claims -/
 
@@ -37,7 +37,7 @@ def LocalReductionClaim.Spec (row : LocalReductionClaim) (e : WeierstrassCurve �
         (e.baseChange ℚ).HasMultiplicativeReduction R ∧
           (k = 1 ∧ (e.baseChange ℚ).HasSplitMultiplicativeReduction R ∨
            k = -1 ∧ ¬ (e.baseChange ℚ).HasSplitMultiplicativeReduction R)) ∧
-      computeFrobeniusTrace e row.prime = k)
+      (e.baseChange (ZMod row.prime)).frobeniusTrace = k)
 /-- Exact local Tamagawa data at the supported primes of the supplied equation. -/
 def LocalReductionClaim.TamagawaSpec (row : LocalReductionClaim) (e : WeierstrassCurve ℤ) :
     Prop :=

@@ -6,7 +6,9 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.NumericalData
+public import VerifiedLcalc.Certificates.Enclosures
 public import VerifiedLcalc.Certificates.PrecisionPolicy
+public import VerifiedLcalc.Certificates.WeierstrassInstances
 
 /-! Compatibility imports and instances for numerical output records. -/
 

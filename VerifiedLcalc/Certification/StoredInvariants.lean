@@ -216,7 +216,10 @@ theorem LocalReductionClaim.check_correct (row : LocalReductionClaim) (e : Weier
     have hbad : (row.prime : Int) ∣ e.Δ := by
       apply Int.dvd_iff_emod_eq_zero.mpr
       simpa only [goodReduction, decide_eq_false_iff_not, not_not] using hg
-    refine ⟨?_, (singularTrace_correct e row.prime hg).symm.trans ht⟩
+    have htrace : (e.baseChange (ZMod row.prime)).frobeniusTrace = k :=
+      (computeFrobeniusTrace_correct e row.prime).symm.trans
+        ((singularTrace_correct e row.prime hg).symm.trans ht)
+    refine ⟨?_, htrace⟩
     by_cases hc : (row.prime : Int) ∣ e.c₄
     · exact Or.inl ⟨(hasAdditiveReduction_at_iff e row.prime).mpr ⟨hbad, hc⟩,
         ht.symm.trans (by simp [singularTrace, Int.dvd_iff_emod_eq_zero.mp hc])⟩
