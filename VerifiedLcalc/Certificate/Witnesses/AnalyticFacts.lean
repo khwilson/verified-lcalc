@@ -5,15 +5,11 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.Enclosures
-public import VerifiedLcalc.Certificate.Witnesses.NumericalData
 public import VerifiedLcalc.Certificate.Witnesses.SpecialValue
 public import VerifiedLcalc.Certificate.Numerical.Payloads
+public import VerifiedLcalc.Certificate.Numerical.Precision
 public import VerifiedLcalc.Certificate.Analytic.EnclosurePredicates
 public import VerifiedLcalc.Certificate.Analytic.EvidencePredicates
-public import VerifiedLcalc.Certificate.Numerical.Intervals
-public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
-public import VerifiedLcalc.EllipticCurve.Modularity.RealizationData
 public import VerifiedLcalc.Certificate.Witnesses.CurvePrecisionClaim
 
 /-! # Checked analytic fact structures -/
