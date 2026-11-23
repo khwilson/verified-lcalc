@@ -32,10 +32,10 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | G2 specifies the field of definition and the full torsion subgroup after base change. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The current checked-field inventory covers **33 of 85 distinct LMFDB column
+The current checked-field inventory covers **34 of 85 distinct LMFDB column
 names**: 18 in `ec_curvedata` (including the rank-zero-scoped `regulator`), 2
 distinct `ec_classdata` coefficient names, 6 in `ec_mwbsd` (including
-`special_value`), and 7 in
+`special_value`), and 8 in
 `ec_localdata` (including the required row key `prime`). It covers zero new
 names in `ec_galrep`, `ec_padic`, `ec_torsion_growth`, and `ec_iwasawa`.
 These are distinct names within each table: a shared name across tables is
@@ -73,6 +73,7 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `local_invariants` or a top-level local row | `localInvariants` | Checks each supplied prime and any supplied `discriminant_valuation`, `j_denominator_valuation` or `reduction_type` against the minimal equation, using the checked `minimality`. |
 | `tamagawa_number` | `localInvariants` row field `tamagawaNumber` | Exact intrinsic Tamagawa number at a prime of good or `I₁` reduction. A local test proves minimality at that prime. |
 | `kodaira_symbol` | `localInvariants` row field `kodairaSymbol` | Canonical TauCeti `Iₙ` equality for good or multiplicative reduction. For additive codes the theorem excludes every `Iₙ`. Requires `minimality`. |
+| `root_number` | `localInvariants` row field `rootNumber` | Arithmetic local sign at the row's prime. Requires checked `minimality` and `local_data`. |
 | `ap` / `aplist` | `primeCoefficients` | Actual `LFunction p` coefficients with proved sufficient local minimality checks. |
 | `anlist` | `dirichletCoefficients` | Actual consecutive `LFunction n` coefficients; requires `minimality`. Native JSON starts with a₀=0, which is checked and removed; direct Lean lists start at a₁. |
 | `conductor` | `conductor` | Identification with the chosen modular realization's level; requires `minimality`, `localData`, and the existing modularity/arithmetic-compatibility axiom. |
@@ -170,8 +171,14 @@ Local claims can be split across rows. When two rows name the same prime,
 any supplied single-valued invariants must agree.
 
 `root_number` in an `ec_localdata` row is **local**, at that row's `prime`.
-It is deliberately not decoded as a global sign. The local reduction table is
-not the same data format as the supplied checked Tate transcripts in `localData`.
+A supplied claim requires a prime and a sign of ±1. With checked `minimality`
+and `local_data`, the command verifies the arithmetic formula, including the
+wild transcript when additive reduction at 2 or 3 requires one. For curves
+requiring no wild transcripts, supply `"local_data":{"at_two":null,"at_three":null}`.
+The sign and its proof are available through `local_root_numbers` and
+`Name.certificate.arithmetic.minimalModel` in `localRootNumbers`.
+Intrinsic local epsilon-factor compatibility still requires a separate theorem.
+Use the separate `global_root_number` key for the global sign.
 
 `torsion_bound` takes an object with exact integer fields `first_prime`,
 `second_prime`, and `bound`. JSON primes are capped at 10000. The checker
@@ -197,7 +204,7 @@ missing theorem.
 
 | Group / fields | Proof work still needed |
 | --- | --- |
-| Specific additive `kodaira_symbol`, local `root_number`, other `tamagawa_number` branches, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
+| Specific additive `kodaira_symbol`, intrinsic local epsilon factors, other `tamagawa_number` branches, and `tamagawa_product` | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
 | Tighter torsion bounds and `intrinsic_torsion` | Construct tight bounds for the rational torsion group or prove the required torsion pairing statement. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Rank intervals can be supplied as Lean proofs and are checked against the actual rational point group; exact rank requires a singleton interval. `ngens` checks only the length of the supplied generator list, not that it is a basis. Integral-point counts can use supplied exhaustive support; deriving it automatically still needs a bound and complete search. |
 | `isogeny_degrees`, `isogeny_matrix`, `class_deg`, `class_size` | Certified maps, degrees, and completeness of the represented isogeny class, using TauCeti's isogeny API. |

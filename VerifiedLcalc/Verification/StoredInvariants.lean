@@ -11,7 +11,7 @@ public import Mathlib.Data.Nat.Squarefree
 public import Mathlib.RingTheory.Localization.Rat
 
 /-! Bridges from exact stored invariant checks to existing Mathlib/TauCeti
-objects. Only the conductor and root-number bridges use the authorized
+objects. Only the conductor and global root-number bridges use the authorized
 modularity/arithmetic-compatibility assumption. -/
 
 @[expose] public section
@@ -168,7 +168,8 @@ def LocalReductionClaim.Compatible (a b : LocalReductionClaim) : Prop :=
     OptionalValuesAgree a.reductionType b.reductionType ∧
     OptionalValuesAgree a.tamagawaNumber b.tamagawaNumber ∧
     OptionalValuesAgree a.kodairaSymbol b.kodairaSymbol ∧
-    OptionalValuesAgree a.conductorValuation b.conductorValuation
+    OptionalValuesAgree a.conductorValuation b.conductorValuation ∧
+    OptionalValuesAgree a.rootNumber b.rootNumber
 
 instance (a b : LocalReductionClaim) : Decidable (a.Compatible b) := by
   unfold LocalReductionClaim.Compatible
@@ -255,6 +256,31 @@ theorem LocalReductionClaim.tamagawa_correct (row : LocalReductionClaim) (e : We
   have heq : n = 1 := by
     simpa only [hs, Bool.not_true, Bool.false_or, beq_iff_eq] using hval
   exact (supportsTamagawaOne_correct e row.prime hs).trans heq.symm
+
+/-- Validate the prime and sign independently of the other local evidence. -/
+def LocalReductionClaim.checkRootNumberInput (row : LocalReductionClaim) : Bool :=
+  row.rootNumber.all fun value => isPrime row.prime && (value == 1 || value == -1)
+
+/-- Check the supplied sign against the executable local formula. -/
+def LocalReductionClaim.checkRootNumber (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
+    (d : WildData) : Bool :=
+  row.checkRootNumberInput && row.rootNumber.all fun value => wildLocalRoot e d row.prime == value
+
+/-- The executable check certifies the local arithmetic sign for validated transcripts. -/
+theorem LocalReductionClaim.rootNumber_correct (row : LocalReductionClaim)
+    (e : WeierstrassCurve ℤ) (d : WildData) (hd : d.Valid e)
+    (h : row.checkRootNumber e d = true) :
+    row.RootNumberSpec e d := by
+  intro value hvalue
+  simp only [checkRootNumber, checkRootNumberInput, hvalue, Option.all_some, Bool.and_eq_true,
+    Bool.or_eq_true, beq_iff_eq, isPrime_correct] at h
+  obtain ⟨⟨hp, hsign⟩, hval⟩ := h
+  let : Fact row.prime.Prime := ⟨hp⟩
+  exact ⟨hp, hsign, (wildLocalRoot_correct e d hd row.prime).symm.trans hval⟩
+
+/-- Whether any row supplies a local root number. -/
+def hasLocalRootNumberClaim (rows : List LocalReductionClaim) : Bool :=
+  rows.any fun row => row.rootNumber.isSome
 
 /-- Whether any supplied Tamagawa code falls outside the supported reduction scope. -/
 def hasUnsupportedTamagawaClaim (e : WeierstrassCurve ℤ) (rows : List LocalReductionClaim) : Bool :=
