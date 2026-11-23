@@ -8,7 +8,6 @@ module
 public import VerifiedLcalc.Certificate.Analytic.EvidencePredicates
 public import VerifiedLcalc.Certificate.Analytic.EnclosurePredicates
 public import VerifiedLcalc.Certificate.Witnesses.NumericalRankData
-public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 
 /-! Structures containing analytic obligations for supplied evidence. -/
 

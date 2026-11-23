@@ -7,8 +7,7 @@ module
 
 public import VerifiedLcalc.Certificate.Witnesses.NumericalData
 public import VerifiedLcalc.Certificate.Numerical.CentralFormula
-public import Mathlib.Topology.Algebra.InfiniteSum.Defs
-public import Mathlib.Analysis.Real.Pi.Bounds
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 /-! Series evidence records used to justify central-value enclosures. -/
 
