@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealization
+public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
 public import VerifiedLcalc.Certificate.Witnesses.SpecialValueClaim
 
 /-! # Special-value claim and enclosure data

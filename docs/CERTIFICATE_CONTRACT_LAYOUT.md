@@ -53,6 +53,24 @@ a single-file compatibility umbrella. There is no `Certificates/` or
 `Certification/` source directory. `VerifiedLcalc.Certificate.Witnesses` and
 `VerifiedLcalc.Tactic.CertifyEC` are the canonical data and command entrypoints.
 
+## Which definitions the checked fields need
+
+The raw `EllipticWitness` uses Mathlib and other witness records. The
+checked `EllipticCertificate` also uses TauCeti's integral points,
+regulator, reduction symbols and Tamagawa numbers. For example, a checked
+local reduction row identifies its signed trace with TauCeti's
+`(e.baseChange (ZMod p)).frobeniusTrace`. Its checker proves the equality
+from the integer computation.
+
+Two checked interfaces need project definitions. A conditional analytic
+rank quantifies over a modular realization with coefficient, conductor and
+root-number compatibility. Central-value and derivative payloads record the
+exact coefficient list, interval computations and error bounds that the
+verifier checked. Their field types name those definitions so clients can
+recover the full statements. See the [arithmetic realization](../VerifiedLcalc/EllipticCurve/Modularity/ArithmeticRealizationData.lean),
+[finite payloads](../VerifiedLcalc/Certificate/Numerical/Payloads.lean)
+and [TauCeti roadmap](TAUCETI_ROADMAP.md).
+
 ## Predicates, computations and theorems
 
 A witness field may ask for a proof of a proposition. Give the proof where the

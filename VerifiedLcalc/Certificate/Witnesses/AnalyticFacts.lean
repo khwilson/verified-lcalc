@@ -12,7 +12,7 @@ public import VerifiedLcalc.Certificate.Numerical.Payloads
 public import VerifiedLcalc.Certificate.Analytic.EnclosurePredicates
 public import VerifiedLcalc.Certificate.Analytic.EvidencePredicates
 public import VerifiedLcalc.Certificate.Numerical.Intervals
-public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealization
+public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
 public import VerifiedLcalc.EllipticCurve.Modularity.RealizationData
 public import VerifiedLcalc.Certificate.Witnesses.CurvePrecisionClaim
 
