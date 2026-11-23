@@ -5,6 +5,13 @@ public import VerifiedLcalc.EllipticCurve.Modularity.FastSign
 public import VerifiedLcalc.EllipticCurve.Modularity.CentralIntegral
 public import VerifiedLcalc.Analytic
 
+/-!
+# Negative-sign analytic certification
+
+This module derives central-value vanishing and the resulting analytic-rank
+lower bound from a verified semistable root number of `-1`.
+-/
+
 @[expose] public section
 namespace VerifiedLcalc.Certification
 open Modularity EllipticCurve

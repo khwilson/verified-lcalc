@@ -3,11 +3,20 @@ module
 public import VerifiedLcalc.Assumptions.Precision
 public import VerifiedLcalc.Verification.NumericalCertification
 
+/-!
+# Conditional numerical rank certification
+
+The results here combine checked derivative enclosures with explicit curve
+hypotheses. A lower bound follows from the separated gap; exact rank also
+requires the next derivative to be nonzero.
+-/
+
 @[expose] public section
 open VerifiedLcalc.Certification
 namespace VerifiedLcalc.Assumptions
 open Modularity Certification
 
+/-- Derivatives below the cutoff give a lower rank bound under the stated gap hypothesis. -/
 theorem CurvePrecisionClaim.conditional_lower_bound (claim : CurvePrecisionClaim)
     (hn : claim.equation.Δ ≠ 0)
     (hypotheses : claim.Hypotheses hn)
@@ -19,6 +28,7 @@ theorem CurvePrecisionClaim.conditional_lower_bound (claim : CurvePrecisionClaim
     ((modularWitness claim.equation hn).formL_differentiable.analyticAt 1)
     small hypotheses.separated hypotheses.cutoff_lt_gap
 
+/-- The derivative gap and a nonzero next derivative determine the exact analytic rank. -/
 theorem CurvePrecisionClaim.conditional_rank (claim : CurvePrecisionClaim)
     (hn : claim.equation.Δ ≠ 0)
     (hypotheses : claim.Hypotheses hn)
@@ -38,6 +48,7 @@ def CurvePrecisionClaim.ofEvidence {expected : NumericalRanks.Request}
     (gap : Rat) : CurvePrecisionClaim :=
   ⟨e.equation, expected.policy, artifact.numericalLowerBound, gap⟩
 
+/-- The precision claim records the equation, policy, derivative count and gap of the given evidence. -/
 theorem CurvePrecisionClaim.ofEvidence_correct {expected : NumericalRanks.Request}
     {artifact : NumericalRanks.Artifact} (e : AssumedNumericalEvidence expected artifact)
     (gap : Rat) :
