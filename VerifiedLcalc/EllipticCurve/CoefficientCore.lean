@@ -2,6 +2,8 @@ module
 
 public import VerifiedLcalc.Certificate.Numerical.CoefficientDefinitions
 
+/-! Correctness lemmas for the finite prime-power coefficient table. -/
+
 @[expose] public section
 
 namespace VerifiedLcalc.EllipticCurve

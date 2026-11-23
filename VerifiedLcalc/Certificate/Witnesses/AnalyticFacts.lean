@@ -11,10 +11,10 @@ public import VerifiedLcalc.Certificate.Witnesses.SpecialValue
 public import VerifiedLcalc.Certificate.Numerical.Payloads
 public import VerifiedLcalc.Certificate.Analytic.EnclosurePredicates
 public import VerifiedLcalc.Certificate.Analytic.EvidencePredicates
+public import VerifiedLcalc.Certificate.Numerical.Intervals
 public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealization
 public import VerifiedLcalc.EllipticCurve.Modularity.RealizationData
 public import VerifiedLcalc.Certificate.Witnesses.CurvePrecisionClaim
-public import Mathlib.Data.Rat.Cast.Order
 
 /-! # Checked analytic fact structures -/
 
@@ -32,8 +32,7 @@ structure CentralCurveEnclosure (curve : WeierstrassCurve ℤ) (r : CentralResul
 structure DerivativeCurveEnclosure (curve : WeierstrassCurve ℤ) (r : DerivativeResult) : Type where
   /-- Containment after scaling the normalized integral enclosure. -/
   contains : ∀ m : ArithmeticModularRealization curve,
-    (deriv m.formL 1).re ∈ Set.Icc (r.realDerivativeBounds.1 : ℝ)
-      (r.realDerivativeBounds.2 : ℝ)
+    r.realDerivativeBounds.Contains (deriv m.formL 1).re
 /-- A central enclosure payload verified for this integral equation. -/
 structure CentralNumericalFact (curve : WeierstrassCurve ℤ) where
   /-- The checked evaluator output. -/

@@ -26,6 +26,7 @@ def computePrimePowerCoefficient (e : WeierstrassCurve ℤ) (p : Nat) : Nat → 
 def primePowerTable (e : WeierstrassCurve ℤ) (limit : Nat) : List (Nat × (Nat → Int)) :=
   ((List.range (limit + 1)).filter isPrime).map fun p => (p, computePrimePowerCoefficient e p)
 
+/-- Assemble the coefficient at `n` from its cached prime-power factors. -/
 def coefficientFromPrimePowers (table : List (Nat × (Nat → Int))) (n : Nat) : Int :=
   if n = 0 then 0 else
     (table.map fun f =>

@@ -6,6 +6,8 @@ public import VerifiedLcalc.Numerics.RationalExp
 public import Mathlib.Analysis.Real.Pi.Bounds
 public import Mathlib.Data.Nat.Sqrt
 
+/-! Proofs for the finite central-value evaluator and its rational scale bounds. -/
+
 @[expose] public section
 
 namespace VerifiedLcalc.EllipticCurve

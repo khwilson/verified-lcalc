@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.NumericalRankSoundness
 public import VerifiedLcalc.Certificate.Analytic.EvidencePredicates
+
+/-! Conditional separation theorems for exact analytic rank bounds. -/
 
 @[expose] public section
 
