@@ -62,8 +62,8 @@ local reduction row identifies its signed trace with TauCeti's
 `(e.baseChange (ZMod p)).frobeniusTrace`. Its checker proves the equality
 from the integer computation.
 
-Two checked interfaces need project definitions. A conditional analytic
-rank quantifies over a modular realization with coefficient, conductor and
+Some checked fields refer to project definitions. For example, a conditional
+analytic rank quantifies over a modular realization with coefficient, conductor and
 root-number compatibility. Central-value and derivative payloads record the
 exact coefficient list, interval computations and error bounds that the
 verifier checked. Their field types name those definitions so clients can
