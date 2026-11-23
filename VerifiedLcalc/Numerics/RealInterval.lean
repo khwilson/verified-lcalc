@@ -8,6 +8,7 @@ public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 @[expose] public section
 namespace VerifiedLcalc.Numerics
 
+/-- Outward dyadic rounding preserves containment of a real value. -/
 theorem roundInterval_sound (bits : Nat) (i : RealInterval) (x : ℝ) (hi : i.Contains x) :
     (roundInterval bits i).Contains x := by
   have hl : (((i.1.toDyadic bits).toRat : Rat) : ℝ) ≤ (i.1 : ℝ) := by
@@ -19,6 +20,7 @@ theorem roundInterval_sound (bits : Nat) (i : RealInterval) (x : ℝ) (hi : i.Co
     push_cast
     linarith [hi.2]⟩
 
+/-- Interval addition encloses the sum of two enclosed real values. -/
 theorem intervalAdd_sound (i j : RealInterval) (x y : ℝ)
     (hx : i.Contains x) (hy : j.Contains y) : (intervalAdd i j).Contains (x+y) := by
   exact ⟨by simpa [intervalAdd] using add_le_add hx.1 hy.1,
@@ -57,6 +59,7 @@ private theorem mul_bounds (a b c d x y : ℝ) (hx : a ≤ x ∧ x ≤ b) (hy : 
       · exact hh.trans
           ((mul_le_mul_of_nonpos_right hx.1 (le_of_not_ge hc)).trans (high _ (by tauto)))
 
+/-- Interval multiplication encloses the product of two enclosed real values. -/
 theorem intervalMul_sound (i j : RealInterval) (x y : ℝ)
     (hx : i.Contains x) (hy : j.Contains y) : (intervalMul i j).Contains (x*y) := by
   obtain ⟨hxl, hxh⟩ := hx
@@ -121,6 +124,7 @@ def polynomialValue (q : ℝ) : List Int → ℝ
   | [] => 0
   | a :: cs => a+q*polynomialValue q cs
 
+/-- The computed bounds enclose the polynomial at every point of the argument interval. -/
 theorem polynomialBounds_sound (bits : Nat) (i : RealInterval) (q : ℝ) (hq : i.Contains q)
     (cs : List Int) : (polynomialBounds bits i cs).Contains (polynomialValue q cs) := by
   induction cs with
