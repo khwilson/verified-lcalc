@@ -120,7 +120,7 @@ structure MinimalModelArithmeticFacts (curve : WeierstrassCurve ℤ)
       ∀ (p : ℕ) [Fact p.Prime], p ∈ ps ↔ ¬ (curve.baseChange (ZMod p)).IsElliptic } := none
   /-- The number of primes dividing the checked minimal discriminant. -/
   numBadPrimes : Option { n : ℕ // curve.Δ.natAbs.primeFactors.card = n } := none
-  /-- Checked local valuations and reduction types. Other local conclusions have dedicated fields. -/
+  /-- Checked local valuations and reduction types. -/
   localRows : Option { rows : List LocalReductionClaim // ∀ row ∈ rows,
     row.conductorValuation = none ∧ row.kodairaSymbol = none ∧
       row.tamagawaNumber = none ∧ row.rootNumber = none ∧ row.Spec curve } := none
