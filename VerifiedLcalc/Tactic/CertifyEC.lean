@@ -85,6 +85,14 @@ and the proof-carrying `certifiedRank`. They assert exact order zero or one at
 These analytic facts retain the explicit `ellipticModularity` assumption;
 arithmetic and numeric checks allow only standard Lean axioms.
 
+With `with_proofs`, the command also accepts typed enclosures for the full
+minimal real period and analytic BSD quotient and a proof of the intrinsic
+Tamagawa product. Any supplied `real_period`, `tamagawa_product`, and `sha_an`
+reports must match the evidence. A proved quotient checks a submitted positive
+`sha` by strict interval containment in its rounding cell. Any `sha_primes`
+must then give its exact distinct prime support. The quotient evidence refers
+to explicit arithmetic modular realizations and uses a positive denominator.
+
 Finite checks use `decide +kernel`, every theorem's dependencies are audited,
 and failures roll back all generated declarations. Compilation stores ordinary
 importable theorems in the containing module's `.olean`. Use a `public section`
@@ -290,7 +298,8 @@ def certifyJson (name : Name) (text : String)
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
         "num_int_pts",
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
-        ["regulator", "regulator_evidence"] ++
+        ["regulator", "regulator_evidence", "real_period", "real_period_evidence",
+          "tamagawa_product", "sha_an", "sha_an_evidence", "sha", "sha_primes"] ++
         algebraicKeys ++ localKeys ++
           if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome)
           then ["prime"] else []

@@ -6,6 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Tactic.CertifyECCommon
+public import VerifiedLcalc.Tactic.CertifyECBSD
 public import VerifiedLcalc.Tactic.CertifyECIntegralPoints
 
 /-! Verify Lean rank evidence and bind it to the raw claims for the same equation. -/
@@ -99,7 +100,8 @@ private def certifyRankClaims (base : Name) (curve : Ident) (attachment : Option
       have h : ($fact).lower = $n := by decide +kernel
       exact (($fact).rank_eq_of_equal (by decide +kernel)).trans h))
 
-/-- Elaborate one shared proof attachment, check any rank data, and pass the equation proofs on. -/
+/-- Elaborate the shared proof attachment, check its BSD, rank and integral-point data,
+and pass the equation proofs on. -/
 def certifyProofAttachment (base : Name) (input : Option (TSyntax `term)) :
     CommandElabM (Option (TSyntax `term)) := do
   let curve := rootIdent (base ++ `curve)
@@ -110,6 +112,7 @@ def certifyProofAttachment (base : Name) (input : Option (TSyntax `term)) :
       | exact $raw
       | exact { toEllipticProofs := $raw }))
     pure name
+  certifyBSDFacts base attachment
   certifyRankClaims base curve attachment
   let support ← if let some facts := attachment then do
     let selected ← `(($facts).integralXSupport)

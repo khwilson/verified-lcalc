@@ -199,6 +199,13 @@ private def torsionFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSynt
       cardinality := $exactCardinality, cyclicStructure := $cyclic,
       twoFactorStructure := $twoFactor, primeSupport := $primeSupport })
 
+private def optionalFactTerm (base field : Name) : CommandElabM (TSyntax `term) := do
+  let name := base ++ field
+  if (← getEnv).contains name then
+    `(some $(rootIdent name))
+  else
+    `(none)
+
 /-- Emit the indexed public certificate with a standard-axiom dependency audit. -/
 def certifyRecord (base : Name) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
@@ -218,6 +225,10 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let isogeny ← if (← getEnv).contains edgeName then
     `(some ⟨$(rootIdent (base ++ `isogeny_target)), $(rootIdent edgeName)⟩)
   else `(none)
+  let realPeriod ← optionalFactTerm base `real_period_fact
+  let tamagawaProduct ← optionalFactTerm base `tamagawa_product_fact
+  let analyticSha ← optionalFactTerm base `analytic_sha_fact
+  let roundedAnalyticSha ← optionalFactTerm base `rounded_analytic_sha_fact
   let record ← `({
     nonsingular := $nonsingular
     equationFacts := $equationFacts
@@ -226,7 +237,11 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     arithmetic := $arithmetic
     analytic := $analytic
     torsion := $torsion
-    isogeny := $isogeny })
+    isogeny := $isogeny
+    realPeriod := $realPeriod
+    tamagawaProduct := $tamagawaProduct
+    analyticSha := $analyticSha
+    roundedAnalyticSha := $roundedAnalyticSha })
   if (← getEnv).contains edgeName ||
       (← getEnv).contains (base ++ `torsion_structure_equiv) then
     emit (← `(noncomputable def $certificate : EllipticCertificate $curve := $record))

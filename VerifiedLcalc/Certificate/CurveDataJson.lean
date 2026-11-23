@@ -233,6 +233,18 @@ def regulatorClaim (j : Json) : Except String (Option RegulatorClaim) := do
     regulatorErrorValue (← value.getObjVal? "error")
   return some { reported, error }
 
+/-- Decode a decimal report and its optional explicitly specified radius. -/
+def decimalEnclosureClaim (j : Json) (field : String) :
+    Except String (Option DecimalEnclosureClaim) := do
+  let evidence := optionalData j (field ++ "_evidence")
+  let some raw := optionalData j field | do
+    if evidence.isSome then throw s!"{field}_evidence requires {field}"
+    return none
+  let reported ← exactReportedDecimal raw
+  let error ← evidence.mapM fun value => do
+    regulatorErrorValue (← value.getObjVal? "error")
+  return some { reported, error }
+
 /-- Decode a stored Taylor leading coefficient only with explicit error evidence. -/
 def specialLValueClaim (j : Json) : Except String (Option SpecialLValueClaim) := do
   let some evidence := optionalData j "special_value_evidence" | return none
@@ -355,6 +367,12 @@ def decode (j : Json) : Except String EllipticWitness := do
   let jInvariant ← optionalValue j "jinv" rationalValue
   let abcQuality ← abcQualityClaim j
   let regulator ← regulatorClaim j
+  let realPeriod ← decimalEnclosureClaim j "real_period"
+  let tamagawaProduct ← optionalValue j "tamagawa_product" nonnegativeInteger
+  let analyticSha ← decimalEnclosureClaim j "sha_an"
+  let sha ← optionalValue j "sha" nonnegativeInteger
+  let shaPrimes ← optionalValue j "sha_primes" fun value => do
+    (← array value 256).toList.mapM nonnegativeInteger
   let specialLValue ← specialLValueClaim j
   let jIntegral ← optionalValue j "j_integral" Json.getBool?
   let potentialGoodReduction ← optionalValue j "potential_good_reduction" Json.getBool?
@@ -394,6 +412,11 @@ def decode (j : Json) : Except String EllipticWitness := do
     jInvariant
     abcQuality
     regulator
+    realPeriod
+    tamagawaProduct
+    analyticSha
+    sha
+    shaPrimes
     jIntegral
     potentialGoodReduction
     discriminantSign

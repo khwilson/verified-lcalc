@@ -4,7 +4,7 @@ Start with [`EllipticWitness`](EllipticWitness.lean) for input to `certify_ec` a
 
 The index covers **85 distinct column names** across **101 table-qualified columns** in the eight EC/ℚ tables, excluding the database row identifier `id`. Each name appears once. The table column omits the `ec_` prefix. [LMFDB schema for 37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
 
-All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is still **33 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
+All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is still **38 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
 
 ## Curve data (`ec_curvedata`)
 
@@ -52,8 +52,8 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `regulator` | `curvedata` | Checked | [`RegulatorFacts.within_error`](Algebraic.lean). The structure bounds the error against TauCeti’s regulator. The command currently constructs it for proved rank zero, where the regulator equals one. |
 | `semistable` | `curvedata` | Checked | [`MinimalModelArithmeticFacts.semistable`](FinitePrimes.lean). The Boolean characterizes semistable reduction of the rational curve using a checked globally minimal model. |
 | `serre_invariants` | `curvedata` | Report | [`GaloisImageClaims.serreInvariants`](FinitePrimes.lean) holds [`SerreInvariantClaim`](FinitePrimes.lean). Each entry gives a prime, weight, and conductor. |
-| `sha` | `curvedata` | Structure | [`RoundedAnalyticShaFact.rounds`](Analytic.lean). The enclosure for the analytic BSD quotient singles out the reported nearest integer. |
-| `sha_primes` | `curvedata` | Structure | [`RoundedAnalyticShaFact.primes`](Analytic.lean). Prime divisors of that rounded integer. |
+| `sha` | `curvedata` | Checked | [`RoundedAnalyticShaFact.rounds`](Analytic.lean). The enclosure for the analytic BSD quotient singles out the reported nearest integer. Available at `certificate.roundedAnalyticSha`. |
+| `sha_primes` | `curvedata` | Checked | [`RoundedAnalyticShaFact.primes`](Analytic.lean). Prime divisors of that rounded integer. Available at `certificate.roundedAnalyticSha`. |
 | `signD` | `curvedata` | Checked | [`RationalInvariantFacts.discriminantSign`](Invariants.lean). Sign of the integral equation’s discriminant. |
 | `squarefree_disc` | `curvedata` | Checked | [`MinimalModelArithmeticFacts.squarefreeDiscriminant`](FinitePrimes.lean). The Boolean characterizes squarefreeness of the absolute minimal discriminant. |
 | `stable_faltings_height` | `curvedata` | Report | [`FaltingsInput.stableHeight`](Algebraic.lean). Report in the stable Faltings-height normalization. |
@@ -80,10 +80,10 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `heights` | `mwbsd` | Structure | [`CanonicalHeightFacts.within_error`](Algebraic.lean). Enclosures for the actual canonical heights in the order of the supplied points. |
 | `ngens` | `mwbsd` | Checked | [`GeneratorCountFacts.length_eq`](Algebraic.lean). Length of the supplied and checked generator list. |
 | `rank_bounds` | `mwbsd` | Checked | [`EllipticCurve.AlgebraicRankBounds`](Algebraic.lean), stored in [`AlgebraicFacts.rankBounds`](Algebraic.lean). Both endpoints bound Mathlib’s integer-module finrank of the rational points. |
-| `real_period` | `mwbsd` | Structure | [`RealPeriodFact.correct`](Analytic.lean). Enclosure for the full minimal real period, including all real components. |
-| `sha_an` | `mwbsd` | Structure | [`AnalyticShaFact.correct`](Analytic.lean). Enclosure for the analytic BSD quotient for each arithmetic modular realization. |
+| `real_period` | `mwbsd` | Checked | [`RealPeriodFact.correct`](Analytic.lean). Enclosure for the full minimal real period, including all real components. Available at `certificate.realPeriod`. |
+| `sha_an` | `mwbsd` | Checked | [`AnalyticShaFact.correct`](Analytic.lean). Enclosure for the analytic BSD quotient for each arithmetic modular realization. Available at `certificate.analyticSha`. |
 | `special_value` | `mwbsd` | Checked | [`SpecialLValueFacts.correct`](Analytic.lean). At proved order $r=0$ or $1$, the reported value differs from the Taylor leading coefficient $L^{(r)}(1)/r!$ by at most the supplied error for each arithmetic modular realization. |
-| `tamagawa_product` | `mwbsd` | Structure | [`TamagawaProductFact.correct`](Analytic.lean). Equality with the product of intrinsic Tamagawa factors over finite places. |
+| `tamagawa_product` | `mwbsd` | Checked | [`TamagawaProductFact.correct`](Analytic.lean). Equality with the product of intrinsic Tamagawa factors over finite places. Available at `certificate.tamagawaProduct`. |
 | `torsion_generators` | `mwbsd` | Checked | [`AlgebraicFacts.torsionGenerators`](Algebraic.lean) holds [`AffineMembership`](InputData.lean). The list alone certifies point membership. Exact orders and generation require additional evidence. |
 | `xcoord_integral_points` | `mwbsd` | Checked | [`IntegralYFiberFacts.complete`](Algebraic.lean). Every integral y at each supplied x is accounted for. A proof that the list covers all integral x-values can be supplied as [`IntegralXSupport.covers`](InputData.lean). |
 

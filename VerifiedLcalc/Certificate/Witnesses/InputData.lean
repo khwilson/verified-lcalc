@@ -76,6 +76,13 @@ structure RegulatorClaim where
   /-- Explicit absolute error bound; absence means an exact-value claim. -/
   error : Option Rat := none
 
+/-- A reported decimal from an archimedean invariant or analytic quotient. -/
+structure DecimalEnclosureClaim where
+  /-- Exact rational interpretation of the reported decimal. -/
+  reported : Rat
+  /-- Explicit absolute error radius, if supplied with the report. -/
+  error : Option Rat := none
+
 /-- A finite list containing the abscissa of every affine integral solution. -/
 structure IntegralXSupport (curve : WeierstrassCurve ℤ) where
   /-- The supplied abscissae. -/

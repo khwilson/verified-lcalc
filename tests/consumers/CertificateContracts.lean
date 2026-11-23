@@ -10,6 +10,10 @@ import Lean
 
 open VerifiedLcalc Lean Elab Command
 
+#check RealPeriodFact
+#check TamagawaProductFact
+#check AnalyticShaFact
+#check RoundedAnalyticShaFact
 #check IntegralXSupport
 #check CompleteIntegralPointFacts
 #check DegreeTwoIsogenyFact
