@@ -149,13 +149,13 @@ structure ArithmeticFacts (curve : WeierstrassCurve ℤ)
   /-- Conditional level and sign facts requiring an explicit realization. -/
   modular : ModularArithmeticFacts curve := {}
 
-open scoped Classical Matrix
+open scoped Matrix
 
 /-- A finite image of the absolute Galois group on the full geometric torsion of a
 nonsingular rational curve. The choice of torsion basis specifies the conjugate in which the
 matrix generators are given. -/
 structure FiniteGaloisImageFact (curve : WeierstrassCurve ℤ)
-    [(curve.baseChange ℚ).IsElliptic] where
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)] where
   /-- The torsion modulus. -/
   modulus : ℕ+
   /-- The ordered basis of the geometric torsion over the residue ring. -/
@@ -176,7 +176,7 @@ structure FiniteGaloisImageFact (curve : WeierstrassCurve ℤ)
 /-- The exact image on the full Tate module over the algebraic closure of the rationals.
 The subgroup carries the entire prime-adic conclusion. -/
 structure PadicGaloisImageFact (curve : WeierstrassCurve ℤ)
-    [(curve.baseChange ℚ).IsElliptic] (prime : Nat.Primes) where
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)] (prime : Nat.Primes) where
   /-- The ordered integral basis of the Tate module. -/
   basis :
     letI : Fact (prime : ℕ).Prime := ⟨prime.property⟩
