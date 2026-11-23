@@ -76,7 +76,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | LMFDB field | Table(s) | Status | Witness and scope |
 | --- | --- | --- | --- |
 | `area` | `mwbsd` | Report | [`ComplexPeriodAreaReport.reported`](Analytic.lean). Reported covolume for the Néron differential. |
-| `gens` | `mwbsd` | Checked | [`AlgebraicFacts.generators`](Algebraic.lean) holds [`AffineMembership`](InputData.lean). Each decoded rational point lies on the curve. Spanning the Mordell–Weil group is a separate assertion. The optional generator-index request checks supplied integer independence at `certificate.algebraic.independentGeneratorPoints`. |
+| `gens` | `mwbsd` | Checked | [`AlgebraicFacts.generators`](Algebraic.lean) is an indexed family of Mathlib rational points, in input order. Spanning the Mordell–Weil group is a separate assertion. The optional generator-index request checks supplied integer independence at `certificate.algebraic.independentGeneratorPoints`. |
 | `heights` | `mwbsd` | Structure | [`CanonicalHeightFacts.within_error`](Algebraic.lean). Enclosures for the actual canonical heights in the order of the supplied points. |
 | `ngens` | `mwbsd` | Checked | [`AlgebraicFacts.generators`](Algebraic.lean). Length of the supplied and checked generator list, checked against `ngens` at ingestion. |
 | `rank_bounds` | `mwbsd` | Checked | [`EllipticCurve.AlgebraicRankBounds`](Algebraic.lean), stored in [`AlgebraicFacts.rankBounds`](Algebraic.lean). Both endpoints bound Mathlib’s integer-module finrank of the rational points. |

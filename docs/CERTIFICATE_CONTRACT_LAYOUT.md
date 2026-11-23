@@ -16,8 +16,10 @@ contains their Lean declarations.
 A single mathematical witness can certify several LMFDB columns. For example,
 the checked rational generator family determines the value of `ngens`. When a
 row supplies that column, `certify_ec` compares it with the size of the family.
+The checked family uses a native `Fin n → Point` map. Integral point families
+use `Fin n → ↥curve.integralPoints`, which carries TauCeti's integrality proof.
 Pointwise data such as exact orders use the same `Fin n` index as the points.
-The JSON reader accepts ordinary arrays.
+The JSON reader accepts ordinary coordinate arrays.
 
 For `torsion_generators`, checking the order of every point proves that the
 points belong to the torsion subgroup. Proving that they generate it requires

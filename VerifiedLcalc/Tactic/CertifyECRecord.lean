@@ -32,18 +32,19 @@ private def rationalFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   `({ discriminantSign := $sign, jInvariant := $j, jIntegral := $integral,
       abcQuality := $abcQuality })
 
-private def integralMembershipTerm (base : Name) : CommandElabM (TSyntax `term) := do
+private def integralPointsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let witnessName := base ++ `witness
   unless (← optionalInput witnessName `integralCoordinates).isSome do return ← `(none)
   let w := rootIdent witnessName
-  let sound := rootIdent (base ++ `points_on_curve)
-  `(some ⟨($w).integralCoordinates.getD [], $sound⟩)
+  let point := rootIdent (base ++ `point)
+  let integral := rootIdent (base ++ `point_integral)
+  `(some ⟨(($w).integralCoordinates.getD []).length, fun i => ⟨$point i, $integral i⟩⟩)
 
-private def rationalMembershipTerm (base : Name) : CommandElabM (TSyntax `term) := do
-  unless (← getEnv).contains (base ++ `points_on_curve) do return ← `(none)
+private def rationalPointsTerm (base : Name) : CommandElabM (TSyntax `term) := do
+  unless (← getEnv).contains (base ++ `point) do return ← `(none)
   let coords := rootIdent (base ++ `coordinates)
-  let sound := rootIdent (base ++ `points_on_curve)
-  `(some ⟨$coords, $sound⟩)
+  let point := rootIdent (base ++ `point)
+  `(some ⟨($coords).length, $point⟩)
 
 private def infiniteOrderFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let ixName := base ++ `infinite_order_indices
@@ -109,27 +110,28 @@ private def torsionWitnessTerm (base : Name) : CommandElabM (TSyntax `term) := d
   let child := base ++ `torsion_generators
   unless (← getEnv).contains (child ++ `points_on_curve) do return ← `(none)
   let coords := rootIdent (child ++ `coordinates)
-  let sound := rootIdent (child ++ `points_on_curve)
+  let point := rootIdent (child ++ `point)
   let orders ← torsionGeneratorOrderTerm base
   let generation ← if (← getEnv).contains (child ++ `generates_torsion) then
     `(some ⟨$(rootIdent (child ++ `generates_torsion))⟩)
   else `(none)
   `(some {
-    elliptic := inferInstance
-    membership := ⟨$coords, $sound⟩
+    n := ($coords).length
+    points := $point
     orders := $orders
     generation := $generation })
 
 private def integralYFiberTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let completeName := base ++ `integral_y_fiber_complete
   unless (← getEnv).contains completeName do return ← `(none)
-  let curve := rootIdent (base ++ `curve)
   let roots := rootIdent (base ++ `integral_fiber_roots)
-  let valid := rootIdent (base ++ `integral_fiber_roots_valid)
+  let seed := rootIdent (base ++ `integral_fiber_seed)
   let fiber := rootIdent (base ++ `integral_y_fiber)
   let complete := rootIdent completeName
-  `(some ⟨⟨$roots, EllipticWitness.affineCoordinatesValid_sound $curve $roots $valid⟩,
-    $fiber, $complete⟩)
+  `(some ⟨($roots).length, $seed, $fiber, by
+    intro i y
+    simpa only [$seed:term, WeierstrassCurve.pointOfIntegralSolution_eq_some,
+      WeierstrassCurve.Affine.Point.xCoord_some, Rat.num_intCast] using $complete i y⟩)
 
 private def completeIntegralPointsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let name := base ++ `integral_point_certificate
@@ -138,10 +140,10 @@ private def completeIntegralPointsTerm (base : Name) : CommandElabM (TSyntax `te
   `(none)
 
 private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
-  let integral ← integralMembershipTerm base
+  let integral ← integralPointsTerm base
   let fibers ← integralYFiberTerm base
   let completeIntegralPoints ← completeIntegralPointsTerm base
-  let generators ← rationalMembershipTerm (base ++ `generators)
+  let generators ← rationalPointsTerm (base ++ `generators)
   let infinite ← infiniteOrderFactsTerm base
   let independent ← independenceFactsTerm base `independent_points_eq
   let independentGenerators ← independenceFactsTerm base `independent_generator_points_eq

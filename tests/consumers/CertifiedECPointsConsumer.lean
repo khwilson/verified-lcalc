@@ -24,12 +24,16 @@ example : DirectPoints.certificate.algebraic.rankLowerBound.map Subtype.val = so
 private def importedIndexedInfinite :=
   (DirectPoints.certificate.algebraic.infiniteOrderPoints.getD []).get ⟨0, by decide +kernel⟩
 
-example :
-    ¬ IsOfFinAddOrder
-      ((DirectPoints.certificate.algebraic.integralPoints.getD
-        (VerifiedLcalc.AffineMembership.empty DirectPoints.curve)).rationalPoint
-        importedIndexedInfinite.val) :=
+private def integralFamily :=
+  DirectPoints.certificate.algebraic.integralPoints.getD ⟨0, Fin.elim0⟩
+
+example : ¬ IsOfFinAddOrder (integralFamily.2 importedIndexedInfinite.val).val :=
   importedIndexedInfinite.property
+
+example : (integralFamily.2 ⟨0, by decide +kernel⟩).val ≠ 0 := by decide +kernel
+
+example : (integralFamily.2 ⟨0, by decide +kernel⟩).val ∈ DirectPoints.curve.integralPoints :=
+  (integralFamily.2 ⟨0, by decide +kernel⟩).property
 
 private def importedIndexedFamily :=
   DirectPoints.certificate.algebraic.independentPoints.get (by decide +kernel)
@@ -63,6 +67,10 @@ private def rationalFamily :=
 
 example : rationalFamily.rank = 1 := rfl
 example : (rationalFamily.indices ⟨0, by decide +kernel⟩).val = 0 := rfl
+
+example : Rank189.certificate.algebraic.generators.map
+    (fun family => List.ofFn family.2) = some [Rank189.generators.point ⟨0, by decide +kernel⟩] :=
+  rfl
 example : LinearIndependent ℤ rationalFamily.points := rationalFamily.independent
 example : rationalFamily.points ⟨0, by decide +kernel⟩ =
     Rank189.generators.point ⟨0, by decide +kernel⟩ := rfl

@@ -297,8 +297,9 @@ run_cmd do
       unless [``propext, ``Classical.choice, ``Quot.sound].contains name do
         throwError "Unexpected aggregate axiom in {fact}: {name}"
 
-example : LMFDB.C112a2.certificate.algebraic.generators.map AffineMembership.coordinates =
-    some [(0, 2)] := rfl
+example : LMFDB.C112a2.certificate.algebraic.generators.map
+    (fun family => List.ofFn family.2) =
+    some [LMFDB.C112a2.generators.point ⟨0, by decide +kernel⟩] := rfl
 
 example : LMFDB.C112a2.certificate.torsion.family.bind (fun family =>
     family.orders.map TorsionGeneratorOrderFacts.orders) = some [2] := rfl

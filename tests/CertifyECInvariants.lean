@@ -600,7 +600,7 @@ certify_ec FullCyclicFamily from
 
 private def fullCyclicFamily := FullCyclicFamily.certificate.torsion.family.get (by decide +kernel)
 
-example : AddSubgroup.closure (Set.range fullCyclicFamily.membership.point) =
+example : AddSubgroup.closure (Set.range fullCyclicFamily.points) =
     AddCommGroup.torsion (FullCyclicFamily.curve.baseChange ℚ).toAffine.Point :=
   (fullCyclicFamily.generation.get (by decide +kernel)).down
 

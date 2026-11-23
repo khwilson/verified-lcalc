@@ -13,8 +13,8 @@ public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic
   supplied for an equation.
 * `AbcQualityClaim`, `IsogenyEdgeClaim`, and `RegulatorClaim` describe submitted abc
   approximations, directed isogeny degrees, and regulator values. `IntegralXSupport` proves
-  coverage of all integral abscissae, and `AffineMembership` proves the listed coordinates
-  satisfy the equation. `TorsionBoundWitness` proposes two good primes and a point-count gcd.
+  coverage of all integral abscissae. `TorsionBoundWitness` proposes two good primes
+  and a point-count gcd.
 * `LocalReductionClaim` holds optional entries for a single prime.
   `EllipticCurve.MinimalityWitness` supplies discriminant factors,
   `EllipticCurve.TateWitness` supplies a local Tate transcript, and `EllipticCurve.WildData`
@@ -89,13 +89,6 @@ structure IntegralXSupport (curve : WeierstrassCurve ℤ) where
   xs : List ℤ
   /-- Every affine integral solution has its abscissa on the list. -/
   covers : ∀ x y : ℤ, curve.toAffine.Equation x y → x ∈ xs
-
-/-- Membership of every supplied coordinate pair on the given equation. -/
-structure AffineMembership {R : Type*} [CommRing R] (curve : WeierstrassCurve R) where
-  /-- The coordinates in the order supplied to the certifier. -/
-  coordinates : List (R × R)
-  /-- Each member of the list satisfies the equation. -/
-  onCurve : ∀ x y, (x, y) ∈ coordinates → curve.toAffine.Equation x y
 
 /-- Two proposed odd primes and the gcd of the corresponding finite-field point counts. -/
 structure TorsionBoundWitness where

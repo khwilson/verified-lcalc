@@ -85,6 +85,12 @@ private def certifyIntegralFibers (base : Name) (curve witness : TSyntax `term) 
   let valid := CertifyEC.rootIdent (base ++ `integral_fiber_roots_valid)
   CertifyEC.checked (base ++ `integral_fiber_roots_valid)
     (← `(EllipticWitness.affineCoordinatesValid $curve $roots = true)) (← `(by decide +kernel))
+  let seed := CertifyEC.rootIdent (base ++ `integral_fiber_seed)
+  CertifyEC.emit (← `(def $seed (i : Fin ($roots).length) : ↥($curve).integralPoints := by
+    have h := EllipticWitness.affineCoordinatesValid_sound $curve $roots $valid _ _
+      (List.getElem_mem i.isLt)
+    exact ⟨($curve).pointOfIntegralSolution (($roots)[i]).1 (($roots)[i]).2 h,
+      WeierstrassCurve.pointOfIntegralSolution_mem _ _ _ h⟩))
   let fiber := CertifyEC.rootIdent (base ++ `integral_y_fiber)
   CertifyEC.emit (← `(def $fiber (i : Fin ($roots).length) : Finset Int :=
     EllipticWitness.integralYFiber $curve (($roots)[i]).1 (($roots)[i]).2))

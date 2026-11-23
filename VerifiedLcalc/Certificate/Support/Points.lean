@@ -6,9 +6,8 @@ Authors: verified-lcalc contributors
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.Algebraic
-public import VerifiedLcalc.Certificate.PointAccessors
 
-/-! # Compatibility imports and point accessors for legacy callers -/
+/-! # Point-family views and counts -/
 
 @[expose] public section
 
@@ -21,13 +20,13 @@ def IndependentPointFacts.points {curve : WeierstrassCurve ℚ} [curve.IsEllipti
   source (facts.indices i)
 
 /-- The exact orders in source order, available to list-based consumers. -/
-def TorsionGeneratorOrderFacts.orders {curve : WeierstrassCurve ℚ} [curve.IsElliptic]
-    {source : AffineMembership curve} (facts : TorsionGeneratorOrderFacts source) : List ℕ :=
+def TorsionGeneratorOrderFacts.orders {curve : WeierstrassCurve ℚ} {n : ℕ}
+    {source : Fin n → curve.toAffine.Point} (facts : TorsionGeneratorOrderFacts source) : List ℕ :=
   List.ofFn facts.order
 
 /-- The number of submitted generator coordinates, derived from their checked membership. -/
 def AlgebraicFacts.generatorCount {curve : WeierstrassCurve ℤ}
     [(curve.baseChange ℚ).IsElliptic] (facts : AlgebraicFacts curve) : Option Nat :=
-  facts.generators.map fun membership => membership.coordinates.length
+  facts.generators.map Sigma.fst
 
 end VerifiedLcalc

@@ -42,7 +42,7 @@ theorem imported_rank_interval_from_certificate :
   exact ⟨bounds.lower_le_finrank, bounds.finrank_le_upper⟩
 
 theorem imported_generator_count_from_certificate :
-    (Exact.certificate.algebraic.generators.get (by decide)).coordinates.length =
+    (Exact.certificate.algebraic.generators.get (by decide)).1 =
       Exact.certificate.algebraic.generatorCount.get (by decide) :=
   rfl
 

@@ -93,12 +93,13 @@ input selects the point `(-143/4, -3/8)`.
 }
 ```
 
-The two index fields are mutually exclusive. A witness may include both
+The two index fields are mutually exclusive. A raw witness may include both
 coordinate lists. The chosen index field determines the family checked by
 the supplied proof. The verified result is
 `Name.certificate.algebraic.independentGeneratorPoints` for the rational
 generator list, or `Name.certificate.algebraic.independentPoints` for the
-integral list. In either case `rank` counts the selected entries and
+integral list. The generator source is an indexed family of Mathlib points.
+In either case `rank` counts the selected entries and
 `indices : Fin rank → Fin sourceSize` selects the points in proof order.
 
 The compiled 189.b1 example applies TauCeti’s Nagell–Lutz theorem to the

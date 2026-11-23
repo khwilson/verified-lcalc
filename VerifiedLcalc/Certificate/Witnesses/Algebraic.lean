@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.InputData
-public import VerifiedLcalc.Certificate.PointAccessors
+public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
 public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenerated
 public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.Regulator.Basic
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.Kernel
@@ -97,40 +97,39 @@ structure IndependentPointFacts {curve : WeierstrassCurve ℚ}
   independent : LinearIndependent ℤ (fun i => source (indices i))
 
 /-- Positive exact orders aligned with the supplied rational point list. -/
-structure TorsionGeneratorOrderFacts {curve : WeierstrassCurve ℚ} [curve.IsElliptic]
-    (source : AffineMembership curve) where
+structure TorsionGeneratorOrderFacts {curve : WeierstrassCurve ℚ} {n : ℕ}
+    (source : Fin n → curve.toAffine.Point) where
   /-- The order at each source index. -/
-  order : Fin source.coordinates.length → ℕ
+  order : Fin n → ℕ
   /-- Each order is positive. -/
   positive : ∀ i, 0 < order i
   /-- The actual additive order of each supplied coordinate point. -/
-  exactOrder : ∀ i, addOrderOf (source.point i) = order i
+  exactOrder : ∀ i, addOrderOf (source i) = order i
 
 /-- The submitted rational torsion-generator family and the proved properties of those points. -/
 structure TorsionWitness (curve : WeierstrassCurve ℚ) where
-  /-- Nonsingularity of the curve indexing the submitted family. -/
-  elliptic : curve.IsElliptic
-  /-- The supplied affine coordinates and their equation-membership proofs. -/
-  membership : AffineMembership curve
+  /-- The number of supplied points. -/
+  n : ℕ
+  /-- The supplied points in their source order. -/
+  points : Fin n → curve.toAffine.Point
   /-- Positive exact orders at every source index, when proved. -/
-  orders :
-    let := elliptic
-    Option (TorsionGeneratorOrderFacts membership) := none
+  orders : Option (TorsionGeneratorOrderFacts points) := none
   /-- The submitted points generate the full rational torsion subgroup, when proved. -/
-  generation :
-    let := elliptic
-    Option (PLift (AddSubgroup.closure (Set.range membership.point) =
-      AddCommGroup.torsion curve.toAffine.Point)) := none
+  generation : Option (PLift
+    (AddSubgroup.closure (Set.range points) = AddCommGroup.torsion curve.toAffine.Point)) := none
 
 /-- Integral seed points and the complete set of integral y-coordinates over each seed's x. -/
-structure IntegralYFiberFacts (curve : WeierstrassCurve ℤ) where
+structure IntegralYFiberFacts (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The number of supplied seeds. -/
+  n : ℕ
   /-- The supplied integral seed points, in input order. -/
-  seeds : AffineMembership curve
-  /-- The finite set of all integral y-coordinates at the indexed x-coordinate. -/
-  fiber : Fin seeds.coordinates.length → Finset ℤ
-  /-- The indexed fiber is exactly the set of solutions of the given equation at that x. -/
-  complete : ∀ (i : Fin seeds.coordinates.length) (y : ℤ),
-    y ∈ fiber i ↔ curve.toAffine.Equation (seeds.coordinates[i]).1 y
+  seeds : Fin n → ↥curve.integralPoints
+  /-- The finite set of integral y-coordinates at each seed's abscissa. -/
+  fiber : Fin n → Finset ℤ
+  /-- The indexed fiber is exactly the set of solutions at that seed's integer abscissa. -/
+  complete : ∀ (i : Fin n) (y : ℤ),
+    y ∈ fiber i ↔ curve.toAffine.Equation (seeds i).val.xCoord.num y
 
 /-- Complete integral coordinates and their exact affine integral-point count. -/
 structure CompleteIntegralPointFacts (curve : WeierstrassCurve ℤ)
@@ -421,17 +420,17 @@ structure TorsionGrowthFacts (curve : WeierstrassCurve ℤ) where
 /-- Rational enclosures for the actual heights of the supplied rational points, in
 TauCeti's logarithmic x-coordinate height normalization. The point indexing tracks list
 order and is independent of any basis or generation claim. -/
-structure CanonicalHeightFacts {curve : WeierstrassCurve ℚ} [curve.IsElliptic]
-    (source : AffineMembership curve) where
+structure CanonicalHeightFacts {curve : WeierstrassCurve ℚ} [curve.IsElliptic] {n : ℕ}
+    (source : Fin n → curve.toAffine.Point) where
   /-- The rational enclosure center for each point, in coordinate-list order. -/
-  reported : Fin source.coordinates.length → ℚ
+  reported : Fin n → ℚ
   /-- The rational absolute error radius for each point. -/
-  error : Fin source.coordinates.length → ℚ
+  error : Fin n → ℚ
   /-- Each radius is nonnegative. -/
   error_nonneg : ∀ i, 0 ≤ error i
   /-- The canonical height of each indexed point lies in its reported enclosure. -/
   within_error : ∀ i,
-    |(source.point i).canonicalHeight - (reported i : ℝ)| ≤ (error i : ℝ)
+    |(source i).canonicalHeight - (reported i : ℝ)| ≤ (error i : ℝ)
 
 /-! ## Input records pending mathematical specifications -/
 
@@ -466,24 +465,24 @@ structure FaltingsInput (curve : WeierstrassCurve ℤ) where
 /-- Checked point lists, individual orders and algebraic lower bounds. -/
 structure AlgebraicFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
   /-- Membership on the supplied integral equation. -/
-  integralPoints : Option (AffineMembership curve) := none
+  integralPoints : Option (Σ n : ℕ, Fin n → ↥curve.integralPoints) := none
   /-- Complete integral y-fibers at the specified integral x-coordinates. -/
   integralYFibers : Option (IntegralYFiberFacts curve) := none
   /-- Exhaustive finite set and exact cardinality of all affine integral points. -/
   completeIntegralPoints : Option (CompleteIntegralPointFacts curve) := none
   /-- Membership for the supplied rational generator coordinates. -/
-  generators : Option (AffineMembership (curve.baseChange ℚ)) := none
-  /-- The supplied indexed points checked for infinite order. -/
-  infiniteOrderPoints : Option
-    (List (InfiniteOrderPointFact (integralPoints.getD (AffineMembership.empty curve)))) := none
+  generators : Option (Σ n : ℕ, Fin n → (curve.baseChange ℚ).toAffine.Point) := none
+  /-- The supplied indexed integral points checked for infinite order. -/
+  infiniteOrderPoints :
+    let source := integralPoints.getD ⟨0, Fin.elim0⟩
+    Option (List { i : Fin source.1 // ¬ IsOfFinAddOrder (source.2 i).val }) := none
   /-- The indexed family from the integral coordinates checked for integer independence. -/
-  independentPoints : Option
-    (IndependentPointFacts
-      (integralPoints.getD (AffineMembership.empty curve)).rationalPoint) := none
+  independentPoints :
+    let source := integralPoints.getD ⟨0, Fin.elim0⟩
+    Option (IndependentPointFacts (fun i => (source.2 i).val)) := none
   /-- The indexed family from the rational generator list checked for integer independence. -/
-  independentGeneratorPoints : Option
-    (IndependentPointFacts
-      (generators.getD (AffineMembership.empty (curve.baseChange ℚ))).point) := none
+  independentGeneratorPoints :
+    Option (IndependentPointFacts (generators.getD ⟨0, Fin.elim0⟩).2) := none
   /-- A proved lower bound for the rational Mordell–Weil rank. -/
   rankLowerBound : Option { n : ℕ //
     n ≤ Module.finrank ℤ (curve.baseChange ℚ).toAffine.Point } := none

@@ -211,12 +211,13 @@ proved LMFDB ordering. An edge alone leaves the class fields unverified.
 [LMFDB label ordering](https://www.lmfdb.org/knowledge/show/ec.q.lmfdb_label)
 
 #The members of `certificate.torsion.family` share the same point indices.
-Coordinates alone give affine membership. Verified positive orders give
+Decoded coordinates give a native indexed family of rational points. Verified
+positive orders give
 torsion membership at every index. With a checked matching cyclic or
 two-factor presentation, `family.generation` proves that the closure of
 the supplied points equals the full rational torsion subgroup. An optional
 `ngens` is compared with the length of the checked rational generator list.
-The certificate derives the count from that list.
+The certificate derives the count from that family.
 
 ## Real period, Tamagawa product, and analytic quotient
 

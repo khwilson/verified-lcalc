@@ -108,7 +108,9 @@ example : addOrderOf (TorsionOrderFour.torsion_generators.point ⟨0, by decide�
 private def membershipOnly :=
   TorsionGeneratorCoordinates.certificate.torsion.family.get (by decide +kernel)
 
-example : membershipOnly.membership.coordinates = [(5, 5)] := rfl
+example : membershipOnly.n = 1 := rfl
+example : membershipOnly.points ⟨0, by decide +kernel⟩ =
+    TorsionGeneratorCoordinates.torsion_generators.point ⟨0, by decide +kernel⟩ := rfl
 example : membershipOnly.orders.isNone := by decide +kernel
 example : membershipOnly.generation.isNone := by decide +kernel
 

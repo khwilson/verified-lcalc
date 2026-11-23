@@ -38,7 +38,7 @@ private def family := C120b4.certificate.torsion.family.get (by decide +kernel)
 
 example : (family.orders.get (by decide +kernel)).orders = [2, 4] := rfl
 
-example : AddSubgroup.closure (Set.range family.membership.point) =
+example : AddSubgroup.closure (Set.range family.points) =
     AddCommGroup.torsion (C120b4.curve.baseChange ℚ).toAffine.Point :=
   (family.generation.get (by decide +kernel)).down
 
