@@ -1,7 +1,11 @@
 module
+
 public import VerifiedLcalc.EllipticCurve.Modularity.FirstDerivative
 public import VerifiedLcalc.EllipticCurve.Derivative
 public import VerifiedLcalc.EllipticCurve.GlobalBounds
+
+/-! # Soundness of first-derivative enclosures for a modular realization -/
+
 @[expose] public section
 namespace VerifiedLcalc.Modularity
 open EllipticCurve Numerics Set MeasureTheory
@@ -19,7 +23,7 @@ theorem ModularRealization.derivativePayload_contains {e : (WeierstrassCurve ℤ
         Real.exp (-(2*Real.pi/Real.sqrt r.conductor)*t)^(j+1)) (m.imaginaryFunction t).re := by
     convert m.imaginaryFunction_re_hasSum t ht using 1
     funext j
-    rw [← Real.exp_nat_mul, hN]
+    rw [← Real.exp_natCast_mul, hN]
     congr 1
     push_cast
     ring

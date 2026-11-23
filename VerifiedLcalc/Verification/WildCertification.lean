@@ -1,7 +1,11 @@
 module
+
 public import VerifiedLcalc.Verification.CentralCertification
 public import VerifiedLcalc.Verification.NegativeSign
 public import VerifiedLcalc.EllipticCurve.ReductionArithmetic
+
+/-! # Central enclosures and vanishing for curves with checked wild local data -/
+
 @[expose] public section
 namespace VerifiedLcalc.Certification
 open Modularity EllipticCurve
@@ -16,7 +20,7 @@ theorem certifyWildCentralModel (r : CentralResult)
     (hw : wildSignFast r.equation d = r.rootNumber)
     (hp : CentralPayloadCorrect r) (hz : r.box.excludesZero = true) :
     analyticOrderAt (modularWitness r.equation hn).formL (1 : ℂ) = 0 := by
-  letI : (r.equation.baseChange ℚ).IsElliptic := ⟨by
+  let : (r.equation.baseChange ℚ).IsElliptic := ⟨by
     apply isUnit_iff_ne_zero.mpr
     simpa only [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ, eq_intCast] using
       (show (r.equation.Δ : ℚ) ≠ 0 by exact_mod_cast hn)⟩
@@ -30,11 +34,12 @@ theorem certifyWildCentralModel (r : CentralResult)
   · exact hp
   · exact hz
 
+/-- A verified negative root number from the wild local transcripts forces central vanishing. -/
 theorem central_zero_of_wild_negative (e : (WeierstrassCurve ℤ))
     (hn : e.Δ ≠ 0) (v : MinimalityWitness) (hv : v.Valid e)
     (d : WildData) (hd : d.Valid e) (hw : wildSignFast e d = -1) :
     (modularWitness e hn).formL 1 = 0 := by
-  letI : (e.baseChange ℚ).IsElliptic := ⟨by
+  let : (e.baseChange ℚ).IsElliptic := ⟨by
     apply isUnit_iff_ne_zero.mpr
     simpa only [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ, eq_intCast] using
       (show (e.Δ : ℚ) ≠ 0 by exact_mod_cast hn)⟩
@@ -42,6 +47,8 @@ theorem central_zero_of_wild_negative (e : (WeierstrassCurve ℤ))
   exact ((arithmeticModularWitness e hn).wildSign_eq (globalMinimal_of_witness e v hv) d hd).trans
     ((wildSign_eq_fast e d hd).trans hw)
 
+/-- A verified negative root number from the wild local transcripts gives analytic order at
+least one. -/
 theorem rank_lower_bound_of_wild_negative (e : (WeierstrassCurve ℤ))
     (hn : e.Δ ≠ 0) (v : MinimalityWitness) (hv : v.Valid e)
     (d : WildData) (hd : d.Valid e) (hw : wildSignFast e d = -1) :

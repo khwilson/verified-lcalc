@@ -1,11 +1,17 @@
 module
+
 public import VerifiedLcalc.Verification.DerivativeEvaluator
 public import VerifiedLcalc.Verification.WildCertification
+
+/-! # Analytic rank one from a checked derivative and wild local data -/
+
 @[expose] public section
 namespace VerifiedLcalc.Certification
 open Modularity EllipticCurve
 open EllipticCurve
 
+/-- A nonzero first-derivative enclosure and a verified negative root number give analytic rank
+one. -/
 theorem certifyDerivativeModel (r : DerivativeResult)
     (hn : r.equation.Δ ≠ 0) (v : MinimalityWitness) (hv : v.Valid r.equation)
     (d : WildData) (hd : d.Valid r.equation)
@@ -13,7 +19,7 @@ theorem certifyDerivativeModel (r : DerivativeResult)
     (hw : wildSignFast r.equation d = -1)
     (hr : DerivativePayloadCorrect r) (hz : r.box.excludesZero = true) :
     analyticOrderAt (modularWitness r.equation hn).formL (1 : ℂ) = 1 := by
-  letI : (r.equation.baseChange ℚ).IsElliptic := ⟨by
+  let : (r.equation.baseChange ℚ).IsElliptic := ⟨by
     apply isUnit_iff_ne_zero.mpr
     simpa only [WeierstrassCurve.baseChange, WeierstrassCurve.map_Δ, eq_intCast] using
       (show (r.equation.Δ : ℚ) ≠ 0 by exact_mod_cast hn)⟩
