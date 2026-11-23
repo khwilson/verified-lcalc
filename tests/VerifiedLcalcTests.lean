@@ -19,6 +19,7 @@ public import VerifiedLcalcTests.Fixtures.GeneralModularityExamples
 public import VerifiedLcalcTests.Fixtures.Geometry
 public import VerifiedLcalcTests.Fixtures.MordellWeilRank
 public import VerifiedLcalcTests.Fixtures.NegativeSigns
+public import VerifiedLcalcTests.Fixtures.RationalIndependence
 public import VerifiedLcalcTests.Fixtures.NumericalQuartic
 public import VerifiedLcalcTests.Arithmetic.ArithmeticExamples
 public import VerifiedLcalcTests.Arithmetic.BadPrimeExamples

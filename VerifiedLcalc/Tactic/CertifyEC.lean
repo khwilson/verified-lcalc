@@ -17,8 +17,9 @@ Every input method uses one `EllipticWitness` record. The integral
 `WeierstrassCurve` equation is required. Prime coefficients, integer coordinates,
 central or derivative rank payloads, minimality, and local-reduction data are
 `Option` fields defaulting to `none`. `infiniteOrderPoints` requests exact
-infinite-order checks at supplied point indices; `independentPoints` selects
-an algebraic-rank family and requires a `with_independence proof` clause.
+infinite-order checks at supplied integral-point indices. Select a family for
+`with_independence proof` by supplying `independentPoints` for integral
+coordinates or `independentGeneratorPoints` for rational generator coordinates.
 This clause is available for all three input forms and the programmatic API.
 `none` is absence; `some []` is an explicit empty list and makes no completeness
 claim. `EllipticWitness.central` and
@@ -56,7 +57,7 @@ An infinite-order request produces `Name.infinite_order_indices` and
 about its actual supplied point. A nonempty list also gives
 `Name.algebraic_rank_lower_bound` proving rank at least one.
 
-An independence request produces `Name.algebraic.indices`, `.points`, and
+An independence request produces `Name.algebraic.indices`, `.point_indices`, `.points`, and
 `.points_independent`. Its supplied proof is checked against
 `LinearIndependent ℤ Name.algebraic.points`. The root
 `Name.algebraic_rank_lower_bound` then uses this family's size. These facts
@@ -217,20 +218,30 @@ def certifyPointFields (name : Name) (independence : Option (TSyntax `term)) :
       let child := name ++ `infiniteOrder ++ Name.mkSimple s!"point{i}"
       certifyInfiniteOrder child (rootIdent base) index
       if firstInfinite.isNone then firstInfinite := some ((← getCurrNamespace) ++ child)
-  if let some indices ← optionalInput (base ++ `witness) `independentPoints then
-    let some proof := independence
-      | throwError "independentPoints requires a with_independence proof"
-    certifyRankLowerBound (name ++ `algebraic) (rootIdent base) indices proof
+  let integral ← optionalInput (base ++ `witness) `independentPoints
+  let generators ← optionalInput (base ++ `witness) `independentGeneratorPoints
+  if integral.isSome && generators.isSome then
+    throwError "Supply at most one of independentPoints and independentGeneratorPoints"
+  if let some indices := integral <|> generators then
+    let fromGenerators := generators.isSome
+    let field := if fromGenerators then `independentGeneratorPoints else `independentPoints
+    let inputEquality := if fromGenerators then `independent_generator_points_eq
+      else `independent_points_eq
+    let some proof := independence | throwError "{field} requires a with_independence proof"
+    if fromGenerators && !(← getEnv).contains (base ++ `generators.point) then
+      throwError "independentGeneratorPoints requires the supplied rational generator list"
+    certifyRankLowerBound (base ++ `algebraic) base fromGenerators indices proof
     let ix := rootIdent (base ++ `algebraic ++ `indices)
-    checked (base ++ `independent_points_eq)
-      (← `(($witness).independentPoints = some $ix)) (← `(by rfl))
+    let projection := rootIdent (``EllipticWitness ++ field)
+    checked (base ++ inputEquality)
+      (← `($projection $witness = some $ix)) (← `(by rfl))
     let h := rootIdent (base ++ `algebraic ++ `algebraic_rank_lower_bound)
     checked (base ++ `algebraic_rank_lower_bound)
       (← `(($ix).length ≤ Module.finrank ℤ (($curve).baseChange ℚ).toAffine.Point))
       (← `($h))
   else
     if independence.isSome then
-      throwError "with_independence requires independentPoints in the supplied witness"
+      throwError "with_independence requires independentPoints or independentGeneratorPoints"
     if let some child := firstInfinite then
       let h := rootIdent (child ++ `algebraic_rank_lower_bound)
       checked (base ++ `algebraic_rank_lower_bound)
@@ -300,7 +311,7 @@ def certifyJson (name : Name) (text : String)
         "minimality", "local_data", "gens", "ngens", "torsion_generators",
         "torsion_generator_orders", "torsion_structure", "torsion_primes", "rank_bounds",
         "algebraic_rank", "infinite_order_points",
-        "independent_points", "binvs", "cinvs",
+        "independent_points", "independent_generator_points", "binvs", "cinvs",
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
         "num_int_pts", "class_size", "class_deg", "isogeny_matrix", "isogeny_degrees",

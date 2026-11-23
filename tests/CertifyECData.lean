@@ -72,8 +72,12 @@ certify_ec EmptyGeneratorCount from
 example : EmptyGeneratorCount.generators.coordinates.length = 0 :=
   EmptyGeneratorCount.generators.count_valid
 
+example : EmptyGeneratorCount.certificate.algebraic.generatorCount = some 0 := rfl
+
 certify_ec UnwitnessedGeneratorCount from_json_string
   r#"{"ainvs":[0,0,1,-1,0],"ngens":1}"#
+example : UnwitnessedGeneratorCount.certificate.algebraic.generatorCount = none := rfl
+
 run_cmd do
   if (← getEnv).contains `UnwitnessedGeneratorCount.generators.count_valid then
     throwError "An unsupported generator count became a theorem"
@@ -100,6 +104,23 @@ certify_ec TorsionOrderFour from
     torsionGeneratorOrders := some [4] }
 example : addOrderOf (TorsionOrderFour.torsion_generators.point ⟨0, by decide⟩) = 4 :=
   TorsionOrderFour.torsion_generators.exact_order _
+
+private def membershipOnly := TorsionGeneratorCoordinates.certificate.torsion
+private def submittedPoints := membershipOnly.generators.get (by decide +kernel)
+
+example : submittedPoints.1 = 1 := rfl
+example : submittedPoints.2 ⟨0, by decide +kernel⟩ =
+    TorsionGeneratorCoordinates.torsion_generators.point ⟨0, by decide +kernel⟩ := rfl
+example : membershipOnly.orders.isNone := by decide +kernel
+example : membershipOnly.generation.isNone := by decide +kernel
+example : membershipOnly.presentation.isNone := by decide +kernel
+
+private def ordersOnly := TorsionOrderThree.certificate.torsion
+
+example : ((ordersOnly.orders.get (by decide +kernel) ⟨0, by decide +kernel⟩).val : ℕ) = 3 :=
+  rfl
+example : ordersOnly.generation.isNone := by decide +kernel
+example : ordersOnly.presentation.isNone := by decide +kernel
 
 certify_ec OnlyAP from
   { equation := ⟨0, 0, 1, -1, 0⟩, primeCoefficients := some [(2, -2)] }

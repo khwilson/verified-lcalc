@@ -136,8 +136,10 @@ structure EllipticWitness where
   torsionPrimes : Option (List Nat) := none
   /-- Indices into the supplied integral-coordinate list. -/
   infiniteOrderPoints : Option (List Nat) := none
-  /-- Selected indices for a rank bound; requires a supplied independence proof. -/
+  /-- Indices into integral coordinates for a supplied independence proof. -/
   independentPoints : Option (List Nat) := none
+  /-- Indices into rational generator coordinates for a supplied independence proof. -/
+  independentGeneratorPoints : Option (List Nat) := none
   /-- Numerical witness for a central-value enclosure. -/
   centralResult : Option CentralResult := none
   /-- Numerical witness for a first-derivative enclosure. -/

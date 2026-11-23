@@ -72,15 +72,23 @@ example {R : Type} [CommRing R] : Type := DiscriminantWitness R
 example {R : Type} [CommRing R] (curve : WeierstrassCurve R) : Type := EllipticProofs curve
 example (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] :
     Type := RationalInvariantFacts curve
-example {R : Type} [CommRing R] (curve : WeierstrassCurve R) :
-    Type := AffineMembership curve
-example (curve : WeierstrassCurve ℤ) : Type := IntegralYFiberFacts curve
-example (coordinates : List (Rat × Rat)) : Type := GeneratorCountFacts coordinates
+example (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] :
+    Type := IntegralYFiberFacts curve
+example (curve : WeierstrassCurve ℤ) {n : ℕ}
+    (points : Fin n → (curve.baseChange ℚ).toAffine.Point) (order : Fin n → ℕ)
+    (positive : ∀ i, 0 < order i) (exactOrder : ∀ i, addOrderOf (points i) = order i) :
+    TorsionWitness curve :=
+  { generators := some ⟨n, points⟩
+    orders := some (fun i => ⟨⟨order i, positive i⟩, exactOrder i⟩) }
+
+example (curve : WeierstrassCurve ℤ) : TorsionWitness curve :=
+  { generators := some ⟨1, fun _ => 0⟩,
+    orders := some (fun _ => ⟨1, addOrderOf_zero⟩) }
+
+example (curve : WeierstrassCurve ℚ) [curve.IsElliptic] {n : Nat}
+    (source : Fin n → curve.toAffine.Point) : Type := IndependentPointFacts source
 example (curve : WeierstrassCurve ℤ) : Type := TorsionDivisorFacts curve
-example (curve : WeierstrassCurve ℤ) : Type := CyclicTorsionFacts curve
-example (curve : WeierstrassCurve ℤ) : Type := TwoFactorTorsionFacts curve
 example (curve : WeierstrassCurve ℤ) : Type := TorsionPrimeSupportFacts curve
-example (curve : WeierstrassCurve ℤ) : Type := TorsionFacts curve
 example : Type := Box
 example : Type := PrecisionPolicy
 example : Type := EllipticCurve.MinimalityWitness

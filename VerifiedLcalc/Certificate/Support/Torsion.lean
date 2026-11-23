@@ -6,8 +6,9 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.Algebraic
+public import Mathlib.Data.ZMod.Basic
 
-/-! # Compatibility path and derived torsion projections -/
+/-! # Torsion projections and generation from checked subgroup presentations -/
 
 @[expose] public section
 
@@ -20,12 +21,41 @@ def TorsionDivisorFacts.bound {curve : WeierstrassCurve ℤ}
     (facts : TorsionDivisorFacts curve) : ℕ :=
   facts.evidence.bound
 
-/-- The normalized invariant factors of a checked two-factor presentation. -/
-def TwoFactorTorsionFacts.invariantFactors {curve : WeierstrassCurve ℤ}
-    (facts : TwoFactorTorsionFacts curve) : List ℕ := [2, facts.secondOrder]
+namespace Certification
 
-/-- The order of the full rational torsion subgroup in a two-factor presentation. -/
-def TwoFactorTorsionFacts.order {curve : WeierstrassCurve ℤ}
-    (facts : TwoFactorTorsionFacts curve) : ℕ := 2 * facts.secondOrder
+variable {A : Type*} [AddCommGroup A] {S : AddSubgroup A} {t : Set A} {m n : ℕ}
+
+/-- The image of one under a cyclic presentation generates the target subgroup. -/
+theorem closure_eq_of_cyclic_presentation (e : ZMod n ≃+ S) (ht : t ⊆ S)
+    (h1 : (e 1 : A) ∈ AddSubgroup.closure t) : AddSubgroup.closure t = S := by
+  refine le_antisymm ((AddSubgroup.closure_le _).mpr ht) ?_
+  intro x hx
+  obtain ⟨v, hv⟩ := e.surjective ⟨x, hx⟩
+  obtain ⟨k, rfl⟩ := ZMod.intCast_surjective v
+  let f := S.subtype.comp e.toAddMonoidHom
+  have he : k • f 1 = x := by
+    rw [← map_zsmul, zsmul_one]
+    exact congrArg Subtype.val hv
+  exact he ▸ (AddSubgroup.closure t).zsmul_mem h1 k
+
+/-- The two standard generators of a product presentation generate the target subgroup. -/
+theorem closure_eq_of_twoFactor_presentation (e : ZMod m × ZMod n ≃+ S) (ht : t ⊆ S)
+    (h1 : (e (1, 0) : A) ∈ AddSubgroup.closure t)
+    (h2 : (e (0, 1) : A) ∈ AddSubgroup.closure t) : AddSubgroup.closure t = S := by
+  refine le_antisymm ((AddSubgroup.closure_le _).mpr ht) ?_
+  intro x hx
+  obtain ⟨⟨u, v⟩, hv⟩ := e.surjective ⟨x, hx⟩
+  obtain ⟨j, rfl⟩ := ZMod.intCast_surjective u
+  obtain ⟨k, rfl⟩ := ZMod.intCast_surjective v
+  let f := S.subtype.comp e.toAddMonoidHom
+  have hij : j • (1, 0) + k • (0, 1) = ((j : ZMod m), (k : ZMod n)) := by
+    ext <;> simp
+  have he : j • f (1, 0) + k • f (0, 1) = x := by
+    rw [← map_zsmul, ← map_zsmul, ← map_add, hij]
+    exact congrArg Subtype.val hv
+  exact he ▸ (AddSubgroup.closure t).add_mem
+    ((AddSubgroup.closure t).zsmul_mem h1 j) ((AddSubgroup.closure t).zsmul_mem h2 k)
+
+end Certification
 
 end VerifiedLcalc

@@ -32,18 +32,19 @@ private def rationalFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   `({ discriminantSign := $sign, jInvariant := $j, jIntegral := $integral,
       abcQuality := $abcQuality })
 
-private def integralMembershipTerm (base : Name) : CommandElabM (TSyntax `term) := do
+private def integralPointsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let witnessName := base ++ `witness
   unless (← optionalInput witnessName `integralCoordinates).isSome do return ← `(none)
   let w := rootIdent witnessName
-  let sound := rootIdent (base ++ `points_on_curve)
-  `(some ⟨($w).integralCoordinates.getD [], $sound⟩)
+  let point := rootIdent (base ++ `point)
+  let integral := rootIdent (base ++ `point_integral)
+  `(some ⟨(($w).integralCoordinates.getD []).length, fun i => ⟨$point i, $integral i⟩⟩)
 
-private def rationalMembershipTerm (base : Name) : CommandElabM (TSyntax `term) := do
-  unless (← getEnv).contains (base ++ `points_on_curve) do return ← `(none)
+private def rationalPointsTerm (base : Name) : CommandElabM (TSyntax `term) := do
+  unless (← getEnv).contains (base ++ `point) do return ← `(none)
   let coords := rootIdent (base ++ `coordinates)
-  let sound := rootIdent (base ++ `points_on_curve)
-  `(some ⟨$coords, $sound⟩)
+  let point := rootIdent (base ++ `point)
+  `(some ⟨($coords).length, $point⟩)
 
 private def infiniteOrderFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let ixName := base ++ `infinite_order_indices
@@ -63,13 +64,18 @@ private def infiniteOrderFactsTerm (base : Name) : CommandElabM (TSyntax `term) 
     facts := facts.push (← `(⟨⟨$index, $valid⟩, $sound⟩))
   `(some [$facts,*])
 
-private def independenceFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
+private def independenceFactsTerm (base inputEquality : Name) :
+    CommandElabM (TSyntax `term) := do
+  unless (← getEnv).contains (base ++ inputEquality) do return ← `(none)
   let child := base ++ `algebraic
-  unless (← getEnv).contains (child ++ `points_independent) do return ← `(none)
   let indices := rootIdent (child ++ `indices)
-  let valid := rootIdent (child ++ `indices_valid)
+  let selected := rootIdent (child ++ `point_indices)
   let independent := rootIdent (child ++ `points_independent)
-  `(some ⟨$indices, $valid, $independent⟩)
+  `(some ⟨($indices).length, $selected, by
+    first
+    | exact $independent
+    | let empty : IsEmpty (Fin ($indices).length) := ⟨fun i => Fin.elim0 i⟩
+      exact linearIndependent_empty_type⟩)
 
 private def rankLowerBoundTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let theoremName := base ++ `algebraic_rank_lower_bound
@@ -80,12 +86,6 @@ private def rankLowerBoundTerm (base : Name) : CommandElabM (TSyntax `term) := d
   else `(1)
   let proof := rootIdent theoremName
   `(some ⟨$count, $proof⟩)
-
-private def generatorCountTerm (base : Name) : CommandElabM (TSyntax `term) := do
-  let proofName := base ++ `generators.count_valid
-  unless (← getEnv).contains proofName do return ← `(none)
-  let count := rootIdent (base ++ `generators.count)
-  `(some ⟨$count, $(rootIdent proofName)⟩)
 
 private def rankBoundsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let proofName := base ++ `algebraic_rank_witness
@@ -105,24 +105,22 @@ private def regulatorFactsTerm (base : Name) : CommandElabM (TSyntax `term) := d
 private def torsionGeneratorOrderTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let child := base ++ `torsion_generators
   unless (← getEnv).contains (child ++ `exact_order) do return ← `(none)
-  let orders := rootIdent (child ++ `orders)
-  let length := rootIdent (child ++ `orders_length)
-  let support := rootIdent (child ++ `orders_in_range)
+  let order := rootIdent (child ++ `order)
+  let positive := rootIdent (child ++ `order_positive)
   let exactOrder := rootIdent (child ++ `exact_order)
-  `(some ⟨$orders, $length, by
-    intro n h
-    exact (of_decide_eq_true (List.all_eq_true.mp $support n h)).1, $exactOrder⟩)
+  `(some (fun i => ⟨⟨$order i, $positive i⟩, $exactOrder i⟩))
 
 private def integralYFiberTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let completeName := base ++ `integral_y_fiber_complete
   unless (← getEnv).contains completeName do return ← `(none)
-  let curve := rootIdent (base ++ `curve)
   let roots := rootIdent (base ++ `integral_fiber_roots)
-  let valid := rootIdent (base ++ `integral_fiber_roots_valid)
+  let seed := rootIdent (base ++ `integral_fiber_seed)
   let fiber := rootIdent (base ++ `integral_y_fiber)
   let complete := rootIdent completeName
-  `(some ⟨⟨$roots, EllipticWitness.affineCoordinatesValid_sound $curve $roots $valid⟩,
-    $fiber, $complete⟩)
+  `(some ⟨($roots).length, $seed, $fiber, by
+    intro i y
+    simpa only [$seed:term, WeierstrassCurve.pointOfIntegralSolution_eq_some,
+      WeierstrassCurve.Affine.Point.xCoord_some, Rat.num_intCast] using $complete i y⟩)
 
 private def completeIntegralPointsTerm (base : Name) : CommandElabM (TSyntax `term) := do
   let name := base ++ `integral_point_certificate
@@ -138,31 +136,40 @@ private def optionalFactTerm (base field : Name) : CommandElabM (TSyntax `term) 
     `(none)
 
 private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := do
-  let integral ← integralMembershipTerm base
+  let integral ← integralPointsTerm base
   let fibers ← integralYFiberTerm base
   let completeIntegralPoints ← completeIntegralPointsTerm base
-  let generators ← rationalMembershipTerm (base ++ `generators)
-  let generatorCount ← generatorCountTerm base
+  let generators ← rationalPointsTerm (base ++ `generators)
   let heights ← optionalFactTerm base `canonical_heights_fact
-  let torsionGenerators ← rationalMembershipTerm (base ++ `torsion_generators)
-  let torsionOrders ← torsionGeneratorOrderTerm base
   let infinite ← infiniteOrderFactsTerm base
-  let independent ← independenceFactsTerm base
+  let independent ← independenceFactsTerm base `independent_points_eq
+  let independentGenerators ← independenceFactsTerm base `independent_generator_points_eq
   let lowerBound ← rankLowerBoundTerm base
   let rankBounds ← rankBoundsTerm base
   let exactRank ← exactRankTerm base
   let regulator ← regulatorFactsTerm base
   `({ integralPoints := $integral, integralYFibers := $fibers,
       completeIntegralPoints := $completeIntegralPoints, generators := $generators,
-      generatorCount := $generatorCount, heights := $heights,
-      torsionGenerators := $torsionGenerators, torsionGeneratorOrders := $torsionOrders,
+      heights := $heights,
       infiniteOrderPoints := $infinite,
-      independentPoints := $independent, rankLowerBound := $lowerBound,
+      independentPoints := $independent, independentGeneratorPoints := $independentGenerators,
+      rankLowerBound := $lowerBound,
       rankBounds := $rankBounds, rank := $exactRank, regulator := $regulator })
 
-private def torsionFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `term) := do
+private def torsionWitnessTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `term) := do
+  let child := base ++ `torsion_generators
+  let generators ← rationalPointsTerm child
+  let orders ← torsionGeneratorOrderTerm base
+  let generation ← if (← getEnv).contains (child ++ `generates_torsion) then
+    `(some ⟨$(rootIdent (child ++ `generates_torsion))⟩)
+  else `(none)
+  let presName := base ++ `torsion_presentation
+  let presentation ← if (← getEnv).contains presName then
+    `(some $(rootIdent presName))
+  else `(none)
   let boundName := base ++ `torsion_bound
-  unless (← getEnv).contains boundName do return ← `({})
+  unless (← getEnv).contains boundName do
+    return ← `({ generators := $generators, orders := $orders })
   let evidence := rootIdent (base ++ `claimed_torsion_bound)
   let checkedBound := rootIdent (base ++ `torsion_bound_value_valid)
   let consistent ← if (← getEnv).contains (base ++ `torsion_claim_consistent) then
@@ -180,32 +187,19 @@ private def torsionFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSynt
     let n ← literalSyntax value
     `(some ⟨$n, $(rootIdent exactName)⟩)
   else `(none)
-  let cyclic ← if (← getEnv).contains (base ++ `torsion_structure) &&
-      !(← getEnv).contains (base ++ `torsion_structure_equiv) then
-    `(some ⟨$(rootIdent (base ++ `claimed_torsion_structure)),
-      $(rootIdent (base ++ `cyclic_torsion_order)),
-      $(rootIdent (base ++ `cyclic_torsion_generator)),
-      $(rootIdent (base ++ `torsion_structure))⟩)
-  else `(none)
-  let twoFactor ← if (← getEnv).contains (base ++ `torsion_structure_equiv) then
-    `(some ⟨$(rootIdent (base ++ `torsion_structure_second_order)),
-      $(rootIdent (base ++ `torsion_structure_second_order_positive)),
-      $(rootIdent (base ++ `torsion_structure_first_factor_dvd_second)),
-      $(rootIdent (base ++ `torsion_structure_first_generator)),
-      $(rootIdent (base ++ `torsion_structure_second_generator)),
-      $(rootIdent (base ++ `torsion_structure_equiv)),
-      $(rootIdent (base ++ `torsion_structure_first_image)),
-      $(rootIdent (base ++ `torsion_structure_second_image)),
-      $(rootIdent (base ++ `torsion_structure_cardinality))⟩)
-  else `(none)
   let primeSupport ← if (← getEnv).contains (base ++ `torsion_primes_exact) then
     `(some ⟨$(rootIdent (base ++ `torsion_primes)),
       $(rootIdent (base ++ `torsion_primes_nodup)),
       $(rootIdent (base ++ `torsion_primes_exact))⟩)
   else `(none)
-  `({ divisor := $divisor,
-      cardinality := $exactCardinality, cyclicStructure := $cyclic,
-      twoFactorStructure := $twoFactor, primeSupport := $primeSupport })
+  `({
+    generators := $generators
+    orders := $orders
+    generation := $generation
+    presentation := $presentation
+    divisor := $divisor
+    cardinality := $exactCardinality
+    primeSupport := $primeSupport })
 
 /-- Emit the indexed public certificate with a standard-axiom dependency audit. -/
 def certifyRecord (base : Name) : CommandElabM Unit := do
@@ -219,7 +213,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let algebraic ← algebraicFactsTerm base
   let arithmetic ← arithmeticFactsTerm base curve
   let analytic ← analyticFactsTerm base curve
-  let torsion ← torsionFactsTerm base curve
+  let torsion ← torsionWitnessTerm base curve
   let torsionGrowthField ← optionalFactTerm base `torsion_growth_field_fact
   let name := base ++ `certificate
   let certificate := rootIdent name
@@ -260,8 +254,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     tamagawaProduct := $tamagawaProduct
     analyticSha := $analyticSha
     roundedAnalyticSha := $roundedAnalyticSha })
-  if (← getEnv).contains edgeName || (← getEnv).contains className ||
-      (← getEnv).contains (base ++ `torsion_structure_equiv) then
+  if (← getEnv).contains edgeName || (← getEnv).contains className then
     emit (← `(noncomputable def $certificate : EllipticCertificate $curve := $record))
   else
     emit (← `(def $certificate : EllipticCertificate $curve := $record))

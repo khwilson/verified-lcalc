@@ -16,23 +16,29 @@ example : ∃ e : ZMod 2 × ZMod 4 ≃+ AddCommGroup.torsion (C120b4.curve.baseC
       C120b4.torsion_generators.point ⟨1, by decide⟩ :=
   C120b4.torsion_structure.2
 
-private def checkedStructure : TwoFactorTorsionFacts C120b4.curve :=
-  C120b4.certificate.torsion.twoFactorStructure.get (by decide +kernel)
+private def torsion := C120b4.certificate.torsion
+private def presentation := torsion.presentation.get (by decide +kernel)
+private def generators := torsion.generators.getD ⟨0, Fin.elim0⟩
 
-example : checkedStructure.invariantFactors = [2, 4] := rfl
-example : 0 < checkedStructure.secondOrder := checkedStructure.secondOrder_pos
-example : 2 ∣ checkedStructure.secondOrder := checkedStructure.first_factor_dvd_second
+example : List.ofFn presentation.factor = [2, 4] := rfl
+example : List.ofFn (fun i => (presentation.indices i).val) = [0, 1] := rfl
+example : torsion.orders.map
+    (fun orders => List.ofFn (fun i => ((orders i).val : ℕ))) = some [2, 4] := rfl
 
-example : Nat.card (AddCommGroup.torsion (C120b4.curve.baseChange ℚ).toAffine.Point) =
-    checkedStructure.order := checkedStructure.cardinality
+/-- The two factor generators map to the submitted torsion points in their certified order. -/
+theorem imported_generator_images :
+    ∃ e : (∀ j, ZMod (presentation.factor j)) ≃+
+        AddCommGroup.torsion (C120b4.curve.baseChange ℚ).toAffine.Point,
+      (e (Pi.single (0 : Fin 2) 1) : (C120b4.curve.baseChange ℚ).toAffine.Point) =
+        generators.2 ⟨0, by decide +kernel⟩ ∧
+      (e (Pi.single (1 : Fin 2) 1) : (C120b4.curve.baseChange ℚ).toAffine.Point) =
+        generators.2 ⟨1, by decide +kernel⟩ := by
+  obtain ⟨e, maps⟩ := presentation.realization
+  exact ⟨e, maps (0 : Fin 2), maps (1 : Fin 2)⟩
 
-example : (checkedStructure.equivalence (1, 0) :
-    (C120b4.curve.baseChange ℚ).toAffine.Point) = checkedStructure.firstGenerator :=
-  checkedStructure.maps_first
-
-example : (checkedStructure.equivalence (0, 1) :
-    (C120b4.curve.baseChange ℚ).toAffine.Point) = checkedStructure.secondGenerator :=
-  checkedStructure.maps_second
+example : AddSubgroup.closure (Set.range generators.2) =
+    AddCommGroup.torsion (C120b4.curve.baseChange ℚ).toAffine.Point :=
+  (torsion.generation.get (by decide +kernel)).down
 
 private def checkedPrimeSupport : TorsionPrimeSupportFacts C120b4.curve :=
   C120b4.certificate.torsion.primeSupport.get (by decide +kernel)
@@ -50,7 +56,8 @@ run_cmd do
   for name in [`C120b4.torsion_structure_equiv,
       `C120b4.torsion_structure_first_image, `C120b4.torsion_structure_second_image,
       `C120b4.torsion_structure_cardinality, `C120b4.torsion_primes_exact,
-      `C120b4.certificate, ``imported_prime_support] do
+      `C120b4.certificate, `C120b4.torsion_generators.generates_torsion,
+      ``imported_prime_support, ``imported_generator_images] do
     for ax in ← liftTermElabM <| Lean.collectAxioms name do
       unless standard.contains ax do
         throwError "Unexpected torsion-structure axiom {ax} in {name}"

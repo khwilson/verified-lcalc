@@ -59,15 +59,18 @@ def certifyInfiniteOrder (name : Name) (curveName : Ident) (index : TSyntax `ter
   logInfo m!"Certified {base}.infinite_order and {base}.algebraic_rank_lower_bound"
 
 /-- Verify an independence proof for a selected family of supplied points. -/
-def certifyRankLowerBound (name : Name) (curveName : Ident)
+def certifyRankLowerBound (base curveBase : Name) (fromGenerators : Bool)
     (indices proof : TSyntax `term) : CommandElabM Unit := atomic do
-  let base := (← getCurrNamespace) ++ name.eraseMacroScopes
-  let (w, curve, point, _) ← curveNames curveName
+  let w := rootIdent (curveBase ++ `witness)
+  let curve := rootIdent (curveBase ++ `curve)
+  let point := rootIdent (curveBase ++ (if fromGenerators then `generators.point else `point))
+  let field := if fromGenerators then `generatorCoordinates else `integralCoordinates
+  let coordinates := rootIdent (``EllipticWitness ++ field)
   let ix := rootIdent (base ++ `indices)
   emit (← `(abbrev $ix : List Nat := $indices))
   let hb := rootIdent (base ++ `indices_valid)
   checked (base ++ `indices_valid)
-    (← `(∀ i ∈ $ix, i < (($w).integralCoordinates.getD []).length))
+    (← `(∀ i ∈ $ix, i < (($coordinates $w).getD []).length))
     (← `(by decide +kernel))
   -- Give callers a concrete Fin n, so instance search can see empty and
   -- singleton families. The reified size is checked again in the kernel.
@@ -77,10 +80,13 @@ def certifyRankLowerBound (name : Name) (curveName : Ident)
       | throwError "Expected a closed list of point indices"
     return (⟨Syntax.mkNumLit (toString n)⟩ : TSyntax `term)
   checked (base ++ `point_count_eq) (← `(($ix).length = $count)) (← `(by decide +kernel))
+  let selected := rootIdent (base ++ `point_indices)
+  let index ← `(⟨($ix)[i], $hb _ (List.getElem_mem i.isLt)⟩)
+  emit (← `(def $selected (i : Fin $count) :
+      Fin (($coordinates $w).getD []).length := $index))
   let ps := rootIdent (base ++ `points)
   emit (← `(def $ps (i : Fin $count) :
-      (($curve).baseChange ℚ).toAffine.Point :=
-    $point ⟨($ix)[i], $hb _ (List.getElem_mem i.isLt)⟩))
+      (($curve).baseChange ℚ).toAffine.Point := $point $index))
   let hi := rootIdent (base ++ `points_independent)
   checked (base ++ `points_independent) (← `(LinearIndependent ℤ $ps)) proof
   checked (base ++ `algebraic_rank_lower_bound)

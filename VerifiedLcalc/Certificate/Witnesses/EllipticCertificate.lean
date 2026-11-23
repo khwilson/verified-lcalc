@@ -50,8 +50,8 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   /-- Evidence of strict torsion growth in the field presented by the submitted polynomial. -/
   torsionGrowthField : Option (TorsionGrowthFieldFact curve) := none
   /-- A proved height enclosure indexed by its ordered rational point list. -/
-  canonicalHeights : Option (Σ source : AffineMembership (curve.baseChange ℚ),
-    CanonicalHeightFacts source) := none
+  canonicalHeights : Option (Σ points : (Σ n : ℕ,
+    Fin n → (curve.baseChange ℚ).toAffine.Point), CanonicalHeightFacts points.2) := none
   /-- Proved enclosure for the full minimal real period. -/
   realPeriod : Option (RealPeriodFact curve) := none
   /-- Proved product of all intrinsic finite-place Tamagawa numbers. -/
@@ -75,7 +75,7 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   /-- Checked numerical data and explicit-realization analytic results. -/
   analytic : AnalyticFacts curve
   /-- The checked full-group torsion facts. -/
-  torsion : TorsionFacts curve
+  torsion : TorsionWitness curve
   /-- The checked field presentation and absolute degree for one torsion growth row. -/
   torsionGrowthField : Option (TorsionGrowthFieldFact curve) := none
   /-- A checked oriented rational isogeny edge and its integral target. -/

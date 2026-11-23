@@ -62,19 +62,23 @@ private def certifyCanonicalHeights (base : Name) (proofs : Option Ident) : Comm
   let some evidence ← attachedFact proofs `canonicalHeights |
     logInfo m!"Unverified {base} heights: supply proved canonical height enclosures"
     return
-  let curve := rootIdent (base ++ `curve)
-  let membership := rootIdent (base ++ `generators.points_on_curve)
-  let equal := rootIdent (base ++ `heights_coordinates_match)
-  checked (base ++ `heights_coordinates_match)
-    (← `(($evidence).1.coordinates = $coordinates)) (← `(by first | rfl | decide +kernel))
+  let points := rootIdent (base ++ `generators.point)
+  let onCurve := rootIdent (base ++ `generators.points_on_curve)
+  let equal := rootIdent (base ++ `heights_points_match)
+  checked (base ++ `heights_points_match)
+    (← `(List.ofFn (CanonicalHeightFacts.pointCoordinates ∘ ($evidence).1.2) =
+      ($coordinates).map some))
+    (← `(by first | rfl | decide +kernel))
   checked (base ++ `heights_report_matches)
     (← `(List.ofFn ($evidence).2.reported = ($report).reported ∧
       ($report).errors.getD (List.ofFn ($evidence).2.error) = List.ofFn ($evidence).2.error))
     (← `(by constructor <;> first | rfl | decide +kernel))
   let fact := rootIdent (base ++ `canonical_heights_fact)
-  emit (← `(def $fact : CanonicalHeightFacts
-      (⟨$coordinates, $membership⟩ : AffineMembership (($curve).baseChange ℚ)) :=
-    ($evidence).2.ofCoordinatesEq $equal))
+  emit (← `(def $fact : CanonicalHeightFacts $points :=
+    CanonicalHeightFacts.ofPointListEq
+      (source := ($evidence).1) (target := ⟨($coordinates).length, $points⟩)
+      ($evidence).2 (($equal).trans
+        (CanonicalHeightFacts.pointCoordinates_ofFn_mk $coordinates $onCurve).symm)))
   auditAxioms (base ++ `canonical_heights_fact)
 
 /-- Check the supplied field and canonical height claims using the same proof attachment. -/

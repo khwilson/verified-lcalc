@@ -1,4 +1,5 @@
 import CertifiedCurves.Direct
+import VerifiedLcalcTests.Fixtures.RationalIndependence
 
 /-! # Reuse compiled point and numerical facts -/
 
@@ -23,12 +24,16 @@ example : DirectPoints.certificate.algebraic.rankLowerBound.map Subtype.val = so
 private def importedIndexedInfinite :=
   (DirectPoints.certificate.algebraic.infiniteOrderPoints.getD []).get ⟨0, by decide +kernel⟩
 
-example :
-    ¬ IsOfFinAddOrder
-      ((DirectPoints.certificate.algebraic.integralPoints.getD
-        (VerifiedLcalc.AffineMembership.empty DirectPoints.curve)).rationalPoint
-        importedIndexedInfinite.val) :=
+private def integralFamily :=
+  DirectPoints.certificate.algebraic.integralPoints.getD ⟨0, Fin.elim0⟩
+
+example : ¬ IsOfFinAddOrder (integralFamily.2 importedIndexedInfinite.val).val :=
   importedIndexedInfinite.property
+
+example : (integralFamily.2 ⟨0, by decide +kernel⟩).val ≠ 0 := by decide +kernel
+
+example : (integralFamily.2 ⟨0, by decide +kernel⟩).val ∈ DirectPoints.curve.integralPoints :=
+  (integralFamily.2 ⟨0, by decide +kernel⟩).property
 
 private def importedIndexedFamily :=
   DirectPoints.certificate.algebraic.independentPoints.get (by decide +kernel)
@@ -38,3 +43,49 @@ example : LinearIndependent ℤ importedIndexedFamily.points := importedIndexedF
 example : (DirectNumerics.certificate.analytic.central.get (by decide +kernel)).enclosure.isNone =
     true := rfl
 example : DirectNumerics.certificate.analytic.rank.isNone = true := rfl
+
+open VerifiedLcalcTests.RationalIndependence in
+example : Rank189.certificate.algebraic.integralPoints = none := rfl
+
+open VerifiedLcalcTests.RationalIndependence in
+example : Rank189.certificate.algebraic.independentPoints = none := rfl
+
+open VerifiedLcalcTests.RationalIndependence in
+example : Rank189.certificate.algebraic.rankLowerBound.map Subtype.val = some 1 := rfl
+
+open VerifiedLcalcTests.RationalIndependence in
+example : Rank189Lean.certificate.algebraic.rankLowerBound.map Subtype.val = some 1 := rfl
+
+section RationalGenerator
+
+open VerifiedLcalcTests.RationalIndependence
+
+example : Rank189Lean.certificate.algebraic.generatorCount = some 1 := rfl
+
+private def rationalFamily :=
+  Rank189.certificate.algebraic.independentGeneratorPoints.get (by decide +kernel)
+
+example : rationalFamily.rank = 1 := rfl
+example : (rationalFamily.indices ⟨0, by decide +kernel⟩).val = 0 := rfl
+
+example : Rank189.certificate.algebraic.generators.map
+    (fun family => List.ofFn family.2) = some [Rank189.generators.point ⟨0, by decide +kernel⟩] :=
+  rfl
+example : LinearIndependent ℤ rationalFamily.points := rationalFamily.independent
+example : rationalFamily.points ⟨0, by decide +kernel⟩ =
+    Rank189.generators.point ⟨0, by decide +kernel⟩ := rfl
+
+example : 1 ≤ Module.finrank ℤ (Rank189.curve.baseChange ℚ).toAffine.Point :=
+  Rank189.algebraic_rank_lower_bound
+
+example : Rank189.certificate.algebraic.rank = none := rfl
+
+open Lean Elab Command in
+run_cmd do
+  for name in [``Rank189.certificate, ``Rank189Lean.certificate,
+      ``Rank189.algebraic.points_independent, ``Rank189.algebraic_rank_lower_bound] do
+    for assumption in ← liftTermElabM (Lean.collectAxioms name) do
+      unless [``propext, ``Classical.choice, ``Quot.sound].contains assumption do
+        throwError "Unexpected rational independence axiom {assumption} in {name}"
+
+end RationalGenerator

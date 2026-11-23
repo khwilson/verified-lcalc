@@ -415,6 +415,7 @@ def decode (j : Json) : Except String EllipticWitness := do
       return i.toNat)
   let infiniteOrderPoints ← indices "infinite_order_points"
   let independentPoints ← indices "independent_points"
+  let independentGeneratorPoints ← indices "independent_generator_points"
   let bInvariants ← optionalValue j "binvs" bValues
   let cInvariants ← optionalValue j "cinvs" cValues
   let discriminant ← optionalValue j "discriminant" integer
@@ -519,6 +520,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     torsionPrimes
     infiniteOrderPoints
     independentPoints
+    independentGeneratorPoints
     minimality
     localData }
 

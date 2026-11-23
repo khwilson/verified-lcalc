@@ -219,25 +219,22 @@ private theorem canonical_le (P : W.toAffine.Point) :
     (by linarith only [hbound n])
 
 /-- The single affine point in the LMFDB generator list. -/
-def source : VerifiedLcalc.AffineMembership W :=
-  ⟨[(0, 0)], by
-    intro x y h
-    have heq : (x, y) = ((0, 0) : ℚ × ℚ) := List.mem_singleton.mp h
-    rcases Prod.mk.inj heq with ⟨rfl, rfl⟩
+def source (_ : Fin 1) : W.toAffine.Point :=
+  .mk (x := 0) (y := 0) (by
     rw [Affine.equation_iff]
-    norm_num [W, model, WeierstrassCurve.baseChange]⟩
+    norm_num [W, model, WeierstrassCurve.baseChange])
 
 private theorem naiveEight :
-    ((8 : ℕ) • source.point ⟨0, by decide⟩).naiveHeight = Real.log 25 := by
+    ((8 : ℕ) • source 0).naiveHeight = Real.log 25 := by
   rw [Point.naiveHeight_eq_logHeight₁]
-  have hx : (((8 : ℕ) • source.point ⟨0, by decide⟩).xRep 0) = 21 / 25 := by
+  have hx : (((8 : ℕ) • source 0).xRep 0) = 21 / 25 := by
     decide +kernel
   rw [hx]
   have hr : max ((21 / 25 : ℚ).num.natAbs) (21 / 25 : ℚ).den = 25 := by decide +kernel
   simp [Rat.logHeight₁_eq_log_max, hr]
 
 private theorem heightUpper :
-    (source.point ⟨0, by decide⟩).canonicalHeight ≤ 19 / 192 := by
+    (source 0).canonicalHeight ≤ 19 / 192 := by
   have hlog25 : Real.log 25 ≤ 5 := by
     calc
       Real.log 25 ≤ Real.log (2 ^ 5) := Real.log_le_log (by norm_num) (by norm_num)
@@ -246,24 +243,26 @@ private theorem heightUpper :
         norm_num
         have h2 := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num)
         linarith
-  have h := canonical_le ((8 : ℕ) • source.point ⟨0, by decide⟩)
+  have h := canonical_le ((8 : ℕ) • source 0)
   rw [Point.canonicalHeight_nsmul, naiveEight] at h
   norm_num at h
   linarith
 
 /-- A checked enclosure for the height of the reported point. -/
-def heights : Σ p : VerifiedLcalc.AffineMembership W, VerifiedLcalc.CanonicalHeightFacts p :=
-  ⟨source, {
+def heights :
+    Σ points : (Σ n : ℕ, Fin n → W.toAffine.Point), CanonicalHeightFacts points.2 :=
+  ⟨⟨1, source⟩, {
     reported := fun _ => 0.051111408239968840235886099757
     error := fun _ => 3 / 50
     error_nonneg := by norm_num
     within_error := by
       intro i
-      fin_cases i
+      have hi : i = 0 := Subsingleton.elim _ _
+      subst i
       rw [abs_le]
       constructor
       · norm_num
-        linarith [(source.point ⟨0, by decide⟩).canonicalHeight_nonneg]
+        linarith [(source 0).canonicalHeight_nonneg]
       · norm_num
         linarith [heightUpper] }⟩
 

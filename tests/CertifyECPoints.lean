@@ -1,4 +1,5 @@
 import CertifiedCurves.Direct
+import VerifiedLcalcTests.Fixtures.RationalIndependence
 import Lean
 
 /-! # Test point and independence certificate checks -/
@@ -87,14 +88,15 @@ meta def expectPointRejected (name : Name) (command : Syntax) : CommandElabM Uni
   unless failed do throwError "Invalid point certificate accepted: {name}"
   for suffix in [`witness, `supplied, `curve, `point, `infinite_order_indices,
       `infinite_order_count_eq, `infinite_order_points_eq, `independent_points_eq,
+      `independent_generator_points_eq, `certificate,
       `index, `index_valid, `infinite_order_valid, `infinite_order,
       `indices, `indices_valid, `point_count_eq, `points, `points_independent,
       `algebraic_rank_lower_bound] do
     if env.contains (name ++ suffix) then
       throwError "Rejected point certificate leaked {name ++ suffix}"
-  for child in [`infiniteOrder.point0, `algebraic] do
+  for child in [`infiniteOrder.point0, `algebraic, `generators] do
     for suffix in [`index, `point, `indices, `points, `points_independent,
-        `algebraic_rank_lower_bound] do
+        `algebraic_rank_lower_bound, `point_indices, `coordinates] do
       if env.contains (name ++ child ++ suffix) then
         throwError "Rejected curve certificate leaked a point component"
 
@@ -131,6 +133,29 @@ run_cmd do
   expectPointRejected `UnusedProof
     (← `(certify_ec UnusedProof from { equation := DirectPoints.curve }
       with_independence DirectPoints.algebraic.points_independent))
+
+open VerifiedLcalcTests.RationalIndependence in
+run_cmd do
+  expectPointRejected `ConflictingSources
+    (← `(certify_ec ConflictingSources from { Rank189.witness with independentPoints := some [] }
+      with_independence Rank189.algebraic.points_independent))
+  expectPointRejected `WrongSource
+    (← `(certify_ec WrongSource from_json_string
+      r#"{"ainvs":[0,0,1,-3834,-91375],"gens":[[-143,-3,2]],"independent_points":[0]}"#
+      with_independence Rank189.algebraic.points_independent))
+  expectPointRejected `WrongRationalPoint
+    (← `(certify_ec WrongRationalPoint from_json_string
+      r#"{"ainvs":[0,0,1,-3834,-91375],"gens":[[-143,-3,2],[-143,-5,2]],
+          "independent_generator_points":[1]}"#
+      with_independence Rank189.algebraic.points_independent))
+  expectPointRejected `MissingGeneratorSource
+    (← `(certify_ec MissingGeneratorSource from
+      { equation := model, independentGeneratorPoints := some [] }
+      with_independence linearIndependent_empty_type))
+  expectPointRejected `RankContradiction
+    (← `(certify_ec RankContradiction from
+      { Rank189.witness with algebraicRankBounds := some (0, 0) }
+      with_independence Rank189.algebraic.points_independent))
 
 -- JSON uses the very same dispatch, including namespaced output.
 namespace ScopedPoints

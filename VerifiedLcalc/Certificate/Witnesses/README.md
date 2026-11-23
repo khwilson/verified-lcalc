@@ -58,9 +58,9 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `squarefree_disc` | `curvedata` | Checked | [`MinimalModelArithmeticFacts.squarefreeDiscriminant`](FinitePrimes.lean). The Boolean characterizes squarefreeness of the absolute minimal discriminant. |
 | `stable_faltings_height` | `curvedata` | Report | [`FaltingsInput.stableHeight`](Algebraic.lean). Report in the stable Faltings-height normalization. |
 | `szpiro_ratio` | `curvedata` | Checked | [`ModifiedSzpiroRatioFacts.within_error`](Invariants.lean). Enclosure for the modified ratio using the minimal model’s c-invariants and the norm of TauCeti’s algorithmic conductor. Requires arithmetic evidence and an explicit radius. Available at `certificate.modifiedSzpiroRatio`. |
-| `torsion` | `curvedata`, `torsion_growth` | Mixed | [`TorsionFacts.cardinality`](Algebraic.lean) is the checked rational torsion order in `curvedata`. [`TorsionGrowthFacts.equivalence`](Algebraic.lean) specifies the full torsion group over the stated extension in `torsion_growth`. |
+| `torsion` | `curvedata`, `torsion_growth` | Mixed | [`TorsionWitness.cardinality`](Algebraic.lean) is the checked rational torsion order in `curvedata`. [`TorsionGrowthFacts.equivalence`](Algebraic.lean) specifies the full torsion group over the stated extension in `torsion_growth`. |
 | `torsion_primes` | `curvedata` | Checked | [`TorsionPrimeSupportFacts.exact_support`](Algebraic.lean). Distinct prime divisors of the verified rational torsion order. |
-| `torsion_structure` | `curvedata` | Checked | [`CyclicTorsionFacts.structure_eq`](Algebraic.lean) or [`TwoFactorTorsionFacts.equivalence`](Algebraic.lean). The proved invariant factors describe the full rational torsion subgroup, including the trivial group. |
+| `torsion_structure` | `curvedata` | Checked | [`TorsionWitness.presentation`](Algebraic.lean). The verified product of invariant factors is the full subgroup. Each standard generator maps to a specified supplied point. |
 
 ## Isogeny class (`ec_classdata`)
 
@@ -76,15 +76,15 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | LMFDB field | Table(s) | Status | Witness and scope |
 | --- | --- | --- | --- |
 | `area` | `mwbsd` | Report | [`ComplexPeriodAreaReport.reported`](Analytic.lean). Reported covolume for the Néron differential. |
-| `gens` | `mwbsd` | Checked | [`AlgebraicFacts.generators`](Algebraic.lean) holds [`AffineMembership`](InputData.lean). Each decoded rational point lies on the curve. Spanning the Mordell–Weil group is a separate assertion. |
+| `gens` | `mwbsd` | Checked | [`AlgebraicFacts.generators`](Algebraic.lean) is an indexed family of Mathlib rational points, in input order. Spanning the Mordell–Weil group is a separate assertion. The optional generator-index request checks supplied integer independence at `certificate.algebraic.independentGeneratorPoints`. |
 | `heights` | `mwbsd` | Checked | [`CanonicalHeightFacts.within_error`](Algebraic.lean) in `certificate.algebraic.heights`. The enclosures are indexed by the checked `gens` points in order. |
-| `ngens` | `mwbsd` | Checked | [`GeneratorCountFacts.length_eq`](Algebraic.lean). Length of the supplied and checked generator list. |
+| `ngens` | `mwbsd` | Checked | [`AlgebraicFacts.generators`](Algebraic.lean). Length of the supplied and checked generator list, checked against `ngens` at ingestion. |
 | `rank_bounds` | `mwbsd` | Checked | [`EllipticCurve.AlgebraicRankBounds`](Algebraic.lean), stored in [`AlgebraicFacts.rankBounds`](Algebraic.lean). Both endpoints bound Mathlib’s integer-module finrank of the rational points. |
 | `real_period` | `mwbsd` | Checked | [`RealPeriodFact.correct`](Analytic.lean). Enclosure for the full minimal real period, including all real components. Available at `certificate.realPeriod`. |
 | `sha_an` | `mwbsd` | Checked | [`AnalyticShaFact.correct`](Analytic.lean). Enclosure for the analytic BSD quotient for each arithmetic modular realization. Available at `certificate.analyticSha`. |
 | `special_value` | `mwbsd` | Checked | [`SpecialLValueFacts.correct`](Analytic.lean). At proved order $r=0$ or $1$, the reported value differs from the Taylor leading coefficient $L^{(r)}(1)/r!$ by at most the supplied error for each arithmetic modular realization. |
 | `tamagawa_product` | `mwbsd` | Checked | [`TamagawaProductFact.correct`](Analytic.lean). Equality with the product of intrinsic Tamagawa factors over finite places. Available at `certificate.tamagawaProduct`. |
-| `torsion_generators` | `mwbsd` | Checked | [`AlgebraicFacts.torsionGenerators`](Algebraic.lean) holds [`AffineMembership`](InputData.lean). The list alone certifies point membership. Exact orders and generation require additional evidence. |
+| `torsion_generators` | `mwbsd` | Checked | [`TorsionWitness.generators`](Algebraic.lean) holds the submitted points. Exact orders, full generation and invariant-factor generator images use those same indices when proved. |
 | `xcoord_integral_points` | `mwbsd` | Checked | [`IntegralYFiberFacts.complete`](Algebraic.lean). Every integral y at each supplied x is accounted for. A proof that the list covers all integral x-values can be supplied as [`IntegralXSupport.covers`](InputData.lean). |
 
 ## Local reduction (`ec_localdata`)

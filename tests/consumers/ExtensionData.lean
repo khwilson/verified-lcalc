@@ -79,9 +79,14 @@ run_cmd do
   expectRejected `WrongField "torsion_growth_polynomial_matches" (← `(certify_ec WrongField
     from_json_string r#"{"ainvs":[0,0,0,1,0],"torsion_growth":{"field":[-2,0,1],"degree":2}}"#
     with_proofs { torsionGrowthField := some ExtensionDataFixture.growthEvidence }))
-  expectRejected `WrongHeightPoint "heights_coordinates_match" (← `(certify_ec WrongHeightPoint
+  expectRejected `WrongHeightPoint "heights_points_match" (← `(certify_ec WrongHeightPoint
     from_json_string r#"{"ainvs":[0,0,1,-1,0],"gens":[[0,-1,1]],"heights":[0.051]}"#
     with_proofs { canonicalHeights := some Height37.heights }))
+  expectRejected `WrongInfinity "heights_points_match" (← `(certify_ec WrongInfinity
+    from_json_string r#"{"ainvs":[0,0,1,-1,0],"gens":[[0,0,1]],"heights":[0]}"#
+    with_proofs { canonicalHeights := some ⟨⟨1, fun _ => 0⟩,
+      { reported := fun _ => 0, error := fun _ => 0,
+        error_nonneg := by simp, within_error := by simp }⟩ }))
   expectRejected `WrongCenter "heights_report_matches" (← `(certify_ec WrongCenter from
     { equation := Height37.model, generatorCoordinates := some [(0, 0)],
       canonicalHeights := some ⟨[3], none⟩ }

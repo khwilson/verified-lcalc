@@ -7,10 +7,8 @@ open VerifiedLcalc Lean Elab Command
 
 example : Type := TorsionBoundWitness
 example (curve : WeierstrassCurve ℤ) : Type := TorsionDivisorFacts curve
-example (curve : WeierstrassCurve ℤ) : Type := CyclicTorsionFacts curve
-example (curve : WeierstrassCurve ℤ) : Type := TwoFactorTorsionFacts curve
 example (curve : WeierstrassCurve ℤ) : Type := TorsionPrimeSupportFacts curve
-example (curve : WeierstrassCurve ℤ) : Type := TorsionFacts curve
+example (curve : WeierstrassCurve ℤ) : Type := TorsionWitness curve
 
 run_cmd do
   let imported := (← getEnv).allImportedModuleNames

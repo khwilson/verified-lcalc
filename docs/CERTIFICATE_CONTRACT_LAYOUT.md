@@ -11,7 +11,25 @@ contains their Lean declarations.
 | [EllipticCertificate.lean](../VerifiedLcalc/Certificate/Witnesses/EllipticCertificate.lean) | `EllipticCertificate` is the type of `Name.certificate`. This file also defines `IntegralCurveProofs` for supplied proofs that span subjects. |
 | [Invariants.lean](../VerifiedLcalc/Certificate/Witnesses/Invariants.lean) | `DiscriminantWitness` and `EllipticProofs`, together with exact rational-invariant claims. |
 
-## Field structures
+## Mathematical witnesses
+
+A single mathematical witness can certify several LMFDB columns. For example,
+the checked rational generator family determines the value of `ngens`. When a
+row supplies that column, `certify_ec` compares it with the size of the family.
+The checked family uses a native `Fin n → Point` map. Integral point families
+use `Fin n → ↥curve.integralPoints`, which carries TauCeti's integrality proof.
+Pointwise data such as exact orders use the same `Fin n` index as the points.
+The JSON reader accepts ordinary coordinate arrays.
+
+For `torsion_generators`, checking the order of every point proves that the
+points belong to the torsion subgroup. Proving that they generate it requires
+the additional equality
+`AddSubgroup.closure (Set.range points) = AddCommGroup.torsion G`,
+where `G` is the rational point group. The one `TorsionWitness` holds the
+submitted generator map, optional orders, and optional generation and
+presentation proofs. Its presentation ties each invariant-factor standard
+generator to an index in the submitted family. A single point of order five
+can thus certify a group of five elements once full generation is proved.
 
 | Subject | Witness files and mathematical content |
 | --- | --- |
