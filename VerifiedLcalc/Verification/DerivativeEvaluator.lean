@@ -14,9 +14,11 @@ open EllipticCurve Numerics Set MeasureTheory
 theorem ModularRealization.derivativePayload_contains {e : (WeierstrassCurve ℤ)}
     (m : ModularRealization e) (r : DerivativeResult) (hr : DerivativePayloadCorrect r)
     (hN : r.conductor = m.level)
-    (hc : r.coefficients = (List.range r.termLimit).map (fun j => (WeierstrassCurve.baseChange e ℚ).LFunction (j+1))) :
+    (hc : r.coefficients = (List.range r.termLimit).map
+      (fun j => (WeierstrassCurve.baseChange e ℚ).LFunction (j + 1))) :
     r.box.Contains (Complex.ofReal (∫ t : ℝ in Ioi 1, Real.log t*(m.imaginaryFunction t).re)) := by
-  have hbc (j : Nat) : |((WeierstrassCurve.baseChange e ℚ).LFunction (j+1) : ℝ)| ≤ ((j+1 : Nat) : ℝ)^3 := by
+  have hbc (j : Nat) : |((WeierstrassCurve.baseChange e ℚ).LFunction (j + 1) : ℝ)| ≤
+      ((j + 1 : Nat) : ℝ) ^ 3 := by
     exact_mod_cast LFunction_abs_le_cube (WeierstrassCurve.baseChange e ℚ) (j+1)
   have hf (t : ℝ) (ht : 0 < t) : HasSum
       (fun j => ((WeierstrassCurve.baseChange e ℚ).LFunction (j+1) : ℝ)*
@@ -37,7 +39,8 @@ theorem ModularRealization.derivativePayload_contains {e : (WeierstrassCurve ℤ
 theorem ModularRealization.realDerivativeBounds_contains {e : (WeierstrassCurve ℤ)}
     (m : ModularRealization e) (r : DerivativeResult) (hr : DerivativePayloadCorrect r)
     (hN : r.conductor = m.level) (hw : m.rootNumber = -1)
-    (hc : r.coefficients = (List.range r.termLimit).map (fun j => (WeierstrassCurve.baseChange e ℚ).LFunction (j+1))) :
+    (hc : r.coefficients = (List.range r.termLimit).map
+      (fun j => (WeierstrassCurve.baseChange e ℚ).LFunction (j + 1))) :
     r.realDerivativeBounds.Contains (deriv m.formL 1).re := by
   have ha := alphaBounds_correct r.conductor r.policy.precisionBits hr.1
   rw [← hr.2.2.2.2.1, ← hr.2.2.2.2.2.1] at ha
@@ -60,7 +63,8 @@ first derivative. A small central value is never used as a zero certificate. -/
 theorem ModularRealization.analyticOrder_one_of_derivativePayload {e : (WeierstrassCurve ℤ)}
     (m : ModularRealization e) (r : DerivativeResult) (hr : DerivativePayloadCorrect r)
     (hN : r.conductor = m.level) (hw : m.rootNumber = -1)
-    (hc : r.coefficients = (List.range r.termLimit).map (fun j => (WeierstrassCurve.baseChange e ℚ).LFunction (j+1)))
+    (hc : r.coefficients = (List.range r.termLimit).map
+      (fun j => (WeierstrassCurve.baseChange e ℚ).LFunction (j + 1)))
     (hz : r.box.excludesZero = true) : analyticOrderAt m.formL (1 : ℂ) = 1 := by
   apply (m.formL_differentiable.analyticAt 1).analyticOrderAt_eq_one_of_zero_deriv_ne_zero
     (m.central_zero_of_negative_sign hw)
