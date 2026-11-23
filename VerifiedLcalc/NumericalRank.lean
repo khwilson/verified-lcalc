@@ -30,6 +30,7 @@ instance (expected : Request) (artifact : Artifact) :
   unfold Accepts
   infer_instance
 
+/-- Acceptance for numerical rank data agrees with the coordinatewise cutoff specification. -/
 theorem accepts_iff_cutoffAccepts (expected : Request) (artifact : Artifact) :
     Accepts expected artifact ↔ CutoffAccepts expected artifact := by
   simp [Accepts, CutoffAccepts, Box.withinCutoff_correct, Box.WithinCutoff]
@@ -38,6 +39,7 @@ theorem accepts_iff_cutoffAccepts (expected : Request) (artifact : Artifact) :
 def check (expected : Request) (artifact : Artifact) : Bool :=
   decide (Accepts expected artifact)
 
+/-- The numerical rank check succeeds exactly when the request accepts the supplied artifact. -/
 theorem check_correct (expected : Request) (artifact : Artifact) :
     check expected artifact = true ↔ Accepts expected artifact := by simp [check]
 
@@ -59,6 +61,7 @@ def validate (expected : Request) (artifact : Artifact) : Option (Checked expect
       (accepts_iff_cutoffAccepts _ _).mp ((check_correct _ _).mp h)⟩
   else none
 
+/-- A validated numerical rank artifact is the supplied artifact and satisfies its request. -/
 theorem validate_correct {expected : Request} {artifact : Artifact} {c : Checked expected}
     (h : validate expected artifact = some c) :
     c.artifact = artifact ∧ Accepts expected artifact := by

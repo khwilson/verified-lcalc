@@ -16,6 +16,8 @@ def Box.withinCutoff (b : Box) (eps : Rat) : Bool :=
   decide (0 ≤ eps ∧ b.reLo ≤ b.reHi ∧ b.imLo ≤ b.imHi ∧
     -eps ≤ b.reLo ∧ b.reHi ≤ eps ∧ -eps ≤ b.imLo ∧ b.imHi ≤ eps)
 
+/-- The cutoff test checks that the endpoints are ordered and lie between the two cutoff bounds.
+-/
 theorem Box.withinCutoff_correct (b : Box) (eps : Rat) :
     b.withinCutoff eps = true ↔
       0 ≤ eps ∧ b.reLo ≤ b.reHi ∧ b.imLo ≤ b.imHi ∧
