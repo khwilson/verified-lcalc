@@ -11,8 +11,14 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenera
 public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.Regulator.Basic
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.Kernel
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.Degree
+public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.Hom.ComplexMultiplication
+public import TauCeti.AlgebraicGeometry.EllipticCurve.QuadraticTwist.Basic
+public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Conductor
+public import TauCeti.NumberTheory.QuadraticOrder.Basic
 public import TauCeti.AlgebraicGeometry.EllipticCurve.PointCount
 public import Mathlib.GroupTheory.Torsion
+public import Mathlib.NumberTheory.FundamentalDiscriminant
+public import Mathlib.RingTheory.AdjoinRoot
 
 /-! # Rational and integral points, Mordell–Weil invariants and isogenies
 
@@ -28,8 +34,16 @@ public import Mathlib.GroupTheory.Torsion
   reduction point counts. `CyclicTorsionFacts` and `TwoFactorTorsionFacts` present the full
   group in the respective cases. `TorsionPrimeSupportFacts` gives its exact prime support.
   `TorsionFacts` collects optional bounds, cardinality, presentations, and prime support.
-* `DegreeTwoIsogenyFact` proves an isogeny and its minimum degree in the specified direction.
-  `AlgebraicFacts` collects optional checked points, orders, rank bounds, and regulator data.
+* `DegreeTwoIsogenyFact` and `IsogenyClassFacts` record minimum degrees of actual rational
+  isogenies. The class witness also requires exhaustive and distinct representatives.
+* `ComplexMultiplicationFacts` identifies the geometric endomorphism ring.
+  `TorsionGrowthFacts` identifies a number field and its full base-changed torsion group.
+  `CanonicalHeightFacts` encloses the canonical heights of indexed rational points.
+* `MinimumQuadraticTwistFacts` specifies the twist relationship and minimum algorithmic conductor.
+  The producer's tie rules require a separate comparison.
+* `IntrinsicTorsionInput`, `ModularParametrizationInput`, and `FaltingsInput` record
+  the respective catalogue reports.
+* `AlgebraicFacts` collects optional checked points, orders, rank bounds, and regulator data.
 -/
 
 @[expose] public section
@@ -241,6 +255,167 @@ structure DegreeTwoIsogenyFact (source target : WeierstrassCurve ℤ) where
   /-- Every rational isogeny between these equations has degree at least two. -/
   degree_le : ∀ φ : Isogeny (source.baseChange ℚ).toAffine (target.baseChange ℚ).toAffine,
     2 ≤ φ.degree
+
+/-! ## Isogeny classes, complex multiplication and twists -/
+
+/-- Complete distinct rational isomorphism representatives of the isogeny class of
+`curve`, with its minimum-degree matrix and the row data for `curve`. -/
+structure IsogenyClassFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
+  /-- The number of rational isomorphism classes. -/
+  classSize : ℕ
+  /-- The rational equations, in the same order as the rows and columns of the degree matrix. -/
+  representatives : Fin classSize → WeierstrassCurve ℚ
+  /-- Each representative is nonsingular. -/
+  elliptic : ∀ i, (representatives i).IsElliptic
+  /-- The row and column corresponding to the input curve. -/
+  curveIndex : Fin classSize
+  /-- The change of variables from the input curve to its representative. -/
+  curveChange : WeierstrassCurve.VariableChange ℚ
+  /-- The selected representative is rationally isomorphic to the input curve. -/
+  curveChange_eq : curveChange • (curve.baseChange ℚ) = representatives curveIndex
+  /-- No two distinct representatives are rationally isomorphic. -/
+  distinct : ∀ i j (C : WeierstrassCurve.VariableChange ℚ),
+    C • representatives i = representatives j → i = j
+  /-- Any nonsingular rational equation admitting an isogeny from the input curve
+  is rationally isomorphic to a listed representative. -/
+  exhaustive : ∀ (W : WeierstrassCurve ℚ), W.IsElliptic →
+    Nonempty (Isogeny (curve.baseChange ℚ).toAffine W.toAffine) →
+      ∃ (i : Fin classSize) (C : WeierstrassCurve.VariableChange ℚ), C • W = representatives i
+  /-- The minimum isogeny degrees indexed by source and target, in that order. -/
+  isogenyMatrix : Fin classSize → Fin classSize → ℕ
+  /-- Every entry is attained by an actual isogeny in its direction. -/
+  isogenies : ∀ i j, Isogeny (representatives i).toAffine (representatives j).toAffine
+  /-- The entries equal the degrees of those isogenies. -/
+  degree_eq : ∀ i j, (isogenies i j).degree = isogenyMatrix i j
+  /-- Every isogeny in that direction has degree at least the given entry. -/
+  degree_min : ∀ i j (φ : Isogeny (representatives i).toAffine (representatives j).toAffine),
+    isogenyMatrix i j ≤ φ.degree
+  /-- The maximum entry over the entire class matrix. -/
+  classDegree : ℕ
+  /-- The maximum is attained. -/
+  classDegree_mem : ∃ i j, isogenyMatrix i j = classDegree
+  /-- The maximum bounds all entries. -/
+  le_classDegree : ∀ i j, isogenyMatrix i j ≤ classDegree
+  /-- The distinct minimum isogeny degrees read from the input curve's row. -/
+  isogenyDegrees : Finset ℕ
+  /-- The recorded degree set is precisely the set of entries in that row. -/
+  isogenyDegrees_eq : isogenyDegrees = Finset.univ.image (isogenyMatrix curveIndex)
+
+/-- Exact description of the endomorphism ring over the separable closure of ℚ.
+The zero code specifies the integer ring and a negative code specifies the quadratic
+order of that discriminant. -/
+structure ComplexMultiplicationFacts (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The LMFDB CM code, either zero or an imaginary quadratic order discriminant. -/
+  discriminant : ℤ
+  /-- The geometric endomorphism ring agrees with the ring specified by the code. -/
+  endomorphismRing :
+    (discriminant = 0 ∧ Nonempty (ℤ ≃+* (curve.baseChange ℚ).GeometricEnd)) ∨
+      (discriminant < 0 ∧
+        ∃ h : discriminant % 4 = 0 ∨ discriminant % 4 = 1,
+          Nonempty (QuadraticOrder.toSubalgebra discriminant h ≃+*
+            (curve.baseChange ℚ).GeometricEnd))
+
+/-- A quadratic twist attaining the minimum algorithmic conductor. The fundamental
+discriminant and rational isomorphism identify the twist. Producer ordering among
+equal-conductor candidates is a separate catalogue convention. -/
+structure MinimumQuadraticTwistFacts (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The submitted integral equation of the candidate twist. -/
+  equation : WeierstrassCurve ℤ
+  /-- The submitted twist discriminant, with one denoting the trivial twist. -/
+  discriminant : ℤ
+  /-- The discriminant is fundamental. Mathlib includes one for the trivial twist. -/
+  fundamental : discriminant.IsFundamentalDiscr
+  /-- A rational change of variables from TauCeti's twist to the submitted model. -/
+  change : WeierstrassCurve.VariableChange ℚ
+  /-- Twisting by trace zero and norm minus the discriminant gives the same square class
+  as the discriminant itself. The submitted model is rationally isomorphic to that twist. -/
+  twist_eq : change • ((curve.baseChange ℚ).quadraticTwistOf 0 (-(discriminant : ℚ))) =
+    equation.baseChange ℚ
+  /-- The reported twist is nonsingular over the rationals. -/
+  elliptic : (equation.baseChange ℚ).IsElliptic
+  /-- No quadratic twist of the original curve has smaller algorithmic conductor norm. -/
+  conductor_minimal :
+    letI := elliptic
+    ∀ (d : ℚ), d ≠ 0 →
+      let W := (curve.baseChange ℚ).quadraticTwistOf 0 (-d)
+      ∀ (hW : W.IsElliptic),
+        letI := hW
+        Ideal.absNorm ((equation.baseChange ℚ).algorithmicConductor ℤ) ≤
+          Ideal.absNorm (W.algorithmicConductor ℤ)
+
+/-! ## Torsion over number fields and canonical heights -/
+
+/-- The full torsion group over the field presented by a specified irreducible rational
+polynomial. This describes one field and makes no primitive-growth or exhaustivity claim. -/
+structure TorsionGrowthFacts (curve : WeierstrassCurve ℤ) where
+  /-- The defining polynomial decoded from its ascending coefficient list. -/
+  polynomial : Polynomial ℚ
+  /-- Irreducibility makes Mathlib's root-adjoining algebra a field. -/
+  irreducible : Irreducible polynomial
+  /-- The absolute degree of that field over ℚ. -/
+  degree : ℕ
+  /-- The reported degree equals the field degree. -/
+  degree_eq : Module.finrank ℚ (AdjoinRoot polynomial) = degree
+  /-- Nonsingularity after base change to the presented field. -/
+  elliptic :
+    letI : Fact (Irreducible polynomial) := ⟨irreducible⟩
+    (curve.baseChange (AdjoinRoot polynomial)).IsElliptic
+  /-- The invariant factors in divisibility order, omitting factors of one. -/
+  torsion : List ℕ
+  /-- All factors have order at least two. -/
+  factors_nontrivial : ∀ n ∈ torsion, 2 ≤ n
+  /-- Earlier invariant factors divide later ones. -/
+  factors_divide : torsion.Pairwise (· ∣ ·)
+  /-- The product of cyclic groups is additively equivalent to the full torsion subgroup. -/
+  equivalence :
+    letI : Fact (Irreducible polynomial) := ⟨irreducible⟩
+    (∀ i : Fin torsion.length, ZMod (torsion.get i)) ≃+
+      AddCommGroup.torsion (curve.baseChange (AdjoinRoot polynomial)).toAffine.Point
+
+/-- Rational enclosures for the actual heights of the supplied rational points, in
+TauCeti's logarithmic x-coordinate height normalization. The point indexing tracks list
+order and is independent of any basis or generation claim. -/
+structure CanonicalHeightFacts {curve : WeierstrassCurve ℚ} [curve.IsElliptic]
+    (source : AffineMembership curve) where
+  /-- The rational enclosure center for each point, in coordinate-list order. -/
+  reported : Fin source.coordinates.length → ℚ
+  /-- The rational absolute error radius for each point. -/
+  error : Fin source.coordinates.length → ℚ
+  /-- Each radius is nonnegative. -/
+  error_nonneg : ∀ i, 0 ≤ error i
+  /-- The canonical height of each indexed point lies in its reported enclosure. -/
+  within_error : ∀ i,
+    |(source.point i).canonicalHeight - (reported i : ℝ)| ≤ (error i : ℝ)
+
+/-! ## Input records pending mathematical specifications -/
+
+/-- Input only. The claimed order of the radical of the rational torsion pairing. -/
+structure IntrinsicTorsionInput (curve : WeierstrassCurve ℤ) where
+  /-- The decoded `intrinsic_torsion` value. -/
+  order : ℕ
+
+/-- Input only. The degree and differential scaling of a modular parametrization,
+and the producer's status code for optimality. -/
+structure ModularParametrizationInput (curve : WeierstrassCurve ℤ) where
+  /-- The claimed modular parametrization degree, when present. -/
+  degree : Option ℕ := none
+  /-- The claimed Manin constant, when present. -/
+  maninConstant : Option ℕ := none
+  /-- The producer's optimality code, which can express ambiguity among candidates. -/
+  optimalityCode : Option ℕ := none
+
+/-- Input only. The reported Faltings heights and class-relative data. -/
+structure FaltingsInput (curve : WeierstrassCurve ℤ) where
+  /-- The reported Faltings height in the producer's normalization. -/
+  height : Option ℚ := none
+  /-- The reported stable Faltings height. -/
+  stableHeight : Option ℚ := none
+  /-- The proposed Néron lattice index relative to the least-height curve in the class. -/
+  ratio : Option ℕ := none
+  /-- The producer's position in the Faltings-height ordering of the class. -/
+  orderingIndex : Option ℕ := none
 
 /-! ## Algebraic certificate fields -/
 

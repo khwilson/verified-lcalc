@@ -16,6 +16,10 @@ public import VerifiedLcalc.Certificate.Numerical.Payloads
 public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
 public import Mathlib.Analysis.Analytic.Order
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import TauCeti.AlgebraicGeometry.EllipticCurve.MinimalModel.RealPeriod
+public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenerated
+public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.Regulator.Basic
+public import TauCeti.AlgebraicGeometry.EllipticCurve.Tamagawa.Product
 
 /-! # L-values, derivatives and analytic rank
 
@@ -36,6 +40,16 @@ public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 * `ConditionalAnalyticRank` gives the exact order at 1 for any explicit arithmetic modular
   realization. `CurvePrecisionFact` gives a checked derivative prefix within a cutoff for a
   fixed realization. `AnalyticFacts` collects optional payloads, rank, and special values.
+* `RealPeriodFact` encloses the full minimal real period. `TamagawaProductFact` identifies
+  the intrinsic product over finite places. `ComplexPeriodAreaReport` retains a reported
+  covolume pending a comparison with the curve's Néron differential.
+* `AnalyticShaFact` encloses the BSD quotient obtained from the leading coefficient.
+  `RoundedAnalyticShaFact` identifies its nearest integer and optional prime support.
+  Finiteness and order of the cohomological Sha group require independent evidence.
+* `PadicRegulatorReport` preserves the reported ball. `OrdinaryIwasawaInvariants` and
+  `SupersingularIwasawaInvariants` retain source values in the entries of
+  `IwasawaPrimeReport` and `IwasawaReport`. Identifying those reports with the curve's
+  normalized p-adic heights or L-series requires additional mathematical evidence.
 -/
 
 @[expose] public section
@@ -213,6 +227,124 @@ structure CurvePrecisionFact (curve : WeierstrassCurve ℤ) (m : ModularRealizat
   claim_curve : claim.equation = curve
   /-- The checked derivatives satisfy the claim's numerical cutoff. -/
   small : NumericalRanks.SmallDerivatives m.formL 1 claim.derivativeCount claim.policy.cutoff
+
+/-! ## Periods and the BSD quotient -/
+
+/-- A reported decimal with an error bound for the full real period of a global minimal model. -/
+structure RealPeriodFact (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
+  /-- Exact rational representation of the reported real period. -/
+  reported : ℚ
+  /-- Nonnegative rational enclosure radius. -/
+  error : { ε : ℚ // 0 ≤ ε }
+  /-- The full real period, including all real components, lies within this error. -/
+  correct : |(curve.baseChange ℚ).minimalRealPeriod - (reported : ℝ)| ≤ (error.val : ℝ)
+
+/-- A reported covolume of the complex period lattice for the Néron differential on this curve. -/
+structure ComplexPeriodAreaReport (curve : WeierstrassCurve ℤ) where
+  /-- Positive reported area represented as an exact rational decimal. -/
+  reported : { a : ℚ // 0 < a }
+
+/-- The product of all finite-place Tamagawa numbers of the given rational curve. -/
+structure TamagawaProductFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The exact positive integer product. -/
+  value : ℕ
+  /-- Equality with the product over all rational finite places. -/
+  correct : (curve.baseChange ℚ).tamagawaProduct (R := ℤ) = value
+
+/-- An enclosure for the analytic BSD quotient using the intrinsic arithmetic factors. -/
+structure AnalyticShaFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- Order of the leading Taylor coefficient at the central point. -/
+  order : ℕ
+  /-- Exact rational representation of the reported analytic quotient. -/
+  reported : ℚ
+  /-- Nonnegative rational enclosure radius. -/
+  error : { ε : ℚ // 0 ≤ ε }
+  /-- The analytic order is identified for each explicit realization of this equation. -/
+  order_correct : ∀ m : ArithmeticModularRealization curve, analyticOrderAt m.formL 1 = order
+  /-- The denominator in the analytic BSD quotient is positive. -/
+  denominator_pos :
+    let E := curve.baseChange ℚ
+    0 < E.minimalRealPeriod * E.toAffine.regulator * E.tamagawaProduct (R := ℤ)
+  /-- The true analytic quotient lies within the reported error for each realization. -/
+  correct : ∀ m : ArithmeticModularRealization curve,
+    let E := curve.baseChange ℚ
+    |(iteratedDeriv order m.formL 1).re / (order.factorial : ℝ) *
+      (Nat.card (AddCommGroup.torsion E.toAffine.Point) : ℝ) ^ 2 /
+      (E.minimalRealPeriod * E.toAffine.regulator * E.tamagawaProduct (R := ℤ)) -
+      (reported : ℝ)| ≤ (error.val : ℝ)
+
+/-- The analytic quotient's enclosure lies strictly in a single integer rounding cell. -/
+structure RoundedAnalyticShaFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The analytic quotient and its checked enclosure. -/
+  analytic : AnalyticShaFact curve
+  /-- Unique nearest integer to the analytic quotient. -/
+  value : ℕ
+  /-- The reported positive integer has a finite prime factorization. -/
+  value_pos : 0 < value
+  /-- The entire closed error interval lies strictly within half of the integer. -/
+  rounds : |analytic.reported - (value : ℚ)| + analytic.error.val < 1 / 2
+  /-- Optional exact prime support of the rounded integer. -/
+  primes : Option { ps : Finset ℕ // ps = value.primeFactors } := none
+
+/-! ## Reported p-adic data -/
+
+/-- A reported ball for a p-adic regulator on the curve used by the producer.
+
+For LMFDB this subject is curve number 1 in the class. The ball has center
+`p^val * unit` and additive error subgroup `p^prec ℤ_p`. The source's `prec` counts
+absolute precision, so the unit has `prec - val` relative digits. -/
+structure PadicRegulatorReport (curve : WeierstrassCurve ℤ) where
+  /-- The rational prime of the reported regulator. -/
+  p : Nat.Primes
+  /-- The source's exponent of the absolute error subgroup. -/
+  prec : ℤ
+  /-- Valuation of the nonzero reported ball, allowing negative values. -/
+  val : ℤ
+  /-- The residue retains at least one digit of the unit. -/
+  precise : val < prec
+  /-- Unit representative of the reported residue. -/
+  unit : ℤ
+  /-- The representative is a p-adic unit. -/
+  unit_not_dvd : ¬ ((p : ℕ) : ℤ) ∣ unit
+
+/-- The reported analytic Iwasawa invariants at an ordinary or multiplicative prime. -/
+structure OrdinaryIwasawaInvariants where
+  /-- Index of the first coefficient of minimal valuation in the source normalization. -/
+  lambda : ℕ
+  /-- Minimal coefficient valuation in the source normalization. -/
+  mu : ℕ
+
+/-- The reported analytic Iwasawa invariants at a supersingular prime. -/
+structure SupersingularIwasawaInvariants where
+  /-- Lambda invariant of the plus branch. -/
+  lambdaPlus : ℕ
+  /-- Lambda invariant of the minus branch. -/
+  lambdaMinus : ℕ
+  /-- The single mu value the source reports for both branches. -/
+  mu : ℕ
+
+/-- One reported analytic Iwasawa entry for this curve. -/
+structure IwasawaPrimeReport (curve : WeierstrassCurve ℤ) where
+  /-- The prime indexing this entry. -/
+  p : Nat.Primes
+  /-- Outer `none` records additive reduction. The left branch records the
+  ordinary or multiplicative case and the right branch the supersingular case.
+  Inner `none` means the source lists the prime but lacks invariant values. -/
+  data : Option (Sum (Option OrdinaryIwasawaInvariants)
+    (Option SupersingularIwasawaInvariants))
+
+/-- Prime-indexed Iwasawa data and any reported good-prime vanishing threshold. -/
+structure IwasawaReport (curve : WeierstrassCurve ℤ) where
+  /-- Entries present in the reported finite prime list. -/
+  entries : List (IwasawaPrimeReport curve)
+  /-- A prime appears at most once in the reported list. -/
+  distinct : (entries.map IwasawaPrimeReport.p).Nodup
+  /-- The source claims vanishing of the analytic invariants at every good
+  prime greater than or equal to this prime when a threshold is supplied. -/
+  vanishingThreshold : Option Nat.Primes := none
 
 /-- Optional verified numerical and analytic results attached to the same equation. -/
 structure AnalyticFacts (curve : WeierstrassCurve ℤ) where

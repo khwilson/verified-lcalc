@@ -9,6 +9,8 @@ public import VerifiedLcalc.Certificate.Witnesses.InputData
 public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
 public import TauCeti.AlgebraicGeometry.EllipticCurve.AbcQuality
 public import Mathlib.RingTheory.Localization.Rat
+public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
+public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Conductor
 
 /-! # Global invariants of an elliptic curve
 
@@ -18,6 +20,8 @@ public import Mathlib.RingTheory.Localization.Rat
 * `RationalInvariantFacts` records discriminant sign, rational j-invariant and its
   integrality, and abc quality. `AbcQualityFacts` supplies a factorization and quality
   enclosure for j distinct from 0 and 1728.
+* `ModifiedSzpiroRatioFacts` bounds the error in the reported modified Szpiro ratio of a
+  globally minimal equation, using the norm of TauCeti's algorithmic conductor.
 * `ModularArithmeticFacts` records conductor, root number, and conductor exponents at supplied
   primes, conditional on an explicit arithmetic modular realization.
   `Certification.ArithmeticCompatibility` pairs one realization with its conductor and
@@ -84,6 +88,30 @@ structure RationalInvariantFacts (curve : WeierstrassCurve ℤ)
   abcQuality : Option (AbcQualityFacts curve) := none
 
 /-! ## Conductor and root number -/
+
+/-- An enclosure for the LMFDB modified Szpiro ratio. The numerator uses the minimal
+equation's c-invariants and the denominator uses the algorithmic conductor. -/
+structure ModifiedSzpiroRatioFacts (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The supplied equation is globally minimal over the integers. -/
+  minimal : WeierstrassCurve.IsGlobalMinimal ℤ (curve.baseChange ℚ)
+  /-- The natural-number conductor used in the denominator. -/
+  conductor : ℕ
+  /-- Identification of the conductor with the norm of TauCeti's conductor ideal. -/
+  conductor_eq : Ideal.absNorm ((curve.baseChange ℚ).algorithmicConductor ℤ) = conductor
+  /-- The logarithm of the conductor is positive. -/
+  one_lt_conductor : 1 < conductor
+  /-- Rational center of the reported enclosure. -/
+  reported : ℚ
+  /-- Absolute error radius for the report. -/
+  error : ℚ
+  /-- The radius is nonnegative. -/
+  error_nonneg : 0 ≤ error
+  /-- The logarithmic ratio of the larger minimal c-invariant power to the conductor
+  lies within the stated error of the report. -/
+  within_error :
+    |Real.log (max (curve.c₄.natAbs ^ 3) (curve.c₆.natAbs ^ 2) : ℕ) /
+      Real.log conductor - (reported : ℝ)| ≤ (error : ℝ)
 
 /-- Arithmetic facts conditional on an explicit modular realization of the curve. -/
 structure ModularArithmeticFacts (curve : WeierstrassCurve ℤ) where
