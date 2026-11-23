@@ -269,7 +269,7 @@ doubling limit over ℚ. The reusable upstream gap is a computable bound on the
 difference between the canonical and naïve heights on a nonsingular rational
 Weierstrass model, with explicit dependence on that model. Use it to enclose
 the pairing and determinant for an M2 basis.
-[TauCeti backlog TC-18](../TAUCETI_BACKLOG.md#tc-18--explicit-canonical-height-error-over-ℚ).
+[TauCeti backlog TC-19](../TAUCETI_BACKLOG.md#tc-19--explicit-canonical-height-error-over-ℚ).
 Prove period integrals with tail/error bounds for both real-component
 types, plus a comparison between the complex area integral and covolume of
 the Néron period lattice. Use the verified metrics to evaluate Faltings height

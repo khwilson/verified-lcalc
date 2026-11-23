@@ -401,7 +401,7 @@ containment theorem for the resulting adelic image.
 · [Pinned Tate-module action](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateModule/Galois.lean)
 · [Candidate profinite API](https://github.com/TauCetiProject/TauCeti/pull/45304)
 
-## TC-18 — explicit canonical-height error over ℚ
+## TC-19 — explicit canonical-height error over ℚ
 
 The certificate command checks a supplied enclosure against
 `WeierstrassCurve.Affine.Point.canonicalHeight` in the logarithmic
