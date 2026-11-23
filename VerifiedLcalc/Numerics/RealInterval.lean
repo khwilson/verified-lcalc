@@ -5,8 +5,6 @@ public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 @[expose] public section
 namespace VerifiedLcalc.Numerics
 
-def RealInterval.Contains (i : RealInterval) (x : ℝ) : Prop := x ∈ Set.Icc (i.1 : ℝ) (i.2 : ℝ)
-
 theorem roundInterval_sound (bits : Nat) (i : RealInterval) (x : ℝ) (hi : i.Contains x) :
     (roundInterval bits i).Contains x := by
   have hl : (((i.1.toDyadic bits).toRat : Rat) : ℝ) ≤ (i.1 : ℝ) := by

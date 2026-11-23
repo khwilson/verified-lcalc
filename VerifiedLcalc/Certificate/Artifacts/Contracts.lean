@@ -23,4 +23,14 @@ def WitnessAccepts (expected : Request) (artifact : Artifact) : Prop :=
   artifact.derivativeBoxes.length = artifact.rank + 1 ∧
   Witness artifact.derivativeBoxes artifact.rank
 
+/-- The center implementation agrees with the documented case distinction. -/
+theorem Subject.center_correct (s : Subject) :
+    s.center = match s with
+      | .monomial _ => 0
+      | .ellipticCurve _ .arithmetic => 1
+      | .ellipticCurve _ .unitary => 1 / 2 := by
+  cases s with
+  | monomial => rfl
+  | ellipticCurve e n => cases n <;> rfl
+
 end VerifiedLcalc.Artifacts

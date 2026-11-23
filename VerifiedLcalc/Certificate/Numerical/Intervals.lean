@@ -6,6 +6,9 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.Enclosures
+public import Mathlib.Order.Interval.Set.Defs
+public import Mathlib.Data.Rat.Cast.Order
+public import Mathlib.Basic.Real.Basic
 
 /-! Primitive exact enclosures stored by certificate payloads. -/
 
@@ -56,5 +59,10 @@ namespace VerifiedLcalc.Numerics
 
 /-- Exact rational interval, represented by its lower and upper endpoints. -/
 abbrev RealInterval := Rat × Rat
+
+/-- A real value lies inside a rational interval exactly when it belongs to
+the corresponding closed interval after casting its endpoints. -/
+def RealInterval.Contains (i : RealInterval) (x : ℝ) : Prop :=
+  x ∈ Set.Icc (i.1 : ℝ) (i.2 : ℝ)
 
 end VerifiedLcalc.Numerics

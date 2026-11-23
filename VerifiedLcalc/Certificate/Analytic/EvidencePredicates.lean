@@ -5,8 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Analytic.Enclosures
-public import VerifiedLcalc.Certificate.Numerical.RankData
+public import VerifiedLcalc.Certificate.Artifacts.Primitives
 public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 public import Mathlib.Analysis.Complex.Basic
 
@@ -43,5 +42,13 @@ def SmallDerivatives (f : ℂ → ℂ) (center : ℂ) (n : Nat) (eps : Rat) : Pr
 def ExactVanishingHypothesis (f : ℂ → ℂ) (center : ℂ) (n : Nat) (eps : Rat) : Prop :=
   ∀ k < n, (|(iteratedDeriv k f center).re| ≤ (eps : ℝ) ∧
     |(iteratedDeriv k f center).im| ≤ (eps : ℝ)) → iteratedDeriv k f center = 0
+
+/-- Every nonzero derivative in the prefix has a coordinate separated from zero
+by the proposed positive gap. This is an explicit hypothesis, not a consequence
+of working precision. -/
+def NonzeroDerivativeGap (f : ℂ → ℂ) (center : ℂ) (n : Nat) (gap : Rat) : Prop :=
+  ∀ k < n, iteratedDeriv k f center ≠ 0 →
+    (gap : ℝ) ≤ |(iteratedDeriv k f center).re| ∨
+      (gap : ℝ) ≤ |(iteratedDeriv k f center).im|
 
 end VerifiedLcalc.NumericalRanks

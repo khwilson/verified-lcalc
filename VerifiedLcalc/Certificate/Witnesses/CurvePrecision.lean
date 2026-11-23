@@ -7,7 +7,8 @@ module
 
 public import VerifiedLcalc.Certificate.Witnesses.CurvePrecisionClaim
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
-public import VerifiedLcalc.NumericalRankSeparation
+public import VerifiedLcalc.Certificate.Analytic.EvidencePredicates
+public import VerifiedLcalc.Certificate.Numerical.Precision
 
 /-! Explicit opt-in hypotheses for one curve-specific precision claim. -/
 
