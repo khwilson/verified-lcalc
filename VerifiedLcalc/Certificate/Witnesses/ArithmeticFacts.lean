@@ -9,6 +9,7 @@ public import VerifiedLcalc.Certificate.LocalReductionSpecs
 public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Tamagawa.Product
 public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Curve
+public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReductionSpec
 
 /-! # Checked arithmetic fact structures -/
 
@@ -89,8 +90,7 @@ structure ArithmeticFacts (curve : WeierstrassCurve ℤ)
   localData : Option { d : WildData // d.Valid curve } := none
   /-- Whether the curve has potential good reduction at every rational prime. -/
   potentialGoodReduction : Option { b : Bool //
-    (∀ p : Nat.Primes, letI : Fact (p : ℕ).Prime := ⟨p.property⟩
-      ((curve.baseChange ℚ).baseChange ℚ_[p]).HasPotentialGoodReduction ℤ_[p]) ↔ b = true } := none
+    HasEverywherePotentialGoodReduction (curve.baseChange ℚ) ↔ b = true } := none
   /-- The supplied prime-indexed coefficients of the actual rational L-function. -/
   primeCoefficients : Option { rows : List (ℕ × ℤ) //
     ∀ (p : ℕ) (a : ℤ), (p, a) ∈ rows → (curve.baseChange ℚ).LFunction p = a } := none

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.EllipticCurve.Tate.ArithmeticSpecs
@@ -6,6 +11,8 @@ public import VerifiedLcalc.EllipticCurve.BadPrime
 public import VerifiedLcalc.EllipticCurve.Coefficients
 public import Mathlib.NumberTheory.LegendreSymbol.Basic
 
+/-! # Correctness of tame local arithmetic -/
+
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
 open NumberField IsDedekindDomain
@@ -13,10 +20,11 @@ open NumberField IsDedekindDomain
 theorem potentiallyMultiplicative_correct (e : (WeierstrassCurve ℤ)) (p : ℕ)
     (hp : p.Prime) : potentiallyMultiplicative e p = true ↔ NegativeJValuation e p := by
   simp only [potentiallyMultiplicative, Bool.and_eq_true, bne_iff_ne,
-    decide_eq_true_eq, Nat.padicValNat_def, Nat.multiplicity_eq_factorization hp, NegativeJValuation]
+    decide_eq_true_eq, Nat.padicValNat_def,
+    Nat.multiplicity_eq_factorization hp, NegativeJValuation]
 
 theorem tameAdditiveRoot_correct (e : (WeierstrassCurve ℤ)) (p : ℕ)
-    [Fact p.Prime] (hp : 3 < p) : tameAdditiveRoot e p = tameAdditiveRootSpec e p := by
+    [Fact p.Prime] (_hp : 3 < p) : tameAdditiveRoot e p = tameAdditiveRootSpec e p := by
   have hpot := potentiallyMultiplicative_correct e p (Fact.out : p.Prime)
   simp only [tameAdditiveRoot, dite_eq_left (Fact.out : p.Prime), tameAdditiveRootSpec,
     Nat.padicValNat_def, Nat.multiplicity_eq_factorization (Fact.out : p.Prime)]
@@ -53,7 +61,7 @@ theorem localRoot_correct (e : (WeierstrassCurve ℤ)) (p : ℕ) [Fact p.Prime]
       cases h' : goodReduction e p
       · rfl
       · exact False.elim (((goodReduction_correct e p).mp h') hd)
-    rw [if_neg (fun hΔ => hΔ hd), if_pos hc]
+    rw [ite_eq_right (fun hΔ => hΔ hd), ite_eq_left hc]
     rw [singularTrace_correct e p hg, computeFrobeniusTrace_correct]
   | additive =>
     obtain ⟨hd, hc⟩ := (modelReduction_additive_iff e p).mp h
@@ -76,8 +84,8 @@ theorem localConductorRoot?_correct (e : (WeierstrassCurve ℤ)) (p : ℕ)
   have ht : isPrime p = true := (isPrime_correct p).mpr hp
   have hs : modelReduction e p ≠ .additive ∨ 3 < p := by
     cases hr : modelReduction e p with
-    | good => simp [hr]
-    | multiplicative => simp [hr]
+    | good => simp
+    | multiplicative => simp
     | additive =>
       right
       by_contra hn
@@ -97,6 +105,7 @@ theorem tameAtWild_correct (e : (WeierstrassCurve ℤ)) :
 /-- Kernel-evaluable versions of the mathematical finite products. -/
 noncomputable def tameLevelFast (e : (WeierstrassCurve ℤ)) : ℕ :=
   ∏ p ∈ (e.Δ).natAbs.primeFactors, p ^ localExponent e p
+/-- Kernel-evaluable product of the executable local root signs. -/
 noncomputable def tameSignFast (e : (WeierstrassCurve ℤ)) : Int :=
   -(∏ p ∈ (e.Δ).natAbs.primeFactors, localRoot e p)
 
