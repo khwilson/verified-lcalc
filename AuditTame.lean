@@ -1,6 +1,7 @@
-import VerifiedLcalc.Certification.TameCertification
-import VerifiedLcalc.Certification.TameNegativeSign
+import VerifiedLcalc.Verification.TameCertification
+import VerifiedLcalc.Verification.TameNegativeSign
 open VerifiedLcalc.EllipticCurve VerifiedLcalc.Modularity VerifiedLcalc.Certification
+set_option linter.hashCommand false
 set_option pp.fullNames true
 /-- info: 'VerifiedLcalc.EllipticCurve.tameAdditiveRoot_correct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in

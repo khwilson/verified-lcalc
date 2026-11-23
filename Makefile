@@ -22,7 +22,7 @@ test-certificates: certificates
 	lake -f lakefile.certificates.lean env lean tests/CertifyECData.lean
 	lake -f lakefile.certificates.lean env lean tests/CertifyECPoints.lean
 	lake -f lakefile.certificates.lean env lean tests/CertifyECInvariants.lean
-	lake -f lakefile.certificates.lean build VerifiedLcalcTests VerifiedLcalc.Certification.Precision VerifiedLcalc.UpstreamCandidates.TauCeti.PointCount
+	lake -f lakefile.certificates.lean build VerifiedLcalcTests VerifiedLcalc.Verification.Precision VerifiedLcalc.UpstreamCandidates.TauCeti.PointCount
 	lake -f lakefile.certificates.lean env lean tests/CurveHypotheses.lean
 	lake -f lakefile.certificates.lean env lean tests/FinitePointCount.lean
 	lake -f lakefile.certificates.lean env lean tests/UpstreamCandidates.lean

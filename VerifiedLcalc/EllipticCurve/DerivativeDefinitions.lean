@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certificates.NumericalData
+public import VerifiedLcalc.Certificate.Numerical.Outputs
 public import VerifiedLcalc.EllipticCurve.CentralDefinitions
 public import VerifiedLcalc.Numerics.RealIntervalCore
 

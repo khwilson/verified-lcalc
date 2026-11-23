@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.ArtifactData
-public import VerifiedLcalc.Certificates.ArtifactContracts
+public import VerifiedLcalc.Certificate.Artifacts.Contracts
 
 /-! A checked artifact paired with its pure mathematical contract. -/
 

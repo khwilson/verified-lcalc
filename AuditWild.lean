@@ -1,5 +1,7 @@
 import VerifiedLcalcTests.Arithmetic.WildExamples
-import VerifiedLcalc.Certification.WildCertification
+import VerifiedLcalc.Verification.WildCertification
+
+set_option linter.hashCommand false
 
 /-- info: 'VerifiedLcalc.EllipticCurve.tateWitness?_sound' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in

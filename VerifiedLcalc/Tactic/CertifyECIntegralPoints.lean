@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certification.IntegralPointCount
+public import VerifiedLcalc.Verification.IntegralPointCount
 public import VerifiedLcalc.Tactic.CertifyECCommon
 
 /-! Verify complete integral counts from checked fibers and supplied abscissa support. -/

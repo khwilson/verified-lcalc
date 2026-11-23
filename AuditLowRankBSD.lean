@@ -1,4 +1,4 @@
-import VerifiedLcalc.Certification.LowRankBSD
+import VerifiedLcalc.Verification.LowRankBSD
 import VerifiedLcalc.EllipticCurve.AlgebraicRank
 
 set_option linter.hashCommand false

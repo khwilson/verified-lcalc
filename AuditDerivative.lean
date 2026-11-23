@@ -1,4 +1,6 @@
-import VerifiedLcalc.Certification.DerivativeCertification
+import VerifiedLcalc.Verification.DerivativeCertification
+
+set_option linter.hashCommand false
 
 /-- info: 'VerifiedLcalc.Numerics.intervalMul_sound' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in

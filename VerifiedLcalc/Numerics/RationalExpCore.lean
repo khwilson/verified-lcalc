@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certificates.Enclosures
+public import VerifiedLcalc.Certificate.Numerical.Intervals
 public import VerifiedLcalc.Upstream.LedvinkaExponentialCore
 
 /-! # Exact rational enclosures for the exponential -/

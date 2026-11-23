@@ -1,6 +1,6 @@
 module
 
-public import VerifiedLcalc.Certificates.NumericalData
+public import VerifiedLcalc.Certificate.Numerical.Outputs
 public import VerifiedLcalc.Numerics.RationalExpCore
 
 /-! Exact formula definitions used by central-value payload specifications.

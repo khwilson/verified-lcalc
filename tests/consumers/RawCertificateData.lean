@@ -1,7 +1,7 @@
-import VerifiedLcalc.Certificates.Enclosures
-import VerifiedLcalc.Certificates.PrecisionPolicy
-import VerifiedLcalc.Certificates.Transcripts
-import VerifiedLcalc.Certificates.NumericalData
+import VerifiedLcalc.Certificate.Numerical.Intervals
+import VerifiedLcalc.Certificate.Numerical.Precision
+import VerifiedLcalc.Certificate.Support.Transcripts
+import VerifiedLcalc.Certificate.Numerical.Outputs
 import Lean
 
 /-! Import-only check that raw payload records stay independent of formulas and evaluators. -/
@@ -15,7 +15,7 @@ run_cmd do
     `VerifiedLcalc.EllipticCurve.DerivativeDefinitions,
     `VerifiedLcalc.EllipticCurve.CentralCore,
     `VerifiedLcalc.EllipticCurve.DerivativeCore,
-    `VerifiedLcalc.Certification.CentralEvaluator,
-    `VerifiedLcalc.Certification.DerivativeEvaluator] do
+    `VerifiedLcalc.Verification.CentralEvaluator,
+    `VerifiedLcalc.Verification.DerivativeEvaluator] do
     if imported.contains implementation then
       throwError m!"raw certificate data imported implementation module {implementation}"

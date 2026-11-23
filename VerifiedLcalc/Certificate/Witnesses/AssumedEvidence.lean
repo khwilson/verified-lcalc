@@ -5,9 +5,9 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificates.Artifacts
-public import VerifiedLcalc.Certificates.NumericalRanks
-public import VerifiedLcalc.Certificates.AnalyticEnclosures
+public import VerifiedLcalc.Certificate.Artifacts.Data
+public import VerifiedLcalc.Certificate.Numerical.RankData
+public import VerifiedLcalc.Certificate.Analytic.Enclosures
 public import VerifiedLcalc.EllipticCurve.Modularity.Canonical
 public import Mathlib.Analysis.Complex.CauchyIntegral
 

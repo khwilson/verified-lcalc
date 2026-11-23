@@ -188,7 +188,7 @@ to the relevant `IsTateTerminal` and residue-polynomial hypotheses.
 ## TC-11 — explicit zero-y Vélu quotient equation
 
 Status: proved locally in
-[`DegreeTwoIsogenyRaw.lean`](../VerifiedLcalc/Certification/DegreeTwoIsogenyRaw.lean).
+[`DegreeTwoIsogenyRaw.lean`](../VerifiedLcalc/Verification/DegreeTwoIsogenyRaw.lean).
 The local `zeroYVelu_eq` calculation identifies TauCeti's general affine
 `veluCurve` with the explicit equation below when the rational source is
 nonsingular, `a₁ = a₃ = 0`, and `r` is a root of its cubic:
@@ -212,7 +212,7 @@ of target variables.
 ## TC-12 — minimum degree from distinct j-invariants
 
 Status: proved locally in
-[`DegreeTwoIsogeny.lean`](../VerifiedLcalc/Certification/DegreeTwoIsogeny.lean).
+[`DegreeTwoIsogeny.lean`](../VerifiedLcalc/Verification/DegreeTwoIsogeny.lean).
 For elliptic Weierstrass curves over `ℚ` with unequal j-invariants, every
 rational isogeny between their affine models has degree at least two: degree
 one implies variable-change isomorphism, which preserves j. Combined with

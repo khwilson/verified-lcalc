@@ -1,7 +1,7 @@
 module
 
 public import VerifiedLcalc.EllipticCurve.Tate.TameCore
-public import VerifiedLcalc.Certificates.Transcripts
+public import VerifiedLcalc.Certificate.Support.Transcripts
 
 /-! # Integer witnesses for additive Tate reduction at the wild primes -/
 

@@ -7,7 +7,7 @@ module
 
 public import VerifiedLcalc.NumericalRank
 public import VerifiedLcalc.CertificateSoundness
-public import VerifiedLcalc.Certificates.AnalyticEvidence
+public import VerifiedLcalc.Certificate.Witnesses.AnalyticEvidence
 public import Mathlib.Tactic.Linarith
 
 /-! Soundness theorems for numerical derivative observations. -/
@@ -16,6 +16,7 @@ public import Mathlib.Tactic.Linarith
 
 namespace VerifiedLcalc
 
+/-- Every point in a box passing the cutoff test has both components bounded in absolute value. -/
 theorem Box.withinCutoff_sound {b : Box} {eps : Rat} {z : ℂ}
     (h : b.withinCutoff eps = true) (hz : b.Contains z) :
     |z.re| ≤ (eps : ℝ) ∧ |z.im| ≤ (eps : ℝ) := by

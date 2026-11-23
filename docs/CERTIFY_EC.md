@@ -119,15 +119,29 @@ first field to the current command.
 Each successful command exports `Name.certificate` indexed by its integral
 Weierstrass equation. Its input and output structures are declared in
 [`Certificate/Witnesses/`](../VerifiedLcalc/Certificate/Witnesses).
-Import `VerifiedLcalc.Certificate.Witnesses` to use the structures.
-The [module map](CERTIFICATE_CONTRACT_LAYOUT.md) lists their source files.
-These modules use Mathlib and TauCeti objects where
-available, with local definitions limited to specific certificate encodings
-that upstream does not provide. Proof-only dependencies remain ordinary imports,
-and public re-exports are reserved for declarations in signatures and the
-intentional umbrella API. The compiler-backed import boundary is checked by
-[`tests/consumers/CertificateContracts.lean`](../tests/consumers/CertificateContracts.lean).
-Its `equationFacts` and `rational` fields hold exact invariants. The `algebraic`
+Choose the import for the value you are constructing or reading.
+
+```lean
+-- Construct an input record.
+import VerifiedLcalc.Certificate.Witnesses.EllipticWitness
+```
+
+For the checked output type, import
+`VerifiedLcalc.Certificate.Witnesses.EllipticCertificate`. For just the
+Mordell–Weil rank bounds, import `VerifiedLcalc.Certificate.Witnesses.AlgebraicRank`.
+The `VerifiedLcalc.Certificate.Witnesses` umbrella makes all ordinary structures available.
+The raw input imports Mathlib and sibling witness structures. For example,
+its rank bounds use Mathlib’s `Module.finrank` on the rational point group,
+and its special-value claim stores the reported value and error as rationals.
+The [import regression](../tests/consumers/RawWitnessImports.lean) checks
+the raw input’s dependency boundary in Lean.
+
+The checked output includes upstream types such as TauCeti’s regulator and
+project types such as the modular realization used in conditional L-value
+statements. The [module map](CERTIFICATE_CONTRACT_LAYOUT.md) lists the
+structures by subject.
+
+The checked certificate’s `equationFacts` and `rational` fields hold exact invariants. The `algebraic`
 field holds membership of supplied points, complete
 integral y-fibers above specified x-coordinates, the complete integral-point
 set when exhaustive abscissa support is supplied, individual point orders, an

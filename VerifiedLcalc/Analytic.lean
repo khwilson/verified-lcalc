@@ -6,8 +6,8 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Scan
-public import VerifiedLcalc.Certificates.AnalyticRank
-public import VerifiedLcalc.Certificates.AnalyticEnclosures
+public import VerifiedLcalc.Certificate.Witnesses.AnalyticRank
+public import VerifiedLcalc.Certificate.Analytic.Enclosures
 public import Mathlib.Analysis.Analytic.Order
 public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Data.Rat.Cast.Order
@@ -43,6 +43,7 @@ def computeRank (f : ℂ → ℂ) (center : ℂ) (bs : List Box)
   | some n => some ⟨n, scan_correct bs n h,
       scan_analyticOrderAt hf hencl h⟩
 
+/-- A successful scan of derivative enclosures returns the analytic order at the center. -/
 theorem computeRank_correct {f : ℂ → ℂ} {center : ℂ} {bs : List Box}
     {hf : AnalyticAt ℂ f center}
     {hencl : Encloses bs (fun k => iteratedDeriv k f center)}
