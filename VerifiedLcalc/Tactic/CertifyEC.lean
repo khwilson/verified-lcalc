@@ -5,7 +5,6 @@ public import VerifiedLcalc.Tactic.CertifyECData
 public import VerifiedLcalc.Tactic.CertifyECPoints
 public import VerifiedLcalc.Tactic.CertifyECInvariants
 public import VerifiedLcalc.Tactic.CertifyECIsogeny
-public import VerifiedLcalc.Tactic.CertifyECGalois
 public import VerifiedLcalc.Tactic.CertifyECRecord
 public import VerifiedLcalc.Tactic.CertifyECCatalogueRank
 public import VerifiedLcalc.Tactic.CertifyECMordellWeil
@@ -257,8 +256,6 @@ def certifyFields (name : Name) (input : TSyntax `term)
   certifyStoredInvariants base (← certifyProofAttachment base proofs)
   certifyIsogenyEdge base isogeny
   certifyIsogenyClass base
-  certifyNonmaxPrimes base
-  certifyAdelicGenerators base
   if let some result := central then certifyAnalytic base true result
   if let some result := derivative then certifyAnalytic base false result
   certifyRecord base
@@ -315,11 +312,19 @@ def certifyJson (name : Name) (text : String)
           if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
               (CurveDataJson.optionalData j "adelic_gens").isSome then ["prime"] else []
       let checkedAbcQuality := (← getEnv).contains (base ++ `abc_quality)
+      let checkedCM := (← getEnv).contains (base ++ `cm)
+      let checkedTwistEquation := (← getEnv).contains (base ++ `min_quad_twist_ainvs)
+      let checkedTwistDiscriminant := (← getEnv).contains (base ++ `min_quad_twist_disc)
+      let checkedSzpiro := (← getEnv).contains (base ++ `szpiro_ratio_fact)
       let checkedSpecialValue := (← getEnv).contains (base ++ `special_value_valid)
       let skipped := object.toList.filterMap fun (key, _) =>
         if known.contains key || (checkedRank && rankKeys.contains key) ||
             (checkedCatalogueRank && key == "analytic_rank") ||
             (checkedAbcQuality && ["abc_quality", "abc_quality_evidence"].contains key) ||
+            (checkedCM && key == "cm") ||
+            (checkedTwistEquation && key == "min_quad_twist_ainvs") ||
+            (checkedTwistDiscriminant && key == "min_quad_twist_disc") ||
+            (checkedSzpiro && ["szpiro_ratio", "szpiro_ratio_evidence"].contains key) ||
             (checkedSpecialValue && ["special_value", "special_value_evidence"].contains key)
           then none
         else some key

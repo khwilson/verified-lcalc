@@ -18,18 +18,9 @@ namespace VerifiedLcalc.CertifyEC
 
 open Lean Elab Command
 
-private def suppliedProof (base field : Name) : CommandElabM (Option (TSyntax `term)) := do
-  let name := base ++ `integral_proofs
-  unless (← getEnv).contains name do return none
-  let attachment := rootIdent name
-  let projection := rootIdent (``IntegralCurveProofs ++ field)
-  let selected ← `($projection $attachment)
-  if ← hasOptionalProof selected field then
-    return some (← `(($selected).get (by rfl)))
-  return none
-
 /-- Check the exceptional prime list and radical against complete non-CM local image evidence. -/
-def certifyNonmaxPrimes (base : Name) : CommandElabM Unit := do
+private def certifyNonmaxPrimes (base : Name) (attachment : Option Ident) :
+    CommandElabM Unit := do
   let primes ← bindStored base `nonmaxPrimes `nonmax_primes (← `(List ℕ))
   let radical ← bindStored base `nonmaxRadical `nonmax_rad (← `(ℕ))
   if primes.isNone && radical.isNone then return
@@ -39,7 +30,7 @@ def certifyNonmaxPrimes (base : Name) : CommandElabM Unit := do
       (← `(by decide +kernel))
   if let some n := radical then
     checked (base ++ `nonmax_rad_positive) (← `(0 < $n)) (← `(by decide +kernel))
-  let some proof ← suppliedProof base `nonmaxSupport
+  let some proof ← attachedFact attachment `nonmaxSupport
     | logInfo m!"Unverified {base} exceptional-prime claims: supply complete non-CM image evidence"
   let curve := rootIdent (base ++ `curve)
   let support := rootIdent (base ++ `nonmax_prime_support)
@@ -54,7 +45,8 @@ def certifyNonmaxPrimes (base : Name) : CommandElabM Unit := do
       (← `(by first | rfl | decide +kernel))
 
 /-- Check the row encoding and compare it with the full finite-level Galois image. -/
-def certifyAdelicGenerators (base : Name) : CommandElabM Unit := do
+private def certifyAdelicGenerators (base : Name) (attachment : Option Ident) :
+    CommandElabM Unit := do
   let some report ← bindStored base `adelicGenerators `adelic_gens (← `(AdelicGeneratorsClaim))
     | return
   checked (base ++ `adelic_gens_shape)
@@ -63,7 +55,7 @@ def certifyAdelicGenerators (base : Name) : CommandElabM Unit := do
         (a < ($report).modulus ∧ b < ($report).modulus ∧
           c < ($report).modulus ∧ d < ($report).modulus)) = true))
     (← `(by decide +kernel))
-  let some proof ← suppliedProof base `adelicGenerators
+  let some proof ← attachedFact attachment `adelicGenerators
     | logInfo m!"Unverified {base} adelic_gens: supply the complete finite-level image evidence"
   let curve := rootIdent (base ++ `curve)
   let fact := rootIdent (base ++ `adelic_generator_fact)
@@ -73,5 +65,10 @@ def certifyAdelicGenerators (base : Name) : CommandElabM Unit := do
   checked (base ++ `adelic_gens)
     (← `((($fact).modulus : ℕ) = ($report).modulus ∧ ($fact).matrixRows = ($report).rows))
     (← `(by constructor <;> first | rfl | decide +kernel))
+
+/-- Check the Galois report fields against any matching evidence in `with_proofs`. -/
+def certifyGaloisFacts (base : Name) (attachment : Option Ident) : CommandElabM Unit := do
+  certifyNonmaxPrimes base attachment
+  certifyAdelicGenerators base attachment
 
 end VerifiedLcalc.CertifyEC

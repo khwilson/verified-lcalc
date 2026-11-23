@@ -27,6 +27,11 @@ open VerifiedLcalc Lean Elab Command
 #check FiniteGaloisImageFact
 #check EllipticCertificate.nonmaxPrimes
 #check EllipticCertificate.adelicGenerators
+#check EllipticCertificate.complexMultiplication
+#check EllipticCertificate.minimumQuadraticTwist
+#check EllipticCertificate.modifiedSzpiroRatio
+#check ModifiedSzpiroRatioEvidence
+#check MinimumQuadraticTwistEvidence.uniqueMinimum
 #check Box
 #check PrecisionPolicy
 #check EllipticCurve.MinimalityWitness
@@ -104,6 +109,7 @@ run_cmd do
     `VerifiedLcalc.Verification.IsogenyClass,
     `VerifiedLcalc.Certificate.Support.GaloisImage,
     `VerifiedLcalc.Tactic.CertifyECGalois,
+    `VerifiedLcalc.Verification.ModifiedSzpiroRatio,
     `VerifiedLcalc.Analytic,
     `VerifiedLcalc.Verification.TorsionBoundFacts,
     `VerifiedLcalc.EllipticCurve.TorsionBound,

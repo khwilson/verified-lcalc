@@ -15,15 +15,6 @@ public meta section
 namespace VerifiedLcalc.CertifyEC
 open Lean Elab Command Meta
 
-private def attachedFact (attachment : Option Ident) (field : Name) :
-    CommandElabM (Option (TSyntax `term)) := do
-  let some attachment := attachment | return none
-  let projection := mkIdent field
-  let selected ← `(($attachment).$projection)
-  if ← hasOptionalProof selected field then
-    some <$> `(($selected).get (by rfl))
-  else pure none
-
 private def validateEnclosureRadius (base label : Name)
     (report : Option (TSyntax `term)) : CommandElabM Unit := do
   if let some raw := report then

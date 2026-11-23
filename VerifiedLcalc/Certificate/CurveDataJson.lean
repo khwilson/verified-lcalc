@@ -35,6 +35,11 @@ def ainvs (j : Json) : Except String (List Int) := do
   unless a.size == 5 do throw "Expected five Weierstrass coefficients"
   a.toList.mapM integer
 
+/-- Assemble an integral Weierstrass equation from its five coefficients in order. -/
+def equationOfAinvs (a : List Int) : Except String (WeierstrassCurve ℤ) := do
+  let [a₁, a₂, a₃, a₄, a₆] := a | throw "Expected five coefficients"
+  return ⟨a₁, a₂, a₃, a₄, a₆⟩
+
 /-- Use top-level or rank-witness `subject.ainvs`, rejecting conflicting models. -/
 def equation (j : Json) : Except String (WeierstrassCurve ℤ) := do
   let nested := optional j "analytic_witness"
@@ -45,8 +50,7 @@ def equation (j : Json) : Except String (WeierstrassCurve ℤ) := do
   let models ← (candidates.filterMap id).mapM ainvs
   let some a := models.head? | throw "Expected ainvs or subject.ainvs"
   unless models.all (· == a) do throw "Conflicting integral equations"
-  let [a₁, a₂, a₃, a₄, a₆] := a | throw "Expected five coefficients"
-  return ⟨a₁, a₂, a₃, a₄, a₆⟩
+  equationOfAinvs a
 
 /-- Keep only a supported object's required fields; extra metadata is not a claim. -/
 def project? (j : Json) (keys : List String) : Option Json := do
@@ -399,6 +403,11 @@ def decode (j : Json) : Except String EllipticWitness := do
   let discriminant ← optionalValue j "discriminant" integer
   let jInvariant ← optionalValue j "jinv" rationalValue
   let abcQuality ← abcQualityClaim j
+  let complexMultiplication ← optionalValue j "cm" integer
+  let minimumTwistEquation ← optionalValue j "min_quad_twist_ainvs" fun value => do
+    equationOfAinvs (← ainvs value)
+  let minimumTwistDiscriminant ← optionalValue j "min_quad_twist_disc" integer
+  let modifiedSzpiroRatio ← decimalEnclosureClaim j "szpiro_ratio"
   let regulator ← regulatorClaim j
   let realPeriod ← decimalEnclosureClaim j "real_period"
   let tamagawaProduct ← optionalValue j "tamagawa_product" nonnegativeInteger
@@ -451,6 +460,10 @@ def decode (j : Json) : Except String EllipticWitness := do
     discriminant
     jInvariant
     abcQuality
+    complexMultiplication
+    minimumTwistEquation
+    minimumTwistDiscriminant
+    modifiedSzpiroRatio
     regulator
     realPeriod
     tamagawaProduct

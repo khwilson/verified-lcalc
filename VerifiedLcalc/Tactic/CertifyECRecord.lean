@@ -231,6 +231,9 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   else `(none)
   let nonmaxPrimes ← optionalFactTerm base `nonmax_prime_support
   let adelicGenerators ← optionalFactTerm base `adelic_generator_fact
+  let cm ← optionalFactTerm base `cm_fact
+  let twist ← optionalFactTerm base `minimum_quadratic_twist_evidence
+  let szpiroRatio ← optionalFactTerm base `szpiro_ratio_fact
   let realPeriod ← optionalFactTerm base `real_period_fact
   let tamagawaProduct ← optionalFactTerm base `tamagawa_product_fact
   let analyticSha ← optionalFactTerm base `analytic_sha_fact
@@ -247,6 +250,9 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     isogenyClass := $isogenyClass
     nonmaxPrimes := $nonmaxPrimes
     adelicGenerators := $adelicGenerators
+    complexMultiplication := $cm
+    minimumQuadraticTwist := $twist
+    modifiedSzpiroRatio := $szpiroRatio
     realPeriod := $realPeriod
     tamagawaProduct := $tamagawaProduct
     analyticSha := $analyticSha
