@@ -43,6 +43,10 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   adelicGenerators :
     letI := Classical.decEq (AlgebraicClosure ℚ)
     Option (FiniteGaloisImageFact curve) := none
+  /-- Exact simultaneous adelic image evidence for the submitted numeric fields or partial label. -/
+  adelicImage :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (AdelicImageFact curve) := none
   /-- Exact residual image evidence for the submitted prime row. -/
   modPrimeImage :
     letI := Classical.decEq (AlgebraicClosure ℚ)
@@ -103,6 +107,10 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   adelicGenerators :
     letI := Classical.decEq (AlgebraicClosure ℚ)
     Option (FiniteGaloisImageFact curve) := none
+  /-- The checked simultaneous adelic image, its proved invariants, and any partial label. -/
+  adelicImage :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (AdelicImageCertificate curve) := none
   /-- The checked exact residual image for the submitted prime row. -/
   modPrimeImage :
     letI := Classical.decEq (AlgebraicClosure ℚ)

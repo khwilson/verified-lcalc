@@ -6,6 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.Invariants
+public import VerifiedLcalc.Certificate.AdelicImageSpecs
 public import VerifiedLcalc.Certificate.LocalReductionSpecs
 public import VerifiedLcalc.Certificate.ResidualImageLabels
 public import VerifiedLcalc.EllipticCurve.Tate.ArithmeticSpecs
@@ -34,6 +35,9 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Cu
   `ModPrimeImageListFact` can also carry exhaustive non-CM `ModPrimeImageCoverage`.
 * `NonmaxPrimeSupportFact` proves complete non-CM exceptional support for the integral
   Tate-module images and determines the radical as the product of those primes.
+* `AdelicImageFact` identifies the simultaneous integral Tate-module image and supports
+  checked level, index, and coarse modular-curve genus. `AdelicImageCertificate` also records
+  a verified partial label when the producer leaves the class suffix unspecified.
 * `AdelicGaloisImageClaim`, `PrimeGaloisImageClaim`, `SerreInvariantClaim` and
   `GaloisImageClaims` hold producer data whose interpretation needs further comparison theorems.
 -/
@@ -238,6 +242,61 @@ structure PadicGaloisImageFact (curve : WeierstrassCurve ℤ)
     ∀ g, g ∈ image ↔ ∃ σ : AlgebraicClosure ℚ ≃ₐ[ℚ] AlgebraicClosure ℚ, ∀ t,
       basis.equivFun ((curve.baseChange ℚ).tateModuleGaloisRepresentation (prime : ℕ) σ t) =
         (g : Matrix (Fin 2) (Fin 2) ℤ_[(prime : ℕ)]) *ᵥ basis.equivFun t
+
+/-- A genus certificate on the actual coarse modular curve associated to an adelic image. -/
+structure AdelicGenusFact (H : Subgroup AdelicGL) where
+  /-- A modulus defining the open subgroup. This modulus need not be minimal. -/
+  modulus : ℕ+
+  /-- The subgroup is the full inverse image of its reduction at this modulus. -/
+  kernel : (adelicReduction modulus).ker ≤ H
+  /-- The integral pullback has finite index in the determinant-one group. -/
+  finiteIndex : (adelicCongruenceSubgroup H).FiniteIndex
+  /-- The compactified effective quotient has finite CW type. -/
+  finiteCW : TauCeti.FiniteCWType (adelicProjectiveSubgroup H).CompactifiedQuotient
+  /-- The genus of this compactified quotient. -/
+  genus : ℕ
+  /-- The quotient's Euler characteristic gives the genus without truncation. -/
+  correct :
+    letI := finiteCW
+    TauCeti.eulerChar (adelicProjectiveSubgroup H).CompactifiedQuotient = 2 - 2 * (genus : ℤ)
+
+/-- The exact simultaneous integral Tate-module image and its optional invariants. -/
+structure AdelicImageFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)] where
+  /-- The image inside the product of the integral local matrix groups. -/
+  image : Subgroup AdelicGL
+  /-- One family of ordered Tate bases. A single Galois automorphism acts on every component
+  of each image element, so this condition preserves entanglement between primes. -/
+  correct :
+    ∃ basis : (p : Nat.Primes) →
+        Module.Basis (Fin 2) (AdelicLocalRing p)
+          (TauCeti.TateModule p.val
+            (((curve.baseChange ℚ).baseChange (AlgebraicClosure ℚ)).toAffine.Point)),
+      ∀ g : AdelicGL, g ∈ image ↔
+        ∃ σ : AlgebraicClosure ℚ ≃ₐ[ℚ] AlgebraicClosure ℚ, ∀ (p : Nat.Primes) t,
+          letI : Fact p.val.Prime := ⟨p.property⟩
+          (basis p).equivFun ((curve.baseChange ℚ).tateModuleGaloisRepresentation p.val σ t) =
+            (g p : Matrix (Fin 2) (Fin 2) (AdelicLocalRing p)) *ᵥ (basis p).equivFun t
+  /-- The least positive modulus whose full adelic reduction kernel lies in the image. -/
+  level : Option { N : ℕ+ // IsLeast { M | (adelicReduction M).ker ≤ image } N } := none
+  /-- The finite index of this subgroup in the full integral adelic matrix group. -/
+  index : Option { i : ℕ+ // image.index = (i : ℕ) } := none
+  /-- The genus of the actual compactified effective modular quotient for this image. -/
+  genus : Option (AdelicGenusFact image) := none
+
+/-- The proved adelic invariants and optional formatting proof for a submitted partial label. -/
+structure AdelicImageCertificate (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)] where
+  /-- Simultaneous adelic image with the supplied invariant proofs. -/
+  facts : AdelicImageFact curve
+  /-- A matching incomplete producer label, with its class suffix unspecified. -/
+  partialLabel : Option { label : String //
+    (do
+      let level ← facts.level
+      let index ← facts.index
+      let genus ← facts.genus
+      pure (formatPartialAdelicImage (level.val : ℕ) (index.val : ℕ) genus.genus)) =
+      some label } := none
 
 /-- Claimed adelic row, whose database prime sentinel is zero. The generator modulus is
 explicit even when the producer's adelic level has yet to be justified. -/

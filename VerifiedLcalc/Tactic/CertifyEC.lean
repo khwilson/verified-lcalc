@@ -43,7 +43,9 @@ The period area, Faltings heights and class-relative area ratio use
 `IntegralCurveProofs.periodGeometry` supplied with `with_proofs`.
 The Galois fields `nonmax_primes` and `nonmax_rad` use complete non-CM
 `IntegralCurveProofs.nonmaxSupport`. The field `adelic_gens` uses
-`IntegralCurveProofs.adelicGenerators` at the reported finite modulus.
+`IntegralCurveProofs.adelicGenerators` at the reported finite modulus. The fields
+`adelic_level`, `adelic_index`, `adelic_genus` and partial `adelic_image` labels use the
+simultaneous all-prime image in `IntegralCurveProofs.adelicImage`.
 The residual fields `modell_image` and `modell_images` use the corresponding
 `modPrimeImage` and `modPrimeImages` evidence for exact Sutherland conjugacy classes.
 Prerequisite-dependent claims without the required evidence are reported as unverified. See
@@ -322,6 +324,7 @@ def certifyJson (name : Name) (text : String)
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
         "num_int_pts", "class_size", "class_deg", "isogeny_matrix", "isogeny_degrees",
         "nonmax_primes", "nonmax_rad", "adelic_gens", "modell_image", "modell_images",
+        "adelic_level", "adelic_index", "adelic_genus", "adelic_image",
         "lmfdb_number", "iso_nlabel", "lmfdb_iso", "lmfdb_label",
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
         ["torsion_growth", "heights", "heights_evidence", "regulator", "regulator_evidence",
@@ -332,7 +335,8 @@ def certifyJson (name : Name) (text : String)
         algebraicKeys ++ localKeys ++
           if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
               (CurveDataJson.optionalData j "adelic_gens").isSome ||
-              (CurveDataJson.optionalData j "modell_image").isSome then ["prime"] else []
+              (CurveDataJson.optionalData j "modell_image").isSome ||
+              (CurveDataJson.optionalData j "adelic_image").isSome then ["prime"] else []
       let checkedAbcQuality := (← getEnv).contains (base ++ `abc_quality)
       let checkedCM := (← getEnv).contains (base ++ `cm)
       let checkedTwistEquation := (← getEnv).contains (base ++ `min_quad_twist_ainvs)

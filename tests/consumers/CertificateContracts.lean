@@ -39,6 +39,10 @@ open VerifiedLcalc Lean Elab Command
 #check EllipticCertificate.modPrimeImages
 #check EllipticCertificate.nonmaxPrimes
 #check EllipticCertificate.adelicGenerators
+#check AdelicImageFact
+#check AdelicGenusFact
+#check AdelicImageCertificate
+#check EllipticCertificate.adelicImage
 #check EllipticCertificate.complexMultiplication
 #check EllipticCertificate.minimumQuadraticTwist
 #check EllipticCertificate.modifiedSzpiroRatio

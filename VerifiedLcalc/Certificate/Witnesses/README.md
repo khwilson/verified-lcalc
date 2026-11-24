@@ -15,9 +15,9 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `Cnumber` | `curvedata` | Metadata | [`CatalogueMetadata.cremonaNumber`](InputData.lean). Reported catalogue identifier or ordering. |
 | `abc_quality` | `curvedata` | Checked | [`AbcQualityFacts.within_error`](Invariants.lean). The reported rational and its error enclose the curve’s abc quality, using a checked factorization with j distinct from 0 and 1728. |
 | `absD` | `curvedata` | Checked | [`MinimalModelArithmeticFacts.minimalDiscriminantAbs`](FinitePrimes.lean). Absolute discriminant of a model proved globally minimal. |
-| `adelic_genus` | `curvedata` | Report | [`GaloisImageClaims.adelicGenus`](FinitePrimes.lean). Genus reported for the modular curve of the image. |
-| `adelic_index` | `curvedata` | Report | [`GaloisImageClaims.adelicIndex`](FinitePrimes.lean). Reported index of the adelic image. |
-| `adelic_level` | `curvedata` | Report | [`GaloisImageClaims.adelicLevel`](FinitePrimes.lean). Reported level of the adelic image. |
+| `adelic_genus` | `curvedata` | Checked with evidence | [`EllipticWitness.adelicGenus`](EllipticWitness.lean) and [`AdelicGenusFact`](FinitePrimes.lean). Genus of the compactified effective modular quotient. |
+| `adelic_index` | `curvedata` | Checked with evidence | [`EllipticWitness.adelicIndex`](EllipticWitness.lean) and [`AdelicImageFact`](FinitePrimes.lean). Index in the full integral adelic general linear group. |
+| `adelic_level` | `curvedata` | Checked with evidence | [`EllipticWitness.adelicLevel`](EllipticWitness.lean) and [`AdelicImageFact`](FinitePrimes.lean). Least positive modulus with full congruence-kernel containment. |
 | `ainvs` | `curvedata` | Checked | [`EllipticWitness.equation`](EllipticWitness.lean) supplies the five coefficients as a Mathlib Weierstrass curve over ℤ. [`EllipticCertificate.nonsingular`](EllipticCertificate.lean) proves its discriminant is nonzero. All checked fields are indexed by that equation. |
 | `analytic_rank` | `curvedata` | Checked | [`ConditionalAnalyticRank.correct`](Analytic.lean), stored in [`AnalyticFacts.rank`](Analytic.lean). The catalogue value is compared with the order at 1 for each arithmetic modular realization. The curve evaluators currently certify orders 0 and 1 with full evidence. |
 | `bad_primes` | `curvedata` | Checked | [`MinimalModelArithmeticFacts.badPrimes`](FinitePrimes.lean). Complete, duplicate-free list of bad-reduction primes of the globally minimal model. |
@@ -105,7 +105,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | LMFDB field | Table(s) | Status | Witness and scope |
 | --- | --- | --- | --- |
 | `adelic_gens` | `galrep` | Checked | [`EllipticWitness.adelicGenerators`](EllipticWitness.lean) with [`FiniteGaloisImageFact`](FinitePrimes.lean). The matrices generate the entire image on torsion at the reported modulus. |
-| `adelic_image` | `galrep` | Report | [`AdelicGaloisImageClaim.adelicImage`](FinitePrimes.lean). Label for the adelic row (source key 0). |
+| `adelic_image` | `galrep` | Checked with evidence for `N.i.g.?` | [`EllipticWitness.adelicImage`](EllipticWitness.lean) and [`AdelicImageCertificate.partialLabel`](FinitePrimes.lean). Exact level, index and genus with the conjugacy-class suffix unspecified at source prime 0. |
 | `elladic_image` | `galrep` | Report | [`PrimeGaloisImageClaim.padicImage`](FinitePrimes.lean). Reported label. [`PadicGaloisImageFact`](FinitePrimes.lean) specifies the actual Tate-module image in a chosen basis. |
 | `modell_image` | `galrep` | Checked with evidence | [`EllipticWitness.modPrimeImage`](EllipticWitness.lean) and [`ModPrimeImageFact`](FinitePrimes.lean). Identifies the full residual image up to conjugacy at the source row's prime. |
 

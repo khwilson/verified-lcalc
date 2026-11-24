@@ -56,6 +56,14 @@ structure EllipticWitness where
   nonmaxRadical : Option Nat := none
   /-- The matrix generators reported for the adelic image reduced at its stated modulus. -/
   adelicGenerators : Option AdelicGeneratorsClaim := none
+  /-- The reported minimal adelic congruence level. -/
+  adelicLevel : Option Nat := none
+  /-- The reported index in the integral adelic matrix group. -/
+  adelicIndex : Option Nat := none
+  /-- The reported genus of the associated coarse modular curve. -/
+  adelicGenus : Option Nat := none
+  /-- The source prime sentinel and reported adelic label. -/
+  adelicImage : Option (Nat × String) := none
   /-- A reported residual image at its source row's prime. -/
   modPrimeImage : Option (Nat × String) := none
   /-- The reported curve-level residual image labels. -/

@@ -187,6 +187,79 @@ certify_ec EmptyResidual37 from_json_string
 
 end
 
+/-- Independent arithmetic and geometric inputs for the 37.a1 adelic row.
+The exact image argument already identifies the simultaneous Galois action. -/
+class CatalogueAdelic37 (exactImage : outParam (AdelicImageFact emptyListModel)) : Prop where
+  /-- The image contains the full adelic congruence kernel at 74. -/
+  kernel : (adelicReduction 74).ker ≤ exactImage.image
+  /-- Every smaller positive modulus fails the kernel containment test. -/
+  minimal : ∀ N : ℕ+, N < 74 → ∃ g ∈ (adelicReduction N).ker, g ∉ exactImage.image
+  /-- The adelic image has exactly two cosets. -/
+  cosets : Nonempty ((AdelicGL ⧸ exactImage.image) ≃ Fin 2)
+  /-- The coarse modular curve has finite CW type. -/
+  finiteCW : TauCeti.FiniteCWType (adelicProjectiveSubgroup exactImage.image).CompactifiedQuotient
+  /-- The compactified projective quotient has Euler characteristic two. -/
+  euler :
+    letI := finiteCW
+    TauCeti.eulerChar (adelicProjectiveSubgroup exactImage.image).CompactifiedQuotient = 2
+
+/-- Assemble the 37.a1 attachment from the independent kernel, coset and surface premises. -/
+def adelic37Attachment {exactImage : AdelicImageFact emptyListModel}
+    (h : CatalogueAdelic37 exactImage) : IntegralCurveProofs emptyListModel := by
+  have hi : exactImage.image.index = 2 := by
+    obtain ⟨e⟩ := h.cosets
+    simpa [Subgroup.index] using Nat.card_congr e
+  letI : exactImage.image.FiniteIndex := Subgroup.finiteIndex_iff.mpr (by simp [hi])
+  exact { adelicImage := some {
+    exactImage with
+    level := some ⟨74, h.kernel, fun N hN => by
+      by_contra! hlt
+      obtain ⟨g, hg, hnot⟩ := h.minimal N hlt
+      exact hnot (hN hg)⟩
+    index := some ⟨2, hi⟩
+    genus := some {
+      modulus := 74
+      kernel := h.kernel
+      finiteIndex := inferInstanceAs (exactImage.image.comap adelicSL2).FiniteIndex
+      finiteCW := h.finiteCW
+      genus := 0
+      correct := by simpa using h.euler } } }
+
+section
+
+variable {exactImage : AdelicImageFact emptyListModel} [h : CatalogueAdelic37 exactImage]
+
+certify_ec Adelic37 from {
+  equation := emptyListModel
+  adelicLevel := some 74
+  adelicIndex := some 2
+  adelicGenus := some 0
+  adelicImage := some (0, "74.2.0.?")
+  discriminant := some 37
+} with_proofs (adelic37Attachment h)
+
+certify_ec AdelicLevel37 from_json_string
+  r#"{ "ainvs":[0,0,1,-1,0], "adelic_level":74 }"#
+  with_proofs (adelic37Attachment h)
+
+certify_ec AdelicIndex37 from_json_string
+  r#"{ "ainvs":[0,0,1,-1,0], "adelic_index":2 }"#
+  with_proofs (adelic37Attachment h)
+
+certify_ec AdelicGenus37 from_json_string
+  r#"{ "ainvs":[0,0,1,-1,0], "adelic_genus":0 }"#
+  with_proofs (adelic37Attachment h)
+
+certify_ec PartialAdelic37 from_json_string
+  r#"{ "ainvs":[0,0,1,-1,0], "prime":0, "adelic_image":"74.2.0.?" }"#
+  with_proofs (adelic37Attachment h)
+
+certify_ec UnsupportedAdelic37 from_json_string
+  r#"{ "ainvs":[0,0,1,-1,0], "prime":0, "adelic_image":"74.2.0.a.1" }"#
+  with_proofs (adelic37Attachment h)
+
+end
+
 /-- LMFDB curve 338.e1, whose two listed exceptional primes distinguish residual and
 prime-adic maximality at 2. -/
 abbrev catalogueModel : WeierstrassCurve ℤ := ⟨1, -1, 1, -65773, -6478507⟩

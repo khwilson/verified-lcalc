@@ -27,7 +27,7 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_classdata` | 8 | Checked coefficients concern the represented curve. With proved complete class evidence, the command checks the class size, maximum minimum degree and an ordered degree matrix. |
 | `ec_mwbsd` | 13 | Point membership, generator count, rank bounds and integral point fibers are in `certificate.algebraic`. Exhaustive integral-point data requires a proof covering every abscissa. |
 | `ec_localdata` | 10 | Checked local arithmetic facts are indexed by prime. Exact Kodaira and Tamagawa outputs depend on the reduction case. |
-| `ec_galrep` | 7 | The generator field is checked at the reported finite modulus in a proved torsion basis. Supported residual labels identify exact images up to conjugacy. G1 covers the other image data. |
+| `ec_galrep` | 7 | The generator field is checked at the reported finite modulus in a proved torsion basis. Supported residual labels identify exact images up to conjugacy. Partial adelic labels carry exact level, index and genus with a separate simultaneous image proof. |
 | `ec_padic` | 5 | Stored class rows remain report-only. A curve-level encoding of the rank-zero display is checked as a p-adic ball at a good ordinary prime. |
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
@@ -107,6 +107,10 @@ reviewed LMFDB ordering and base-26 encoding.
 | `nonmax_rad` | `nonmaxRadical` | Exact product of the distinct primes in the proved complete support. Requires the same evidence and may be submitted independently. |
 | `modell_image` | `modPrimeImage` | Exact conjugacy class of the image on all geometric ℓ-torsion, for the reported prime and a supported Sutherland label. |
 | `modell_images` | `modPrimeImages` | Exact residual conjugacy classes at the listed entries. Complete non-CM residual support requires separate all-prime evidence. |
+| `adelic_level` | `adelicLevel` | Least positive modulus with full kernel containment in the exact simultaneous adelic image. |
+| `adelic_index` | `adelicIndex` | Index of that image in the integral adelic general linear group. |
+| `adelic_genus` | `adelicGenus` | Genus of the compactified effective quotient of the determinant-one integral pullback. |
+| `adelic_image` | `adelicImage` | At prime zero, a partial label `N.i.g.?` is checked against the proved level, index and genus with the class suffix unspecified. |
 | `adelic_gens` | `adelicGenerators` | Complete image on the full geometric torsion of the reported modulus in a supplied basis. Requires an `FiniteGaloisImageFact` through `with_proofs`. |
 | `num_int_pts` | `numIntegralPoints` | Exact cardinality theorem from supplied exhaustive `IntegralXSupport`; available at `certificate.algebraic.completeIntegralPoints` with finite-set completeness and `Finite` evidence. Without support it is unverified, but a count below the number of distinct checked points or seed-fiber solutions is rejected. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
@@ -147,6 +151,16 @@ with exact subgroup evidence, and a bare empty list gives no coverage proof.
 [Sutherland, Section 6.4 and Table 3](https://doi.org/10.1017/fms.2015.33)
 · [LMFDB 40.a2](https://www.lmfdb.org/EllipticCurve/Q/40a1/)
 · [LMFDB CM example 32.a2](https://www.lmfdb.org/EllipticCurve/Q/data/32.a2)
+
+The 37.a1 native row reports `74.2.0.?`. The level and index concern the
+unsymmetrized adelic image. Genus uses the effective `PSL₂(ℝ)` image of the
+`SL₂(ℤ)` pullback, so the two signs have the same action on the upper
+half-plane. The actual compactified quotient supplies cusp and elliptic geometry.
+The fixture checks these values conditional on independent all-prime,
+kernel, coset and Euler-characteristic evidence.
+[LMFDB definitions](https://www.lmfdb.org/knowledge/show/ec.galois_rep_adelic_image)
+· [LMFDB 37.a1 source rows](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
+· [Rouse–Sutherland–Zureick-Brown](https://doi.org/10.1017/fms.2022.38)
 
 For `adelic_gens`, join the prime-zero row to the curve equation. JSON takes the
 modulus from `adelic_level` or the first component of `adelic_image` and checks
