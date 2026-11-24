@@ -82,6 +82,8 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   tamagawaProduct : Option (TamagawaProductFact curve) := none
   /-- Proved enclosure for the analytic BSD quotient under explicit realizations. -/
   analyticSha : Option (AnalyticShaFact curve) := none
+  /-- Independent rank-one class regulator evidence before matching the reported ball. -/
+  storedPadicRegulator : Option (StoredPadicRegulatorEvidence curve) := none
 
 /-- The family-indexed certificate exported by the verification command. -/
 structure EllipticCertificate (curve : WeierstrassCurve ℤ)

@@ -4,7 +4,7 @@ Start with [`EllipticWitness`](EllipticWitness.lean) for input to `certify_ec` a
 
 The index covers **85 distinct column names** across **101 table-qualified columns** in the eight EC/ℚ tables, excluding the database row identifier `id`. Each name appears once. The table column omits the `ec_` prefix. [LMFDB schema for 37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
 
-All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **75 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
+All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **79 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
 
 ## Curve data (`ec_curvedata`)
 
@@ -34,8 +34,8 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `iso_nlabel` | `curvedata` | Checked | [`LmfdbCatalogueFacts.classIndex`](Algebraic.lean). Zero-based index with a complete ordered conductor roster. |
 | `isogeny_degrees` | `curvedata` | Checked | [`IsogenyClassFacts.isogenyDegrees`](Algebraic.lean). Distinct minimum degrees from the input curve, using its row in the proved complete class. |
 | `jinv` | `curvedata` | Checked | [`RationalInvariantFacts.jInvariant`](Invariants.lean). Exact equality with the j-invariant after base change to ℚ. |
-| `lmfdb_iso` | `curvedata`, `classdata`, `padic` | Checked | [`LmfdbCatalogueFacts.isoLabel`](Algebraic.lean). Class label derived from the actual conductor and ordered roster. A separate table join needs its own subject evidence. |
-| `lmfdb_label` | `curvedata`, `mwbsd`, `iwasawa`, `torsion_growth`, `localdata`, `galrep` | Checked | [`LmfdbCatalogueFacts.curveLabel`](Algebraic.lean). Curve label derived from both mathematical orderings. A separate table join needs its own subject evidence. |
+| `lmfdb_iso` | `curvedata`, `classdata`, `padic` | Checked | [`LmfdbCatalogueFacts.isoLabel`](Algebraic.lean). Class label derived from the actual conductor and ordered roster. Stored p-adic rows use [`StoredPadicRegulatorFact.classLabel_eq`](Analytic.lean) with the independently proved class and reduced model. |
+| `lmfdb_label` | `curvedata`, `mwbsd`, `iwasawa`, `torsion_growth`, `localdata`, `galrep` | Checked | [`LmfdbCatalogueFacts.curveLabel`](Algebraic.lean). Curve label derived from both mathematical orderings. Stored p-adic rows use [`StoredPadicRegulatorFact.classLabel_eq`](Analytic.lean) with the independently proved class and reduced model. |
 | `lmfdb_number` | `curvedata` | Checked | [`LmfdbCatalogueFacts.number`](Algebraic.lean). One-based position of the reduced minimal equation within its isogeny class. |
 | `manin_constant` | `curvedata` | Checked | [`CertifiedModularParametrization.maninConstant`](Algebraic.lean). Positive pullback scaling of the normalized Néron differential along a proved minimal modular parametrization. |
 | `min_quad_twist_ainvs` | `curvedata` | Checked | [`MinimumQuadraticTwistFacts.equation`](Algebraic.lean). Requires a globally minimal integral model, a rational change of variables and minimum algorithmic conductor among quadratic twists. Available at `certificate.minimumQuadraticTwist.minimum`. Its optional `uniqueMinimum` evidence proves uniqueness in the ordinary non-CM case. Producer tie-breaking remains open. |
@@ -111,15 +111,18 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 
 ## p-adic regulators (`ec_padic`)
 
+The native path is conditional on independent sigma evaluation, an integral
+Mordell–Weil basis, class order, and a unique reduced minimal model in the
+rational isogeny class.
+
 | LMFDB field | Table(s) | Status | Witness and scope |
 | --- | --- | --- | --- |
-| `p` | `padic` | Report | [`PadicRegulatorReport.p`](Analytic.lean). Prime of the reported regulator. |
-| `prec` | `padic` | Report | [`PadicRegulatorReport.prec`](Analytic.lean). Absolute precision of the residue. The unit has `prec - val` relative digits. |
-| `unit` | `padic` | Report | [`PadicRegulatorReport.unit`](Analytic.lean). Unit representative of the residue, coprime to the reported prime. |
-| `val` | `padic` | Report | [`PadicRegulatorReport.val`](Analytic.lean). Signed p-adic valuation of the reported nonzero residue. |
+| `p` | `padic` | Checked with evidence | [`StoredPadicRegulatorFact.good`](Analytic.lean) and [`ordinary`](Analytic.lean) prove good ordinary reduction at the reported prime. |
+| `prec` | `padic` | Checked with evidence | [`StoredPadicRegulatorFact.contains`](Analytic.lean) proves containment at the submitted absolute precision. |
+| `unit` | `padic` | Checked with evidence | [`StoredPadicRegulatorFact.normalized`](Analytic.lean) and [`contains`](Analytic.lean) identify the canonical residue representative. |
+| `val` | `padic` | Checked with evidence | [`StoredPadicRegulatorFact.valuation_eq`](../../Verification/PadicRegulator.lean) gives the exact valuation of the nonzero normalized height. |
 
-Stored class rows supply reports. The curve-level rank-zero display has a
-checked finite-precision representation using the same four coordinates.
+The curve-level rank-zero display has a separate checked finite-precision encoding.
 
 | Field | Scope | Status | Checked projection |
 | --- | --- | --- | --- |

@@ -15,6 +15,7 @@ public import VerifiedLcalcTests.Fixtures.IntrinsicTorsionFaltingsIndex
 public import VerifiedLcalcTests.Fixtures.ModularParametrization
 public import VerifiedLcalcTests.Fixtures.LmfdbCatalogue
 public import VerifiedLcalcTests.Fixtures.TraceHash
+public import VerifiedLcalcTests.Fixtures.StoredPadicRegulator
 public import VerifiedLcalcTests.Fixtures.CremonaLabels
 public import VerifiedLcalcTests.Fixtures.PeriodGeometry
 public import VerifiedLcalcTests.Fixtures.SquarePeriod

@@ -342,6 +342,8 @@ def certifyJson (name : Name) (text : String)
           "stable_faltings_height_evidence", "faltings_ratio", "faltings_index",
           "degree", "manin_constant", "optimality"] ++
         algebraicKeys ++ localKeys ++
+        (if CurveDataJson.hasFlatStoredPadicRegulator j then
+          ["p", "prec", "val", "unit"] else []) ++
           if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
               (CurveDataJson.optionalData j "adelic_gens").isSome ||
               (CurveDataJson.optionalData j "modell_image").isSome ||

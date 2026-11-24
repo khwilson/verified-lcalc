@@ -615,7 +615,8 @@ structure CertifiedModularParametrization (curve : WeierstrassCurve ℤ)
   maninConstant : Option { n : ℕ // evidence.maninConstant.val = n } := none
   /-- A submitted binary optimality code with the corresponding full period-image proof. -/
   optimality : Option { n : ℕ //
-    ∃ status, evidence.optimal = some status ∧ Modularity.optimalityStatusCode status.val = n } := none
+    ∃ status, evidence.optimal = some status ∧
+      Modularity.optimalityStatusCode status.val = n } := none
 
 /-- Input only. The reported Faltings heights and class-relative data. -/
 structure FaltingsInput (curve : WeierstrassCurve ℤ) where
