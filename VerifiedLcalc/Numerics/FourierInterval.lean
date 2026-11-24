@@ -37,8 +37,8 @@ private theorem polynomial_range (a : Nat → Int) (q : ℝ) (M k : Nat) :
 
 /-- A Fourier prefix is the Horner polynomial multiplied by its first power of the argument. -/
 theorem prefix_polynomial (a : Nat → Int) (q : ℝ) (M : Nat) :
-    (∑ j ∈ Finset.range M, (a (j+1) : ℝ)*q^(j+1)) =
-      q*polynomialValue q ((List.range M).map (fun j => a (j+1))) := by
+    (∑ j ∈ Finset.range M, (a (j + 1) : ℝ) * q ^ (j + 1)) =
+      q*polynomialValue q ((List.range M).map (fun j => a (j + 1))) := by
   rw [polynomial_range, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro j _
@@ -48,9 +48,9 @@ theorem prefix_polynomial (a : Nat → Int) (q : ℝ) (M : Nat) :
 /-- Pointwise truncation of the actual Fourier series, using a proved cubic
 coefficient bound and an outward upper bound on exp(-alpha*t). -/
 theorem fourier_prefix_error (a : Nat → Int) (cs : List Int) (q Q value : ℝ) (rem : Rat)
-    (hc : cs = (List.range cs.length).map (fun j => a (j+1)))
-    (hf : HasSum (fun j => (a (j+1) : ℝ)*q^(j+1)) value)
-    (hb : ∀ j, |(a (j+1) : ℝ)| ≤ ((j+1 : Nat) : ℝ)^3)
+    (hc : cs = (List.range cs.length).map (fun j => a (j + 1)))
+    (hf : HasSum (fun j => (a (j + 1) : ℝ) * q ^ (j + 1)) value)
+    (hb : ∀ j, |(a (j + 1) : ℝ)| ≤ ((j + 1 : Nat) : ℝ) ^ 3)
     (hq : 0 ≤ q) (hQ : q ≤ Q) (Qrat : Rat) (heQ : Q = (Qrat : ℝ))
     (hr : polynomialTailBound Qrat 3 cs.length = some rem) :
     |value-q*polynomialValue q cs| ≤ (rem : ℝ) := by
@@ -63,13 +63,13 @@ theorem fourier_prefix_error (a : Nat → Int) (cs : List Int) (q Q value : ℝ)
       exact_mod_cast hratio
     simpa only [Rat.cast_mul, Rat.cast_div, Rat.cast_pow, Rat.cast_add, Rat.cast_one,
       Rat.cast_natCast, Rat.cast_ofNat, Nat.cast_add, Nat.cast_ofNat, Nat.cast_one] using hcast
-  have h := polynomial_tail_error (fun j => (a (j+1) : ℝ)*q^(j+1)) value 1 Q 3 cs.length hf
+  have h := polynomial_tail_error (fun j => (a (j + 1) : ℝ) * q ^ (j + 1)) value 1 Q 3 cs.length hf
     (by norm_num) hQr' hratio' (by
       intro j
       rw [abs_mul, abs_of_nonneg (pow_nonneg hq _)]
       simpa using mul_le_mul (hb j) (pow_le_pow_left₀ hq hQ _) (pow_nonneg hq _) (by positivity))
   rw [prefix_polynomial] at h
-  have hrem' : (rem : ℝ) = ((cs.length+1 : Nat) : ℝ)^3*Q^(cs.length+1)/
+  have hrem' : (rem : ℝ) = ((cs.length+1 : Nat) : ℝ) ^ 3*Q^(cs.length+1)/
       (1-Q*(((cs.length+2 : Nat) : ℝ)/(cs.length+1 : Nat))^3) := by
     rw [hrem, heQ]
     push_cast [polynomialTailRatio]
@@ -102,12 +102,12 @@ theorem derivativeCellBounds_sound (a : Nat → Int) (cs : List Int)
     (alpha : ℝ) (f : ℝ → ℝ)
     (hl : 1 ≤ left) (hlr : left ≤ right)
     (ha : (al : ℝ) ≤ alpha ∧ alpha ≤ (ah : ℝ)) (ha0 : 0 < alpha)
-    (hc : cs = (List.range cs.length).map (fun j => a (j+1)))
-    (hb : ∀ j, |(a (j+1) : ℝ)| ≤ ((j+1 : Nat) : ℝ)^3)
-    (hf : ∀ t, 0 < t → HasSum (fun j => (a (j+1) : ℝ)*Real.exp (-alpha*t)^(j+1)) (f t))
-    (hi : IntervalIntegrable (fun t => Real.log t*f t) volume (left : ℝ) (right : ℝ))
+    (hc : cs = (List.range cs.length).map (fun j => a (j + 1)))
+    (hb : ∀ j, |(a (j + 1) : ℝ)| ≤ ((j + 1 : Nat) : ℝ) ^ 3)
+    (hf : ∀ t, 0 < t → HasSum (fun j => (a (j + 1) : ℝ) * Real.exp (-alpha * t) ^ (j + 1)) (f t))
+    (hi : IntervalIntegrable (fun t => Real.log t * f t) volume (left : ℝ) (right : ℝ))
     (he : EllipticCurve.derivativeCellBounds cs al ah left right bits = some cell) :
-    cell.Contains (∫ t in (left : ℝ)..(right : ℝ), Real.log t*f t) := by
+    cell.Contains (∫ t in (left : ℝ)..(right : ℝ), Real.log t * f t) := by
   unfold EllipticCurve.derivativeCellBounds at he
   dsimp only at he
   have hq : Prod.map Dyadic.toRat Dyadic.toRat (rationalExpDyadicBounds (-ah * right)
@@ -128,8 +128,9 @@ theorem derivativeCellBounds_sound (a : Nat → Int) (cs : List Int)
           ((intervalMul (rationalExpBounds (-ah*right) (-al*left) bits)
             (polynomialBounds bits (rationalExpBounds (-ah*right) (-al*left) bits) cs)).1-rem,
            (intervalMul (rationalExpBounds (-ah*right) (-al*left) bits)
-            (polynomialBounds bits (rationalExpBounds (-ah*right) (-al*left) bits) cs)).2+rem)).Contains
-          (Real.log t*f t) := by
+            (polynomialBounds bits (rationalExpBounds (-ah*right) (-al*left) bits) cs)).2 +
+              rem)).Contains
+          (Real.log t * f t) := by
       have hl' : (1 : ℝ) ≤ (left : ℝ) := by exact_mod_cast hl
       have hpos : 0 < t := by linarith [ht.1]
       have hq := rationalExpBounds_correct (-ah*right) (-al*left) bits (-alpha*t)
@@ -142,7 +143,8 @@ theorem derivativeCellBounds_sound (a : Nat → Int) (cs : List Int)
           ((intervalMul (rationalExpBounds (-ah*right) (-al*left) bits)
             (polynomialBounds bits (rationalExpBounds (-ah*right) (-al*left) bits) cs)).1-rem,
            (intervalMul (rationalExpBounds (-ah*right) (-al*left) bits)
-            (polynomialBounds bits (rationalExpBounds (-ah*right) (-al*left) bits) cs)).2+rem) (f t) := by
+            (polynomialBounds bits (rationalExpBounds (-ah*right) (-al*left) bits) cs)).2 +
+              rem) (f t) := by
         change (_ : ℝ) ≤ f t ∧ f t ≤ _
         push_cast
         have he := abs_le.mp herr
@@ -157,13 +159,15 @@ theorem derivativeCellBounds_sound (a : Nat → Int) (cs : List Int)
        (intervalMul (rationalExpBounds (-ah*right) (-al*left) bits)
         (polynomialBounds bits (rationalExpBounds (-ah*right) (-al*left) bits) cs)).2+rem)
     have hlr' : (left : ℝ) ≤ (right : ℝ) := by exact_mod_cast hlr
-    have hlo := intervalIntegral.integral_mono_on hlr' (intervalIntegrable_const : IntervalIntegrable
+    have hlo := intervalIntegral.integral_mono_on hlr'
+      (intervalIntegrable_const : IntervalIntegrable
       (fun _ : ℝ => (b.1 : ℝ)) volume _ _) hi (fun t ht => (hp t ht).1)
-    have hhi := intervalIntegral.integral_mono_on hlr' hi (intervalIntegrable_const : IntervalIntegrable
+    have hhi := intervalIntegral.integral_mono_on hlr' hi
+      (intervalIntegrable_const : IntervalIntegrable
       (fun _ : ℝ => (b.2 : ℝ)) volume _ _) (fun t ht => (hp t ht).2)
     change (((intervalMul (right-left,right-left) b).1 : Rat) : ℝ) ≤
-      (∫ t in (left : ℝ)..(right : ℝ), Real.log t*f t) ∧
-      (∫ t in (left : ℝ)..(right : ℝ), Real.log t*f t) ≤
+      (∫ t in (left : ℝ)..(right : ℝ), Real.log t * f t) ∧
+      (∫ t in (left : ℝ)..(right : ℝ), Real.log t * f t) ≤
         (((intervalMul (right-left,right-left) b).2 : Rat) : ℝ)
     simp only [intervalMul, ite_eq_left (sub_nonneg.mpr hlr), ite_self,
       Rat.cast_mul, Rat.cast_sub]

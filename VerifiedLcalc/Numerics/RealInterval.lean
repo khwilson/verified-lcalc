@@ -31,7 +31,8 @@ theorem intervalAdd_sound (i j : RealInterval) (x y : ℝ)
   exact ⟨by simpa [intervalAdd] using add_le_add hx.1 hy.1,
     by simpa [intervalAdd] using add_le_add hx.2 hy.2⟩
 
-private theorem mul_bounds (a b c d x y : ℝ) (hx : a ≤ x ∧ x ≤ b) (hy : c ≤ y ∧ y ≤ d) :
+private theorem mul_bounds (a b c d x y : ℝ) (hx : a ≤ x ∧ x ≤ b)
+    (hy : c ≤ y ∧ y ≤ d) :
     min (min (a*c) (a*d)) (min (b*c) (b*d)) ≤ x*y ∧
     x*y ≤ max (max (a*c) (a*d)) (max (b*c) (b*d)) := by
   have low (z : ℝ) (hz : z = a*c ∨ z = a*d ∨ z = b*c ∨ z = b*d) :
@@ -89,7 +90,8 @@ theorem intervalMul_sound (i j : RealInterval) (x y : ℝ)
         · exact (mul_le_mul_of_nonneg_left hyh hx0).trans
             (mul_le_mul_of_nonpos_right hxl hj')
       · have hy0 : (j.1 : ℝ) ≤ 0 := by exact_mod_cast (le_of_not_ge ‹¬ 0 ≤ j.1›)
-        have hy1 : (0 : ℝ) ≤ (j.2 : ℝ) := by exact_mod_cast (le_of_not_ge ‹¬ j.2 ≤ 0›)
+        have hy1 : (0 : ℝ) ≤ (j.2 : ℝ) := by
+            exact_mod_cast (le_of_not_ge ‹¬ j.2 ≤ 0›)
         constructor <;> simp only [Rat.cast_mul]
         · exact (mul_le_mul_of_nonpos_right hxh hy0).trans
             (mul_le_mul_of_nonneg_left hyl hx0)
@@ -116,7 +118,8 @@ theorem intervalMul_sound (i j : RealInterval) (x y : ℝ)
           · exact (mul_le_mul_of_nonpos_right hxl (hyh.trans hj')).trans
               (mul_le_mul_of_nonpos_left hyl (hxl.trans hx0))
         · have hy0 : (j.1 : ℝ) ≤ 0 := by exact_mod_cast (le_of_not_ge ‹¬ 0 ≤ j.1›)
-          have hy1 : (0 : ℝ) ≤ (j.2 : ℝ) := by exact_mod_cast (le_of_not_ge ‹¬ j.2 ≤ 0›)
+          have hy1 : (0 : ℝ) ≤ (j.2 : ℝ) := by
+            exact_mod_cast (le_of_not_ge ‹¬ j.2 ≤ 0›)
           constructor <;> simp only [Rat.cast_mul]
           · exact (mul_le_mul_of_nonneg_right hxl hy1).trans
               (mul_le_mul_of_nonpos_left hyh hx0)
@@ -153,8 +156,10 @@ theorem dyadicPolynomialBounds_toRat (bits : Nat) (q : Dyadic × Dyadic) (hq : 0
     rw [polynomialBounds, ← ih]
     have hq' : 0 ≤ q.1.toRat := by
       simpa only [Dyadic.toRat_zero] using Dyadic.toRat_le_toRat_iff.mpr hq
-    have hlo : 0 ≤ p.1.toRat ↔ 0 ≤ p.1 := by rw [← Dyadic.toRat_zero, Dyadic.toRat_le_toRat_iff]
-    have hhi : p.2.toRat ≤ 0 ↔ p.2 ≤ 0 := by rw [← Dyadic.toRat_zero, Dyadic.toRat_le_toRat_iff]
+    have hlo : 0 ≤ p.1.toRat ↔ 0 ≤ p.1 := by
+      rw [← Dyadic.toRat_zero, Dyadic.toRat_le_toRat_iff]
+    have hhi : p.2.toRat ≤ 0 ↔ p.2 ≤ 0 := by
+      rw [← Dyadic.toRat_zero, Dyadic.toRat_le_toRat_iff]
     by_cases hl : 0 ≤ p.1 <;> by_cases hh : p.2 ≤ 0 <;>
       simp only [dyadicPolynomialBounds, roundInterval, intervalAdd, intervalMul, ite_eq_left hq',
         Dyadic.roundUp_eq_neg_roundDown_neg, ← Dyadic.toDyadic_toRat, Dyadic.toRat_add,
@@ -217,6 +222,7 @@ theorem logBounds_sound (t : Rat) (terms bits : Nat) (ht : 1 ≤ t) :
     simp only [List.map_map, Function.comp_def, Rat.cast_div, Rat.cast_pow, Rat.cast_sub,
       Rat.cast_add, Rat.cast_mul, Rat.cast_one, Rat.cast_natCast, Rat.cast_ofNat]
     rw [sum_map_range]
-    change _ ≤ 2*(∑ k ∈ Finset.range terms, y^(2*k+1)/(2*(k : ℝ)+1)) + 2*y^(2*terms+1)/(1-y^2)
+    change _ ≤ 2*(∑ k ∈ Finset.range terms, y^(2*k+1)/(2*(k : ℝ)+1)) +
+      2*y^(2*terms+1)/(1-y^2)
     convert mul_le_mul_of_nonneg_left hu (by norm_num : (0 : ℝ) ≤ 2) using 1 <;> ring
 end VerifiedLcalc.Numerics
