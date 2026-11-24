@@ -16,7 +16,7 @@ section
 variable {level : ℕ} [h : Interpolation11 level]
 
 private noncomputable def checked11 : IwasawaFacts curve11a2 :=
-  Iwasawa11.certificate.iwasawa.get (by rfl)
+  Checked11.certificate.iwasawa.get (by rfl)
 
 example : checked11.rows.length = 1 := rfl
 example : checked11.rowFor 2 = none := rfl
@@ -42,7 +42,9 @@ example :
   exact ⟨series.series, h.interpolation3, series.order.correct⟩
 
 certify_ec LeanRow from
-  ({ equation := curve11a2, iwasawaData := some [(3, .inr [0, 0])],
+  ({
+    equation := curve11a2
+    iwasawaData := some [(3, .inr [0, 0])]
     iwasawaThreshold := some 0 } : EllipticWitness)
   with_proofs (proofs h)
 
@@ -89,7 +91,7 @@ run_cmd do
     ({ equation := curve11a2, iwasawaThreshold := some 11 } : EllipticWitness)
     with_proofs (proofs h))) `iwp0
   for name in [``IwasawaSeriesOrder.correct, ``IwasawaThresholdEvidence.vanishing,
-      ``Iwasawa11.iwp0, ``Iwasawa11.certificate, ``LeanRow.certificate] do
+      ``Checked11.iwp0, ``Checked11.certificate, ``LeanRow.certificate] do
     for ax in ← liftTermElabM (Lean.collectAxioms name) do
       unless [``propext, ``Classical.choice, ``Quot.sound].contains ax do
         throwError "Unexpected axiom {ax} in {name}"

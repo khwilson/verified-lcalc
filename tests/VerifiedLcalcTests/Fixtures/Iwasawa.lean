@@ -60,7 +60,7 @@ theorem unit_lift_one_fifth {p : ℕ} [Fact p.Prime] {x : ℤ_[p]}
     (h : (x : ℚ_[p]) = ((1 / 5 : ℚ) : ℚ_[p])) : IsUnit x := by
   have hx : (5 : ℤ_[p]) * x = 1 := by
     apply Subtype.ext
-    change ((5 : ℤ_[p]) : ℚ_[p]) * (x : ℚ_[p]) = 1
+    change (5 : ℚ_[p]) * (x : ℚ_[p]) = 1
     rw [h]
     norm_num
   exact IsUnit.of_mul_eq_one_right (5 : ℤ_[p]) hx
@@ -87,7 +87,7 @@ def facts {level : ℕ} (h : Interpolation11 level) : IwasawaFacts curve11a2 whe
       odd := by decide
       alpha := h.alpha3
       series := h.series3
-      interpolation := Or.inl ⟨by decide, h.root3, h.interpolation3⟩
+      interpolation := Or.inl ⟨by unfold iwasawaGood; decide, h.root3, h.interpolation3⟩
       order := IwasawaSeriesOrder.ofUnitConstantCoeff
         (h.interpolation3.unit_of_augmentation h.root3 h.initial3 (nonanomalous3 h.symbols.realization)
           (unit_lift_one_fifth ((h.symbol3_eq 0).trans (congrArg Rat.cast h.central)))) } }]
@@ -107,7 +107,7 @@ section
 
 variable {level : ℕ} [h : Interpolation11 level]
 
-certify_ec Iwasawa11 from_json_string
+certify_ec Checked11 from_json_string
   r#"{"ainvs":[0,-1,1,-10,-20],"iwdata":{"2":[0,1,0],"3":[0,0],"5":[0,0],"11":[1,0]},"iwp0":7}"#
   with_proofs (proofs h)
 
