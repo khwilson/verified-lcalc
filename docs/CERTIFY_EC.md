@@ -246,7 +246,9 @@ report path, which requires separate class and sigma evidence.
 
 Submit the grouped report with its class label under `padic_regulator` and
 `IntegralCurveProofs.storedPadicRegulator` via `with_proofs`. Lean input uses
-`EllipticWitness.padicRegulator` and `padicRegulatorClassLabel`. The command
+`EllipticWitness.padicRegulator` and `padicRegulatorClassLabel`. The five native
+JSON keys `lmfdb_iso`, `p`, `prec`, `val`, and `unit` may also be pasted directly
+beside `ainvs`. Choose one report shape. The command
 supports good ordinary primes above three, a rank-one integral basis of the
 Mordell–Weil quotient, and a class with one rational isomorphism type. This
 restriction selects the producer's reduced minimal equation independently of

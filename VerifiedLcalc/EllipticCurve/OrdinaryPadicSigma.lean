@@ -70,7 +70,7 @@ def rationalPadicLogPrefix (z : ℚ) (terms : ℕ) : ℚ :=
   ((List.range terms).map fun k => (-1 : ℚ) ^ k * z ^ (k + 1) / ((k + 1 : ℕ) : ℚ)).sum
 
 /-- Evaluate the formal sigma series at a parameter in the open p-adic unit ball.
-The caller supplies convergence evidence when using this value. -/
+Integral coefficients and the formal parameter bound imply convergence. -/
 noncomputable def evalOrdinarySigma {p : ℕ} [Fact p.Prime]
     (sigma : PowerSeries ℚ_[p]) (t : ℚ_[p]) : ℚ_[p] :=
   ∑' k : ℕ, PowerSeries.coeff k sigma * t ^ k
@@ -79,11 +79,6 @@ noncomputable def evalOrdinarySigma {p : ℕ} [Fact p.Prime]
 noncomputable def padicLogOneAddTerm {p : ℕ} [Fact p.Prime]
     (z : ℚ_[p]) (k : ℕ) : ℚ_[p] :=
   (-1 : ℚ_[p]) ^ k * z ^ (k + 1) / ((k + 1 : ℕ) : ℚ_[p])
-
-/-- Cyclotomic logarithm of a p-adic unit. Raising to the `(p - 1)`st power
-removes the root of unity, and division by `p - 1` restores the normalization. -/
-noncomputable def ordinaryPadicUnitLog {p : ℕ} [Fact p.Prime] (u : ℚ_[p]) : ℚ_[p] :=
-  (∑' k : ℕ, padicLogOneAddTerm (u ^ (p - 1) - 1) k) / ((p - 1 : ℕ) : ℚ_[p])
 
 /-- Argument of the cyclotomic logarithm series for the sigma value at the marked point.
 Raising a unit to the `(p - 1)`st power removes its root of unity. -/

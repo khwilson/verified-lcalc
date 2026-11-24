@@ -102,8 +102,8 @@ def StoredPadicRegulatorValid (claim : PadicRegulatorClaim) (p n terms : ℕ)
   let error := (p : ℚ) ^ (-approximationPrecision)
   let scale := ordinaryPadicHeightScale p n
   rationalPadicNorm p approximation ≤ (p : ℚ)⁻¹ ∧ error ≤ (p : ℚ)⁻¹ ∧
-    rationalPadicNorm p scale * max ((terms : ℚ) * error) ((p : ℚ)⁻¹ * (2 / p : ℚ) ^ terms) ≤
-      radius ∧
+    rationalPadicNorm p scale *
+      max ((terms : ℚ) * error) ((p : ℚ)⁻¹ * (2 / p : ℚ) ^ terms) ≤ radius ∧
     rationalPadicNorm p (scale * rationalPadicLogPrefix approximation terms -
       (p : ℚ) ^ claim.val * (claim.unit : ℚ)) ≤ radius
 
@@ -122,7 +122,7 @@ theorem storedPadicRegulator_contains (curve : WeierstrassCurve ℤ)
     ‖ordinaryPadicHeightAtMultiple e.sigma e.x e.y.val (e.denominator.1 : ℕ)
         (e.multiple : ℕ) - (p : ℚ_[p]) ^ claim.val * (claim.unit : ℚ_[p])‖ ≤
       (p : ℝ) ^ (-claim.prec) := by
-  letI : Fact (e.p : ℕ).Prime := ⟨e.p.property⟩
+  let _ : Fact (e.p : ℕ).Prime := ⟨e.p.property⟩
   let p : ℕ := e.p
   let z := ordinarySigmaLogArgument e.sigma e.x e.y.val (e.denominator.1 : ℕ)
   let w : ℚ_[p] := (e.approximation : ℚ)
@@ -130,8 +130,10 @@ theorem storedPadicRegulator_contains (curve : WeierstrassCurve ℤ)
   let approxSum := rationalPadicLogPrefix e.approximation e.logTerms
   let center : ℚ := (p : ℚ) ^ claim.val * (claim.unit : ℚ)
   have hw : ‖w‖ ≤ (p : ℝ)⁻¹ := by
-    rw [show ‖w‖ = (rationalPadicNorm p e.approximation : ℝ) from (Padic.eq_padicNorm _).trans (congrArg Rat.cast (rationalPadicNorm_eq p _).symm)]
-    simpa only [Rat.cast_inv, Rat.cast_natCast] using (Rat.cast_le.mpr arithmetic.1 : _ ≤ (_ : ℝ))
+    change ‖(e.approximation : ℚ_[p])‖ ≤ (p : ℝ)⁻¹
+    rw [Padic.eq_padicNorm, ← rationalPadicNorm_eq]
+    simpa only [Rat.cast_inv, Rat.cast_natCast] using
+      (Rat.cast_le.mpr arithmetic.1 : _ ≤ (_ : ℝ))
   have hzw : ‖z - w‖ ≤ (p : ℝ)⁻¹ :=
     e.approximation_correct.trans (by
       simpa only [Rat.cast_zpow, Rat.cast_inv, Rat.cast_natCast] using
@@ -202,9 +204,9 @@ theorem _root_.VerifiedLcalc.StoredPadicRegulatorFact.valuation_eq
     let value := ordinaryPadicHeightAtMultiple f.evidence.sigma f.evidence.x f.evidence.y.val
       (f.evidence.denominator.1 : ℕ) (f.evidence.multiple : ℕ)
     value ≠ 0 ∧ value.valuation = f.report.val := by
-  letI := f.elliptic
+  let _ := f.elliptic
   let p : ℕ := f.evidence.p
-  letI : Fact p.Prime := ⟨f.evidence.p.property⟩
+  let _ : Fact p.Prime := ⟨f.evidence.p.property⟩
   let value := ordinaryPadicHeightAtMultiple f.evidence.sigma f.evidence.x f.evidence.y.val
     (f.evidence.denominator.1 : ℕ) (f.evidence.multiple : ℕ)
   let center := (p : ℚ_[p]) ^ f.report.val * (f.report.unit : ℚ_[p])

@@ -18,6 +18,15 @@ namespace VerifiedLcalc.EllipticCurve
 
 variable {p : ℕ} [Fact p.Prime]
 
+/-- Integral coefficients make the sigma expansion converge at a parameter in the
+formal neighbourhood of infinity. -/
+theorem summable_sigma_at_formal_parameter (sigma : PowerSeries ℚ_[p]) (t : ℚ_[p])
+    (integral : ∀ n, ‖PowerSeries.coeff n sigma‖ ≤ 1) (formal : ‖t‖ < 1) :
+    Summable (fun n : ℕ => PowerSeries.coeff n sigma * t ^ n) :=
+  (summable_geometric_of_lt_one (norm_nonneg t) formal).of_norm_bounded fun n => by
+    rw [norm_mul, norm_pow]
+    exact mul_le_of_le_one_left (by positivity) (integral n)
+
 private theorem norm_inv_natCast_le (k : ℕ) (hk : 0 < k) :
     ‖((k : ℚ_[p])⁻¹)‖ ≤ (k : ℝ) := by
   rw [norm_inv, Padic.norm_eq_zpow_neg_valuation (by exact_mod_cast hk.ne'),
@@ -87,7 +96,8 @@ theorem norm_padicLog_sub_prefix_le (hp : 2 < p) (z : ℚ_[p]) (w : ℚ) (N : �
     · positivity
     intro k hk
     have hkN : k + 1 ≤ N := by simpa using Finset.mem_range.mp hk
-    have hz' : ‖z‖ ≤ 1 := hz.trans (inv_le_one_of_one_le₀ (by exact_mod_cast (Fact.out : p.Prime).one_lt.le))
+    have hp' : 1 ≤ (p : ℝ) := by exact_mod_cast (Fact.out : p.Prime).one_lt.le
+    have hz' : ‖z‖ ≤ 1 := hz.trans (inv_le_one_of_one_le₀ hp')
     have he : f k - g k = (-1 : ℚ_[p]) ^ k *
         (z ^ (k + 1) - (w : ℚ_[p]) ^ (k + 1)) * (((k + 1 : ℕ) : ℚ_[p])⁻¹) := by
       simp only [f, g, padicLogOneAddTerm, div_eq_mul_inv]; ring

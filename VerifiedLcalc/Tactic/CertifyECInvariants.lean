@@ -63,13 +63,23 @@ private def certifyRankZeroRegulator (base : Name) : CommandElabM Unit := do
   emit (← `(def $fact : RegulatorFacts (($curve).baseChange ℚ) :=
     Certification.rankZeroRegulatorFacts (($curve).baseChange ℚ) $claim $rankZero $valid))
 
+/-- Reduce a numeric projection before the kernel comparison. Its proof still checks
+definitional equality with the corresponding field of the full evidence record. -/
+private def storedPadicNumeral (term : TSyntax `term) (type : Name) :
+    CommandElabM (TSyntax `term) := do
+  let result ← runTermElabM fun _ => do
+    let value ← Term.elabTerm term (some (mkConst type))
+    Term.synthesizeSyntheticMVarsNoPostponing
+    withTransparency .all <| Meta.reduce (← instantiateMVars value)
+  literalSyntax result
+
 /-- Attach a checked native class regulator when its independent proof data are present. -/
 private def certifyStoredClassPadicRegulator (base : Name) (curve claim valid prime : Ident)
     (label : Ident) : CommandElabM Unit := do
   let attachment := base ++ `integral_proofs
   let proofs := if (← getEnv).contains attachment then some (rootIdent attachment) else none
   let some data ← attachedFact proofs `storedPadicRegulator |
-    logInfo m!"Unverified {base} padic_regulator: supply independent class and sigma evaluation proofs"
+    logInfo m!"Unverified {base} padic_regulator: supply class and sigma evaluation proofs"
     return
   let evidence := rootIdent (base ++ `stored_padic_evidence)
   emit (← `(def $evidence : StoredPadicRegulatorEvidence $curve := $data))
@@ -87,10 +97,17 @@ private def certifyStoredClassPadicRegulator (base : Name) (curve claim valid pr
     (← `(lmfdbIsoLabel ($evidence).roster.conductor ($evidence).roster.classIndex.val = $label))
     comparison
   let arithmetic := base ++ `stored_padic_arithmetic
+  let p ← storedPadicNumeral (← `((($evidence).p : Nat))) ``Nat
+  let n ← storedPadicNumeral (← `((($evidence).multiple : Nat))) ``Nat
+  let terms ← storedPadicNumeral (← `(($evidence).logTerms)) ``Nat
+  let w ← storedPadicNumeral (← `(($evidence).approximation)) ``Rat
+  let prec ← storedPadicNumeral (← `(($evidence).approximationPrecision)) ``Int
   checked arithmetic
     (← `(Certification.StoredPadicRegulatorValid $claim ($evidence).p ($evidence).multiple
       ($evidence).logTerms ($evidence).approximation ($evidence).approximationPrecision))
-    (← `(by decide +kernel))
+    (← `(by
+      change Certification.StoredPadicRegulatorValid $claim $p $n $terms $w $prec
+      decide +kernel))
   let fact := base ++ `stored_padic_regulator_fact
   emit (← `(def $(rootIdent fact) : StoredPadicRegulatorFact $curve :=
     Certification.storedPadicRegulatorFact $curve $evidence $label $(rootIdent classLabel)

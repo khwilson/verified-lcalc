@@ -90,7 +90,8 @@ class Premises (model : outParam (WeierstrassCurve ℤ)) where
       ∀ s, IsNormalizedOrdinarySigma (model.baseChange ℚ_[5]) parameter s → s = sigma
   /-- The independently calculated sigma-log argument to absolute precision 24. -/
   argument :
-    ‖ordinarySigmaLogArgument sigma (21 / 25) (-69 / 125) 5 - ((11712203528994585 : ℚ) : ℚ_[5])‖ ≤
+    ‖ordinarySigmaLogArgument sigma (21 / 25) (-69 / 125) 5 -
+      ((11712203528994585 : ℚ) : ℚ_[5])‖ ≤
       (5 : ℝ) ^ (-(24 : ℤ))
 
 /-- The marked rational multiple is an affine point on the exact source model. -/

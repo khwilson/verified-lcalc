@@ -131,6 +131,10 @@ def rationalValue (j : Json) : Except String Rat := do
     if value.contains '/' then rational j else return (← integer j : Int)
   | _ => return (← integer j : Int)
 
+/-- A complete native p-adic row pasted beside the curve coefficients. -/
+def hasFlatStoredPadicRegulator (j : Json) : Bool :=
+  ["lmfdb_iso", "p", "prec", "val", "unit"].all fun key => (optionalData j key).isSome
+
 /-- Decode a field when it is present and non-null. -/
 def optionalValue (j : Json) (key : String) (decode : Json → Except String α) :
     Except String (Option α) := do
@@ -456,14 +460,19 @@ def decode (j : Json) : Except String EllipticWitness := do
   let stableFaltingsHeight ← decimalEnclosureClaim j "stable_faltings_height"
   let faltingsIndex ← optionalValue j "faltings_index" nonnegativeInteger
   let faltingsRatio ← optionalValue j "faltings_ratio" nonnegativeInteger
-  let padicRegulator ← optionalValue j "padic_regulator" fun row => do
+  let nested ← optionalValue j "padic_regulator" pure
+  let flat := hasFlatStoredPadicRegulator j
+  if flat && nested.isSome then
+    throw "Supply exactly one complete stored p-adic regulator row"
+  let row := if flat then some j else nested
+  let padicRegulator ← row.mapM fun report => do
     return {
-      p := ← nonnegativeInteger (← row.getObjVal? "p")
-      prec := ← integer (← row.getObjVal? "prec")
-      val := ← integer (← row.getObjVal? "val")
-      unit := ← integer (← row.getObjVal? "unit") }
-  let padicRegulatorClassLabel ←
-    (optionalValue j "padic_regulator" fun row => optionalValue row "lmfdb_iso" Json.getStr?)
+      p := ← nonnegativeInteger (← report.getObjVal? "p")
+      prec := ← integer (← report.getObjVal? "prec")
+      val := ← integer (← report.getObjVal? "val")
+      unit := ← integer (← report.getObjVal? "unit") }
+  let padicRegulatorClassLabel ← row.mapM fun report =>
+    optionalValue report "lmfdb_iso" Json.getStr?
   let realPeriod ← decimalEnclosureClaim j "real_period"
   let tamagawaProduct ← optionalValue j "tamagawa_product" nonnegativeInteger
   let analyticSha ← decimalEnclosureClaim j "sha_an"
@@ -509,7 +518,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     isogenyDegrees
     lmfdbNumber
     isoNlabel
-    lmfdbIso
+    lmfdbIso := if flat then none else lmfdbIso
     lmfdbLabel
     traceHash
     cremonaIso

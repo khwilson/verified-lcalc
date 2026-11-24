@@ -43,7 +43,8 @@ def analyticFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `ter
     | do
       if specialInput.isSome then
         logInfo m!"Unverified {base}.special_value: no checked analytic payload"
-      return ← `(({ padicRegulator := $padic, storedPadicRegulator := $storedPadic } : AnalyticFacts $curve))
+      return ← `(({ padicRegulator := $padic, storedPadicRegulator := $storedPadic } :
+        AnalyticFacts $curve))
   let resultId := rootIdent resultName
   let hcurve := rootIdent (base ++ `result_curve_eq)
   let hp := rootIdent (base ++ `payload_correct)
