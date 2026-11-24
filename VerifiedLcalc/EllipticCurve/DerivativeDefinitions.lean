@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.Certificate.Numerical.Outputs
@@ -15,9 +20,11 @@ open Numerics
 /-- Enclose log(t)*f(it/sqrt(N)) throughout one rational interval. -/
 def derivativeCellBounds (cs : List Int) (al ah left right : Rat) (bits : Nat) :
     Option RealInterval := do
-  let q := rationalExpBounds (-ah*right) (-al*left) bits
+  let dyadic := rationalExpDyadicBounds (-ah * right) (-al * left) bits
+  let q := Prod.map Dyadic.toRat Dyadic.toRat dyadic
   let rem ← polynomialTailBound q.2 3 cs.length
-  let poly := polynomialBounds bits q cs
+  let bounds := dyadicPolynomialBounds bits dyadic cs
+  let poly := Prod.map Dyadic.toRat Dyadic.toRat bounds
   let partialSum := intervalMul q poly
   let f := (partialSum.1-rem,partialSum.2+rem)
   let logs := ((logBounds left 8 bits).1,(logBounds right 8 bits).2)

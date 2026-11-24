@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 public import VerifiedLcalc.Upstream.LedvinkaExponentialCore
 public import VerifiedLcalc.Certificate.Numerical.Intervals
@@ -33,6 +38,18 @@ def polynomialBounds (bits : Nat) (q : RealInterval) : List Int → RealInterval
   | [] => (0,0)
   | a :: cs => roundInterval bits (intervalAdd ((a : Rat),(a : Rat))
       (intervalMul q (polynomialBounds bits q cs)))
+
+/-- Horner evaluation on a dyadic grid for an argument interval with nonnegative lower endpoint.
+The recurrence multiplies dyadics before rounding its two endpoints in opposite directions. -/
+def dyadicPolynomialBounds (bits : Nat) (q : Dyadic × Dyadic) : List Int → Dyadic × Dyadic
+  | [] => (0, 0)
+  | a :: cs =>
+    let (lo, hi) := dyadicPolynomialBounds bits q cs
+    let (prodLo, prodHi) :=
+      if 0 ≤ lo then (q.1 * lo, q.2 * hi)
+      else if hi ≤ 0 then (q.2 * lo, q.1 * hi)
+      else (q.2 * lo, q.2 * hi)
+    (((a : Dyadic) + prodLo).roundDown bits, ((a : Dyadic) + prodHi).roundUp bits)
 
 /-- Add a list of interval bounds with outward rounding at each step. -/
 def sumIntervalBounds (bits : Nat) : List RealInterval → RealInterval
