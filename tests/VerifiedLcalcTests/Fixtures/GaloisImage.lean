@@ -342,7 +342,8 @@ end
 /-- Independent evidence that the exact mod-74 action gives the same inverse image as
 the simultaneously proved adelic image of 37.a1. -/
 class CatalogueModulus37 (action : outParam (FiniteGaloisImageFact emptyListModel))
-    (adelic : outParam (AdelicImageFact emptyListModel)) : Prop extends CatalogueAdelic37 adelic where
+    (adelic : outParam (AdelicImageFact emptyListModel)) : Prop
+    extends CatalogueAdelic37 adelic where
   /-- The exact finite representation is on 74-torsion. -/
   modulus : action.modulus = 74
   /-- The full inverse image of its finite image is the proved adelic subgroup. -/
