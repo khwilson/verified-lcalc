@@ -163,7 +163,8 @@ certify_ec PartialRankForPadicRegulator from
 example : PartialRankForPadicRegulator.certificate.analytic.padicRegulator.isNone = true := rfl
 
 run_cmd do
-  expectRegulatorRejected `BadReductionPadicRegulator (← `(certify_ec BadReductionPadicRegulator from
+  expectRegulatorRejected `BadReductionPadicRegulator (← `(
+    certify_ec BadReductionPadicRegulator from
     { equation := curve, padicRegulator := some ⟨3, 20, 0, 1⟩ }
     with_proofs proofs))
   expectRegulatorRejected `SupersingularPadicRegulator (← `(
@@ -177,7 +178,8 @@ run_cmd do
     certify_ec UnnormalizedPadicRegulator from
     { equation := curve, padicRegulator := some ⟨7, 1, 0, 8⟩ }
     with_proofs proofs))
-  expectRegulatorRejected `WrongCenterPadicRegulator (← `(certify_ec WrongCenterPadicRegulator from
+  expectRegulatorRejected `WrongCenterPadicRegulator (← `(
+    certify_ec WrongCenterPadicRegulator from
     { equation := curve, padicRegulator := some ⟨7, 20, 0, 2⟩ }
     with_proofs proofs))
 

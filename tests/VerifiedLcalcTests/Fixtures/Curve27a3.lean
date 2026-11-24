@@ -104,7 +104,8 @@ certify_ec Checked from_json_string
     "padic_regulator":{"p":7,"prec":20,"val":0,"unit":"1"},
     "conductor":27,"minimality":[3,3,3,3,3,3,3,3,3],
     "local_data":{"at_two":null,"at_three":{
-      "r":"0","s":"0","t":"1","starT":"1","cubicRoot":"1","quadraticRoot":"0","chain":[],"kodaira":"-4"
+      "r":"0","s":"0","t":"1","starT":"1","cubicRoot":"1",
+      "quadraticRoot":"0","chain":[],"kodaira":"-4"
     }}
   }"#
   with_proofs proofs
