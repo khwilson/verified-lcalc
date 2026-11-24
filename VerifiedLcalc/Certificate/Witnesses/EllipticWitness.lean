@@ -76,6 +76,8 @@ structure EllipticWitness where
   modPrimeImage : Option (Nat × String) := none
   /-- The reported curve-level residual image labels. -/
   modPrimeImages : Option (List String) := none
+  /-- Reported exceptional residual primes with Serre weight and prime-to-ℓ conductor. -/
+  serreInvariants : Option (List (ℕ × ℕ × ℕ)) := none
   /-- Claims for the ordered tuple of b₂, b₄, b₆ and b₈. -/
   bInvariants : Option (Int × Int × Int × Int) := none
   /-- Claims for the ordered pair of c₄ and c₆. -/

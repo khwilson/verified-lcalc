@@ -43,6 +43,7 @@ the source schema before creating a witness.
 | `ec_padic.p, prec, unit, val` | Stored positive-rank class rows specify a p-adic ball for the producer’s curve. The same coordinates encode the checked curve-level rank-zero display. G3. |
 | `ec_curvedata.lmfdb_number, iso_nlabel, lmfdb_iso, lmfdb_label` and related copies | The math-derived curve and class indices and their encodings can be checked with the required complete ordered classes and rational maps. [TC-23](../TAUCETI_BACKLOG.md#tc-23--certified-conductor-rosters-and-catalogue-ordering). |
 | `ec_classdata.trace_hash` | Exact weighted residue at all published prime indices, checked with a complete arithmetic coefficient proof on the submitted equation. [TC-26](../TAUCETI_BACKLOG.md#tc-26--complete-trace-fingerprint-inputs). |
+| `ec_curvedata.serre_invariants` | Complete exceptional list for the semistable recipe with good reduction at two. [TC-31](../TAUCETI_BACKLOG.md#tc-31--intrinsic-residual-serre-invariants) covers the intrinsic local comparison. |
 | `ec_curvedata.Ciso, Clabel, Cnumber` | Exact Cremona indices and labels in the supported singleton orderings for conductors up to 500000. Historical orders of larger indexing sets remain open. [TC-27](../TAUCETI_BACKLOG.md#tc-27--historical-cremona-ordering). |
 | Across tables `id` | Database identifier. A mathematical class or curve identification requires actual rational maps. |
 

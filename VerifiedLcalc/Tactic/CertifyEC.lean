@@ -52,6 +52,8 @@ The Galois fields `nonmax_primes` and `nonmax_rad` use complete non-CM
 simultaneous all-prime image in `IntegralCurveProofs.adelicImage`.
 The residual fields `modell_image` and `modell_images` use the corresponding
 `modPrimeImage` and `modPrimeImages` evidence for exact Sutherland conjugacy classes.
+On globally minimal semistable equations with good reduction at two,
+`serre_invariants` checks the complete exceptional list in Serre's local formula.
 Prerequisite-dependent claims without the required evidence are reported as unverified. See
 `docs/LMFDB_INVARIANTS.md` for the exact mathematical outputs and trust boundary.
 JSON can supply `ainvs`, `ap` or `aplist`, and `integral_points` or
@@ -331,6 +333,7 @@ def certifyJson (name : Name) (text : String)
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
         "num_int_pts", "class_size", "class_deg", "isogeny_matrix", "isogeny_degrees",
         "nonmax_primes", "nonmax_rad", "adelic_gens", "modell_image", "modell_images",
+        "serre_invariants",
         "adelic_level", "adelic_index", "adelic_genus", "adelic_image",
         "lmfdb_number", "iso_nlabel", "lmfdb_iso", "lmfdb_label",
         "Ciso", "Clabel", "Cnumber", "trace_hash",

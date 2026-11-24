@@ -9,6 +9,7 @@ public import VerifiedLcalc.Certificate.Witnesses.Invariants
 public import VerifiedLcalc.Certificate.AdelicImageSpecs
 public import VerifiedLcalc.Certificate.LocalReductionSpecs
 public import VerifiedLcalc.Certificate.ResidualImageLabels
+public import VerifiedLcalc.Certificate.SerreInvariantSpecs
 public import VerifiedLcalc.EllipticCurve.LmfdbTraceHash
 public import VerifiedLcalc.EllipticCurve.Tate.ArithmeticSpecs
 public import VerifiedLcalc.EllipticCurve.Tate.KodairaSpecs
@@ -368,6 +369,20 @@ structure GaloisImageClaims (curve : WeierstrassCurve ℤ) where
   nonmaxRadical : Option ℕ+ := none
   /-- The producer's list of exceptional-prime Serre triples. -/
   serreInvariants : Option (List (SerreInvariantClaim curve)) := none
+
+/-- Complete exceptional list for Serre's semistable recipe with good reduction at two. -/
+structure SemistableSerreRecipeFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The input integral equation is globally minimal. -/
+  minimal : WeierstrassCurve.IsGlobalMinimal (NumberField.RingOfIntegers ℚ) (curve.baseChange ℚ)
+  /-- The curve has only good or multiplicative reduction. -/
+  semistable : WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ) (curve.baseChange ℚ)
+  /-- The minimal discriminant is a unit at two. -/
+  goodAtTwo : ¬ 2 ∣ curve.Δ.natAbs
+  /-- The submitted exceptional primes, weights and conductors. -/
+  rows : List (ℕ × ℕ × ℕ)
+  /-- The submitted list agrees with the complete arithmetic recipe. -/
+  exactRows : rows = semistableSerreInvariants curve.Δ.natAbs
 
 /-- Complete non-CM exceptional support for the local integral Tate-module images. -/
 structure NonmaxPrimeSupportFact (curve : WeierstrassCurve ℤ)

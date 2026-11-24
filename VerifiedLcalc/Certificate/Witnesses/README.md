@@ -4,7 +4,7 @@ Start with [`EllipticWitness`](EllipticWitness.lean) for input to `certify_ec` a
 
 The index covers **85 distinct column names** across **101 table-qualified columns** in the eight EC/ℚ tables, excluding the database row identifier `id`. Each name appears once. The table column omits the `ec_` prefix. [LMFDB schema for 37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
 
-All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **73 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
+All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **74 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
 
 ## Curve data (`ec_curvedata`)
 
@@ -51,7 +51,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `rank` | `curvedata` | Checked | [`AlgebraicFacts.rank`](Algebraic.lean). A proved singleton rank interval determines the exact Mordell–Weil rank over ℚ. |
 | `regulator` | `curvedata` | Checked | [`RegulatorFacts.within_error`](Algebraic.lean). The structure bounds the error against TauCeti’s regulator. The command currently constructs it for proved rank zero, where the regulator equals one. |
 | `semistable` | `curvedata` | Checked | [`MinimalModelArithmeticFacts.semistable`](FinitePrimes.lean). The Boolean characterizes semistable reduction of the rational curve using a checked globally minimal model. |
-| `serre_invariants` | `curvedata` | Report | [`GaloisImageClaims.serreInvariants`](FinitePrimes.lean) holds [`SerreInvariantClaim`](FinitePrimes.lean). Each entry gives a prime, weight, and conductor. |
+| `serre_invariants` | `curvedata` | Checked semistable recipe | [`EllipticWitness.serreInvariants`](EllipticWitness.lean) carries all exceptional triples. [`SemistableSerreRecipeFact`](FinitePrimes.lean) verifies the full list on a globally minimal semistable equation with good reduction at two. |
 | `sha` | `curvedata` | Checked | [`RoundedAnalyticShaFact.rounds`](Analytic.lean). The enclosure for the analytic BSD quotient singles out the reported nearest integer. Available at `certificate.roundedAnalyticSha`. |
 | `sha_primes` | `curvedata` | Checked | [`RoundedAnalyticShaFact.primes`](Analytic.lean). Prime divisors of that rounded integer. Available at `certificate.roundedAnalyticSha`. |
 | `signD` | `curvedata` | Checked | [`RationalInvariantFacts.discriminantSign`](Invariants.lean). Sign of the integral equation’s discriminant. |

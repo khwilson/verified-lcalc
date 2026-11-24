@@ -32,9 +32,9 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **73 of 85 distinct LMFDB column names** with the evidence
+The command covers **74 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
-has a checker gives 45 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
+has a checker gives 46 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
 `ec_mwbsd`, 8 in `ec_localdata`, 3 in `ec_galrep`, and 2 in
 `ec_torsion_growth`. Shared names such as `class_size` count once.
 Project-specific keys are excluded. The four ball coordinates shared with
@@ -131,6 +131,7 @@ reviewed LMFDB ordering and base-26 encoding.
 | `adelic_index` | `adelicIndex` | Index of that image in the integral adelic general linear group. |
 | `adelic_genus` | `adelicGenus` | Genus of the compactified effective quotient of the determinant-one integral pullback. |
 | `adelic_image` | `adelicImage` | At prime zero, a partial label `N.i.g.?` is checked against the proved level, index and genus with the class suffix unspecified. |
+| `serre_invariants` | `serreInvariants` | Complete list of exceptional triples from Serre's published formula on a checked globally minimal semistable equation with good reduction at two. The intrinsic residual-ramification comparison is an upstream target. |
 | `adelic_gens` | `adelicGenerators` | Complete image on the full geometric torsion of the reported modulus in a supplied basis. Requires an `FiniteGaloisImageFact` through `with_proofs`. |
 | `num_int_pts` | `numIntegralPoints` | Exact cardinality theorem from supplied exhaustive `IntegralXSupport`; available at `certificate.algebraic.completeIntegralPoints` with finite-set completeness and `Finite` evidence. Without support it is unverified, but a count below the number of distinct checked points or seed-fiber solutions is rejected. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |

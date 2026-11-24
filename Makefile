@@ -35,6 +35,7 @@ test-certificates: certificates
 	lake -f lakefile.certificates.lean env lean tests/consumers/CertifiedECPointsConsumer.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/CertifiedECInvariantsConsumer.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/GaloisImage.lean
+	lake -f lakefile.certificates.lean env lean tests/consumers/SerreInvariants.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/SpecialLValue.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/BSDFields.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/Geometry.lean
