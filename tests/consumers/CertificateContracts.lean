@@ -16,6 +16,8 @@ open VerifiedLcalc Lean Elab Command
 #check AnalyticShaFact
 #check RoundedAnalyticShaFact
 #check PadicRegulatorClaim
+#check StoredPadicRegulatorEvidence
+#check StoredPadicRegulatorFact.contains
 #check PadicRegulatorReport
 #check RankZeroPadicRegulatorFact.contains
 #check AnalyticFacts.padicRegulator
