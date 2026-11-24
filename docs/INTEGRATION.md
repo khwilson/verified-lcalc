@@ -105,10 +105,10 @@ precision policy.
 
     lake build
     lake build VerifiedLcalc.Assumptions.Regression
-    lake env lean AuditArithmetic.lean
-    lake env lean AuditIntegration.lean
-    lake env lean Audit.lean
-    lake env lean AuditAssumptions.lean
+    lake env lean tests/audits/AuditArithmetic.lean
+    lake env lean tests/audits/AuditIntegration.lean
+    lake env lean tests/audits/Audit.lean
+    lake env lean tests/audits/AuditAssumptions.lean
 
 The integration audit checks the general arithmetic/analytic implications for
 standard foundational axioms only. The separate assumption audit guards the

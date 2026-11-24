@@ -10,7 +10,7 @@ verification and importable theorem generation.
 The derivative backend uses the existing general modularity assumption and adds
 no numerical or exact-vanishing axiom. All interval, quadrature, Fourier-tail and
 Mellin differentiation proofs depend only on Lean/mathlib's standard axioms.
-`AuditDerivative.lean` guards that dependency boundary.
+`tests/audits/AuditDerivative.lean` guards that dependency boundary.
 
 For a negative-sign modular realization, write alpha = 2*pi/sqrt(N). The functional
 equation gives exact central vanishing, and differentiation of the Mellin
@@ -78,7 +78,7 @@ certificate production or proof construction.
 ```sh
 lake exe certify-derivatives
 lake env lean tests/consumers/Derivative.lean
-lake env lean AuditDerivative.lean
+lake env lean tests/audits/AuditDerivative.lean
 lake exe certify-derivatives --seal-cache
 ```
 

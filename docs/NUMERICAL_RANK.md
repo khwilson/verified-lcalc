@@ -74,7 +74,7 @@ lake build
 lake exe precision-policy
 lake env lean tests/VerifiedLcalcTests/Fixtures/NumericalQuartic.lean
 lake env lean tests/consumers/NumericalQuartic.lean
-lake env lean Audit.lean
+lake env lean tests/audits/Audit.lean
 ```
 
 Lake caches the proof module in the same way as the existing exact certificates.
