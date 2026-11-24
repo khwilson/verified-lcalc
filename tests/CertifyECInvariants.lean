@@ -658,7 +658,8 @@ run_cmd do
   let geometry := #[`complexMultiplication, `minimumTwistEquation, `minimumTwistDiscriminant,
     `modifiedSzpiroRatio, `area, `faltingsHeight, `stableFaltingsHeight,
     `faltingsRatio, `faltingsIndex]
-  let galois := #[`nonmaxPrimes, `nonmaxRadical, `adelicGenerators, `modPrimeImage, `modPrimeImages]
+  let galois := #[`nonmaxPrimes, `nonmaxRadical, `adelicGenerators, `modPrimeImage, `modPrimeImages,
+    `adelicLevel, `adelicIndex, `adelicGenus, `adelicImage]
   cover ``EllipticWitness
     (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++
       isogeny ++ geometry ++ galois ++ #[`lmfdbNumber, `isoNlabel, `lmfdbIso, `lmfdbLabel,

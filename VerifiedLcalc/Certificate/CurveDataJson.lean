@@ -349,6 +349,14 @@ def decode (j : Json) : Except String EllipticWitness := do
     (← array value 256).toList.mapM nonnegativeInteger
   let nonmaxRadical ← optionalValue j "nonmax_rad" nonnegativeInteger
   let adelicGenerators ← adelicGeneratorsClaim j
+  let adelicLevel ← optionalValue j "adelic_level" nonnegativeInteger
+  let adelicIndex ← optionalValue j "adelic_index" nonnegativeInteger
+  let adelicGenus ← optionalValue j "adelic_genus" nonnegativeInteger
+  let adelicImage ← optionalValue j "adelic_image" fun value => do
+    let prime ← optionalValue j "prime" nonnegativeInteger
+    let some p := prime.or (if adelicGenerators.isSome then some 0 else none)
+      | throw "adelic_image requires the prime-zero row"
+    return (p, ← value.getStr?)
   let modPrimeImage ← optionalValue j "modell_image" fun value => do
     let some prime ← optionalValue j "prime" nonnegativeInteger
       | throw "modell_image requires the prime of the residual row"
@@ -509,6 +517,10 @@ def decode (j : Json) : Except String EllipticWitness := do
     nonmaxPrimes
     nonmaxRadical
     adelicGenerators
+    adelicLevel
+    adelicIndex
+    adelicGenus
+    adelicImage
     modPrimeImage
     modPrimeImages
     bInvariants

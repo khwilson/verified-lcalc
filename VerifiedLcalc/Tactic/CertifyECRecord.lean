@@ -228,6 +228,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   else `(none)
   let nonmaxPrimes ← optionalFactTerm base `nonmax_prime_support
   let adelicGenerators ← optionalFactTerm base `adelic_generator_fact
+  let adelicImage ← optionalFactTerm base `adelic_image_certificate
   let modPrimeImage ← optionalFactTerm base `modell_image_fact
   let modPrimeImages ← optionalFactTerm base `modell_images_fact
   let cm ← optionalFactTerm base `cm_fact
@@ -262,6 +263,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     cremonaCatalogue := $cremonaCatalogue
     nonmaxPrimes := $nonmaxPrimes
     adelicGenerators := $adelicGenerators
+    adelicImage := $adelicImage
     modPrimeImage := $modPrimeImage
     modPrimeImages := $modPrimeImages
     complexMultiplication := $cm

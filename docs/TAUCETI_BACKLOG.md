@@ -513,6 +513,33 @@ classification supplies a geometric premise.
   [LMFDB label convention](https://www.lmfdb.org/knowledge/show/ec.q.lmfdb_label)
   · [Sage base-26 producer](https://github.com/sagemath/sage/blob/develop/src/sage/databases/cremona.py#L168-L236)
 
+## TC-24 — exact adelic images and modular-curve signatures
+
+Target [LMFDB G1](roadmaps/LMFDB_Q_CERTIFICATION.md). For a nonsingular
+elliptic curve over ℚ, give a compatible family of Tate-module bases and
+compare the image of one absolute Galois action with the full inverse image
+of a certified finite matrix subgroup. Prove sufficient hypotheses for
+full congruence-kernel containment, including entanglement across primes,
+and prove a finite test for minimality of the modulus.
+
+For an open subgroup of the integral adelic `GL₂`, pull back its reduction
+to `SL₂(ℤ)` and take the effective image in `PSL₂(ℝ)`. For the resulting
+compactified quotient, derive finite CW type and an Euler-characteristic
+formula in terms of the index, elliptic stabilizers and cusps. Identify
+elliptic points with fixed points of the standard order-two and order-three
+actions on projective cosets and identify cusps with translation orbits.
+These bridges would let a finite orbit certificate derive the topological
+genus. Separately, formalize comparison with the catalogue conjugacy-class
+identifier when a complete suffix is supplied.
+
+The pinned interfaces are TauCeti's `tateModuleGaloisRepresentation`,
+`Subgroup.CompactifiedQuotient`, `FiniteCWType`, and
+`RiemannSurface.genus_eq_of_eulerChar_eq`, with Mathlib's `ZMod.equivPi`,
+`Matrix.GeneralLinearGroup.piEquiv`, and `Subgroup.index_map_eq`.
+[Candidate adelic group and level API](https://github.com/TauCetiProject/TauCeti/pull/45304)
+· [Pinned compactification](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/Analysis/Complex/Fuchsian/Compactification/Basic.lean)
+· [Pinned genus API](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicTopology/Cellular/EulerCharacteristic/Genus.lean)
+
 ## TC-25 — Faltings order and intrinsic torsion
 
 The Faltings index counts exact predecessors in the proved complete ordered

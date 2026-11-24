@@ -691,6 +691,20 @@ geometric non-CM and all-prime image evidence. Use the list's membership
 theorem `ModPrimeImageListFact.exists_of_mem_labels` to retrieve a verified
 entry from `Name.certificate.modPrimeImages`.
 
+For `adelic_level`, `adelic_index`, or `adelic_genus`, provide
+`IntegralCurveProofs.adelicImage` with an exact simultaneous image on all Tate
+modules and the corresponding proof. The level is the least positive modulus
+whose reduction kernel lies in the image. The index is the number of cosets
+in the integral adelic group. For genus, supply the finite CW structure and
+Euler characteristic of the compactified effective quotient of the
+determinant-one integral pullback. The command projects these proofs at
+`Name.certificate.adelicImage`.
+
+A prime-zero `adelic_image` of the form `N.i.g.?` compares its level,
+index and genus with all three proved invariants. The formatting equality is
+available in the certificate's `partialLabel` field. A class identifier in the
+suffix needs an independent conjugacy-class comparison and remains unverified.
+
 For `adelic_gens`, submit the generator array from the LMFDB prime-zero row
 with the curve equation and either `adelic_level` or `adelic_image`. Use
 `IntegralCurveProofs.adelicGenerators` to give the invertible matrices and
