@@ -659,7 +659,7 @@ run_cmd do
     `modifiedSzpiroRatio, `area, `faltingsHeight, `stableFaltingsHeight,
     `faltingsRatio, `faltingsIndex]
   let galois := #[`nonmaxPrimes, `nonmaxRadical, `adelicGenerators, `modPrimeImage, `modPrimeImages,
-    `adelicLevel, `adelicIndex, `adelicGenus, `adelicImage]
+    `adelicLevel, `adelicIndex, `adelicGenus, `adelicImage, `padicImage, `padicImages, `modulusImages]
   cover ``EllipticWitness
     (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++
       isogeny ++ geometry ++ galois ++ #[`lmfdbNumber, `isoNlabel, `lmfdbIso, `lmfdbLabel,

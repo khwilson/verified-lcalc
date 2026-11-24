@@ -204,6 +204,65 @@ private def certifyModPrimeImages (base : Name) (attachment : Option Ident) :
     (← `(((($fact).images.map fun entry => (entry.finiteImage.modulus : ℕ)).Nodup)))
     (← `(by first | exact of_decide_eq_true (by rfl) | decide +kernel))
 
+/-- Check one local row against an exact prime-adic conjugacy class. -/
+private def certifyPadicImage (base : Name) (attachment : Option Ident) :
+    CommandElabM Unit := do
+  let some report ← bindStored base `padicImage `elladic_image (← `(ℕ × String))
+    | return
+  checked (base ++ `elladic_image_prime) (← `(Nat.Prime ($report).1)) (← `(by decide +kernel))
+  let some proof ← attachedFact attachment `padicImage
+    | logInfo m!"Unverified {base} elladic_image: supply the exact prime-adic subgroup comparison"
+  let curve := rootIdent (base ++ `curve)
+  let fact := rootIdent (base ++ `elladic_image_fact)
+  emit (← `(def $fact : @PadicImageLabelFact $curve inferInstance (Classical.decEq _) := $proof))
+  auditAxioms (base ++ `elladic_image_fact)
+  checked (base ++ `elladic_image)
+    (← `(((($fact).prime : ℕ), ($fact).label) = $report))
+    (← `(by first | rfl | decide +kernel))
+
+/-- Check every submitted prime-adic label and exclude repeated primes. -/
+private def certifyPadicImages (base : Name) (attachment : Option Ident) :
+    CommandElabM Unit := do
+  let some report ← bindStored base `padicImages `elladic_images (← `(List String))
+    | return
+  let some proof ← attachedFact attachment `padicImages
+    | logInfo m!"Unverified {base} elladic_images: supply exact prime-adic subgroup comparisons"
+  let curve := rootIdent (base ++ `curve)
+  let fact := rootIdent (base ++ `elladic_images_fact)
+  emit (← `(def $fact : @PadicImageListFact $curve inferInstance (Classical.decEq _) := $proof))
+  auditAxioms (base ++ `elladic_images_fact)
+  checked (base ++ `elladic_images)
+    (← `((($fact).entries.map PadicImageLabelFact.label) = $report))
+    (← `(by first | rfl | decide +kernel))
+  checked (base ++ `elladic_images_distinct_primes)
+    (← `(((($fact).entries.map fun entry => (entry.prime : ℕ)).Nodup)))
+    (← `(by first | exact of_decide_eq_true (by rfl) | decide +kernel))
+
+/-- Bind the full reported list to the verified sublist. -/
+private def certifyModulusImages (base : Name) (attachment : Option Ident) :
+    CommandElabM Unit := do
+  let some report ← bindStored base `modulusImages `modm_images (← `(List String))
+    | return
+  let some proof ← attachedFact attachment `modulusImages
+    | logInfo m!"Unverified {base} modm_images: supply exact finite subgroup comparisons"
+  let curve := rootIdent (base ++ `curve)
+  let fact := rootIdent (base ++ `modm_images_fact)
+  emit (← `(def $fact : @ModulusImageListFact $curve inferInstance (Classical.decEq _) := $proof))
+  auditAxioms (base ++ `modm_images_fact)
+  let sourceEq := rootIdent (base ++ `modm_images_source)
+  checked (base ++ `modm_images_source)
+    (← `(($fact).reported = $report))
+    (← `(by first | rfl | decide +kernel))
+  let labels ← `((($fact).entries.map ModulusImageLabelFact.label))
+  checked (base ++ `modm_images) (← `(($labels).Sublist $report))
+    (← `(by
+      rw [← ($sourceEq)]
+      exact ($fact).sublist))
+  if ← hasOptionalProof (← `(($fact).allEntries)) `modm_images then
+    checked (base ++ `modm_images_all) (← `($labels = $report))
+      (← `(by
+        exact (($fact).allEntries.get (by rfl)).down.trans $sourceEq))
+
 /-- Check the Galois report fields against any matching evidence in `with_proofs`. -/
 def certifyGaloisFacts (base : Name) (attachment : Option Ident) : CommandElabM Unit := do
   certifyNonmaxPrimes base attachment
@@ -211,5 +270,8 @@ def certifyGaloisFacts (base : Name) (attachment : Option Ident) : CommandElabM 
   certifyAdelicImage base attachment
   certifyModPrimeImage base attachment
   certifyModPrimeImages base attachment
+  certifyPadicImage base attachment
+  certifyPadicImages base attachment
+  certifyModulusImages base attachment
 
 end VerifiedLcalc.CertifyEC

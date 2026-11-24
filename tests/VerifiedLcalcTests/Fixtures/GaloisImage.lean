@@ -150,6 +150,85 @@ certify_ec Residual40Lean from {
   modPrimeImages := some ["2Cs"]
 } with_proofs splitModTwoAttachment
 
+/-- Reuse the proved split 2-torsion action for its native modular-curve label. -/
+def splitModulusLabel : ModulusImageLabelFact splitModel where
+  exactImage := splitModTwoLabel.finiteImage
+  label := "2.6.0.a.1"
+  correct := by
+    left
+    obtain ⟨rows, hr, hc⟩ := splitModTwoLabel.conjugate
+    change some (2, [(1, 0, 0, 1)]) = some (2, rows) at hr
+    exact ⟨rows, hr, hc⟩
+
+/-- The real finite-image list for 40.a2. -/
+def modm40Report : List String :=
+  ["2.6.0.a.1", "4.24.0-4.a.1.1", "8.48.0-8.g.1.1", "20.48.0-20.b.1.1", "40.192.3-40.bk.1.5"]
+
+/-- The verified sublist contains the level-two label. -/
+def modm40Attachment : IntegralCurveProofs splitModel where
+  modulusImages := some {
+    reported := modm40Report
+    entries := [splitModulusLabel]
+    sublist := by
+      change ["2.6.0.a.1"].Sublist modm40Report
+      exact List.Sublist.cons_cons _ (List.nil_sublist _)
+    hasEvidence := .inr (by simp) }
+
+certify_ec Modulus40 from_json_string
+  r#"{ "ainvs":[0,0,0,-7,-6], "modm_images":["2.6.0.a.1", "4.24.0-4.a.1.1", "8.48.0-8.g.1.1",
+       "20.48.0-20.b.1.1", "40.192.3-40.bk.1.5"] }"#
+  with_proofs modm40Attachment
+
+/-- The integral equation of 69.a1. -/
+abbrev padic69Model : WeierstrassCurve ℤ := ⟨1, 0, 1, -16, -25⟩
+
+instance : (padic69Model.baseChange ℚ).IsElliptic :=
+  ⟨isUnit_iff_ne_zero.mpr (by decide +kernel)⟩
+
+/-- Geometric input for the exact 2-adic image and non-CM support of 69.a1. -/
+class CataloguePadic69
+    (action : outParam (PadicGaloisImageFact padic69Model ⟨2, Nat.prime_two⟩)) : Prop where
+  /-- The full image is conjugate to the inverse image of a mod-2 Borel. -/
+  conjugate : ∃ c : Matrix.GeneralLinearGroup (Fin 2) (AdelicLocalRing ⟨2, Nat.prime_two⟩),
+    action.image = ((residualImageReferenceGroup 2 [(1, 1, 0, 1)]).comap
+      (localImageReduction ⟨2, Nat.prime_two⟩ 1)).map (MulAut.conj c).toMonoidHom
+  /-- The represented curve has geometric endomorphism ring ℤ. -/
+  nonCM : ¬ (padic69Model.baseChange ℚ).HasGeometricCM
+  /-- The entire exceptional integral support consists of the prime two. -/
+  complete : ∀ p : Nat.Primes, ∃ image : PadicGaloisImageFact padic69Model p,
+    p ∈ ([⟨2, Nat.prime_two⟩] : List Nat.Primes).toFinset ↔ image.image ≠ ⊤
+
+/-- Attach the sourced 69.a1 comparison and the independent support proof. -/
+def padic69Attachment {action : PadicGaloisImageFact padic69Model ⟨2, Nat.prime_two⟩}
+    (h : CataloguePadic69 action) : IntegralCurveProofs padic69Model :=
+  let row : PadicImageLabelFact padic69Model :=
+    ⟨⟨2, Nat.prime_two⟩, action, "2.3.0.1", ⟨1, [(1, 1, 0, 1)], rfl, h.conjugate⟩⟩
+  { padicImage := some row
+    padicImages := some {
+      entries := [row]
+      coverage := some ⟨⟨h.nonCM, _, h.complete⟩, rfl⟩ } }
+
+section
+
+variable {action : PadicGaloisImageFact padic69Model ⟨2, Nat.prime_two⟩}
+  [h : CataloguePadic69 action]
+
+certify_ec PadicRow69 from_json_string
+  r#"{ "ainvs":[1,0,1,-16,-25], "prime":2, "elladic_image":"2.3.0.1" }"#
+  with_proofs (padic69Attachment h)
+
+certify_ec PadicList69 from_json_string
+  r#"{ "ainvs":[1,0,1,-16,-25], "elladic_images":["2.3.0.1"] }"#
+  with_proofs (padic69Attachment h)
+
+certify_ec PadicLean69 from {
+  equation := padic69Model
+  padicImage := some (2, "2.3.0.1")
+  padicImages := some ["2.3.0.1"]
+} with_proofs (padic69Attachment h)
+
+end
+
 /-- The integral equation of 37.a1, whose source list of residual exceptions is empty. -/
 abbrev emptyListModel : WeierstrassCurve ℤ := ⟨0, 0, 1, -1, 0⟩
 
@@ -257,6 +336,62 @@ certify_ec PartialAdelic37 from_json_string
 certify_ec UnsupportedAdelic37 from_json_string
   r#"{ "ainvs":[0,0,1,-1,0], "prime":0, "adelic_image":"74.2.0.a.1" }"#
   with_proofs (adelic37Attachment h)
+
+end
+
+/-- Independent evidence that the exact mod-74 action gives the same inverse image as
+the simultaneously proved adelic image of 37.a1. -/
+class CatalogueModulus37 (action : outParam (FiniteGaloisImageFact emptyListModel))
+    (adelic : outParam (AdelicImageFact emptyListModel)) : Prop extends CatalogueAdelic37 adelic where
+  /-- The exact finite representation is on 74-torsion. -/
+  modulus : action.modulus = 74
+  /-- The full inverse image of its finite image is the proved adelic subgroup. -/
+  lift : (Subgroup.closure {g | g ∈ action.generators}).comap
+    (adelicReduction action.modulus) = adelic.image
+
+/-- Certify the whole singleton finite-image report of 37.a1, with its suffix unspecified. -/
+def modm37Attachment {action : FiniteGaloisImageFact emptyListModel}
+    {adelic : AdelicImageFact emptyListModel} (h : CatalogueModulus37 action adelic) :
+    IntegralCurveProofs emptyListModel := by
+  let adelicFacts := (adelic37Attachment h.toCatalogueAdelic37).adelicImage.get (by rfl)
+  let row : ModulusImageLabelFact emptyListModel := {
+    exactImage := action
+    label := "74.2.0.?"
+    correct := by
+      right
+      let hg : AdelicGenusFact
+          ((Subgroup.closure {g | g ∈ action.generators}).comap (adelicReduction action.modulus)) :=
+        h.lift ▸ adelicFacts.genus.get (by rfl)
+      refine ⟨2, hg, ?_, ?_, ?_⟩
+      · rw [h.lift, h.modulus]
+        exact (adelicFacts.level.get (by rfl)).property
+      · have hi := congrArg Subgroup.index h.lift
+        rw [Subgroup.index_comap_of_surjective _ (adelicReduction_surjective action.modulus)] at hi
+        exact hi.trans (adelicFacts.index.get (by rfl)).property
+      · have castGenus {H K : Subgroup AdelicGL} (e : H = K) (g : AdelicGenusFact K) :
+            (e ▸ g : AdelicGenusFact H).genus = g.genus := by
+          cases e
+          rfl
+        have genusZero : hg.genus = 0 := (castGenus h.lift _).trans rfl
+        rw [genusZero, h.modulus]
+        unfold formatPartialAdelicImage
+        apply String.toList_injective
+        simp [Nat.toDigits_eq_ite (by decide : 1 < 10)] }
+  exact { modulusImages := some {
+    reported := ["74.2.0.?"]
+    entries := [row]
+    sublist := List.Sublist.refl _
+    hasEvidence := .inr (by simp)
+    allEntries := some ⟨rfl⟩ } }
+
+section
+
+variable {action : FiniteGaloisImageFact emptyListModel} {adelic : AdelicImageFact emptyListModel}
+  [h : CatalogueModulus37 action adelic]
+
+certify_ec Modulus37 from_json_string
+  r#"{ "ainvs":[0,0,1,-1,0], "modm_images":["74.2.0.?"] }"#
+  with_proofs (modm37Attachment h)
 
 end
 

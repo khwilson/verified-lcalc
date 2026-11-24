@@ -32,10 +32,10 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **73 of 85 distinct LMFDB column names** with the evidence
+The command covers **76 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
-has a checker gives 45 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
-`ec_mwbsd`, 8 in `ec_localdata`, 3 in `ec_galrep`, and 2 in
+has a checker gives 47 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
+`ec_mwbsd`, 8 in `ec_localdata`, 4 in `ec_galrep`, and 2 in
 `ec_torsion_growth`. Shared names such as `class_size` count once.
 Project-specific keys are excluded. The four ball coordinates shared with
 `ec_padic` can be checked for the curve-level rank-zero display, which
@@ -131,6 +131,9 @@ reviewed LMFDB ordering and base-26 encoding.
 | `adelic_index` | `adelicIndex` | Index of that image in the integral adelic general linear group. |
 | `adelic_genus` | `adelicGenus` | Genus of the compactified effective quotient of the determinant-one integral pullback. |
 | `adelic_image` | `adelicImage` | At prime zero, a partial label `N.i.g.?` is checked against the proved level, index and genus with the class suffix unspecified. |
+| `elladic_image` | `padicImage` | Exact integral Tate-module image conjugate to the inverse image of a supported Rouse–Sutherland–Zureick-Brown subgroup at the native row's prime. |
+| `elladic_images` | `padicImages` | Exact integral Tate-module image for each submitted label. Exhaustiveness uses independent non-CM support evidence. |
+| `modm_images` | `modulusImages` | Checked sublist of native finite-image labels. An incomplete label `N.i.g.?` can certify minimal level, index and genus for the inverse image of the exact mod-`N` group. |
 | `adelic_gens` | `adelicGenerators` | Complete image on the full geometric torsion of the reported modulus in a supplied basis. Requires an `FiniteGaloisImageFact` through `with_proofs`. |
 | `num_int_pts` | `numIntegralPoints` | Exact cardinality theorem from supplied exhaustive `IntegralXSupport`; available at `certificate.algebraic.completeIntegralPoints` with finite-set completeness and `Finite` evidence. Without support it is unverified, but a count below the number of distinct checked points or seed-fiber solutions is rejected. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
@@ -173,6 +176,26 @@ with exact subgroup evidence, and a bare empty list gives no coverage proof.
 [Sutherland, Section 6.4 and Table 3](https://doi.org/10.1017/fms.2015.33)
 · [LMFDB 40.a2](https://www.lmfdb.org/EllipticCurve/Q/40a1/)
 · [LMFDB CM example 32.a2](https://www.lmfdb.org/EllipticCurve/Q/data/32.a2)
+
+The `elladic_image` and `elladic_images` labels follow the numeric
+Rouse–Sutherland–Zureick-Brown convention. Supported labels have a reference
+finite subgroup, and the proof compares the entire integral Tate-module
+image with its full inverse image. CM rows may use this pointwise comparison.
+Full support requires a separate non-CM premise and all-prime image proof.
+[RSZB labels and convention](https://doi.org/10.1017/fms.2022.38)
+· [2-adic representatives](https://github.com/AndrewVSutherland/ell-adic-galois-images/blob/66b7084148a4da13b49e0daaa76d88d64d9e085f/groups/gl2_2adic.txt)
+· [5-adic representatives](https://github.com/AndrewVSutherland/ell-adic-galois-images/blob/66b7084148a4da13b49e0daaa76d88d64d9e085f/groups/gl2_5adic.txt)
+· [LMFDB 69.a1](https://www.lmfdb.org/EllipticCurve/Q/data/69.a1)
+
+The `modm_images` list uses modular-curve labels. The known level-two
+representatives are `2.3.0.a.1` and `2.6.0.a.1`. The catalogue also includes
+`22.2.0.a.1` from the finite image recorded for 64064.o1. For `N.i.g.?`, Lean checks
+the level, index and topological genus of the full inverse image of the
+verified finite subgroup. Checking every submitted entry leaves open which
+reductions the producer chose to enumerate.
+[LMFDB 40.a2](https://www.lmfdb.org/EllipticCurve/Q/40a1/)
+· [LMFDB 37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
+· [LMFDB 64064.o1](https://www.lmfdb.org/EllipticCurve/Q/64064/o/1)
 
 The 37.a1 native row reports `74.2.0.?`. The level and index concern the
 unsymmetrized adelic image. Genus uses the effective `PSL₂(ℝ)` image of the

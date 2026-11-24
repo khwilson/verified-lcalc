@@ -7,6 +7,7 @@ module
 
 public import VerifiedLcalc.Certificate.Witnesses.Invariants
 public import VerifiedLcalc.Certificate.AdelicImageSpecs
+public import VerifiedLcalc.Certificate.ImageCatalogue
 public import VerifiedLcalc.Certificate.LocalReductionSpecs
 public import VerifiedLcalc.Certificate.ResidualImageLabels
 public import VerifiedLcalc.EllipticCurve.LmfdbTraceHash
@@ -263,6 +264,23 @@ structure PadicGaloisImageFact (curve : WeierstrassCurve ℤ)
       basis.equivFun ((curve.baseChange ℚ).tateModuleGaloisRepresentation (prime : ℕ) σ t) =
         (g : Matrix (Fin 2) (Fin 2) ℤ_[(prime : ℕ)]) *ᵥ basis.equivFun t
 
+/-- A native prime-adic label identified with the exact integral Tate-module image. -/
+structure PadicImageLabelFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)] where
+  /-- The prime of the representation. -/
+  prime : Nat.Primes
+  /-- The exact prime-adic image, including the ordered Tate basis. -/
+  exactImage : PadicGaloisImageFact curve prime
+  /-- The Rouse–Sutherland–Zureick-Brown label. -/
+  label : String
+  /-- The entire local image is conjugate to the full inverse image of the reference subgroup. -/
+  correct :
+    letI : Fact prime.val.Prime := ⟨prime.property⟩
+    ∃ depth rows, padicImageReference label = some (prime.val, depth, rows) ∧
+      ∃ c : Matrix.GeneralLinearGroup (Fin 2) (AdelicLocalRing prime),
+        exactImage.image = ((residualImageReferenceGroup (prime.val ^ depth) rows).comap
+          (localImageReduction prime depth)).map (MulAut.conj c).toMonoidHom
+
 /-- A genus certificate on the actual coarse modular curve associated to an adelic image. -/
 structure AdelicGenusFact (H : Subgroup AdelicGL) where
   /-- A modulus defining the open subgroup. This modulus need not be minimal. -/
@@ -314,6 +332,41 @@ structure AdelicImageCertificate (curve : WeierstrassCurve ℤ)
     formatPartialAdelicImageOf (facts.level.map fun n => (n.val : ℕ))
       (facts.index.map fun i => (i.val : ℕ)) (facts.genus.map AdelicGenusFact.genus) =
         some label } := none
+
+/-- An exact finite image identified by a native modular-curve label or its proved prefix. -/
+structure ModulusImageLabelFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)] where
+  /-- The exact Galois action on the full geometric torsion of the label's level. -/
+  exactImage : FiniteGaloisImageFact curve
+  /-- The reported modular-curve label, possibly with an unspecified class suffix. -/
+  label : String
+  /-- A defined label identifies the finite subgroup up to conjugacy. An incomplete label
+  identifies the level, full index and coarse genus of its adelic inverse image. -/
+  correct :
+    let group := Subgroup.closure {g | g ∈ exactImage.generators}
+    let reduction := adelicReduction exactImage.modulus
+    let lift := group.comap reduction
+    (∃ rows, finiteImageReference label = some ((exactImage.modulus : ℕ), rows) ∧
+      ∃ c, group = (residualImageReferenceGroup (exactImage.modulus : ℕ) rows).map
+        (MulAut.conj c).toMonoidHom) ∨
+    ∃ (index : ℕ+) (genus : AdelicGenusFact lift),
+      IsLeast {N | (adelicReduction N).ker ≤ lift} exactImage.modulus ∧
+      group.index = (index : ℕ) ∧
+      formatPartialAdelicImage (exactImage.modulus : ℕ) (index : ℕ) genus.genus = label
+
+/-- A source list of finite image labels with evidence on an ordered sublist. -/
+structure ModulusImageListFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)] where
+  /-- The complete submitted list of raw labels. -/
+  reported : List String
+  /-- The verified entries in source order. -/
+  entries : List (ModulusImageLabelFact curve)
+  /-- Evidence for a sublist certifies only the corresponding source entries. -/
+  sublist : (entries.map ModulusImageLabelFact.label).Sublist reported
+  /-- A nonempty source list requires at least one genuinely verified entry. -/
+  hasEvidence : reported = [] ∨ entries ≠ []
+  /-- Optional evidence that every reported entry was checked, in source order. -/
+  allEntries : Option (PLift ((entries.map ModulusImageLabelFact.label) = reported)) := none
 
 /-- Claimed adelic row, whose database prime sentinel is zero. The generator modulus is
 explicit even when the producer's adelic level has yet to be justified. -/
@@ -381,5 +434,14 @@ structure NonmaxPrimeSupportFact (curve : WeierstrassCurve ℤ)
   complete :
     letI := Classical.decEq (AlgebraicClosure ℚ)
     ∀ p : Nat.Primes, ∃ image : PadicGaloisImageFact curve p, p ∈ primes ↔ image.image ≠ ⊤
+
+/-- Proved local labels with optional coverage of all exceptional primes for non-CM curves. -/
+structure PadicImageListFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)] where
+  /-- The checked labels in source order. -/
+  entries : List (PadicImageLabelFact curve)
+  /-- Optional proof that the listed primes are precisely the nonmaximal integral primes. -/
+  coverage : Option { support : NonmaxPrimeSupportFact curve //
+    support.primes = (entries.map PadicImageLabelFact.prime).toFinset } := none
 
 end VerifiedLcalc
