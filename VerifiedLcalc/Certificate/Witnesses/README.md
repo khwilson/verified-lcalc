@@ -8,6 +8,12 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 
 ## How a field reaches the certificate
 
+To trace a database column in Lean, start with its table and column name in the
+[field catalogue](../FieldCatalogue.lean). For example, `ec_curvedata.degree`
+asks for the minimum degree of a modular parametrization, while
+`ec_torsion_growth.degree` asks for the degree of the supplied number field.
+Each entry identifies the input and the corresponding certificate evidence.
+
 JSON decoding or a Lean term supplies an `EllipticWitness`. An optional
 `with_proofs` attachment supplies the mathematical evidence in
 [`IntegralCurveProofs`](EllipticCertificate.lean). The shared `certify_ec`

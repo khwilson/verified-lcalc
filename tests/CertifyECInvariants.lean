@@ -1,4 +1,5 @@
 import CertifiedCurves.Invariants
+import VerifiedLcalc.Certificate.FieldCatalogue
 import Lean
 
 /-! Regression tests for stored invariant checks through `certify_ec`. -/
@@ -657,21 +658,6 @@ example : List.ofFn (fun i => (twoByTwo.indices i).val) = [0, 1] := rfl
 -- Keep the contract exhaustive as the raw witness gains fields. A field can be
 -- an input prerequisite, rather than a direct certified conclusion.
 run_cmd do
-  let equation := #[`equation, `bInvariants, `cInvariants, `discriminant]
-  let rational := #[`discriminantSign, `jInvariant, `jIntegral, `abcQuality]
-  let algebraic := #[`integralCoordinates, `integralFiberRoots, `numIntegralPoints,
-    `generatorCoordinates, `generatorCount, `algebraicRank, `algebraicRankBounds,
-    `torsionGeneratorCoordinates, `infiniteOrderPoints, `independentPoints,
-    `independentGeneratorPoints, `regulator, `canonicalHeights]
-  let arithmetic := #[`potentialGoodReduction, `minimalDiscriminantAbs, `conductor, `rootNumber,
-    `dirichletCoefficients, `badPrimes, `numBadPrimes, `semistable,
-    `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData,
-    `tamagawaProduct]
-  let analytic := #[`centralResult, `derivativeResult, `catalogueAnalyticRank,
-    `specialLValue, `realPeriod, `analyticSha, `sha, `shaPrimes, `padicRegulator,
-    `padicRegulatorClassLabel, `iwasawaData, `iwasawaThreshold]
-  let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionPrimes,
-    `torsionGeneratorOrders, `torsionGrowthField, `intrinsicTorsion]
   let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do
     let fields := Lean.getStructureFields (← getEnv) record
     for field in fields do
@@ -680,17 +666,12 @@ run_cmd do
     for field in tracked do
       unless fields.contains field do
         throwError "Remove obsolete witness field {record}.{field} from the certificate inventory"
-  let isogeny := #[`isogenyEdge, `classSize, `classDegree, `isogenyDegrees, `isogenyMatrix]
-  let geometry := #[`complexMultiplication, `minimumTwistEquation, `minimumTwistDiscriminant,
-    `modifiedSzpiroRatio, `area, `faltingsHeight, `stableFaltingsHeight,
-    `faltingsRatio, `faltingsIndex, `modularDegree, `maninConstant, `optimality]
-  let galois := #[`nonmaxPrimes, `nonmaxRadical, `adelicGenerators, `modPrimeImage, `modPrimeImages,
-    `adelicLevel, `adelicIndex, `adelicGenus, `adelicImage,
-    `padicImage, `padicImages, `modulusImages, `serreInvariants]
-  cover ``EllipticWitness
-    (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++
-      isogeny ++ geometry ++ galois ++ #[`lmfdbNumber, `isoNlabel, `lmfdbIso, `lmfdbLabel,
-        `traceHash, `cremonaIso, `cremonaLabel, `cremonaNumber])
+  let paths := FieldCatalogue.columns.flatMap (·.paths) ++ FieldCatalogue.extensions
+  let witnessFields := (paths.flatMap (·.claim)).filterMap fun declaration =>
+    if declaration.getPrefix == ``EllipticWitness then
+      some (Name.mkSimple declaration.getString!)
+    else none
+  cover ``EllipticWitness witnessFields.toArray
   cover ``AdelicGeneratorsClaim #[`modulus, `rows]
   cover ``IsogenyEdgeClaim #[`target, `degree, `kernelX]
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,

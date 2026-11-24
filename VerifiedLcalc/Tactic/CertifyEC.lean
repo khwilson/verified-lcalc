@@ -11,6 +11,7 @@ public import VerifiedLcalc.Tactic.CertifyECCremona
 public import VerifiedLcalc.Tactic.CertifyECRecord
 public import VerifiedLcalc.Tactic.CertifyECCatalogueRank
 public import VerifiedLcalc.Tactic.CertifyECMordellWeil
+public meta import VerifiedLcalc.Certificate.FieldCatalogue
 public meta import Lean
 
 /-!
@@ -323,41 +324,32 @@ def certifyJson (name : Name) (text : String)
         "evaluator", "analytic_witness"]
       let localKeys := CurveDataJson.localReductionFields
       let algebraicKeys := if CurveDataJson.inlineAnalyticRankField j then [] else ["rank"]
-      let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points",
-        "minimality", "local_data", "gens", "ngens", "torsion_generators",
-        "torsion_generator_orders", "torsion_structure", "torsion_primes", "intrinsic_torsion",
-        "rank_bounds",
-        "algebraic_rank", "infinite_order_points",
-        "independent_points", "independent_generator_points", "binvs", "cinvs",
-        "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
-        "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
-        "num_int_pts", "class_size", "class_deg", "isogeny_matrix", "isogeny_degrees",
-        "nonmax_primes", "nonmax_rad", "adelic_gens", "modell_image", "modell_images",
-        "serre_invariants",
-        "adelic_level", "adelic_index", "adelic_genus", "adelic_image",
-        "elladic_image", "elladic_images", "modm_images",
-        "lmfdb_number", "iso_nlabel", "lmfdb_iso", "lmfdb_label",
-        "Ciso", "Clabel", "Cnumber", "trace_hash",
-        "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
-        ["torsion_growth", "heights", "heights_evidence", "regulator", "regulator_evidence",
-          "padic_regulator", "real_period", "real_period_evidence", "tamagawa_product",
-          "sha_an", "sha_an_evidence", "sha", "sha_primes", "area", "area_evidence",
-          "faltings_height", "faltings_height_evidence", "stable_faltings_height",
-          "stable_faltings_height_evidence", "faltings_ratio", "faltings_index",
-          "degree", "manin_constant", "optimality", "iwdata", "iwp0"] ++
+      let contextual := ["rank", "analytic_rank", "abc_quality", "cm", "min_quad_twist_ainvs",
+        "min_quad_twist_disc", "szpiro_ratio", "special_value", "prime", "p", "prec", "val", "unit"]
+      let native := FieldCatalogue.columns.flatMap fun column =>
+        column.paths.filterMap fun path =>
+          path.json.head?.filter (fun key => !contextual.contains key)
+      let extensions := FieldCatalogue.extensions.filterMap fun path =>
+        match path.json with
+        | [key] => if key == "analytic_witness" then none else some key
+        | _ => none
+      let known := native ++ extensions ++ ["schema", "local_invariants", "heights_evidence",
+        "regulator_evidence", "padic_regulator", "real_period_evidence", "sha_an_evidence",
+        "area_evidence", "faltings_height_evidence", "stable_faltings_height_evidence"] ++
         algebraicKeys ++ localKeys ++
         (if CurveDataJson.hasFlatStoredPadicRegulator j then
           ["p", "prec", "val", "unit"] else []) ++
-          if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
-              (CurveDataJson.optionalData j "adelic_gens").isSome ||
-              (CurveDataJson.optionalData j "modell_image").isSome ||
-              (CurveDataJson.optionalData j "adelic_image").isSome ||
-              (CurveDataJson.optionalData j "elladic_image").isSome then ["prime"] else []
+        if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
+            (CurveDataJson.optionalData j "adelic_gens").isSome ||
+            (CurveDataJson.optionalData j "modell_image").isSome ||
+            (CurveDataJson.optionalData j "adelic_image").isSome ||
+            (CurveDataJson.optionalData j "elladic_image").isSome then ["prime"] else []
       let checkedAbcQuality := (← getEnv).contains (base ++ `abc_quality)
       let checkedCM := (← getEnv).contains (base ++ `cm)
       let checkedTwistEquation := (← getEnv).contains (base ++ `min_quad_twist_ainvs)
       let checkedTwistDiscriminant := (← getEnv).contains (base ++ `min_quad_twist_disc)
-      let checkedSzpiro := (← getEnv).contains (base ++ `szpiro_ratio_fact)
+      let szpiroName ← catalogueFactName base `modifiedSzpiroRatio
+      let checkedSzpiro := (← getEnv).contains szpiroName
       let checkedSpecialValue := (← getEnv).contains (base ++ `special_value_valid)
       let skipped := object.toList.filterMap fun (key, _) =>
         if known.contains key || (checkedRank && rankKeys.contains key) ||

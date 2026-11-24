@@ -1,6 +1,7 @@
 module
 
 public import VerifiedLcalc.Certificate.Json
+public meta import VerifiedLcalc.Certificate.FieldCatalogue
 public meta import Lean
 public meta import Mathlib.Tactic.ToExpr
 
@@ -14,6 +15,18 @@ open Lean Elab Command Meta EllipticCurve
 
 /-- Root qualification keeps generated declarations in the intended namespace. -/
 def rootIdent (name : Name) : Ident := mkIdent (`_root_ ++ name.eraseMacroScopes)
+
+/-- Resolve the emitted proof record for a catalogued witness field. -/
+def catalogueFactName (base field : Name) : CommandElabM Name := do
+  let some output := FieldCatalogue.outputFact field
+    | throwError "No certificate output registered for {field}"
+  return base ++ output
+
+/-- Resolve the soundness lemma used by a catalogue-backed check. -/
+def catalogueChecker (field : Name) : CommandElabM Ident := do
+  let some checker := FieldCatalogue.checker field
+    | throwError "No certificate checker registered for {field}"
+  return rootIdent checker
 
 deriving instance ToExpr for WeierstrassCurve
 deriving instance ToExpr for PrecisionPolicy

@@ -36,7 +36,7 @@ def certifyTraceHash (base : Name) : CommandElabM Unit := do
   withScope (fun scope => { scope with opts := scope.opts.set `maxRecDepth (6000 : Nat) }) do
     checked valid (← `(computeLmfdbTraceHash ($source).coefficients = $claim))
       (← `(by first | rfl | exact of_decide_eq_true rfl | decide +kernel))
-  let hash := base ++ `trace_hash_fact
+  let hash ← catalogueFactName base `traceHash
   emit (← `(def $(rootIdent hash) : TraceHashFact $curve :=
     Certification.traceHashFact $curve $source $claim $(rootIdent valid)))
 

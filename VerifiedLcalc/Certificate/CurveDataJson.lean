@@ -2,6 +2,7 @@ module
 
 public import VerifiedLcalc.Verification.CurveData
 public import VerifiedLcalc.Certificate.Json
+public import VerifiedLcalc.Certificate.FieldCatalogue
 public import Mathlib.Data.Int.Sqrt
 
 /-! Field-driven decoding of untrusted elliptic-curve data. Supported fields
@@ -29,6 +30,13 @@ def optional (j : Json) (key : String) : Option Json :=
 def optionalData (j : Json) (key : String) : Option Json :=
   (optional j key).bind fun value => if value == .null then none else some value
 
+/-- Resolve the native spelling of a submitted field. Compound rows still use
+their individual row decoders to preserve the context of shared columns. -/
+def nativeKey (field : Name) : Except String String :=
+  match FieldCatalogue.sourceKey field with
+  | some key => .ok key
+  | none => .error s!"No native source registered for {field}"
+
 /-- Read the five integral Weierstrass coefficients in order. -/
 def ainvs (j : Json) : Except String (List Int) := do
   let a ← array j 5
@@ -43,7 +51,8 @@ def equationOfAinvs (a : List Int) : Except String (WeierstrassCurve ℤ) := do
 /-- Use top-level or rank-witness `subject.ainvs`, rejecting conflicting models. -/
 def equation (j : Json) : Except String (WeierstrassCurve ℤ) := do
   let nested := optional j "analytic_witness"
-  let candidates := [optional j "ainvs",
+  let key ← nativeKey `equation
+  let candidates := [optional j key,
     (optional j "subject").bind (optional · "ainvs"),
     nested.bind (optional · "ainvs"),
     (nested.bind (optional · "subject")).bind (optional · "ainvs")]
@@ -141,6 +150,11 @@ def optionalValue (j : Json) (key : String) (decode : Json → Except String α)
   match optionalData j key with
   | none => return none
   | some value => return some (← decode value)
+
+/-- Decode the native JSON spelling of the specified witness projection. -/
+def optionalClaim (j : Json) (field : Name) (decode : Json → Except String α) :
+    Except String (Option α) := do
+  optionalValue j (← nativeKey field) decode
 
 /-- Read an exact integer and reject negative values. -/
 def nonnegativeInteger (j : Json) : Except String Nat := do
@@ -255,8 +269,9 @@ def torsionGrowthFieldClaim (j : Json) : Except String TorsionGrowthFieldClaim :
 
 /-- Decode the height array and its optional exact error radii. -/
 def canonicalHeightsClaim (j : Json) : Except String (Option CanonicalHeightsClaim) := do
-  let evidence := optionalData j "heights_evidence"
-  let some raw := optionalData j "heights" | do
+  let key ← nativeKey `canonicalHeights
+  let evidence := optionalData j (key ++ "_evidence")
+  let some raw := optionalData j key | do
     if evidence.isSome then throw "heights_evidence requires heights"
     return none
   let reported ← (← array raw 4096).toList.mapM exactReportedDecimal
@@ -266,8 +281,9 @@ def canonicalHeightsClaim (j : Json) : Except String (Option CanonicalHeightsCla
 
 /-- Decode a stored regulator report and optional explicit error evidence. -/
 def regulatorClaim (j : Json) : Except String (Option RegulatorClaim) := do
-  let evidence := optionalData j "regulator_evidence"
-  let some raw := optionalData j "regulator" | do
+  let key ← nativeKey `regulator
+  let evidence := optionalData j (key ++ "_evidence")
+  let some raw := optionalData j key | do
     if evidence.isSome then throw "regulator_evidence requires regulator"
     return none
   let reported ← exactReportedDecimal raw
@@ -289,16 +305,18 @@ def decimalEnclosureClaim (j : Json) (field : String) :
 
 /-- Decode a stored Taylor leading coefficient only with explicit error evidence. -/
 def specialLValueClaim (j : Json) : Except String (Option SpecialLValueClaim) := do
-  let some evidence := optionalData j "special_value_evidence" | return none
-  let reported ← exactReportedDecimal (← j.getObjVal? "special_value")
+  let key ← nativeKey `specialLValue
+  let some evidence := optionalData j (key ++ "_evidence") | return none
+  let reported ← exactReportedDecimal (← j.getObjVal? key)
   let error ← rationalValue (← evidence.getObjVal? "error")
   unless 0 ≤ error do throw "Expected a nonnegative special-value error"
   return some { reported, error }
 
 /-- Interpret the stored JSON decimal exactly when explicit error evidence is present. -/
 def abcQualityClaim (j : Json) : Except String (Option AbcQualityClaim) := do
-  let some evidence := optionalData j "abc_quality_evidence" | return none
-  let number ← (← j.getObjVal? "abc_quality").getNum?
+  let key ← nativeKey `abcQuality
+  let some evidence := optionalData j (key ++ "_evidence") | return none
+  let number ← (← j.getObjVal? key).getNum?
   unless number.exponent ≤ 512 && (toString number.mantissa).length ≤ 512 do
     throw "Oversized abc_quality decimal"
   let reported : Rat := (number.mantissa : Rat) / 10 ^ number.exponent
@@ -325,18 +343,18 @@ def inlineAnalyticRankField (j : Json) : Bool :=
 def algebraicRankClaim (j : Json) : Except String (Option Nat) := do
   let explicit ← optionalValue j "algebraic_rank" nonnegativeInteger
   if inlineAnalyticRankField j then return explicit
-  let native ← optionalValue j "rank" nonnegativeInteger
+  let native ← optionalClaim j `algebraicRank nonnegativeInteger
   if let (some a, some b) := (explicit, native) then
     unless a = b do throw "Conflicting algebraic rank claims"
   return explicit.or native
 
 /-- Decode the finite generator report with its stated LMFDB reduction modulus. -/
 def adelicGeneratorsClaim (j : Json) : Except String (Option AdelicGeneratorsClaim) :=
-  optionalValue j "adelic_gens" fun value => do
+  optionalClaim j `adelicGenerators fun value => do
     if let some prime ← optionalValue j "prime" nonnegativeInteger then
       unless prime == 0 do throw "adelic_gens requires the prime-zero row"
-    let level ← optionalValue j "adelic_level" nonnegativeInteger
-    let labelLevel ← optionalValue j "adelic_image" fun label => do
+    let level ← optionalClaim j `adelicLevel nonnegativeInteger
+    let labelLevel ← optionalClaim j `adelicImage fun label => do
       match (← label.getStr?).splitOn "." with
       | first :: _ :: _ => nonnegativeInteger (.str first)
       | _ => throw "Expected the level prefix of adelic_image"
@@ -358,46 +376,46 @@ def decode (j : Json) : Except String EllipticWitness := do
   let _ ← j.getObj?
   let equation ← equation j
   let isogenyEdge ← optionalValue j "isogeny_edge" isogenyEdgeClaim
-  let classSize ← optionalValue j "class_size" nonnegativeInteger
-  let classDegree ← optionalValue j "class_deg" nonnegativeInteger
-  let isogenyMatrix ← optionalValue j "isogeny_matrix" fun value => do
+  let classSize ← optionalClaim j `classSize nonnegativeInteger
+  let classDegree ← optionalClaim j `classDegree nonnegativeInteger
+  let isogenyMatrix ← optionalClaim j `isogenyMatrix fun value => do
     (← array value 128).toList.mapM fun row => do
       (← array row 128).toList.mapM nonnegativeInteger
-  let isogenyDegrees ← optionalValue j "isogeny_degrees" fun value => do
+  let isogenyDegrees ← optionalClaim j `isogenyDegrees fun value => do
     (← array value 128).toList.mapM nonnegativeInteger
-  let nonmaxPrimes ← optionalValue j "nonmax_primes" fun value => do
+  let nonmaxPrimes ← optionalClaim j `nonmaxPrimes fun value => do
     (← array value 256).toList.mapM nonnegativeInteger
-  let nonmaxRadical ← optionalValue j "nonmax_rad" nonnegativeInteger
+  let nonmaxRadical ← optionalClaim j `nonmaxRadical nonnegativeInteger
   let adelicGenerators ← adelicGeneratorsClaim j
-  let adelicLevel ← optionalValue j "adelic_level" nonnegativeInteger
-  let adelicIndex ← optionalValue j "adelic_index" nonnegativeInteger
-  let adelicGenus ← optionalValue j "adelic_genus" nonnegativeInteger
-  let adelicImage ← optionalValue j "adelic_image" fun value => do
+  let adelicLevel ← optionalClaim j `adelicLevel nonnegativeInteger
+  let adelicIndex ← optionalClaim j `adelicIndex nonnegativeInteger
+  let adelicGenus ← optionalClaim j `adelicGenus nonnegativeInteger
+  let adelicImage ← optionalClaim j `adelicImage fun value => do
     let prime ← optionalValue j "prime" nonnegativeInteger
     let some p := prime.or (if adelicGenerators.isSome then some 0 else none)
       | throw "adelic_image requires the prime-zero row"
     return (p, ← value.getStr?)
-  let modPrimeImage ← optionalValue j "modell_image" fun value => do
+  let modPrimeImage ← optionalClaim j `modPrimeImage fun value => do
     let some prime ← optionalValue j "prime" nonnegativeInteger
       | throw "modell_image requires the prime of the residual row"
     return (prime, ← value.getStr?)
-  let modPrimeImages ← optionalValue j "modell_images" fun value => do
+  let modPrimeImages ← optionalClaim j `modPrimeImages fun value => do
     (← array value 256).toList.mapM Json.getStr?
-  let padicImage ← optionalValue j "elladic_image" fun value => do
+  let padicImage ← optionalClaim j `padicImage fun value => do
     let some prime ← optionalValue j "prime" nonnegativeInteger
       | throw "elladic_image requires the prime of the local row"
     return (prime, ← value.getStr?)
-  let padicImages ← optionalValue j "elladic_images" fun value => do
+  let padicImages ← optionalClaim j `padicImages fun value => do
     (← array value 256).toList.mapM Json.getStr?
-  let modulusImages ← optionalValue j "modm_images" fun value => do
+  let modulusImages ← optionalClaim j `modulusImages fun value => do
     (← array value 256).toList.mapM Json.getStr?
-  let serreInvariants ← optionalValue j "serre_invariants" fun value => do
+  let serreInvariants ← optionalClaim j `serreInvariants fun value => do
     (← array value 256).toList.mapM fun row => do
       let triple ← array row 3
       unless triple.size == 3 do throw "Expected a Serre prime/weight/conductor triple"
       return (← nonnegativeInteger triple[0]!, ← nonnegativeInteger triple[1]!,
         ← nonnegativeInteger triple[2]!)
-  let catalogueAnalyticRank ← optionalValue j "analytic_rank" nonnegativeInteger
+  let catalogueAnalyticRank ← optionalClaim j `catalogueAnalyticRank nonnegativeInteger
   let mut primeCoefficients : Array (Nat × Int) := #[]
   if let some rows := optionalData j "ap" then
     for row in ← array rows 256 do
@@ -406,7 +424,8 @@ def decode (j : Json) : Except String EllipticWitness := do
       let p ← integer pair[0]!
       unless 2 ≤ p && p ≤ 10000 do throw "Prime index outside supported profile"
       primeCoefficients := primeCoefficients.push (p.toNat, ← integer pair[1]!)
-  if let some rows := optionalData j "aplist" then
+  let nativePrimeCoefficients := optionalData j (← nativeKey `primeCoefficients)
+  if let some rows := nativePrimeCoefficients then
     let values ← (← array rows 256).toList.mapM integer
     let primes := ((List.range 10001).filter EllipticCurve.isPrime).take values.length
     unless primes.length == values.length do throw "Insufficient supported prime indices"
@@ -418,7 +437,7 @@ def decode (j : Json) : Except String EllipticWitness := do
       let pair ← array row 2
       unless pair.size == 2 do throw "Expected an affine integer coordinate pair"
       integralCoordinates := integralCoordinates.push (← integer pair[0]!, ← integer pair[1]!)
-  let integralFiberRoots ← optionalValue j "xcoord_integral_points" fun rows => do
+  let integralFiberRoots ← optionalClaim j `integralFiberRoots fun rows => do
     (← array rows 4096).toList.mapM fun row => do
       let x ← integer row
       let b := equation.a₁ * x + equation.a₃
@@ -428,24 +447,24 @@ def decode (j : Json) : Except String EllipticWitness := do
     let b := equation.a₁ * x + equation.a₃
     integralCoordinates := (integralCoordinates.push (x, y)).push (x, -y - b)
   unless integralCoordinates.size ≤ 8192 do throw "Too many integral coordinates"
-  let numIntegralPoints ← optionalValue j "num_int_pts" nonnegativeInteger
-  let generatorCoordinates ← optionalValue j "gens" weightedCoordinates
-  let generatorCount ← optionalValue j "ngens" nonnegativeInteger
+  let numIntegralPoints ← optionalClaim j `numIntegralPoints nonnegativeInteger
+  let generatorCoordinates ← optionalClaim j `generatorCoordinates weightedCoordinates
+  let generatorCount ← optionalClaim j `generatorCount nonnegativeInteger
   let algebraicRank ← algebraicRankClaim j
-  let algebraicRankBounds ← optionalValue j "rank_bounds" fun value => do
+  let algebraicRankBounds ← optionalClaim j `algebraicRankBounds fun value => do
     let endpoints ← array value 2
     unless endpoints.size = 2 do throw "Expected two algebraic rank bounds"
     return (← nonnegativeInteger endpoints[0]!, ← nonnegativeInteger endpoints[1]!)
-  let torsionGeneratorCoordinates ← optionalValue j "torsion_generators" weightedCoordinates
+  let torsionGeneratorCoordinates ← optionalClaim j `torsionGeneratorCoordinates weightedCoordinates
   let torsionGeneratorOrders ← optionalValue j "torsion_generator_orders" fun value => do
     (← array value 4096).toList.mapM nonnegativeInteger
-  let torsionStructure ← optionalValue j "torsion_structure" fun value => do
+  let torsionStructure ← optionalClaim j `torsionStructure fun value => do
     (← array value 16).toList.mapM nonnegativeInteger
-  let torsionPrimes ← optionalValue j "torsion_primes" fun value => do
+  let torsionPrimes ← optionalClaim j `torsionPrimes fun value => do
     (← array value 16).toList.mapM nonnegativeInteger
   let numeric ← numericFields j
   let base := numeric.getD { equation }
-  let primeData := if (optionalData j "ap").isSome || (optionalData j "aplist").isSome
+  let primeData := if (optionalData j "ap").isSome || nativePrimeCoefficients.isSome
     then some primeCoefficients.toList else none
   let pointData :=
     if (optionalData j "integral_points").isSome ||
@@ -467,34 +486,34 @@ def decode (j : Json) : Except String EllipticWitness := do
   let bInvariants ← optionalValue j "binvs" bValues
   let cInvariants ← optionalValue j "cinvs" cValues
   let discriminant ← optionalValue j "discriminant" integer
-  let jInvariant ← optionalValue j "jinv" rationalValue
-  let lmfdbNumber ← optionalValue j "lmfdb_number" nonnegativeInteger
-  let isoNlabel ← optionalValue j "iso_nlabel" nonnegativeInteger
-  let lmfdbIso ← optionalValue j "lmfdb_iso" Json.getStr?
-  let lmfdbLabel ← optionalValue j "lmfdb_label" Json.getStr?
-  let traceHash ← optionalValue j "trace_hash" integer
-  let cremonaIso ← optionalValue j "Ciso" Json.getStr?
-  let cremonaLabel ← optionalValue j "Clabel" Json.getStr?
-  let cremonaNumber ← optionalValue j "Cnumber" nonnegativeInteger
+  let jInvariant ← optionalClaim j `jInvariant rationalValue
+  let lmfdbNumber ← optionalClaim j `lmfdbNumber nonnegativeInteger
+  let isoNlabel ← optionalClaim j `isoNlabel nonnegativeInteger
+  let lmfdbIso ← optionalClaim j `lmfdbIso Json.getStr?
+  let lmfdbLabel ← optionalClaim j `lmfdbLabel Json.getStr?
+  let traceHash ← optionalClaim j `traceHash integer
+  let cremonaIso ← optionalClaim j `cremonaIso Json.getStr?
+  let cremonaLabel ← optionalClaim j `cremonaLabel Json.getStr?
+  let cremonaNumber ← optionalClaim j `cremonaNumber nonnegativeInteger
   let abcQuality ← abcQualityClaim j
-  let complexMultiplication ← optionalValue j "cm" integer
-  let minimumTwistEquation ← optionalValue j "min_quad_twist_ainvs" fun value => do
+  let complexMultiplication ← optionalClaim j `complexMultiplication integer
+  let minimumTwistEquation ← optionalClaim j `minimumTwistEquation fun value => do
     equationOfAinvs (← ainvs value)
-  let minimumTwistDiscriminant ← optionalValue j "min_quad_twist_disc" integer
-  let modifiedSzpiroRatio ← decimalEnclosureClaim j "szpiro_ratio"
+  let minimumTwistDiscriminant ← optionalClaim j `minimumTwistDiscriminant integer
+  let modifiedSzpiroRatio ← decimalEnclosureClaim j (← nativeKey `modifiedSzpiroRatio)
   let torsionGrowthField ← optionalValue j "torsion_growth" torsionGrowthFieldClaim
   let canonicalHeights ← canonicalHeightsClaim j
   let regulator ← regulatorClaim j
-  let modularDegree ← optionalValue j "degree" nonnegativeInteger
-  let maninConstant ← optionalValue j "manin_constant" nonnegativeInteger
-  let optimality ← optionalValue j "optimality" nonnegativeInteger
-  let area ← decimalEnclosureClaim j "area"
-  let faltingsHeight ← decimalEnclosureClaim j "faltings_height"
-  let stableFaltingsHeight ← decimalEnclosureClaim j "stable_faltings_height"
-  let faltingsIndex ← optionalValue j "faltings_index" nonnegativeInteger
-  let faltingsRatio ← optionalValue j "faltings_ratio" nonnegativeInteger
-  let iwasawaData ← optionalValue j "iwdata" iwasawaDataClaims
-  let iwasawaThreshold ← optionalValue j "iwp0" nonnegativeInteger
+  let modularDegree ← optionalClaim j `modularDegree nonnegativeInteger
+  let maninConstant ← optionalClaim j `maninConstant nonnegativeInteger
+  let optimality ← optionalClaim j `optimality nonnegativeInteger
+  let area ← decimalEnclosureClaim j (← nativeKey `area)
+  let faltingsHeight ← decimalEnclosureClaim j (← nativeKey `faltingsHeight)
+  let stableFaltingsHeight ← decimalEnclosureClaim j (← nativeKey `stableFaltingsHeight)
+  let faltingsIndex ← optionalClaim j `faltingsIndex nonnegativeInteger
+  let faltingsRatio ← optionalClaim j `faltingsRatio nonnegativeInteger
+  let iwasawaData ← optionalClaim j `iwasawaData iwasawaDataClaims
+  let iwasawaThreshold ← optionalClaim j `iwasawaThreshold nonnegativeInteger
   let nested ← optionalValue j "padic_regulator" pure
   let flat := hasFlatStoredPadicRegulator j
   if flat && nested.isSome then
@@ -508,34 +527,34 @@ def decode (j : Json) : Except String EllipticWitness := do
       unit := ← integer (← report.getObjVal? "unit") }
   let padicRegulatorClassLabel ← row.mapM fun report =>
     optionalValue report "lmfdb_iso" Json.getStr?
-  let realPeriod ← decimalEnclosureClaim j "real_period"
-  let tamagawaProduct ← optionalValue j "tamagawa_product" nonnegativeInteger
-  let analyticSha ← decimalEnclosureClaim j "sha_an"
-  let sha ← optionalValue j "sha" nonnegativeInteger
-  let shaPrimes ← optionalValue j "sha_primes" fun value => do
+  let realPeriod ← decimalEnclosureClaim j (← nativeKey `realPeriod)
+  let tamagawaProduct ← optionalClaim j `tamagawaProduct nonnegativeInteger
+  let analyticSha ← decimalEnclosureClaim j (← nativeKey `analyticSha)
+  let sha ← optionalClaim j `sha nonnegativeInteger
+  let shaPrimes ← optionalClaim j `shaPrimes fun value => do
     (← array value 256).toList.mapM nonnegativeInteger
   let specialLValue ← specialLValueClaim j
   let jIntegral ← optionalValue j "j_integral" Json.getBool?
-  let potentialGoodReduction ← optionalValue j "potential_good_reduction" Json.getBool?
-  let discriminantSign ← optionalValue j "signD" integer
-  let minimalDiscriminantAbs ← optionalValue j "absD" nonnegativeInteger
-  let conductor ← optionalValue j "conductor" nonnegativeInteger
+  let potentialGoodReduction ← optionalClaim j `potentialGoodReduction Json.getBool?
+  let discriminantSign ← optionalClaim j `discriminantSign integer
+  let minimalDiscriminantAbs ← optionalClaim j `minimalDiscriminantAbs nonnegativeInteger
+  let conductor ← optionalClaim j `conductor nonnegativeInteger
   let rootNumber ← optionalValue j "global_root_number" integer
-  let dirichletCoefficients ← optionalValue j "anlist" fun value => do
+  let dirichletCoefficients ← optionalClaim j `dirichletCoefficients fun value => do
     let xs ← (← array value 256).toList.mapM integer
     match xs with
     | [] => return []
     | a₀ :: rest =>
       unless a₀ == 0 do throw "LMFDB anlist must start with a_0 = 0"
       return rest
-  let badPrimes ← optionalValue j "bad_primes" fun value => do
+  let badPrimes ← optionalClaim j `badPrimes fun value => do
     (← array value 256).toList.mapM nonnegativeInteger
-  let numBadPrimes ← optionalValue j "num_bad_primes" nonnegativeInteger
-  let semistable ← optionalValue j "semistable" Json.getBool?
-  let squarefreeDiscriminant ← optionalValue j "squarefree_disc" Json.getBool?
+  let numBadPrimes ← optionalClaim j `numBadPrimes nonnegativeInteger
+  let semistable ← optionalClaim j `semistable Json.getBool?
+  let squarefreeDiscriminant ← optionalClaim j `squarefreeDiscriminant Json.getBool?
   let localInvariants ← localReductionClaims j
-  let intrinsicTorsion ← optionalValue j "intrinsic_torsion" nonnegativeInteger
-  let torsion ← optionalValue j "torsion" nonnegativeInteger
+  let intrinsicTorsion ← optionalClaim j `intrinsicTorsion nonnegativeInteger
+  let torsion ← optionalClaim j `torsion nonnegativeInteger
   let torsionBound ← optionalValue j "torsion_bound" fun value => do
     let firstPrime ← nonnegativeInteger (← value.getObjVal? "first_prime")
     let secondPrime ← nonnegativeInteger (← value.getObjVal? "second_prime")

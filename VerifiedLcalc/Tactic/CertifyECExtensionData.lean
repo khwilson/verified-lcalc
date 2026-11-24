@@ -40,7 +40,7 @@ private def certifyTorsionGrowthField (base : Name) (proofs : Option Ident) :
   let equal := rootIdent (base ++ `torsion_growth_polynomial_matches)
   checked (base ++ `torsion_growth_polynomial_matches)
     (← `(($evidence).polynomial = ($report).polynomial)) (← `(by rfl))
-  let fact := rootIdent (base ++ `torsion_growth_field_fact)
+  let fact := rootIdent (← catalogueFactName base `torsionGrowthField)
   emit (← `(def $fact : TorsionGrowthFieldFact $curve := $evidence))
   checked (base ++ `torsion_growth_degree_matches)
     (← `(($fact).degree = ($report).degree))
@@ -73,13 +73,14 @@ private def certifyCanonicalHeights (base : Name) (proofs : Option Ident) : Comm
     (← `(List.ofFn ($evidence).2.reported = ($report).reported ∧
       ($report).errors.getD (List.ofFn ($evidence).2.error) = List.ofFn ($evidence).2.error))
     (← `(by constructor <;> first | rfl | decide +kernel))
-  let fact := rootIdent (base ++ `canonical_heights_fact)
+  let outputName ← catalogueFactName base `canonicalHeights
+  let fact := rootIdent outputName
   emit (← `(def $fact : CanonicalHeightFacts $points :=
     CanonicalHeightFacts.ofPointListEq
       (source := ($evidence).1) (target := ⟨($coordinates).length, $points⟩)
       ($evidence).2 (($equal).trans
         (CanonicalHeightFacts.pointCoordinates_ofFn_mk $coordinates $onCurve).symm)))
-  auditAxioms (base ++ `canonical_heights_fact)
+  auditAxioms outputName
 
 /-- Check the supplied field and canonical height claims using the same proof attachment. -/
 def certifyExtensionData (base : Name) (proofs : Option Ident) : CommandElabM Unit := do
