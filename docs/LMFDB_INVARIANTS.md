@@ -27,15 +27,15 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_classdata` | 8 | Checked coefficients concern the represented curve. With proved complete class evidence, the command checks the class size, maximum minimum degree and an ordered degree matrix. |
 | `ec_mwbsd` | 13 | Point membership, generator count, rank bounds and integral point fibers are in `certificate.algebraic`. Exhaustive integral-point data requires a proof covering every abscissa. |
 | `ec_localdata` | 10 | Checked local arithmetic facts are indexed by prime. Exact Kodaira and Tamagawa outputs depend on the reduction case. |
-| `ec_galrep` | 7 | The generator field is checked at the reported finite modulus in a proved torsion basis. G1 covers the remaining image data. |
+| `ec_galrep` | 7 | The generator field is checked at the reported finite modulus in a proved torsion basis. Supported residual labels identify exact images up to conjugacy. G1 covers the other image data. |
 | `ec_padic` | 5 | Stored class rows remain report-only. A curve-level encoding of the rank-zero display is checked as a p-adic ball at a good ordinary prime. |
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **53 of 85 distinct LMFDB column names** with the evidence
+The command covers **55 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
-has a checker gives 29 in `ec_curvedata`, 3 in `ec_classdata`, 10 in
-`ec_mwbsd`, 8 in `ec_localdata`, 1 in `ec_galrep`, and 2 in
+has a checker gives 30 in `ec_curvedata`, 3 in `ec_classdata`, 10 in
+`ec_mwbsd`, 8 in `ec_localdata`, 2 in `ec_galrep`, and 2 in
 `ec_torsion_growth`. Shared names such as `class_size` count once.
 Project-specific keys are excluded. The four ball coordinates shared with
 `ec_padic` can be checked for the curve-level rank-zero display, which

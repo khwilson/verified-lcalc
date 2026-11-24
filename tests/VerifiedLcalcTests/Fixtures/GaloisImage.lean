@@ -140,7 +140,8 @@ def splitModTwoAttachment : IntegralCurveProofs splitModel :=
     modPrimeImages := some { images := [splitModTwoLabel] } }
 
 certify_ec Residual40 from_json_string
-  r#"{ "ainvs":[0,0,0,-7,-6], "prime":2, "modell_image":"2Cs", "modell_images":["2Cs"] }"#
+  r#"{ "ainvs":[0,0,0,-7,-6], "prime":2, "modell_image":"2Cs", "modell_images":["2Cs"],
+       "discriminant":6400, "integral_points":[[-2,0]] }"#
   with_proofs splitModTwoAttachment
 
 certify_ec Residual40Lean from {

@@ -30,8 +30,10 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Cu
   finite transcript validity, potential good reduction, and prime-indexed and consecutive
   L-function coefficients. Its modular facts require an explicit arithmetic realization.
 * `FiniteGaloisImageFact` and `PadicGaloisImageFact` give exact images in supplied bases.
-* `NonmaxPrimeSupportFact` proves complete non-CM exceptional support and determines
-  the radical as the product of those primes.
+* `ModPrimeImageFact` identifies the exact residual image up to conjugacy. A checked
+  `ModPrimeImageListFact` can also carry exhaustive non-CM `ModPrimeImageCoverage`.
+* `NonmaxPrimeSupportFact` proves complete non-CM exceptional support for the integral
+  Tate-module images and determines the radical as the product of those primes.
 * `AdelicGaloisImageClaim`, `PrimeGaloisImageClaim`, `SerreInvariantClaim` and
   `GaloisImageClaims` hold producer data whose interpretation needs further comparison theorems.
 -/

@@ -45,6 +45,7 @@ example :
     (((entry.finiteImage.modulus : ℕ), entry.label) = (2, "2Cs")) :=
   Residual40.modell_image
 
+/-- The imported 40.a2 certificate identifies the subgroup of the exact mod-2 image. -/
 theorem residual40_conjugate :
     let entry := Residual40.certificate.modPrimeImage.get (by rfl)
     ∃ c : Matrix.GeneralLinearGroup (Fin 2) (ZMod (entry.finiteImage.modulus : ℕ)),
@@ -56,10 +57,12 @@ theorem residual40_conjugate :
   simp only [Option.some.injEq, Prod.mk.injEq, true_and] at hr
   simpa [← hr] using conjugate
 
+/-- Every submitted label in the 40.a2 curve-level list has a checked image. -/
 theorem residual40_list_entry (label : String) (h : label ∈ Residual40.claimed_modell_images) :
     let list := Residual40.certificate.modPrimeImages.get (by rfl)
     ∃ entry ∈ list.images, entry.label = label := by
   apply ModPrimeImageListFact.exists_of_mem_labels
+  change label ∈ Residual40.modell_images_fact.images.map ModPrimeImageFact.label
   rw [Residual40.modell_images]
   exact h
 
@@ -68,19 +71,18 @@ example : (Residual40.certificate.modPrimeImages.get (by rfl)).coverage = none :
 example : Residual40Lean.claimed_modell_image = Residual40.claimed_modell_image := rfl
 example : Residual40Lean.claimed_modell_images = Residual40.claimed_modell_images := rfl
 
-section
-
-variable {subject : WeierstrassCurve ℤ} [h : EmptyListResidualImages subject]
-
-theorem residual37_surjective (p : Nat.Primes) :
+/-- With geometric evidence, the empty 37.a1 list proves surjectivity at every prime. -/
+theorem residual37_surjective {subject : WeierstrassCurve ℤ} [h : EmptyListResidualImages subject]
+    (p : Nat.Primes) :
     ∃ image : FiniteGaloisImageFact EmptyResidual37.curve,
       (image.modulus : ℕ) = (p : ℕ) ∧ Subgroup.closure {g | g ∈ image.generators} = ⊤ := by
   obtain ⟨image, hp, hproper⟩ :=
-    ((EmptyResidual37.certificate.modPrimeImages.get (by rfl)).coverage.get
+    (((EmptyResidual37.certificate (h := h)).modPrimeImages.get (by rfl)).coverage.get
       (by rfl)).down.complete p
-  exact ⟨image, hp, not_ne_iff.mp fun hne => by simpa using hproper.mpr hne⟩
-
-end
+  refine ⟨image, hp, not_ne_iff.mp fun hne => ?_⟩
+  obtain ⟨entry, he, _⟩ := hproper.mpr hne
+  change entry ∈ ([] : List _) at he
+  exact List.not_mem_nil he
 
 section
 
