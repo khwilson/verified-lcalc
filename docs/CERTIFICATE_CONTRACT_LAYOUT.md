@@ -115,9 +115,10 @@ check existing downstream proofs.
 
 ## Companion imports
 
-The witness audit keeps the nine subject files and all 123 witness structures.
-The production inventory has 199 modules, down from 202. The four direct
-imports below move to existing companions. Declaration names stay the same.
+The strict witness audit kept the nine subject files and all 123 witness
+structures at that revision and reduced its production modules from 202 to
+199. The direct imports below moved to existing companions. Declaration names
+stay the same.
 
 | Previous module | Current module |
 | --- | --- |
@@ -125,6 +126,10 @@ imports below move to existing companions. Declaration names stay the same.
 | `VerifiedLcalc.Verification.CremonaSingleton` | `VerifiedLcalc.Verification.LmfdbCatalogue` |
 | `VerifiedLcalc.Verification.IntrinsicTorsion` | `VerifiedLcalc.Verification.TorsionBoundFacts` |
 | `VerifiedLcalc.Verification.TraceHash` | `VerifiedLcalc.Verification.CurveData` |
+
+The local row checks later moved `Certificate.LocalInvariantSpecs` into
+`Verification.StoredInvariants`. This removed one module from the verifier's
+import closure, with the raw witness and finite-prime imports unchanged.
 
 The receiving modules already imported every dependency of the moved
 declarations. The standalone internal trace-hash command helper inherits 37

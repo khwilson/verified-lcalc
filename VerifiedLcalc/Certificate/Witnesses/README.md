@@ -6,6 +6,33 @@ The index covers **85 distinct column names** across **101 table-qualified colum
 
 All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **85 of 85 distinct names** and **100 of 101 table-qualified columns** in the stated cases. The separate `ec_torsion_growth.torsion` interpretation still needs full invariant-factor evidence. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
 
+## How a field reaches the certificate
+
+JSON decoding or a Lean term supplies an `EllipticWitness`. An optional
+`with_proofs` attachment supplies the mathematical evidence in
+[`IntegralCurveProofs`](EllipticCertificate.lean). The shared `certify_ec`
+dispatch checks the requested fields and assembles an `EllipticCertificate`.
+Import the certificate's module to reuse its data and proofs through
+`Name.certificate`.
+
+For example, in the [179.a1 JSON fixture](../../../tests/fixtures/lmfdb/179.a1.json)
+the row at prime 179 has `"tamagawa_number": 1`. It is decoded by
+[`CurveDataJson.localReductionClaim`](../CurveDataJson.lean) into a
+[`LocalReductionClaim`](InputData.lean), the same row a Lean caller can
+build. The row goes in `EllipticWitness.localInvariants`.
+[`LocalReductionClaim.checkTamagawa` and `tamagawa_correct`](../../Verification/StoredInvariants.lean)
+check it and prove the supported equality. [`checkedTamagawaFacts`](../ArithmeticFacts.lean)
+keeps the checked rows as
+`Name.certificate.arithmetic.tamagawa : List (LocalTamagawaFact Name.curve)`.
+Each [`LocalTamagawaFact.correct`](FinitePrimes.lean) proves equality
+with TauCeti's `tamagawaNumberAt` at that row's prime.
+[Imported 179.a1 consumer](../../../tests/consumers/LmfdbCI.lean).
+
+The certificate-level `LocalReductionClaim.TamagawaSpec`, `KodairaSpec`
+and `RootNumberSpec` live beside their checkers and soundness proofs.
+Direct callers of the former `VerifiedLcalc.Certificate.LocalInvariantSpecs`
+module can import `VerifiedLcalc.Verification.StoredInvariants`.
+
 ## Curve data (`ec_curvedata`)
 
 | LMFDB field | Table(s) | Status | Witness and scope |
