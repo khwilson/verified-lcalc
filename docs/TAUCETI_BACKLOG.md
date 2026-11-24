@@ -513,6 +513,31 @@ classification supplies a geometric premise.
   [LMFDB label convention](https://www.lmfdb.org/knowledge/show/ec.q.lmfdb_label)
   · [Sage base-26 producer](https://github.com/sagemath/sage/blob/develop/src/sage/databases/cremona.py#L168-L236)
 
+## TC-25 — Faltings order and intrinsic torsion
+
+The Faltings index counts exact predecessors in the proved complete ordered
+class. For ties in Faltings height, order by native LMFDB number, which is the
+lexicographic order of the five coefficients of the reduced minimal equations.
+To derive witnesses, supply certified comparisons of complex areas of
+globally minimal isogenous equations, including exact equality when areas tie.
+Strict rational enclosures can separate distinct heights, while the tie case
+needs an exact area comparison.
+[Catalogue sort rule](https://github.com/JohnCremona/ecdata/blob/6fedd3ab463a70e52061ebc0b04832ad19fd2e01/scripts/files.py#L739-L767)
+
+The intrinsic torsion checker proves order one from trivial full rational
+torsion. For general elliptic curves over ℚ, define the symmetric pairing on
+rational torsion with values in ℚˣ ⊗ ℚ/ℤ from functions with divisor
+`n(P) − n(O)` evaluated by residue-field norms on disjoint degree-zero
+divisors representing `Q − O`. Prove choice independence and biadditivity.
+For a proved finite rational torsion presentation, evaluate the pairing on
+its generators, then compute the exact kernel and its cardinality. A useful
+test has nontrivial rational torsion and a proper radical. The pinned TauCeti
+revision supplies the divisor and Weil pairing infrastructure, including
+`Isogeny/DivisorPullback.lean`. The target pairing uses rational divisors
+and a tensor-valued evaluation.
+[LMFDB definition](https://www.lmfdb.org/knowledge/show/ec.intrinsic_torsion)
+· [Yamazaki, Yang, Yoo and Yu](https://arxiv.org/abs/2512.00787v3)
+
 ## TC-27 — historical Cremona ordering
 
 - **Roadmap target:** [LMFDB I1](roadmaps/LMFDB_Q_CERTIFICATION.md).

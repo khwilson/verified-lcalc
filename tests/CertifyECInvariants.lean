@@ -645,7 +645,7 @@ run_cmd do
   let analytic := #[`centralResult, `derivativeResult, `catalogueAnalyticRank,
     `specialLValue, `realPeriod, `analyticSha, `sha, `shaPrimes, `padicRegulator]
   let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionPrimes,
-    `torsionGeneratorOrders, `torsionGrowthField]
+    `torsionGeneratorOrders, `torsionGrowthField, `intrinsicTorsion]
   let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do
     let fields := Lean.getStructureFields (← getEnv) record
     for field in fields do
@@ -656,7 +656,8 @@ run_cmd do
         throwError "Remove obsolete witness field {record}.{field} from the certificate inventory"
   let isogeny := #[`isogenyEdge, `classSize, `classDegree, `isogenyDegrees, `isogenyMatrix]
   let geometry := #[`complexMultiplication, `minimumTwistEquation, `minimumTwistDiscriminant,
-    `modifiedSzpiroRatio, `area, `faltingsHeight, `stableFaltingsHeight, `faltingsRatio]
+    `modifiedSzpiroRatio, `area, `faltingsHeight, `stableFaltingsHeight,
+    `faltingsRatio, `faltingsIndex]
   let galois := #[`nonmaxPrimes, `nonmaxRadical, `adelicGenerators, `modPrimeImage, `modPrimeImages]
   cover ``EllipticWitness
     (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++
