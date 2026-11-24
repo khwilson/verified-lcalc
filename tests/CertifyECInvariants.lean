@@ -625,6 +625,15 @@ certify_ec FullCyclicFamily from
     torsionGeneratorOrders := some [5, 5] }
 
 private def fullCyclicFamily := FullCyclicFamily.certificate.torsion
+
+-- Follow the registered per-generator check to its declaration on an actual certificate.
+run_cmd do
+  let some path := FieldCatalogue.extensions.find? (·.json == ["torsion_generator_orders"])
+    | throwError "Missing torsion generator orders route"
+  let some suffix := path.check | throwError "Missing per-generator order check"
+  unless (← getEnv).contains (`FullCyclicFamily ++ suffix) do
+    throwError "Missing registered order check FullCyclicFamily.{suffix}"
+
 private def fullCyclicPoints := fullCyclicFamily.generators.getD ⟨0, Fin.elim0⟩
 private def fullCyclicPresentation := fullCyclicFamily.presentation.get (by decide +kernel)
 

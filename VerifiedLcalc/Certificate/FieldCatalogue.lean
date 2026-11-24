@@ -646,7 +646,7 @@ def extensions : List Path :=
       "Divisibility by the gcd of the two checked good-prime point counts."
       (verify := vl[`Certification.torsionDivisorFacts_of_check]),
     checkedPath ["torsion_generator_orders"] [vl[`EllipticWitness.torsionGeneratorOrders]]
-      `torsion.exact_order
+      `torsion_generators.exact_order
       [vl[`EllipticCertificate.torsion], vl[`TorsionWitness.orders]]
       "Exact orders on the indexed submitted generators."
       (verify := vl[`EllipticWitness.exactOrderCheck_sound]),
