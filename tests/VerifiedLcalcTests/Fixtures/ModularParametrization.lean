@@ -35,7 +35,7 @@ theorem conductor11 : Ideal.absNorm ((curve11a2.baseChange ℚ).algorithmicCondu
   simp
 
 /-- Mathematical inputs for the pointed genus-one description of the conductor-eleven curve. -/
-class GeometricModel11 (level : ℕ) where
+class GeometricModel11 (level : outParam ℕ) where
   /-- The cusp form matches all actual Fourier coefficients of the elliptic curve. -/
   realization : ModularRealization curve11a2
   /-- The degree-one realization is at the indicated level. -/
