@@ -429,6 +429,10 @@ def decode (j : Json) : Except String EllipticWitness := do
   let torsionGrowthField ← optionalValue j "torsion_growth" torsionGrowthFieldClaim
   let canonicalHeights ← canonicalHeightsClaim j
   let regulator ← regulatorClaim j
+  let area ← decimalEnclosureClaim j "area"
+  let faltingsHeight ← decimalEnclosureClaim j "faltings_height"
+  let stableFaltingsHeight ← decimalEnclosureClaim j "stable_faltings_height"
+  let faltingsRatio ← optionalValue j "faltings_ratio" nonnegativeInteger
   let realPeriod ← decimalEnclosureClaim j "real_period"
   let tamagawaProduct ← optionalValue j "tamagawa_product" nonnegativeInteger
   let analyticSha ← decimalEnclosureClaim j "sha_an"
@@ -487,6 +491,10 @@ def decode (j : Json) : Except String EllipticWitness := do
     torsionGrowthField
     canonicalHeights
     regulator
+    area
+    faltingsHeight
+    stableFaltingsHeight
+    faltingsRatio
     realPeriod
     tamagawaProduct
     analyticSha

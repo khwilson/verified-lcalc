@@ -93,6 +93,10 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `num_int_pts` | `numIntegralPoints` | Exact cardinality theorem from supplied exhaustive `IntegralXSupport`; available at `certificate.algebraic.completeIntegralPoints` with finite-set completeness and `Finite` evidence. Without support it is unverified, but a count below the number of distinct checked points or seed-fiber solutions is rejected. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
 | `rank`, `rank_bounds` | `algebraicRank`, `algebraicRankBounds` | Verify supplied endpoints against a typed proof of bounds on the actual Mordell–Weil rank. A singleton proof gives exact rank. |
+| `area` | `area` | Rational enclosure of the Euclidean covolume in ℂ of the globally minimal equation's normalized period lattice. |
+| `faltings_height` | `faltingsHeight` | Rational enclosure of `−log(area)/2` on the globally minimal equation. |
+| `stable_faltings_height` | `stableFaltingsHeight` | Rational enclosure of the Faltings height plus `log(denominator(j)/abs(Δ))/12`. |
+| `faltings_ratio` | `faltingsRatio` | Exact positive integer quotient of the greatest area of a globally minimal representative in the proved complete rational isogeny class by the input area. |
 | `real_period` | `realPeriod` | A supplied `RealPeriodFact` at `certificate.realPeriod` bounds the full minimal real period, including both real components when present. |
 | `tamagawa_product` | `tamagawaProduct` | A supplied `TamagawaProductFact` at `certificate.tamagawaProduct` proves the exact intrinsic product over all rational finite places. |
 | `sha_an` | `analyticSha` | A supplied or composed `AnalyticShaFact` at `certificate.analyticSha` encloses the analytic BSD quotient for an explicit modular realization, with exact analytic order and positive denominator. |
