@@ -1,4 +1,11 @@
-# Temporary modularity assumption
+# History of the temporary assumptions
+
+The [current assumptions guide](../VerifiedLcalc/Assumptions/README.md) summarizes
+the active declarations and audit commands. This page records the earlier
+statements and later changes. Batch, registry and cache installation counts
+refer to the retired implementation preserved at baseline `fcdc4f2`.
+
+## Original modularity statement (2026-11-17)
 
 On 2026-11-17 the user explicitly authorized a temporary axiom for the missing
 curve-to-modular-form connection. This was the project's first exception to its
@@ -11,7 +18,7 @@ The axiom is named:
 VerifiedLcalc.Assumptions.ellipticModularity
 ```
 
-Its complete proposition is `EllipticModularity`, defined in
+The proposition at that stage was `EllipticModularity`, defined in
 `VerifiedLcalc/EllipticCurve/Modularity/Realization.lean`. For every integral
 Weierstrass equation with nonzero discriminant it asserts the existence of a
 modular realization consisting of:
@@ -34,8 +41,8 @@ modular realization consisting of:
   This general semistable compatibility was explicitly authorized by the user
   on 2026-11-17; it is assumed, not proved here.
 
-Outside that semistable criterion, the level and sign remain existentially
-supplied by a realization. The assumption
+Outside that semistable criterion, the original statement supplied the level
+and sign existentially. That statement
 does not identify an arbitrary caller-supplied N or sign with these values. It
 does not assume a numerical interval, tail bound, derivative evaluation, BSD,
 or any exact vanishing inferred from the precision cutoff.
