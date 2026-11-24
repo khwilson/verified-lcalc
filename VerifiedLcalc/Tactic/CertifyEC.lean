@@ -318,7 +318,8 @@ def certifyJson (name : Name) (text : String)
         "nonmax_primes", "nonmax_rad", "adelic_gens",
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
         ["torsion_growth", "heights", "heights_evidence", "regulator", "regulator_evidence",
-          "padic_regulator", "real_period", "real_period_evidence", "tamagawa_product", "sha_an", "sha_an_evidence",
+          "padic_regulator", "real_period", "real_period_evidence", "tamagawa_product",
+          "sha_an", "sha_an_evidence",
           "sha", "sha_primes"] ++
         algebraicKeys ++ localKeys ++
           if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
