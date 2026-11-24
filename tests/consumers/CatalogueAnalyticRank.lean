@@ -44,6 +44,11 @@ certify_ec RankWithNoPayload from_json_string
 certify_ec RankWithNoArithmetic from
   { Curve37.witness with minimality := none, localData := none }
 
+example : RankWithNoPayload.witness.algebraicRank = some 4 := rfl
+example : RankWithNoPayload.witness.catalogueAnalyticRank = some 2 := rfl
+example : RankWithNoPayload.certificate.analytic.rank.isNone = true := rfl
+example : RankWithNoArithmetic.certificate.analytic.rank.isNone = true := rfl
+
 run_cmd do
   for base in [`RankWithNoPayload, `RankWithNoArithmetic] do
     if (← getEnv).contains (base ++ `catalogue_rank) then

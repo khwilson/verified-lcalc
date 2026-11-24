@@ -5,13 +5,14 @@ public import VerifiedLcalc.Verification.TorsionBoundFacts
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public import VerifiedLcalc.Tactic.CertifyECArithmeticFacts
 public import VerifiedLcalc.Tactic.CertifyECAnalyticFacts
+public meta import VerifiedLcalc.Certificate.FieldCatalogue
 public meta import Lean
 
 /-! Assemble the public certificate from the facts the command has already audited. -/
 
 public meta section
 namespace VerifiedLcalc.CertifyEC
-open Lean Elab Command Meta
+open Lean Elab Command Meta Parser.Term
 
 private def invariantValue (base label : Name) : CommandElabM (TSyntax `term) := do
   let theoremName := base ++ label
@@ -129,7 +130,7 @@ private def completeIntegralPointsTerm (base : Name) : CommandElabM (TSyntax `te
   `(none)
 
 private def optionalFactTerm (base field : Name) : CommandElabM (TSyntax `term) := do
-  let name := base ++ field
+  let name ← catalogueFactName base field
   if (← getEnv).contains name then
     `(some $(rootIdent name))
   else
@@ -140,7 +141,7 @@ private def algebraicFactsTerm (base : Name) : CommandElabM (TSyntax `term) := d
   let fibers ← integralYFiberTerm base
   let completeIntegralPoints ← completeIntegralPointsTerm base
   let generators ← rationalPointsTerm (base ++ `generators)
-  let heights ← optionalFactTerm base `canonical_heights_fact
+  let heights ← optionalFactTerm base `canonicalHeights
   let infinite ← infiniteOrderFactsTerm base
   let independent ← independenceFactsTerm base `independent_points_eq
   let independentGenerators ← independenceFactsTerm base `independent_generator_points_eq
@@ -201,6 +202,25 @@ private def torsionWitnessTerm (base : Name) (curve : Ident) : CommandElabM (TSy
     cardinality := $exactCardinality
     primeSupport := $primeSupport })
 
+-- The specialized assemblers construct indexed records from several
+-- declarations. Direct optional slots reuse one checked record per projection.
+private def directFacts (specialized : Array Name) :
+    CommandElabM (Array (Name × Name)) := do
+  let paths := FieldCatalogue.columns.flatMap (·.paths) ++ FieldCatalogue.extensions
+  let mut facts : NameMap Name := {}
+  let mut slots := #[]
+  for path in paths do
+    if let (some (.str owner field), some fact) := (path.output.head?, path.fact) then
+      let slot := Name.mkSimple field
+      if owner == ``EllipticCertificate && !specialized.contains slot then
+        if let some old := facts.find? slot then
+          unless old == fact do
+            throwError "Conflicting certificate facts {old} and {fact} for {slot}"
+        else
+          facts := facts.insert slot fact
+          slots := slots.push (slot, fact)
+  return slots
+
 /-- Emit the indexed public certificate with a standard-axiom dependency audit. -/
 def certifyRecord (base : Name) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
@@ -214,8 +234,6 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let arithmetic ← arithmeticFactsTerm base curve
   let analytic ← analyticFactsTerm base curve
   let torsion ← torsionWitnessTerm base curve
-  let intrinsicTorsion ← optionalFactTerm base `intrinsic_torsion_fact
-  let torsionGrowthField ← optionalFactTerm base `torsion_growth_field_fact
   let name := base ++ `certificate
   let certificate := rootIdent name
   let edgeName := base ++ `degree_two_isogeny
@@ -226,72 +244,27 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let isogenyClass ← if (← getEnv).contains className then
     `(some ⟨$(rootIdent className), ($(rootIdent (base ++ `isogeny_class_evidence))).ordering⟩)
   else `(none)
-  let nonmaxPrimes ← optionalFactTerm base `nonmax_prime_support
-  let adelicGenerators ← optionalFactTerm base `adelic_generator_fact
-  let adelicImage ← optionalFactTerm base `adelic_image_certificate
-  let modPrimeImage ← optionalFactTerm base `modell_image_fact
-  let modPrimeImages ← optionalFactTerm base `modell_images_fact
-  let padicImage ← optionalFactTerm base `elladic_image_fact
-  let padicImages ← optionalFactTerm base `elladic_images_fact
-  let modulusImages ← optionalFactTerm base `modm_images_fact
-  let serreInvariants ← optionalFactTerm base `serre_invariants_fact
-  let cm ← optionalFactTerm base `cm_fact
-  let twist ← optionalFactTerm base `minimum_quadratic_twist_evidence
-  let szpiroRatio ← optionalFactTerm base `szpiro_ratio_fact
-  let faltingsIndex ← optionalFactTerm base `faltings_index_fact
-  let modularParametrization ← optionalFactTerm base `modular_parametrization_fact
-  let iwasawa ← optionalFactTerm base `iwasawa_fact
-  let periodGeometry ← optionalFactTerm base `period_geometry_fact
-  let realPeriod ← optionalFactTerm base `real_period_fact
-  let tamagawaProduct ← optionalFactTerm base `tamagawa_product_fact
-  let analyticSha ← optionalFactTerm base `analytic_sha_fact
-  let roundedAnalyticSha ← optionalFactTerm base `rounded_analytic_sha_fact
   let catalogueName := base ++ `lmfdb_catalogue
   let catalogue ← if (← getEnv).contains catalogueName then
     `($(rootIdent catalogueName))
   else `({})
-  let traceHash ← optionalFactTerm base `trace_hash_fact
-  let cremonaCatalogue ← optionalFactTerm base `cremona_catalogue_fact
-  let record ← `({
-    nonsingular := $nonsingular
-    equationFacts := $equationFacts
-    rational := $rational
-    algebraic := $algebraic
-    arithmetic := $arithmetic
-    analytic := $analytic
-    torsion := $torsion
-    intrinsicTorsion := $intrinsicTorsion
-    torsionGrowthField := $torsionGrowthField
-    isogeny := $isogeny
-    isogenyClass := $isogenyClass
-    lmfdbCatalogue := $catalogue
-    traceHash := $traceHash
-    cremonaCatalogue := $cremonaCatalogue
-    nonmaxPrimes := $nonmaxPrimes
-    adelicGenerators := $adelicGenerators
-    adelicImage := $adelicImage
-    modPrimeImage := $modPrimeImage
-    modPrimeImages := $modPrimeImages
-    padicImage := $padicImage
-    padicImages := $padicImages
-    modulusImages := $modulusImages
-    serreInvariants := $serreInvariants
-    complexMultiplication := $cm
-    minimumQuadraticTwist := $twist
-    modifiedSzpiroRatio := $szpiroRatio
-    faltingsIndex := $faltingsIndex
-    modularParametrization := $modularParametrization
-    iwasawa := $iwasawa
-    periodGeometry := $periodGeometry
-    realPeriod := $realPeriod
-    tamagawaProduct := $tamagawaProduct
-    analyticSha := $analyticSha
-    roundedAnalyticSha := $roundedAnalyticSha })
+  let specialized : Array (Name × TSyntax `term) := #[
+    (`nonsingular, ← `($nonsingular)), (`equationFacts, equationFacts),
+    (`rational, rational), (`algebraic, algebraic), (`arithmetic, arithmetic),
+    (`analytic, analytic), (`torsion, torsion), (`isogeny, isogeny),
+    (`isogenyClass, isogenyClass), (`lmfdbCatalogue, catalogue)]
+  let mut fields ← specialized.mapM fun (slot, value) =>
+    `(structInstField| $(mkIdent slot):ident := $value)
   let env ← getEnv
-  if env.contains edgeName || env.contains className ||
-      env.contains (base ++ `period_geometry_fact) ||
-      env.contains (base ++ `modular_parametrization_fact) ||
-      env.contains (base ++ `iwasawa_fact) then
+  let mut needsNoncomputable := env.contains edgeName || env.contains className
+  for (slot, fact) in ← directFacts (specialized.map Prod.fst) do
+    let decl := base ++ fact
+    if env.contains decl then
+      fields := fields.push
+        (← `(structInstField| $(mkIdent slot):ident := some $(rootIdent decl)))
+      needsNoncomputable := needsNoncomputable || isNoncomputable env decl
+  let record ← `({ $fields:structInstField,* })
+  if needsNoncomputable then
     emit (← `(noncomputable def $certificate : EllipticCertificate $curve := $record))
   else
     emit (← `(def $certificate : EllipticCertificate $curve := $record))

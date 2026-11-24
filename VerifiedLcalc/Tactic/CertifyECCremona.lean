@@ -73,7 +73,7 @@ def certifyCremona (base : Name) : CommandElabM Unit := do
   else do
     if numberClaim.isSome then logInfo m!"Unverified {base} Cnumber: supply a singleton class"
     `(none)
-  let fact := rootIdent (base ++ `cremona_catalogue_fact)
+  let fact := rootIdent (← catalogueFactName base `cremonaLabel)
   emit (← `(def $fact : CremonaSingletonFacts $curve :=
     { evidence := $witness, isoLabel := $iso, curveLabel := $label, number := $number }))
 

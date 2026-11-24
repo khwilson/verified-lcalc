@@ -23,7 +23,7 @@ private def certifyCM (base : Name) (curve : Ident) (attachment : Option Ident) 
   let some fact ← attachedFact attachment `complexMultiplication |
     if claim.isSome then logInfo m!"Unverified {base} cm: supply the geometric endomorphism ring"
     return
-  let name := base ++ `cm_fact
+  let name ← catalogueFactName base `complexMultiplication
   let cm := rootIdent name
   emit (← `(def $cm : ComplexMultiplicationFacts $curve := $fact))
   auditAxioms name
@@ -40,7 +40,7 @@ private def certifyMinimumTwist (base : Name) (curve : Ident) (attachment : Opti
     if equation.isSome || disc.isSome then
       logInfo m!"Unverified {base} quadratic twist: supply minimum-conductor twist evidence"
     return
-  let evidenceName := base ++ `minimum_quadratic_twist_evidence
+  let evidenceName ← catalogueFactName base `minimumTwistEquation
   let evidence := rootIdent evidenceName
   emit (← `(def $evidence : MinimumQuadraticTwistEvidence $curve := $fact))
   auditAxioms evidenceName
@@ -73,7 +73,7 @@ private def certifyModifiedSzpiroRatio (base : Name) (curve : Ident) (attachment
     (← `(Certification.modifiedSzpiroRatioValid $curve ($arithmetic).conductor
       ($report).reported $error = true))
     (← `(by decide +kernel))
-  let name := base ++ `szpiro_ratio_fact
+  let name ← catalogueFactName base `modifiedSzpiroRatio
   let fact := rootIdent name
   emit (← `(def $fact : ModifiedSzpiroRatioFacts $curve :=
     Certification.modifiedSzpiroRatioFactsOfCheck $curve $arithmetic ($report).reported
@@ -101,7 +101,7 @@ private def checkPeriodEnclosure (base input label field : Name) (fact : Option 
 private def certifyPeriodGeometry (base : Name) (curve : Ident) (attachment : Option Ident) :
     CommandElabM Unit := do
   let geometry ← if let some fact ← attachedFact attachment `periodGeometry then do
-    let name := base ++ `period_geometry_fact
+    let name ← catalogueFactName base `area
     let geometry := rootIdent name
     emit (← `(noncomputable def $geometry : PeriodGeometryFacts $curve := $fact))
     auditAxioms name
@@ -132,7 +132,7 @@ private def certifyFaltingsIndex (base : Name) (curve : Ident) (attachment : Opt
     if report.isSome then
       logInfo m!"Unverified {base} faltings_index: supply the exact Faltings order in the class"
     return
-  let name := base ++ `faltings_index_fact
+  let name ← catalogueFactName base `faltingsIndex
   let fact := rootIdent name
   emit (← `(def $fact : FaltingsIndexFact $curve := $evidence))
   auditAxioms name
@@ -186,7 +186,7 @@ private def certifyModularParametrization (base : Name) (curve : Ident)
       let proof := rootIdent name
       `(some ⟨$report, $proof⟩)
   else `(none)
-  let name := base ++ `modular_parametrization_fact
+  let name ← catalogueFactName base `modularDegree
   let result := rootIdent name
   emit (← `(noncomputable def $result : CertifiedModularParametrization $curve :=
     ⟨$evidence, $degreeMatch, $maninMatch, $optimalityMatch⟩))

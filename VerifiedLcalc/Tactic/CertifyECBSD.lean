@@ -40,7 +40,7 @@ private def certifyRealPeriod (base : Name) (curve : Ident)
       logInfo m!"Unverified {base} real period: supply a proved enclosure"
     return
   checkEnclosureReport base `real_period_report_matches report fact
-  let name := rootIdent (base ++ `real_period_fact)
+  let name := rootIdent (← catalogueFactName base `realPeriod)
   emit (← `(def $name : RealPeriodFact $curve := $fact))
 
 private def certifyTamagawaProduct (base : Name) (curve : Ident)
@@ -53,7 +53,7 @@ private def certifyTamagawaProduct (base : Name) (curve : Ident)
   if let some value := report then
     checked (base ++ `tamagawa_product_report_matches)
       (← `((($fact).value : Nat) = $value)) (← `(by first | rfl | decide +kernel))
-  let name := rootIdent (base ++ `tamagawa_product_fact)
+  let name := rootIdent (← catalogueFactName base `tamagawaProduct)
   emit (← `(def $name : TamagawaProductFact $curve := $fact))
 
 private def validateShaReports (base : Name)
@@ -98,7 +98,7 @@ private def certifyRoundedSha (base : Name) (curve : Ident) (analytic : Ident)
   checked rounds
     (← `(|($analytic).reported - ($n : ℚ)| + ($analytic).error.val < 1 / 2))
     proof
-  let rounded := rootIdent (base ++ `rounded_analytic_sha_fact)
+  let rounded := rootIdent (← catalogueFactName base `sha)
   emit (← `(def $rounded : RoundedAnalyticShaFact $curve :=
     ⟨$analytic, $n, $(rootIdent (base ++ `sha_positive)), $(rootIdent rounds), $support⟩))
 
@@ -117,7 +117,7 @@ private def certifyAnalyticSha (base : Name) (curve : Ident)
   if let some order ← optionalInput w `catalogueAnalyticRank then
     checked (base ++ `sha_an_order_matches)
       (← `((($fact).order : Nat) = $order)) (← `(by first | rfl | decide +kernel))
-  let analytic := rootIdent (base ++ `analytic_sha_fact)
+  let analytic := rootIdent (← catalogueFactName base `analyticSha)
   emit (← `(def $analytic : AnalyticShaFact $curve := $fact))
   checkEnclosureReport base `sha_an_report_matches report (← `($analytic))
   if let some (n, support) := rounded then

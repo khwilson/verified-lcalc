@@ -33,9 +33,10 @@ private def certifyNonmaxPrimes (base : Name) (attachment : Option Ident) :
   let some proof ← attachedFact attachment `nonmaxSupport
     | logInfo m!"Unverified {base} exceptional-prime claims: supply complete non-CM image evidence"
   let curve := rootIdent (base ++ `curve)
-  let support := rootIdent (base ++ `nonmax_prime_support)
+  let outputName ← catalogueFactName base `nonmaxPrimes
+  let support := rootIdent outputName
   emit (← `(def $support : NonmaxPrimeSupportFact $curve := $proof))
-  auditAxioms (base ++ `nonmax_prime_support)
+  auditAxioms outputName
   if let some ps := primes then
     checked (base ++ `nonmax_primes)
       (← `(($support).primes.image (fun p : Nat.Primes => (p : ℕ)) = ($ps).toFinset))
@@ -58,10 +59,11 @@ private def certifyAdelicGenerators (base : Name) (attachment : Option Ident) :
   let some proof ← attachedFact attachment `adelicGenerators
     | logInfo m!"Unverified {base} adelic_gens: supply the complete finite-level image evidence"
   let curve := rootIdent (base ++ `curve)
-  let fact := rootIdent (base ++ `adelic_generator_fact)
+  let outputName ← catalogueFactName base `adelicGenerators
+  let fact := rootIdent outputName
   emit (← `(def $fact : @FiniteGaloisImageFact $curve inferInstance (Classical.decEq _) :=
     $proof))
-  auditAxioms (base ++ `adelic_generator_fact)
+  auditAxioms outputName
   checked (base ++ `adelic_gens)
     (← `((($fact).modulus : ℕ) = ($report).modulus ∧ ($fact).matrixRows = ($report).rows))
     (← `(by constructor <;> first | rfl | decide +kernel))
@@ -161,11 +163,12 @@ private def certifyAdelicImage (base : Name) (attachment : Option Ident) :
     else
       logInfo m!"Unverified {base} adelic_image: supply proofs of level, index and genus"
   if checkedLevel || checkedIndex || checkedGenus || checkedLabel then
-    let certificate := rootIdent (base ++ `adelic_image_certificate)
+    let outputName ← catalogueFactName base `adelicImage
+    let certificate := rootIdent outputName
     emit (← `(def $certificate :
       @AdelicImageCertificate $curve inferInstance (Classical.decEq _) :=
       { facts := $fact, partialLabel := $labelTerm }))
-    auditAxioms (base ++ `adelic_image_certificate)
+    auditAxioms outputName
 
 /-- Compare one source row with a proved residual conjugacy class. -/
 private def certifyModPrimeImage (base : Name) (attachment : Option Ident) :
@@ -177,10 +180,11 @@ private def certifyModPrimeImage (base : Name) (attachment : Option Ident) :
   let some proof ← attachedFact attachment `modPrimeImage
     | logInfo m!"Unverified {base} modell_image: supply an exact residual image"
   let curve := rootIdent (base ++ `curve)
-  let fact := rootIdent (base ++ `modell_image_fact)
+  let outputName ← catalogueFactName base `modPrimeImage
+  let fact := rootIdent outputName
   emit (← `(def $fact :
     @ModPrimeImageFact $curve inferInstance (Classical.decEq _) := $proof))
-  auditAxioms (base ++ `modell_image_fact)
+  auditAxioms outputName
   checked (base ++ `modell_image)
     (← `(((($fact).finiteImage.modulus : ℕ), ($fact).label) = $report))
     (← `(by first | rfl | decide +kernel))
@@ -193,10 +197,11 @@ private def certifyModPrimeImages (base : Name) (attachment : Option Ident) :
   let some proof ← attachedFact attachment `modPrimeImages
     | logInfo m!"Unverified {base} modell_images: supply exact residual image evidence"
   let curve := rootIdent (base ++ `curve)
-  let fact := rootIdent (base ++ `modell_images_fact)
+  let outputName ← catalogueFactName base `modPrimeImages
+  let fact := rootIdent outputName
   emit (← `(def $fact :
     @ModPrimeImageListFact $curve inferInstance (Classical.decEq _) := $proof))
-  auditAxioms (base ++ `modell_images_fact)
+  auditAxioms outputName
   checked (base ++ `modell_images)
     (← `((($fact).images.map ModPrimeImageFact.label) = $report))
     (← `(by first | rfl | decide +kernel))
@@ -213,9 +218,10 @@ private def certifyPadicImage (base : Name) (attachment : Option Ident) :
   let some proof ← attachedFact attachment `padicImage
     | logInfo m!"Unverified {base} elladic_image: supply the exact prime-adic subgroup comparison"
   let curve := rootIdent (base ++ `curve)
-  let fact := rootIdent (base ++ `elladic_image_fact)
+  let outputName ← catalogueFactName base `padicImage
+  let fact := rootIdent outputName
   emit (← `(def $fact : @PadicImageLabelFact $curve inferInstance (Classical.decEq _) := $proof))
-  auditAxioms (base ++ `elladic_image_fact)
+  auditAxioms outputName
   checked (base ++ `elladic_image)
     (← `(((($fact).prime : ℕ), ($fact).label) = $report))
     (← `(by first | rfl | decide +kernel))
@@ -228,9 +234,10 @@ private def certifyPadicImages (base : Name) (attachment : Option Ident) :
   let some proof ← attachedFact attachment `padicImages
     | logInfo m!"Unverified {base} elladic_images: supply exact prime-adic subgroup comparisons"
   let curve := rootIdent (base ++ `curve)
-  let fact := rootIdent (base ++ `elladic_images_fact)
+  let outputName ← catalogueFactName base `padicImages
+  let fact := rootIdent outputName
   emit (← `(def $fact : @PadicImageListFact $curve inferInstance (Classical.decEq _) := $proof))
-  auditAxioms (base ++ `elladic_images_fact)
+  auditAxioms outputName
   checked (base ++ `elladic_images)
     (← `((($fact).entries.map PadicImageLabelFact.label) = $report))
     (← `(by first | rfl | decide +kernel))
@@ -246,9 +253,10 @@ private def certifyModulusImages (base : Name) (attachment : Option Ident) :
   let some proof ← attachedFact attachment `modulusImages
     | logInfo m!"Unverified {base} modm_images: supply exact finite subgroup comparisons"
   let curve := rootIdent (base ++ `curve)
-  let fact := rootIdent (base ++ `modm_images_fact)
+  let outputName ← catalogueFactName base `modulusImages
+  let fact := rootIdent outputName
   emit (← `(def $fact : @ModulusImageListFact $curve inferInstance (Classical.decEq _) := $proof))
-  auditAxioms (base ++ `modm_images_fact)
+  auditAxioms outputName
   let sourceEq := rootIdent (base ++ `modm_images_source)
   checked (base ++ `modm_images_source)
     (← `(($fact).reported = $report))

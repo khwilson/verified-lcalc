@@ -186,7 +186,8 @@ private def certifySerreInvariants (base : Name) (curve : Ident)
     logInfo m!"Unverified {base} serre_invariants: requires semistability and good reduction at 2"
     return
   let global := rootIdent (base ++ `global_minimal)
-  let fact := rootIdent (base ++ `serre_invariants_fact)
+  let outputName ← catalogueFactName base `serreInvariants
+  let fact := rootIdent outputName
   emit (← `(def $fact : SemistableSerreRecipeFact $curve where
     minimal := $global
     semistable := (semistable_iff_coprime_of_isGlobalMinimal $curve $global).2 (by decide +kernel)
@@ -197,7 +198,7 @@ private def certifySerreInvariants (base : Name) (curve : Ident)
       first
       | simp <;> cbv <;> simp <;> done
       | simp [List.orderedInsert_cons] <;> cbv <;> simp <;> done))
-  auditAxioms (base ++ `serre_invariants_fact)
+  auditAxioms outputName
   checked (base ++ `serre_invariants)
     (← `(∀ p k n : ℕ, (p, k, n) ∈ $report ↔
       p.Prime ∧ (k, n) = semistableSerrePair ($curve).Δ.natAbs p ∧
@@ -228,9 +229,10 @@ private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
       let hv := rootIdent (base ++ `squarefree_discriminant_value_valid)
       checked (base ++ `squarefree_discriminant_value_valid)
         (← `(decide ($m).primes.Nodup = $claim)) (← `(by decide +kernel))
+      let sound ← catalogueChecker `squarefreeDiscriminant
       checked (base ++ `squarefree_discriminant)
         (← `(Squarefree ($curve).Δ.natAbs ↔ $claim = true)) (← `(by
-          rw [Certification.squarefree_discriminant_iff_nodup $curve $m $hm,
+          rw [$sound $curve $m $hm,
             ← $hv, decide_eq_true_eq]))
     else
       logInfo m!"Unverified {base} squarefree_disc: supply minimality evidence"
@@ -609,7 +611,7 @@ private def certifyIntrinsicTorsion (base : Name) (curve : Ident) : CommandElabM
   unless proved do
     logInfo m!"Unverified {base} intrinsic_torsion: this check requires trivial rational torsion"
     return
-  let name := base ++ `intrinsic_torsion_fact
+  let name ← catalogueFactName base `intrinsicTorsion
   let fact := rootIdent name
   let correct := rootIdent (base ++ `intrinsic_torsion_value)
   checked (base ++ `intrinsic_torsion_value) (← `($claim = (1 : ℕ)))
@@ -735,24 +737,27 @@ def certifyStoredInvariants (base : Name)
     let hv := rootIdent (base ++ `j_invariant_value_valid)
     checked (base ++ `j_invariant_value_valid)
       (← `((($curve).c₄ : Rat) ^ 3 / (($curve).Δ : Rat) = $j)) (← `(by decide +kernel))
+    let sound ← catalogueChecker `jInvariant
     checked (base ++ `j_invariant) (← `((($curve).baseChange ℚ).j = $j))
-      (← `(Certification.j_invariant_of_exact_formula $curve $j $hv))
+      (← `($sound $curve $j $hv))
   if let some integral ← bindStored base `jIntegral `j_integral (← `(Bool)) then
     let hv := rootIdent (base ++ `j_integral_value_valid)
     checked (base ++ `j_integral_value_valid)
       (← `(Certification.jDenominatorIsOne $curve = $integral))
       (← `(by decide +kernel))
+    let sound ← catalogueChecker `jIntegral
     checked (base ++ `j_integral)
       (← `(IsLocalization.IsInteger ℤ (($curve).baseChange ℚ).j ↔ $integral = true))
-      (← `(Certification.j_integral_iff_of_check $curve $integral $hv))
+      (← `($sound $curve $integral $hv))
   if let some claim ← bindStored base `potentialGoodReduction `potential_good_reduction
       (← `(Bool)) then
     let hv := rootIdent (base ++ `potential_good_reduction_value_valid)
     checked (base ++ `potential_good_reduction_value_valid)
       (← `(Certification.jDenominatorIsOne $curve = $claim)) (← `(by decide +kernel))
+    let sound ← catalogueChecker `potentialGoodReduction
     checked (base ++ `potential_good_reduction)
       (← `(HasEverywherePotentialGoodReduction (($curve).baseChange ℚ) ↔ $claim = true))
-      (← `(Certification.potential_good_reduction_iff_of_check $curve $claim $hv))
+      (← `($sound $curve $claim $hv))
   let hasMinimality := (← optionalInput (base ++ `witness) `minimality).isSome
   let hasLocalData := (← optionalInput (base ++ `witness) `localData).isSome
   let m := rootIdent (base ++ `minimality)
@@ -775,10 +780,11 @@ def certifyStoredInvariants (base : Name)
           have he : p ∈ $values ↔ p ∈ ($m).primes := by
             rw [← List.mem_toFinset, ($hv).2, List.mem_toFinset]
           exact he.trans (Certification.minimal_prime_mem_iff $curve $m $hm p)))
+      let sound ← catalogueChecker `badPrimes
       checked (base ++ `bad_reduction_primes)
         (← `(∀ (p : Nat) [Fact p.Prime], p ∈ $values ↔
           ¬ (($curve).baseChange (ZMod p)).IsElliptic))
-        (← `(by intro p hp; exact Certification.bad_reduction_prime_iff $curve $values $hp p))
+        (← `(by intro p hp; exact $sound $curve $values $hp p))
     else
       logInfo m!"Unverified {base} bad_primes: supply minimality evidence"
   if let some n ← bindStored base `numBadPrimes `num_bad_primes (← `(Nat)) then
@@ -798,10 +804,11 @@ def certifyStoredInvariants (base : Name)
       let hv := rootIdent (base ++ `abs_discriminant_value_valid)
       checked (base ++ `abs_discriminant_value_valid)
         (← `(($curve).Δ.natAbs = $a)) (← `(by decide +kernel))
+      let sound ← catalogueChecker `minimalDiscriminantAbs
       checked (base ++ `minimal_discriminant_abs)
         (← `(WeierstrassCurve.IsGlobalMinimal (NumberField.RingOfIntegers ℚ)
           (($curve).baseChange ℚ) ∧ ($curve).Δ.natAbs = $a))
-        (← `(Certification.minimal_discriminant_abs_of_witness $curve $m $hm $a $hv))
+        (← `($sound $curve $m $hm $a $hv))
     else
       logInfo m!"Unverified {base} absD: supply minimality evidence"
   if let some values ← bindStored base `dirichletCoefficients `dirichlet_coefficients
@@ -810,10 +817,11 @@ def certifyStoredInvariants (base : Name)
       let hv := rootIdent (base ++ `dirichlet_coefficients_value_valid)
       checked (base ++ `dirichlet_coefficients_value_valid)
         (← `(modelCoefficients $curve ($values).length = $values)) (← `(by decide +kernel))
+      let sound ← catalogueChecker `dirichletCoefficients
       checked (base ++ `dirichlet_coefficients)
         (← `((List.range ($values).length).map
           (fun n => (($curve).baseChange ℚ).LFunction (n + 1)) = $values))
-        (← `(Certification.coefficients_of_minimal_witness $curve $hn $m $hm $values $hv))
+        (← `($sound $curve $hn $m $hm $values $hv))
     else
       logInfo m!"Unverified {base} anlist: supply minimality evidence"
   let conductor ← bindStored base `conductor `conductor (← `(Nat))
@@ -822,9 +830,10 @@ def certifyStoredInvariants (base : Name)
     let hv := rootIdent (base ++ `conductor_claim_valid)
     checked (base ++ `conductor_claim_valid) (← `(wildLevelFast $curve $d = $n))
       (← `(by decide +kernel))
+    let sound ← catalogueChecker `conductor
     checked (base ++ `conductor)
       (← `((Modularity.modularWitness $curve $hn).level = $n))
-      (← `(Certification.conductor_of_arithmetic_witness $curve $hn $m $hm $d $hd $n $hv)) true
+      (← `($sound $curve $hn $m $hm $d $hd $n $hv)) true
   else if conductor.isSome then
     logInfo m!"Unverified {base} conductor: supply minimality and localData evidence"
   certifyConductorValuations base curve hn checkedConductor
@@ -833,9 +842,10 @@ def certifyStoredInvariants (base : Name)
       let hv := rootIdent (base ++ `root_number_claim_valid)
       checked (base ++ `root_number_claim_valid) (← `(wildSignFast $curve $d = $w))
         (← `(by decide +kernel))
+      let sound ← catalogueChecker `rootNumber
       checked (base ++ `root_number)
         (← `((Modularity.modularWitness $curve $hn).rootNumber = $w))
-        (← `(Certification.root_number_of_arithmetic_witness
+        (← `($sound
           $curve $hn $m $hm $d $hd $w $hv)) true
     else
       logInfo m!"Unverified {base} root_number: supply minimality and localData evidence"

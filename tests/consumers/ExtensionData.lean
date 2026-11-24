@@ -25,6 +25,11 @@ theorem imported_growth :
         WeierstrassCurve.Affine.Point.map (Algebra.ofId ℚ K) Q ≠ P :=
   growth.growth
 
+-- A single input carries both table-qualified degree and torsion fields.
+example : Growth64.witness.modularDegree = some 4 := rfl
+example : Growth64.certificate.modularParametrization.isNone = true := rfl
+example : Growth64.witness.torsionGrowthField.map TorsionGrowthFieldClaim.degree =
+    some 2 := rfl
 example : Growth64.witness.torsion = some 2 := rfl
 example : Growth64.certificate.torsion.cardinality.isNone = true := rfl
 
@@ -54,6 +59,14 @@ certify_ec RawReports from_json_string
 
 example : RawReports.certificate.algebraic.heights.isNone = true := rfl
 example : RawReports.certificate.torsionGrowthField.isNone = true := rfl
+
+-- Extension invariant factors alone cannot become a rational torsion claim.
+certify_ec ExtensionFactorsOnly from_json_string
+  r#"{"ainvs":[0,0,0,1,0],"torsion_growth":{"field":[1,0,1],"degree":2,"torsion":[2,2]}}"#
+
+example : ExtensionFactorsOnly.witness.torsion.isNone = true := rfl
+example : ExtensionFactorsOnly.certificate.torsion.cardinality.isNone = true := rfl
+example : ExtensionFactorsOnly.certificate.torsionGrowthField.isNone = true := rfl
 
 private meta def expectRejected (name : Name) (label : String) (command : Syntax) :
     CommandElabM Unit := do

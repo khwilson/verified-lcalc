@@ -73,7 +73,7 @@ def certifyIwasawa (base : Name) (attachment : Option Ident) : CommandElabM Unit
     else
       logInfo m!"Unverified {base} iwp0: supply evidence for every good prime in range"
   if selected.isEmpty && !hasThreshold then return
-  let name := base ++ `iwasawa_fact
+  let name ← catalogueFactName base `iwasawaData
   let result := rootIdent name
   emit (← `(noncomputable def $result : IwasawaFacts $curve := {
     symbols := ($evidence).symbols
