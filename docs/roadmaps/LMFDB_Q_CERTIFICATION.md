@@ -375,11 +375,15 @@ $p^v u$ modulo $p^{\mathrm{prec}}\mathbf Z_p$. The renderer displays one
 directly at rank zero and reads the class row for positive-rank curve
 number 1. [LMFDB p-adic regulator renderer](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/elliptic_curve.py#L775-L792)
 
-The command now checks curve-level encodings of the rank-zero display for
-good ordinary primes. The proof uses the empty height determinant indexed by
-the actual Mordell–Weil finrank. Signed valuations remain supported for
-stored reports. The positive-rank height and source comparison, signed
-examples, and isogeny transport remain open.
+The rank-one singleton-class path checks a stored normalized ball conditional
+on the arithmetic class, generator and reduction proofs and an independently
+enclosed evaluation of the uniquely characterized ordinary sigma series. A
+proved rational logarithm checker derives the signed valuation and unit
+digits at the reported absolute precision. Constructing the canonical sigma
+series, deriving the approximation evidence, general basis independence, and
+transport between different class representatives remain upstream targets.
+The curve-level rank-zero display uses the separate empty height determinant
+indexed by the actual Mordell–Weil finrank.
 [TauCeti backlog TC-21](../TAUCETI_BACKLOG.md#tc-21--normalized-p-adic-heights-and-regulators-over-ℚ)
 
 ## From field structures to checked proofs

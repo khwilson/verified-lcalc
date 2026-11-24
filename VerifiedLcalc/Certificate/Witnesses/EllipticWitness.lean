@@ -114,6 +114,8 @@ structure EllipticWitness where
   faltingsRatio : Option Nat := none
   /-- A p-adic regulator ball proposed for the supplied equation. -/
   padicRegulator : Option PadicRegulatorClaim := none
+  /-- The class label carried by a native stored p-adic regulator row. -/
+  padicRegulatorClassLabel : Option String := none
   /-- Reported full real period and optional absolute error radius. -/
   realPeriod : Option DecimalEnclosureClaim := none
   /-- Reported product of finite-place Tamagawa numbers. -/

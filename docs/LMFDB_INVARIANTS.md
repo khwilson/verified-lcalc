@@ -28,18 +28,18 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_mwbsd` | 13 | Point membership, generator count, rank bounds and integral point fibers are in `certificate.algebraic`. Exhaustive integral-point data requires a proof covering every abscissa. |
 | `ec_localdata` | 10 | Checked local arithmetic facts are indexed by prime. Exact Kodaira and Tamagawa outputs depend on the reduction case. |
 | `ec_galrep` | 7 | The generator field is checked at the reported finite modulus in a proved torsion basis. Supported residual labels identify exact images up to conjugacy. Partial adelic labels carry exact level, index and genus with a separate simultaneous image proof. |
-| `ec_padic` | 5 | Stored class rows remain report-only. A curve-level encoding of the rank-zero display is checked as a p-adic ball at a good ordinary prime. |
+| `ec_padic` | 5 | The native rank-one singleton-class ball is checked at a good ordinary prime above three with independent sigma evidence. The separate rank-zero display encoding uses the curve-level empty determinant. |
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **74 of 85 distinct LMFDB column names** with the evidence
+The command covers **78 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
 has a checker gives 46 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
-`ec_mwbsd`, 8 in `ec_localdata`, 3 in `ec_galrep`, and 2 in
-`ec_torsion_growth`. Shared names such as `class_size` count once.
-Project-specific keys are excluded. The four ball coordinates shared with
-`ec_padic` can be checked for the curve-level rank-zero display, which
-LMFDB computes directly. They add zero stored-column claims to this count.
+`ec_mwbsd`, 8 in `ec_localdata`, 3 in `ec_galrep`, 4 in `ec_padic`, and
+2 in `ec_torsion_growth`. Shared names such as `class_size` count once.
+The four stored p-adic coordinates enter this tally through the proof-parametric
+rank-one checker. The curve-level rank-zero display and project-specific keys
+are outside the stored-column count.
 
 Count coverage by the mathematical assertion and the evidence a consumer can
 project. For example, `ec_curvedata.torsion` is a cardinality over ℚ, while

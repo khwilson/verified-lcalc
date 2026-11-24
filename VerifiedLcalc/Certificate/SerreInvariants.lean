@@ -22,7 +22,8 @@ open WeierstrassCurve UniqueFactorizationMonoid NumberField
 
 /-- The usual conductor in the semistable Serre recipe is the absolute norm of the
 curve's algorithmic conductor. -/
-theorem SemistableSerreRecipeFact.usualConductor_eq {curve : WeierstrassCurve ℤ} [(curve.baseChange ℚ).IsElliptic]
+theorem SemistableSerreRecipeFact.usualConductor_eq {curve : WeierstrassCurve ℤ}
+    [(curve.baseChange ℚ).IsElliptic]
     (fact : SemistableSerreRecipeFact curve) :
     (usualSerrePair curve.Δ.natAbs).2 =
       Ideal.absNorm (algorithmicConductor (𝓞 ℚ) (curve.baseChange ℚ)) := by
