@@ -117,7 +117,8 @@ theorem adelic37_finite_index : (exactImage.image.map (adelicReduction 74)).inde
 theorem adelic37_genus :
     let gen := ((AdelicGenus37.certificate (h := h)).adelicImage.get (by rfl)).facts.genus.get
       (by rfl)
-    letI := gen.finiteCW
+    letI : TauCeti.FiniteCWType
+        (adelicProjectiveSubgroup exactImage.image).CompactifiedQuotient := gen.finiteCW
     TauCeti.RiemannSurface.genus (adelicProjectiveSubgroup exactImage.image).CompactifiedQuotient =
       0 :=
   (((AdelicGenus37.certificate (h := h)).adelicImage.get (by rfl)).facts.genus.get
