@@ -59,8 +59,10 @@ theorem fourier_prefix_error (a : Nat → Int) (cs : List Int) (q Q value : ℝ)
   have hratio' : Q*(((cs.length+2 : Nat) : ℝ)/(cs.length+1 : Nat))^3 < 1 := by
     rw [heQ]
     unfold polynomialTailRatio at hratio
-    have hcast : ((Qrat*((cs.length+2 : Rat)/(cs.length+1 : Rat))^3 : Rat) : ℝ) < 1 := by exact_mod_cast hratio
-    simpa only [Rat.cast_mul, Rat.cast_div, Rat.cast_pow, Rat.cast_add, Rat.cast_one, Rat.cast_natCast, Rat.cast_ofNat, Nat.cast_add, Nat.cast_ofNat, Nat.cast_one] using hcast
+    have hcast : ((Qrat*((cs.length+2 : Rat)/(cs.length+1 : Rat))^3 : Rat) : ℝ) < 1 := by
+      exact_mod_cast hratio
+    simpa only [Rat.cast_mul, Rat.cast_div, Rat.cast_pow, Rat.cast_add, Rat.cast_one,
+      Rat.cast_natCast, Rat.cast_ofNat, Nat.cast_add, Nat.cast_ofNat, Nat.cast_one] using hcast
   have h := polynomial_tail_error (fun j => (a (j+1) : ℝ)*q^(j+1)) value 1 Q 3 cs.length hf
     (by norm_num) hQr' hratio' (by
       intro j
@@ -112,9 +114,12 @@ theorem derivativeCellBounds_sound (a : Nat → Int) (cs : List Int)
       (-al * left) bits) = rationalExpBounds (-ah * right) (-al * left) bits := rfl
   rw [dyadicPolynomialBounds_exp_toRat, hq] at he
   cases hr : polynomialTailBound (rationalExpBounds (-ah*right) (-al*left) bits).2 3 cs.length with
-  | none => simp [hr, -neg_mul] at he
+  | none =>
+    rw [hr] at he
+    contradiction
   | some rem =>
-    simp [hr, -neg_mul] at he
+    rw [hr] at he
+    replace he := Option.some.inj he
     subst cell
     apply roundInterval_sound
     have hp (t : ℝ) (ht : t ∈ Icc (left : ℝ) (right : ℝ)) :

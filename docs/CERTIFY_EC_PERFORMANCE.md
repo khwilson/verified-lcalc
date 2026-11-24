@@ -5,7 +5,98 @@ The [1,000-curve benchmark](CERTIFY_EC_DATASET_BENCHMARK.md) subsequently produc
 after a serialization fix. The remaining 48 inputs hit insufficient minimality
 criteria. That report separates batch throughput, setup, import reuse and clocks.
 
-## Current implementation (2026-11-20)
+## Dyadic Horner evaluation (2026-11-24)
+
+First-derivative quadrature keeps the outward-rounded exponential endpoints in
+Lean's `Dyadic` type through Horner evaluation. Each step chooses the same
+products and rounds in the same directions as the rational recurrence. Lean
+proves equality of both endpoints for a nonnegative lower argument endpoint,
+and proves that the exponential enclosure has this property. The finite
+quadrature therefore returns exactly the previous rational endpoints. The
+existing JSON witnesses, `decide +kernel` checks, and analytic proofs apply.
+
+The comparison uses baseline `b1490ff`, Lean 4.37.0-rc1, and Mathlib
+`31ce06ea` on macOS arm64. A warmup pair for each case was discarded.
+The table reports medians of seven sequential baseline/candidate pairs with
+the order alternating for each case. Both builds used prebuilt artifacts and
+the same pinned dependency artifacts. Every sample starts a fresh Lean
+process, with no operating-system cache flush. The initial import-only survey
+overlapped another build on the host and is excluded here.
+
+| Operation | Baseline wall s | Dyadic wall s | Baseline CPU s | Dyadic CPU s |
+| --- | ---: | ---: | ---: | ---: |
+| Lean without checker imports | 0.140 | 0.141 | 0.132 | 0.134 |
+| Import checker only | 2.731 | 3.168 | 1.976 | 2.013 |
+| Import and reuse compiled theorem | 2.903 | 3.030 | 2.005 | 2.019 |
+| Validate 11a1 | 3.249 | 3.206 | 2.265 | 2.239 |
+| Validate 37a1 | 3.559 | 3.869 | 2.490 | 2.447 |
+| Validate 112a2 | 4.396 | 4.274 | 2.694 | 2.595 |
+| Validate all three in one module | 4.990 | 4.913 | 3.253 | 3.148 |
+
+The checker-only import wall times ranged from 2.19–3.38 s and 2.71–3.80 s.
+The candidate was slower in all seven wall-time pairs. Its median CPU time rose
+from 1.976 s to 2.013 s, with overlapping ranges (1.95–2.07 s and
+1.97–2.05 s). The artifact paths differed and the comparison leaves the
+cause of the import increase unresolved. Imported-theorem
+reuse had nearly the same CPU cost as the checker-only import. The batch saved
+CPU in six of seven pairs (median paired saving 0.102 s). Its wall-time ranges
+overlapped (3.89–5.07 s and 4.69–4.97 s), with a median paired saving of 0.023 s.
+The 112a2 source check saved CPU in all seven pairs, with a median paired saving
+of 0.092 s. These measurements characterize the chosen workloads and host.
+
+Seven separate profiler pairs measured the public command after imports. The
+command profile includes JSON elaboration and axiom audits. The two kernel
+columns measure named proof obligations inside that command.
+
+| Case | Command before / after (s) | Coefficient kernel before / after (s) | Finite quadrature kernel before / after (s) |
+| --- | ---: | ---: | ---: |
+| 37a1 | 0.465 / 0.438 | 0.039 / 0.040 | 0.176 / 0.146 |
+| 112a2 | 0.648 / 0.564 | 0.137 / 0.137 | 0.264 / 0.183 |
+
+The finite quadrature check took less time in all seven pairs for both curves.
+For 112a2, the kernel range fell from 0.257–0.277 s to 0.178–0.193 s.
+The coefficient check serves as a control within the same command.
+
+The exact JSON witness SHA-256 digests agree across the runs.
+
+| Witness | SHA-256 |
+| --- | --- |
+| `11a1.json` | `44ba617f9c6b25f3144f01f819e9c85fef30b4ec6239cfa875bcde005aae7567` |
+| `37a1.json` | `6595e706f2db57c222fcb17d9fddaa867c4072e507dcbae6088bbfdb66e0deb8` |
+| `112a2.json` | `086b479d495f05f56bf0134e552487e22e8cc123b86aa64a2a21217798a7e1c0` |
+
+A guarded prototype converted the rational exponential endpoints back to
+dyadics and checked representability. In five separate matched profiles its
+112a2 quadrature kernel median was 0.196 s, compared with 0.259 s on the
+baseline. Keeping the original dyadic endpoints removes that conversion
+and its guard. A rational atanh-Horner prototype gave little additional
+improvement when combined with dyadic polynomial evaluation in the initial,
+host-loaded quadrature microbenchmarks.
+
+The ordinary 11a1, 37a1 and 112a2 inputs omit a trace-hash proof attachment.
+A supplemental probe exercised the conditional 37.a1 trace-hash fixture,
+the prime-table length check, and reuse of its compiled length theorem.
+Verbose tracing of the attached proof produced gigabytes of formatted output
+per run, so those timings cannot characterize ordinary trace-hash verification.
+The fixture supplies the full coefficient equality as a premise, which also
+places independent proof of those coefficients outside this measurement.
+
+Run the tracked benchmark once on baseline `b1490ff` and once on the optimized
+revision (evaluator commit `748e5c1`) with the same arguments and pinned dependencies. The script builds
+`CertifiedCurves` before timing and records individual samples and witness hashes.
+
+```sh
+python3 scripts/benchmark_certify_ec.py --launcher direct --repetitions 7 \
+  --profile --cases bare import_only cached_proof 11a1 37a1 112a2 batch \
+  --output "/tmp/certify-ec-$(git rev-parse --short HEAD).json"
+```
+
+The tracked script collects one separate profile per invocation. Repeat the
+invocation to sample profile variation. The paired measurements used the same
+sources and direct invocation, selecting the prebuilt project artifacts for each
+revision in `LEAN_PATH`.
+
+## November 20 implementation
 
 Validation remains `decide +kernel`, with the same axiom audits and supplied
 witnesses. The metaprogram itself is unchanged. The optimization is mathematical:
