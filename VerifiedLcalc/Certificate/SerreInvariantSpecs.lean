@@ -14,7 +14,7 @@ public import Mathlib.Data.List.Sort
 For a globally minimal semistable model with good reduction at two, Serre's local
 rules compute the weight and prime-to-ℓ conductor of the residual representation
 from the valuations of the absolute minimal discriminant. See Serre,
-*Sur les représentations modulaires de degré 2 de Gal(Q̄/Q)*, Proposition 5
+*Sur les représentations modulaires de degré 2*, Proposition 5
 and §§4.1.11–12, DOI 10.1215/S0012-7094-87-05413-5.
 
 This module proves completeness of the finite enumeration for those formulas.
