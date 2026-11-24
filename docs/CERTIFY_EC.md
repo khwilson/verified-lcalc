@@ -241,6 +241,19 @@ displayed by LMFDB. The display reads a stored class row for positive rank
 and LMFDB curve number 1. Within the p-adic object, `lmfdb_iso` is catalogue metadata.
 [LMFDB p-adic regulator renderer](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/elliptic_curve.py#L775-L792)
 
+## Check a rational trace fingerprint
+
+Submit `trace_hash` as an exact JSON integer or canonical decimal string, or
+use `EllipticWitness.traceHash` in Lean. For either input format, attach
+`IntegralCurveProofs.traceHashCoefficients` through `with_proofs`. The proof
+identifies the complete list of coefficients of the input curve at the
+prescribed primes in ascending order.
+
+The verifier checks the published weighted sum modulo `2^61 - 1`. A checked
+result is available through `Name.certificate.traceHash`. An incomplete list of
+separate `ap` checks and a bare reported hash leave the fingerprint unverified.
+[LMFDB trace-hash producer](https://github.com/LMFDB/lmfdb/blob/28f9f0e38f2f027b13edcb2facece1bb45b47170/lmfdb/utils/trace_hash.py)
+
 ## Check the LMFDB catalogue indices and labels
 
 Submit any of `lmfdb_number`, `iso_nlabel`, `lmfdb_iso`, and `lmfdb_label`

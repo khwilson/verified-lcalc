@@ -50,6 +50,8 @@ structure EllipticWitness where
   lmfdbIso : Option String := none
   /-- Reported conductor, isogeny class code, and curve number. -/
   lmfdbLabel : Option String := none
+  /-- Reported rational LMFDB trace hash. -/
+  traceHash : Option Int := none
   /-- The reported complete exceptional-prime list. -/
   nonmaxPrimes : Option (List Nat) := none
   /-- The reported product of the exceptional primes. -/

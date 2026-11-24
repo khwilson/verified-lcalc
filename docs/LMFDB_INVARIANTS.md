@@ -32,9 +32,9 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **63 of 85 distinct LMFDB column names** with the evidence
+The command covers **64 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
-has a checker gives 37 in `ec_curvedata`, 3 in `ec_classdata`, 11 in
+has a checker gives 37 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
 `ec_mwbsd`, 8 in `ec_localdata`, 2 in `ec_galrep`, and 2 in
 `ec_torsion_growth`. Shared names such as `class_size` count once.
 Project-specific keys are excluded. The four ball coordinates shared with
@@ -48,6 +48,15 @@ The former can be proved through `certificate.torsion.cardinality`. The latter
 has its own roadmap target. The public contract index lists the canonical Lean
 modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.md)
 · [Roadmap targets](roadmaps/LMFDB_Q_CERTIFICATION.md)
+
+## Arithmetic trace fingerprint
+
+`trace_hash` is checked against the exact weighted sum of the rational L-function
+coefficients at all 464 primes in `[4096,8192)`, reduced modulo `2^61 - 1`.
+`TraceHashCoefficients.correct` supplies the exact list equality. The aggregate
+`certificate.traceHash` retains the vector and the equality for the actual curve.
+A matching residue alone gives no identification of a class.
+[LMFDB trace-hash producer](https://github.com/LMFDB/lmfdb/blob/28f9f0e38f2f027b13edcb2facece1bb45b47170/lmfdb/utils/trace_hash.py)
 
 ## Mathematical catalogue ordering
 
