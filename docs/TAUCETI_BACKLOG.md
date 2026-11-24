@@ -530,3 +530,23 @@ classification supplies a geometric premise.
   the decidable prime predicate. The existing `primeCoefficientsValid_sound`
   theorem can justify individual entries when its finite checks succeed.
   [LMFDB producer and weights](https://github.com/LMFDB/lmfdb/blob/28f9f0e38f2f027b13edcb2facece1bb45b47170/lmfdb/utils/trace_hash.py)
+
+## TC-27 — historical Cremona ordering
+
+- **Roadmap target:** [LMFDB I1](roadmaps/LMFDB_Q_CERTIFICATION.md).
+  A complete isogeny-class or curve ordering at a supported conductor defines
+  the historical isogeny and isomorphism indices. The singleton cases
+  require only the corresponding exhaustivity from TC-15 and TC-23,
+  together with the actual algorithmic conductor norm from 1 through 500000.
+- **Missing comparison:** For larger indexing sets, connect each historical
+  index to that of an independently authenticated, versioned published
+  catalogue, or reproduce the historical algorithm and prove its order.
+  Include the documented special choice of optimal curve in the 990h
+  class. The LMFDB lexicographic order cannot supply the historical indices
+  in general.
+- **Existing interfaces:** Reuse the pinned TauCeti `algorithmicConductor`
+  and rational isogeny definitions at `e0e414ce`, together with the
+  project's complete isogeny class and conductor roster proofs.
+  [LMFDB convention](https://www.lmfdb.org/knowledge/show/ec.q.cremona_label)
+  · [Pinned Cremona tables](https://github.com/JohnCremona/ecdata/tree/6fedd3ab463a70e52061ebc0b04832ad19fd2e01/allcurves)
+  · [Sage historical index conventions](https://github.com/sagemath/sage/blob/10.5/src/sage/databases/cremona.py)

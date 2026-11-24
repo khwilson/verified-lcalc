@@ -431,6 +431,9 @@ def decode (j : Json) : Except String EllipticWitness := do
   let lmfdbIso ← optionalValue j "lmfdb_iso" Json.getStr?
   let lmfdbLabel ← optionalValue j "lmfdb_label" Json.getStr?
   let traceHash ← optionalValue j "trace_hash" integer
+  let cremonaIso ← optionalValue j "Ciso" Json.getStr?
+  let cremonaLabel ← optionalValue j "Clabel" Json.getStr?
+  let cremonaNumber ← optionalValue j "Cnumber" nonnegativeInteger
   let abcQuality ← abcQualityClaim j
   let complexMultiplication ← optionalValue j "cm" integer
   let minimumTwistEquation ← optionalValue j "min_quad_twist_ainvs" fun value => do
@@ -497,6 +500,9 @@ def decode (j : Json) : Except String EllipticWitness := do
     lmfdbIso
     lmfdbLabel
     traceHash
+    cremonaIso
+    cremonaLabel
+    cremonaNumber
     catalogueAnalyticRank
     nonmaxPrimes
     nonmaxRadical

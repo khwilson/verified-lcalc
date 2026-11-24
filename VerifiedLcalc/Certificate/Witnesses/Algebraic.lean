@@ -7,6 +7,7 @@ module
 
 public import VerifiedLcalc.Certificate.Witnesses.InputData
 public import VerifiedLcalc.Certificate.PeriodGeometrySpecs
+public import VerifiedLcalc.EllipticCurve.CremonaLabel
 public import VerifiedLcalc.EllipticCurve.LmfdbLabel
 public import TauCeti.AlgebraicGeometry.EllipticCurve.LFunction.Basic
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
@@ -52,6 +53,8 @@ public import Mathlib.RingTheory.AdjoinRoot
   minimal order within the subject's class to check catalogue indices and labels.
 * `PeriodGeometryFacts` carries enclosures for complex period area and Faltings heights,
   and an exact area ratio when the entire isogeny class has been proved.
+* `CremonaSingletonFacts` uses exhaustive singleton proofs to identify the indices that
+  are independent of the historical Cremona order.
 * `AlgebraicFacts` collects optional checked points, orders, rank bounds, and regulator data.
 -/
 
@@ -375,6 +378,32 @@ structure LmfdbCatalogueFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange 
   curveLabel : Option { label : String // (roster.bind fun r => orderedClass.map
     (fun c => lmfdbCurveLabel r.conductor r.classIndex.val (c.1.curveIndex.val + 1))) =
       some label } := none
+
+/-- Complete singleton enumeration evidence for the historically ordered Cremona labels.
+The conductor lies in the published range. The two singleton proofs are independent. -/
+structure CremonaSingletonEvidence (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- Conductor in the published Cremona table domain. -/
+  conductor : { n : ℕ // 0 < n ∧ n ≤ 500000 }
+  /-- The supplied integer is the actual algorithmic conductor norm of the rational curve. -/
+  conductor_eq : Ideal.absNorm ((curve.baseChange ℚ).algorithmicConductor ℤ) = conductor.val
+  /-- Exhaustive singleton roster at the same actual conductor, if supplied. -/
+  onlyClass : Option { r : ConductorClassRoster curve // r.size = 1 } := none
+  /-- Exhaustive singleton presentation of the subject's rational isogeny class, if supplied. -/
+  onlyCurve : Option { m : IsogenyClassModel curve // m.classSize = 1 } := none
+
+/-- Checked Cremona metadata for orderings whose relevant indexing sets are singleton. -/
+structure CremonaSingletonFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
+  /-- The conductor evidence and each relevant exhaustive singleton proof. -/
+  evidence : CremonaSingletonEvidence curve
+  /-- The number within the class is one when that class has one rational isomorphism type. -/
+  number : Option { n : ℕ // evidence.onlyCurve.isSome ∧ n = 1 } := none
+  /-- The class label has letter `a` when there is one isogeny class at the conductor. -/
+  isoLabel : Option { s : String // evidence.onlyClass.isSome ∧
+    cremonaSingletonClassLabel evidence.conductor.val = s } := none
+  /-- The full label follows from both singleton orderings. -/
+  curveLabel : Option { s : String // evidence.onlyClass.isSome ∧ evidence.onlyCurve.isSome ∧
+    cremonaSingletonCurveLabel evidence.conductor.val = s } := none
 
 /-- Exact description of the endomorphism ring over the separable closure of ℚ.
 The zero code specifies the integer ring and a negative code specifies the quadratic

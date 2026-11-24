@@ -52,6 +52,12 @@ structure EllipticWitness where
   lmfdbLabel : Option String := none
   /-- Reported rational LMFDB trace hash. -/
   traceHash : Option Int := none
+  /-- Reported Cremona isogeny class identifier. -/
+  cremonaIso : Option String := none
+  /-- Reported full Cremona curve label. -/
+  cremonaLabel : Option String := none
+  /-- Reported number of the curve in its Cremona class. -/
+  cremonaNumber : Option Nat := none
   /-- The reported complete exceptional-prime list. -/
   nonmaxPrimes : Option (List Nat) := none
   /-- The reported product of the exceptional primes. -/

@@ -242,6 +242,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     `($(rootIdent catalogueName))
   else `({})
   let traceHash ← optionalFactTerm base `trace_hash_fact
+  let cremonaCatalogue ← optionalFactTerm base `cremona_catalogue_fact
   let record ← `({
     nonsingular := $nonsingular
     equationFacts := $equationFacts
@@ -255,6 +256,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     isogenyClass := $isogenyClass
     lmfdbCatalogue := $catalogue
     traceHash := $traceHash
+    cremonaCatalogue := $cremonaCatalogue
     nonmaxPrimes := $nonmaxPrimes
     adelicGenerators := $adelicGenerators
     modPrimeImage := $modPrimeImage

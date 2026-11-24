@@ -32,9 +32,9 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **64 of 85 distinct LMFDB column names** with the evidence
+The command covers **67 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
-has a checker gives 37 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
+has a checker gives 40 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
 `ec_mwbsd`, 8 in `ec_localdata`, 2 in `ec_galrep`, and 2 in
 `ec_torsion_growth`. Shared names such as `class_size` count once.
 Project-specific keys are excluded. The four ball coordinates shared with
@@ -57,6 +57,17 @@ coefficients at all 464 primes in `[4096,8192)`, reduced modulo `2^61 - 1`.
 `certificate.traceHash` retains the vector and the equality for the actual curve.
 A matching residue alone gives no identification of a class.
 [LMFDB trace-hash producer](https://github.com/LMFDB/lmfdb/blob/28f9f0e38f2f027b13edcb2facece1bb45b47170/lmfdb/utils/trace_hash.py)
+
+## Cremona singleton orderings
+
+In the published conductor range up to 500000, `Cnumber` can be checked
+with an exhaustive presentation of a one-isomorphism-type isogeny class.
+`Ciso` needs an exhaustive roster of one rational isogeny class at the
+actual conductor. `Clabel` requires both proofs. The matching suffixes are
+`1`, `a`, and `a1`, respectively. The typed evidence and projections are
+available through `certificate.cremonaCatalogue`.
+[LMFDB Cremona labels](https://www.lmfdb.org/knowledge/show/ec.q.cremona_label)
+· [Published Cremona tables](https://github.com/JohnCremona/ecdata/tree/6fedd3ab463a70e52061ebc0b04832ad19fd2e01/allcurves)
 
 ## Mathematical catalogue ordering
 
