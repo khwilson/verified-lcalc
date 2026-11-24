@@ -32,6 +32,7 @@ structure Settings where
   termLimit : Nat
   /-- Largest requested derivative order. -/
   maxDerivative : Nat
+  deriving Repr, DecidableEq
 
 /-- Dependency identifiers supplied by the build. -/
 structure BuildIdentity where
@@ -43,6 +44,7 @@ structure BuildIdentity where
   producerRevision : String
   /-- Identifier for the certificate checker. -/
   checkerRevision : String
+  deriving Repr, DecidableEq
 
 /-- Complete structural identity for a future cache lookup. -/
 structure Request where
@@ -54,6 +56,7 @@ structure Request where
   settings : Settings
   /-- Dependency and tool identifiers for this request. -/
   build : BuildIdentity
+  deriving Repr, DecidableEq
 
 /-- Serializable evidence data. Its derivative boxes are untrusted until
 matched by a finite witness and the analytic obligations. -/
@@ -64,6 +67,7 @@ structure Artifact where
   rank : Nat
   /-- Supplied enclosures for derivatives in ascending order. -/
   derivativeBoxes : List Box
+  deriving Repr, DecidableEq
 
 end VerifiedLcalc.Artifacts
 
@@ -76,6 +80,7 @@ structure Request where
   computation : Artifacts.Request
   /-- Precision policy that determines the cutoff. -/
   policy : PrecisionPolicy := globalPrecision
+  deriving Repr, DecidableEq
 
 /-- Numerical lower bound `n` records boxes for derivatives 0 through n-1.
 It makes no assertion of exact vanishing. -/
@@ -86,5 +91,6 @@ structure Artifact where
   numericalLowerBound : Nat
   /-- Supplied derivative enclosures in ascending order. -/
   derivativeBoxes : List Box
+  deriving Repr, DecidableEq
 
 end VerifiedLcalc.NumericalRanks

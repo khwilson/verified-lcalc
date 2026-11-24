@@ -9,8 +9,10 @@ public import VerifiedLcalc.Certificate.Witnesses.InputData
 
 /-! # Compatibility path for finite reduction transcripts -/
 
-@[expose] public section
+public section
 
-deriving instance Repr, DecidableEq for VerifiedLcalc.EllipticCurve.MinimalityWitness
-deriving instance Repr, DecidableEq for VerifiedLcalc.EllipticCurve.TateWitness
-deriving instance Repr, DecidableEq for VerifiedLcalc.EllipticCurve.WildData
+export VerifiedLcalc.EllipticCurve (
+  instReprMinimalityWitness instDecidableEqMinimalityWitness
+  instReprTateWitness instDecidableEqTateWitness
+  instReprWildData instDecidableEqWildData
+)

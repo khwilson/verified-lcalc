@@ -15,8 +15,6 @@ public import VerifiedLcalc.Certificate.Witnesses.Invariants
 
 namespace VerifiedLcalc
 
-deriving instance Repr, DecidableEq for AbcQualityClaim
-
 /-- Attach a standalone discriminant witness to its own equation. -/
 def DiscriminantWitness.toProofs {R : Type*} [CommRing R] (w : DiscriminantWitness R) :
     EllipticProofs w.curve :=

@@ -9,6 +9,8 @@ public import VerifiedLcalc.Certificate.Witnesses.Analytic
 
 /-! # Compatibility path for special-value facts -/
 
-@[expose] public section
+public section
 
-deriving instance Repr, DecidableEq for VerifiedLcalc.SpecialLValueClaim
+export VerifiedLcalc (
+  instReprSpecialLValueClaim instDecidableEqSpecialLValueClaim
+)

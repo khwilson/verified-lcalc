@@ -5,6 +5,14 @@ import Lean
 
 open Lean Elab Command
 
+-- A direct witness import supplies these instances without proof companions or compatibility shims.
+#synth DecidableEq VerifiedLcalc.EllipticWitness
+#synth Repr VerifiedLcalc.EllipticWitness
+#synth DecidableEq VerifiedLcalc.EllipticCurve.TateWitness
+#synth Repr VerifiedLcalc.EllipticCurve.CentralResult
+#synth DecidableEq VerifiedLcalc.NumericalRanks.Artifact
+#synth Repr VerifiedLcalc.Artifacts.Request
+
 private def isStructureCommand (cmd : Syntax) : Bool :=
   cmd.isOfKind ``Parser.Command.declaration &&
     cmd[1].isOfKind ``Parser.Command.«structure» &&
@@ -99,7 +107,11 @@ run_cmd do
             throwError "{path}:{line.line}: move the computation or proof body to a companion"
         let derivingClause := cmd[1].getArgs.back!
         unless derivingClause[0].getArgs.isEmpty do
-          throwError "{path}: derive instances in a companion module"
+          for entry in derivingClause[0][1].getSepArgs do
+            let cls := entry[1]
+            unless entry[0].getArgs.isEmpty && cls.isIdent &&
+                ([`Repr, `DecidableEq] : List Name).contains cls.getId do
+              throwError "{path}: only inline Repr and DecidableEq are permitted"
         structures := structures + 1
       else if !([``Parser.Command.moduleDoc, ``Parser.Command.«namespace»,
           ``Parser.Command.«section», ``Parser.Command.«end», ``Parser.Command.«open»,

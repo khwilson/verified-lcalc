@@ -11,19 +11,15 @@ public import VerifiedLcalc.Certificate.Artifacts.Contracts
 public import VerifiedLcalc.Certificate.Witnesses.Analytic
 public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
 
-/-! Compatibility imports and instances for exact artifact records. -/
+/-! Compatibility imports for exact artifact records. -/
 
-@[expose] public section
+public section
 
-deriving instance Repr for VerifiedLcalc.Artifacts.Settings
-deriving instance DecidableEq for VerifiedLcalc.Artifacts.Settings
-deriving instance Repr for VerifiedLcalc.Artifacts.Normalization
-deriving instance DecidableEq for VerifiedLcalc.Artifacts.Normalization
-deriving instance Repr for VerifiedLcalc.Artifacts.Subject
-deriving instance DecidableEq for VerifiedLcalc.Artifacts.Subject
-deriving instance Repr for VerifiedLcalc.Artifacts.BuildIdentity
-deriving instance DecidableEq for VerifiedLcalc.Artifacts.BuildIdentity
-deriving instance Repr for VerifiedLcalc.Artifacts.Request
-deriving instance DecidableEq for VerifiedLcalc.Artifacts.Request
-deriving instance Repr for VerifiedLcalc.Artifacts.Artifact
-deriving instance DecidableEq for VerifiedLcalc.Artifacts.Artifact
+export VerifiedLcalc.Artifacts (
+  instReprSettings instDecidableEqSettings
+  instReprNormalization instDecidableEqNormalization
+  instReprSubject instDecidableEqSubject
+  instReprBuildIdentity instDecidableEqBuildIdentity
+  instReprRequest instDecidableEqRequest
+  instReprArtifact instDecidableEqArtifact
+)
