@@ -241,6 +241,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let catalogue ← if (← getEnv).contains catalogueName then
     `($(rootIdent catalogueName))
   else `({})
+  let cremonaCatalogue ← optionalFactTerm base `cremona_catalogue_fact
   let record ← `({
     nonsingular := $nonsingular
     equationFacts := $equationFacts
@@ -253,6 +254,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     isogeny := $isogeny
     isogenyClass := $isogenyClass
     lmfdbCatalogue := $catalogue
+    cremonaCatalogue := $cremonaCatalogue
     nonmaxPrimes := $nonmaxPrimes
     adelicGenerators := $adelicGenerators
     modPrimeImage := $modPrimeImage
