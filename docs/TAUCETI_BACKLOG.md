@@ -480,7 +480,7 @@ ratios. The complex maximum-to-input lattice index remains a separate target.
   and an independently certified ordinary sigma implementation remain
   mathematical prerequisites for closed evidence.
   [Blakestad–Grant, Theorem 8 and Remark 11](https://arxiv.org/abs/1903.02480)
-  · [Sage ordinary height procedure](https://github.com/sagemath/sage/blob/develop/src/sage/schemes/elliptic_curves/padics.py)
+  · [Sage ordinary height procedure](https://github.com/sagemath/sage/blob/8de8dad7bcb38e1baa43508cbe944bf04a2d0401/src/sage/schemes/elliptic_curves/padics.py#L658-L860)
 
 ## TC-22 — certified residual conjugacy classes and completeness
 

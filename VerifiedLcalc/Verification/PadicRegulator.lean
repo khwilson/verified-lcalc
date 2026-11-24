@@ -119,12 +119,12 @@ theorem storedPadicRegulator_contains (curve : WeierstrassCurve ℤ)
       e.approximation e.approximationPrecision) :
     let p : ℕ := e.p
     letI : Fact p.Prime := ⟨e.p.property⟩
-    ‖ordinaryPadicHeightAtMultiple e.sigma e.x e.y.val (e.denominator.1 : ℕ)
+    ‖ordinaryRankOnePadicRegulator e.sigma e.x e.y.val (e.denominator.val : ℕ)
         (e.multiple : ℕ) - (p : ℚ_[p]) ^ claim.val * (claim.unit : ℚ_[p])‖ ≤
       (p : ℝ) ^ (-claim.prec) := by
   let _ : Fact (e.p : ℕ).Prime := ⟨e.p.property⟩
   let p : ℕ := e.p
-  let z := ordinarySigmaLogArgument e.sigma e.x e.y.val (e.denominator.1 : ℕ)
+  let z := ordinarySigmaLogArgument e.sigma e.x e.y.val (e.denominator.val : ℕ)
   let w : ℚ_[p] := (e.approximation : ℚ)
   let scale := ordinaryPadicHeightScale p e.multiple
   let approxSum := rationalPadicLogPrefix e.approximation e.logTerms
@@ -150,7 +150,7 @@ theorem storedPadicRegulator_contains (curve : WeierstrassCurve ℤ)
   have hc : (center : ℚ_[p]) = (p : ℚ_[p]) ^ claim.val * (claim.unit : ℚ_[p]) := by
     simp [center]
   dsimp only
-  rw [← hc]
+  rw [ordinaryRankOnePadicRegulator_eq_height, ← hc]
   change ‖(scale : ℚ_[p]) * (∑' k, padicLogOneAddTerm z k) -
     (center : ℚ_[p])‖ ≤ (p : ℝ) ^ (-claim.prec)
   rw [← sub_add_sub_cancel _ ((scale * approxSum : ℚ) : ℚ_[p])]
@@ -201,14 +201,14 @@ theorem _root_.VerifiedLcalc.StoredPadicRegulatorFact.valuation_eq
     letI := f.elliptic
     let p : ℕ := f.evidence.p
     letI : Fact p.Prime := ⟨f.evidence.p.property⟩
-    let value := ordinaryPadicHeightAtMultiple f.evidence.sigma f.evidence.x f.evidence.y.val
-      (f.evidence.denominator.1 : ℕ) (f.evidence.multiple : ℕ)
+    let value := ordinaryRankOnePadicRegulator f.evidence.sigma f.evidence.x f.evidence.y.val
+      (f.evidence.denominator.val : ℕ) (f.evidence.multiple : ℕ)
     value ≠ 0 ∧ value.valuation = f.report.val := by
   let _ := f.elliptic
   let p : ℕ := f.evidence.p
   let _ : Fact p.Prime := ⟨f.evidence.p.property⟩
-  let value := ordinaryPadicHeightAtMultiple f.evidence.sigma f.evidence.x f.evidence.y.val
-    (f.evidence.denominator.1 : ℕ) (f.evidence.multiple : ℕ)
+  let value := ordinaryRankOnePadicRegulator f.evidence.sigma f.evidence.x f.evidence.y.val
+    (f.evidence.denominator.val : ℕ) (f.evidence.multiple : ℕ)
   let center := (p : ℚ_[p]) ^ f.report.val * (f.report.unit : ℚ_[p])
   have hp : 1 < (p : ℝ) := by exact_mod_cast f.evidence.p.property.one_lt
   have hunit : ‖(f.report.unit : ℚ_[p])‖ = 1 := by

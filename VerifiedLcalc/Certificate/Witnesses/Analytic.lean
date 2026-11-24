@@ -51,10 +51,12 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.Tamagawa.Product
 * `AnalyticShaFact` encloses the BSD quotient obtained from the leading coefficient.
   `RoundedAnalyticShaFact` identifies its nearest integer and optional prime support.
   Finiteness and order of the cohomological Sha group require independent evidence.
-* `PadicRegulatorReport` preserves the reported ball. `OrdinaryIwasawaInvariants` and
-  `SupersingularIwasawaInvariants` retain source values in the entries of
-  `IwasawaPrimeReport` and `IwasawaReport`. Identifying those reports with the curve's
-  normalized p-adic heights or L-series requires additional mathematical evidence.
+* `PadicRegulatorReport` preserves the reported ball. `StoredPadicRegulatorEvidence`
+  retains the independent class, basis and sigma evaluation hypotheses for a native
+  rank-one row. `StoredPadicRegulatorFact` supplies the checked enclosure.
+* `OrdinaryIwasawaInvariants` and `SupersingularIwasawaInvariants` retain source values
+  in `IwasawaPrimeReport` and `IwasawaReport`. The curve's normalized p-adic
+  L-series is a separate mathematical obligation.
 -/
 
 @[expose] public section
@@ -408,7 +410,7 @@ structure StoredPadicRegulatorEvidence (curve : WeierstrassCurve ℤ)
   /-- Error bound on the sigma evaluation before applying the logarithm. -/
   approximation_correct :
     letI : Fact (p : ℕ).Prime := ⟨p.property⟩
-    ‖ordinarySigmaLogArgument sigma x y.val (denominator.1 : ℕ) -
+    ‖ordinarySigmaLogArgument sigma x y.val (denominator.val : ℕ) -
       (approximation : ℚ_[(p : ℕ)])‖ ≤ ((p : ℕ) : ℝ) ^ (-approximationPrecision)
   /-- Number of terms in the finite logarithm calculation. -/
   logTerms : ℕ
@@ -423,7 +425,8 @@ structure StoredPadicRegulatorFact (curve : WeierstrassCurve ℤ) where
   /-- Reported class label. -/
   classLabel : String
   /-- The class label was computed from the proven catalogue order. -/
-  classLabel_eq : lmfdbIsoLabel evidence.roster.conductor evidence.roster.classIndex.val = classLabel
+  classLabel_eq :
+    lmfdbIsoLabel evidence.roster.conductor evidence.roster.classIndex.val = classLabel
   /-- The four reported ball coordinates. -/
   report : PadicRegulatorReport curve
   /-- The report and the independent evaluation use the same prime. -/
@@ -441,8 +444,8 @@ structure StoredPadicRegulatorFact (curve : WeierstrassCurve ℤ) where
   height-pairing determinant is its single entry. -/
   contains :
     letI : Fact (evidence.p : ℕ).Prime := ⟨evidence.p.property⟩
-    ‖ordinaryPadicHeightAtMultiple evidence.sigma evidence.x evidence.y.val
-        (evidence.denominator.1 : ℕ) (evidence.multiple : ℕ) -
+    ‖ordinaryRankOnePadicRegulator evidence.sigma evidence.x evidence.y.val
+        (evidence.denominator.val : ℕ) (evidence.multiple : ℕ) -
       ((evidence.p : ℕ) : ℚ_[(evidence.p : ℕ)]) ^ report.val *
         (report.unit : ℚ_[(evidence.p : ℕ)])‖ ≤ ((evidence.p : ℕ) : ℝ) ^ (-report.prec)
 

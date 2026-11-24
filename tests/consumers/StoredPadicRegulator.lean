@@ -23,7 +23,7 @@ theorem importedStoredPadicCoordinates :
 include h in
 /-- The imported regulator is nonzero with the reported integer valuation. -/
 theorem importedStoredPadicValuation :
-    let value := ordinaryPadicHeightAtMultiple h.sigma (21 / 25) (-69 / 125) 5 8
+    let value := ordinaryRankOnePadicRegulator h.sigma (21 / 25) (-69 / 125) 5 8
     value ≠ 0 ∧ value.valuation = 1 :=
   (Checked.certificate.analytic.storedPadicRegulator.get (by rfl)).valuation_eq
 

@@ -9,6 +9,7 @@ public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.RingTheory.LaurentSeries
 public import Mathlib.RingTheory.PowerSeries.Substitution
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 /-! # Ordinary p-adic sigma normalization
 
@@ -98,5 +99,19 @@ noncomputable def ordinaryPadicHeightAtMultiple {p : ℕ} [Fact p.Prime]
     (sigma : PowerSeries ℚ_[p]) (x y : ℚ) (d n : ℕ) : ℚ_[p] :=
   (ordinaryPadicHeightScale p n : ℚ_[p]) *
     ∑' k : ℕ, padicLogOneAddTerm (ordinarySigmaLogArgument sigma x y d) k
+
+/-- The determinant of the height matrix on the single rank-one basis vector.
+The arguments describe the chosen multiple of its actual lift. -/
+noncomputable def ordinaryRankOnePadicRegulator {p : ℕ} [Fact p.Prime]
+    (sigma : PowerSeries ℚ_[p]) (x y : ℚ) (d n : ℕ) : ℚ_[p] :=
+  Matrix.det (Matrix.of fun (_ : Fin 1) (_ : Fin 1) =>
+    ordinaryPadicHeightAtMultiple sigma x y d n)
+
+/-- The rank-one determinant is the normalized height of the basis lift. -/
+theorem ordinaryRankOnePadicRegulator_eq_height {p : ℕ} [Fact p.Prime]
+    (sigma : PowerSeries ℚ_[p]) (x y : ℚ) (d n : ℕ) :
+    ordinaryRankOnePadicRegulator sigma x y d n =
+      ordinaryPadicHeightAtMultiple sigma x y d n := by
+  rw [ordinaryRankOnePadicRegulator, Matrix.det_fin_one, Matrix.of_apply]
 
 end VerifiedLcalc.EllipticCurve
