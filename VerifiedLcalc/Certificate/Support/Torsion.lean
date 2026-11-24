@@ -12,7 +12,7 @@ public import Mathlib.Data.ZMod.Basic
 
 @[expose] public section
 
-deriving instance Repr, DecidableEq for VerifiedLcalc.TorsionBoundWitness
+export VerifiedLcalc (instReprTorsionBoundWitness instDecidableEqTorsionBoundWitness)
 
 namespace VerifiedLcalc
 

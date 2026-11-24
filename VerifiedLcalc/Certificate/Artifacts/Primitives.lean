@@ -6,6 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
+public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
 
 /-! Non-record exact request discriminants and normalization data. -/
 
@@ -17,11 +18,13 @@ namespace VerifiedLcalc.Artifacts
 inductive Normalization
   | arithmetic
   | unitary
+  deriving Repr, DecidableEq
 
 /-- A demo target and an elliptic-curve target cannot share a certificate. -/
 inductive Subject
   | monomial (degree : Nat)
   | ellipticCurve (equation : WeierstrassCurve ℤ) (normalization : Normalization)
+  deriving Repr, DecidableEq
 
 /-- Exact evaluation center determined by the subject and normalization. -/
 def Subject.center : Subject → Rat

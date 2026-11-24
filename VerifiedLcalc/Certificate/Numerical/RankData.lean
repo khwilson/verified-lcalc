@@ -10,11 +10,18 @@ public import VerifiedLcalc.Certificate.Artifacts.Data
 public import VerifiedLcalc.Certificate.Numerical.RankContracts
 public import VerifiedLcalc.Certificate.Witnesses.Analytic
 
-/-! Compatibility imports and instances for numerical-rank records. -/
+/-! Compatibility imports for numerical-rank records. -/
 
 @[expose] public section
 
-deriving instance Repr for VerifiedLcalc.NumericalRanks.Request
-deriving instance DecidableEq for VerifiedLcalc.NumericalRanks.Request
-deriving instance Repr for VerifiedLcalc.NumericalRanks.Artifact
-deriving instance DecidableEq for VerifiedLcalc.NumericalRanks.Artifact
+/-- Compatibility name for the numerical-rank request representation. -/
+abbrev instReprRequest_1 := VerifiedLcalc.NumericalRanks.instReprRequest
+
+/-- Compatibility name for decidable equality of numerical-rank requests. -/
+abbrev instDecidableEqRequest_1 := VerifiedLcalc.NumericalRanks.instDecidableEqRequest
+
+/-- Compatibility name for the numerical-rank artifact representation. -/
+abbrev instReprArtifact_1 := VerifiedLcalc.NumericalRanks.instReprArtifact
+
+/-- Compatibility name for decidable equality of numerical-rank artifacts. -/
+abbrev instDecidableEqArtifact_1 := VerifiedLcalc.NumericalRanks.instDecidableEqArtifact

@@ -28,3 +28,9 @@ variable {numericalRequest : NumericalRanks.Request}
   (n : NumericalRanks.Checked numericalRequest)
 
 example : NumericalRanks.check numericalRequest n.artifact = true := n.accepted
+
+example : DecidableEq Artifacts.Request := instDecidableEqRequest
+
+example : Repr NumericalRanks.Artifact := instReprArtifact_1
+
+example : DecidableEq EllipticCurve.CentralResult := instDecidableEqCentralResult

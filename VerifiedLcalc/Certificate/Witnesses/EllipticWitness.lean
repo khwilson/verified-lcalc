@@ -210,5 +210,6 @@ structure EllipticWitness where
   minimality : Option MinimalityWitness := none
   /-- Transcripts at 2 and 3 for the arithmetic conductor and root number. -/
   localData : Option WildData := none
+  deriving Repr, DecidableEq
 
 end VerifiedLcalc
