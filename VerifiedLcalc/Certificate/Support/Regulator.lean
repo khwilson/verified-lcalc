@@ -9,6 +9,8 @@ public import VerifiedLcalc.Certificate.Witnesses.Algebraic
 
 /-! # Compatibility path for regulator facts -/
 
-@[expose] public section
+public section
 
-deriving instance Repr, DecidableEq for VerifiedLcalc.RegulatorClaim
+export VerifiedLcalc (
+  instReprRegulatorClaim instDecidableEqRegulatorClaim
+)

@@ -717,3 +717,77 @@ directly. The missing reusable result is the rational pairing in TC-25.
   · [TauCeti PR 41775](https://github.com/TauCetiProject/TauCeti/pull/41775)
   · [TauCeti PR 41484](https://github.com/TauCetiProject/TauCeti/pull/41484)
   · [Cremona's period comparison](https://wstein.org/papers/ars-manin/html/node13.html)
+
+## TC-29 — normalized cyclotomic distributions and Iwasawa thresholds
+
+- For weight-two forms on Γ₀(N) with rational coefficients, relate the
+  analytic integral in `VerifiedLcalc.Modularity.normalizedRealModularSymbol`
+  to TauCeti's integral modular-symbol period map after division by the
+  full Néron real period of a globally minimal elliptic curve.
+- Prove existence and uniqueness in the integral Iwasawa algebra for
+  `OrdinarilyInterpolates` at odd good ordinary primes, and for
+  `MultiplicativelyInterpolates` at odd multiplicative primes. Formalize
+  the Teichmüller representative and transfer calculations and the
+  level-zero identity in `IwasawaLevelZeroIdentity`.
+- For good primes at least five with trace zero, construct the signed pair
+  and prove `SignedlyInterpolates`, including the level-dependent
+  alternating sign of the raw Mazur–Tate element and the two exact
+  initial augmentation identities in `IwasawaSignedInitialIdentities`.
+  Add the separate cases for p=2 and small supersingular primes.
+- `GoodPrimeIwasawaUnitInput.vanishing` derives the ordinary and signed
+  conclusions from independent normalized interpolation and augmentation
+  data. For the level-eleven fixture, discharge the universal nonanomaly
+  and integral-symbol hypotheses using prime-to-p torsion reduction,
+  the point-count bounds, and exact normalized modular symbols.
+  The exported threshold applies to every good prime in range.
+- Pinned TauCeti supplies `cuspIntegral`, `ModularSymbols.periodMap`,
+  `WeierstrassCurve.minimalRealPeriod`, and
+  `PowerSeries.muInvariant` and `PowerSeries.lambdaInvariant` over a DVR.
+  The local verifier reuses these definitions. The native report decoder
+  and matched prime selection remain catalogue code. Searched the pinned
+  sources and current project for elliptic cyclotomic interpolation. Open
+  TauCeti work on the cyclotomic cutoff and growth formula is algebraic,
+  and the Coleman norm projector is a different distribution construction.
+  [TauCeti PR 42778](https://github.com/TauCetiProject/TauCeti/pull/42778)
+  · [TauCeti PR 43208](https://github.com/TauCetiProject/TauCeti/pull/43208)
+  · [Pinned DVR invariants](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/RingTheory/PowerSeries/Weierstrass/DiscreteValuationRing.lean)
+  · [Pollack, Proposition 6.18](https://math.bu.edu/people/rpollack/Papers/On_the_padic_Lfunction_of_a_modular_form_at_a_ss_prime.pdf)
+  · [Pollack–Weston, Mazur–Tate elements](https://math.bu.edu/people/rpollack/Papers/Mazur-Tate_elements_of_modular_forms.pdf)
+
+## TC-30 — native integral and composite image catalogues
+
+Target [LMFDB G1](roadmaps/LMFDB_Q_CERTIFICATION.md). For a nonsingular
+rational elliptic curve with exact Tate and finite torsion representations,
+prove the compatibility of the reductions in explicit ordered bases. Give
+finite criteria for kernel containment in the local integral image at the
+small primes and in the simultaneous image at composite moduli. Derive
+conjugacy of the full inverse images from finite conjugacy and a lifting
+theorem. For source enumeration, determine which finite projections the
+producer stores and prove validity of the chosen representative at each
+listed modulus, including the determinant, scalar and twist suffixes of
+the modular-curve catalogue.
+
+The verifier uses exact comparisons with explicit generator data and
+accepts a verified sublist of the finite report. The pinned interfaces are
+`WeierstrassCurve.tateModuleGaloisRepresentation`, `PadicInt.toZModPow`,
+`Subgroup.comap` and `MulAut.conj`.
+[RSZB labeling and generation](https://doi.org/10.1017/fms.2022.38)
+· [Candidate upstream level API](https://github.com/TauCetiProject/TauCeti/pull/45304)
+
+## TC-31 — intrinsic residual Serre invariants
+
+For the nonsemisimplified geometric torsion representation of a rational
+elliptic curve, define the prime-to-residual-characteristic Artin conductor
+using inertia and the higher ramification filtration on the representation.
+Define Serre's weight from the residual representation at the residue
+characteristic, including the dyadic exceptional convention. Prove Serre's
+good and multiplicative reduction formulas for a minimal semistable model
+with good reduction at two, using finite flatness in the good case and
+the Tate extension class in the multiplicative case. The arithmetic
+enumeration is `VerifiedLcalc.mem_semistableSerreInvariants_iff`.
+The pinned Artin conductor construction is for multiplicative characters.
+The pinned `Nat.factorization` and `Nat.mem_primeFactors` provide the
+arithmetic indexing.
+[Serre, Proposition 5 and §§4.1.11–12](https://doi.org/10.1215/S0012-7094-87-05413-5)
+· [Pinned ramification infrastructure](https://github.com/TauCetiProject/TauCeti/tree/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/NumberTheory/LocalField/Herbrand)
+· [Pinned factorization](https://github.com/leanprover-community/mathlib4/blob/31ce06eaadf4a200c0e1407c5f10953cf606b8f8/Mathlib/Data/Nat/Factorization/Defs.lean)

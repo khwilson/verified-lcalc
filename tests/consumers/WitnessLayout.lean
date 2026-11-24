@@ -5,6 +5,14 @@ import Lean
 
 open Lean Elab Command
 
+-- A direct witness import supplies these instances without proof companions or compatibility shims.
+#synth DecidableEq VerifiedLcalc.EllipticWitness
+#synth Repr VerifiedLcalc.EllipticWitness
+#synth DecidableEq VerifiedLcalc.EllipticCurve.TateWitness
+#synth Repr VerifiedLcalc.EllipticCurve.CentralResult
+#synth DecidableEq VerifiedLcalc.NumericalRanks.Artifact
+#synth Repr VerifiedLcalc.Artifacts.Request
+
 private def isStructureCommand (cmd : Syntax) : Bool :=
   cmd.isOfKind ``Parser.Command.declaration &&
     cmd[1].isOfKind ``Parser.Command.«structure» &&
@@ -56,10 +64,15 @@ run_cmd do
   for (decl, subject) in [(``VerifiedLcalc.LocalTamagawaFact, `FinitePrimes),
       (``VerifiedLcalc.NonmaxPrimeSupportFact, `FinitePrimes),
       (``VerifiedLcalc.FiniteGaloisImageFact, `FinitePrimes),
+      (``VerifiedLcalc.SemistableSerreRecipeFact, `FinitePrimes),
       (``VerifiedLcalc.ModPrimeImageFact, `FinitePrimes),
       (``VerifiedLcalc.ModPrimeImageCoverage, `FinitePrimes),
       (``VerifiedLcalc.ModPrimeImageListFact, `FinitePrimes),
       (``VerifiedLcalc.AdelicImageFact, `FinitePrimes),
+      (``VerifiedLcalc.PadicImageLabelFact, `FinitePrimes),
+      (``VerifiedLcalc.PadicImageListFact, `FinitePrimes),
+      (``VerifiedLcalc.ModulusImageLabelFact, `FinitePrimes),
+      (``VerifiedLcalc.ModulusImageListFact, `FinitePrimes),
       (``VerifiedLcalc.AdelicGenusFact, `FinitePrimes),
       (``VerifiedLcalc.AdelicImageCertificate, `FinitePrimes),
       (``VerifiedLcalc.ConditionalAnalyticRank, `Analytic),
@@ -97,9 +110,6 @@ run_cmd do
           if let some term := forbiddenFieldTerm field then
             let line := source.toFileMap.toPosition (term.getPos?.getD 0)
             throwError "{path}:{line.line}: move the computation or proof body to a companion"
-        let derivingClause := cmd[1].getArgs.back!
-        unless derivingClause[0].getArgs.isEmpty do
-          throwError "{path}: derive instances in a companion module"
         structures := structures + 1
       else if !([``Parser.Command.moduleDoc, ``Parser.Command.«namespace»,
           ``Parser.Command.«section», ``Parser.Command.«end», ``Parser.Command.«open»,

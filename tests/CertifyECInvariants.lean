@@ -120,6 +120,31 @@ example : WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
 example : (Modularity.modularWitness JSON37.curve JSON37.nonsingular).level.factorization 37 = 1 :=
   (JSON37.conductor_valuation (37, 1) (by decide +kernel)).2
 
+#guard_msgs (drop error) in
+certify_ec Missing37 from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"minimality":[37],"serre_invariants":[]}"#
+
+#guard_msgs (drop error) in
+certify_ec Wrong37 from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"minimality":[37],"serre_invariants":[[37,2,1]]}"#
+
+run_cmd do
+  for name in [`Missing37, `Wrong37] do
+    let env ← getEnv
+    for field in [`witness, `curve, `serre_invariants, `certificate] do
+      if env.contains (name ++ field) then throwError "Rejected Serre input left {name ++ field}"
+
+certify_ec BadAtTwo from_json_string
+  r#"{"ainvs":[1,0,1,-2731,-55146],"minimality":[2,2,2,2,2,2,2,2,2,7,7],
+      "serre_invariants":[[2,4,1],[7,8,2]]}"#
+
+example : BadAtTwo.certificate.serreInvariants = none := rfl
+
+certify_ec NoMinimality37 from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"serre_invariants":[[37,38,1]]}"#
+
+example : NoMinimality37.certificate.serreInvariants = none := rfl
+
 certify_ec DirectConductorValuations from
   { Invariants37.witness with
     localInvariants := some
@@ -644,7 +669,7 @@ run_cmd do
     `tamagawaProduct]
   let analytic := #[`centralResult, `derivativeResult, `catalogueAnalyticRank,
     `specialLValue, `realPeriod, `analyticSha, `sha, `shaPrimes, `padicRegulator,
-    `padicRegulatorClassLabel]
+    `padicRegulatorClassLabel, `iwasawaData, `iwasawaThreshold]
   let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionPrimes,
     `torsionGeneratorOrders, `torsionGrowthField, `intrinsicTorsion]
   let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do
@@ -660,7 +685,8 @@ run_cmd do
     `modifiedSzpiroRatio, `area, `faltingsHeight, `stableFaltingsHeight,
     `faltingsRatio, `faltingsIndex, `modularDegree, `maninConstant, `optimality]
   let galois := #[`nonmaxPrimes, `nonmaxRadical, `adelicGenerators, `modPrimeImage, `modPrimeImages,
-    `adelicLevel, `adelicIndex, `adelicGenus, `adelicImage]
+    `adelicLevel, `adelicIndex, `adelicGenus, `adelicImage,
+    `padicImage, `padicImages, `modulusImages, `serreInvariants]
   cover ``EllipticWitness
     (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++
       isogeny ++ geometry ++ galois ++ #[`lmfdbNumber, `isoNlabel, `lmfdbIso, `lmfdbLabel,

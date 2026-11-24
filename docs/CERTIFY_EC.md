@@ -730,6 +730,19 @@ geometric non-CM and all-prime image evidence. Use the list's membership
 theorem `ModPrimeImageListFact.exists_of_mem_labels` to retrieve a verified
 entry from `Name.certificate.modPrimeImages`.
 
+For `elladic_image`, submit the native label and its `prime` and attach
+`IntegralCurveProofs.padicImage`. The evidence identifies the exact Tate
+action with a conjugate of the full inverse image of the reference subgroup.
+For `elladic_images` attach `padicImages` with one exact comparison per
+submitted label in source order. The optional coverage field identifies the
+complete exceptional prime set for geometrically non-CM curves.
+
+For `modm_images` attach `modulusImages` with the original report and a
+verified ordered sublist. A nonempty report requires at least one verified
+entry. The optional `allEntries` proof covers every submitted entry. For
+incomplete labels `N.i.g.?`, the lift of the mod-`N` subgroup has the stated
+level, index and coarse modular-curve genus with the class suffix unspecified.
+
 For `adelic_level`, `adelic_index`, or `adelic_genus`, provide
 `IntegralCurveProofs.adelicImage` with an exact simultaneous image on all Tate
 modules and the corresponding proof. The level is the least positive modulus

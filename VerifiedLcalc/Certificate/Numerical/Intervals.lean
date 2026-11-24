@@ -15,9 +15,6 @@ public import Mathlib.Basic.Real.Basic
 
 namespace VerifiedLcalc
 
-deriving instance Repr for Box
-deriving instance DecidableEq for Box
-
 /-- Bounds are ordered. -/
 def Box.valid (b : Box) : Bool :=
   decide (b.reLo ≤ b.reHi ∧ b.imLo ≤ b.imHi)

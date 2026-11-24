@@ -148,6 +148,22 @@ def nonnegativeInteger (j : Json) : Except String Nat := do
   unless 0 ≤ n do throw "Expected a nonnegative integer"
   return n.toNat
 
+/-- Decode the native prime dictionary, preserving unknown and additive markers. -/
+def iwasawaDataClaims (j : Json) : Except String (List (ℕ × Sum String (List ℕ))) := do
+  let entries := (← j.getObj?).toList
+  unless entries.length ≤ 256 do throw "Oversized Iwasawa dictionary"
+  entries.mapM fun (key, value) => do
+    let some p := key.toNat? | throw "Expected an Iwasawa prime key"
+    unless 2 ≤ p && key == toString p do throw "Expected a canonical Iwasawa prime key"
+    match value with
+    | .str marker =>
+      unless ["a", "o?", "s?"].contains marker do throw "Unknown Iwasawa status marker"
+      return (p, .inl marker)
+    | _ =>
+      let values ← array value 3
+      unless values.size == 2 || values.size == 3 do throw "Expected two or three invariants"
+      return (p, .inr (← values.toList.mapM nonnegativeInteger))
+
 /-- Read the four b-invariants in order. -/
 def bValues (j : Json) : Except String (Int × Int × Int × Int) := do
   let xs ← array j 4
@@ -367,6 +383,20 @@ def decode (j : Json) : Except String EllipticWitness := do
     return (prime, ← value.getStr?)
   let modPrimeImages ← optionalValue j "modell_images" fun value => do
     (← array value 256).toList.mapM Json.getStr?
+  let padicImage ← optionalValue j "elladic_image" fun value => do
+    let some prime ← optionalValue j "prime" nonnegativeInteger
+      | throw "elladic_image requires the prime of the local row"
+    return (prime, ← value.getStr?)
+  let padicImages ← optionalValue j "elladic_images" fun value => do
+    (← array value 256).toList.mapM Json.getStr?
+  let modulusImages ← optionalValue j "modm_images" fun value => do
+    (← array value 256).toList.mapM Json.getStr?
+  let serreInvariants ← optionalValue j "serre_invariants" fun value => do
+    (← array value 256).toList.mapM fun row => do
+      let triple ← array row 3
+      unless triple.size == 3 do throw "Expected a Serre prime/weight/conductor triple"
+      return (← nonnegativeInteger triple[0]!, ← nonnegativeInteger triple[1]!,
+        ← nonnegativeInteger triple[2]!)
   let catalogueAnalyticRank ← optionalValue j "analytic_rank" nonnegativeInteger
   let mut primeCoefficients : Array (Nat × Int) := #[]
   if let some rows := optionalData j "ap" then
@@ -463,6 +493,8 @@ def decode (j : Json) : Except String EllipticWitness := do
   let stableFaltingsHeight ← decimalEnclosureClaim j "stable_faltings_height"
   let faltingsIndex ← optionalValue j "faltings_index" nonnegativeInteger
   let faltingsRatio ← optionalValue j "faltings_ratio" nonnegativeInteger
+  let iwasawaData ← optionalValue j "iwdata" iwasawaDataClaims
+  let iwasawaThreshold ← optionalValue j "iwp0" nonnegativeInteger
   let nested ← optionalValue j "padic_regulator" pure
   let flat := hasFlatStoredPadicRegulator j
   if flat && nested.isSome then
@@ -537,6 +569,10 @@ def decode (j : Json) : Except String EllipticWitness := do
     adelicImage
     modPrimeImage
     modPrimeImages
+    padicImage
+    padicImages
+    modulusImages
+    serreInvariants
     bInvariants
     cInvariants
     discriminant
@@ -557,6 +593,8 @@ def decode (j : Json) : Except String EllipticWitness := do
     stableFaltingsHeight
     faltingsIndex
     faltingsRatio
+    iwasawaData
+    iwasawaThreshold
     padicRegulator
     padicRegulatorClassLabel := padicRegulatorClassLabel.join
     realPeriod

@@ -231,11 +231,16 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let adelicImage ← optionalFactTerm base `adelic_image_certificate
   let modPrimeImage ← optionalFactTerm base `modell_image_fact
   let modPrimeImages ← optionalFactTerm base `modell_images_fact
+  let padicImage ← optionalFactTerm base `elladic_image_fact
+  let padicImages ← optionalFactTerm base `elladic_images_fact
+  let modulusImages ← optionalFactTerm base `modm_images_fact
+  let serreInvariants ← optionalFactTerm base `serre_invariants_fact
   let cm ← optionalFactTerm base `cm_fact
   let twist ← optionalFactTerm base `minimum_quadratic_twist_evidence
   let szpiroRatio ← optionalFactTerm base `szpiro_ratio_fact
   let faltingsIndex ← optionalFactTerm base `faltings_index_fact
   let modularParametrization ← optionalFactTerm base `modular_parametrization_fact
+  let iwasawa ← optionalFactTerm base `iwasawa_fact
   let periodGeometry ← optionalFactTerm base `period_geometry_fact
   let realPeriod ← optionalFactTerm base `real_period_fact
   let tamagawaProduct ← optionalFactTerm base `tamagawa_product_fact
@@ -267,11 +272,16 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     adelicImage := $adelicImage
     modPrimeImage := $modPrimeImage
     modPrimeImages := $modPrimeImages
+    padicImage := $padicImage
+    padicImages := $padicImages
+    modulusImages := $modulusImages
+    serreInvariants := $serreInvariants
     complexMultiplication := $cm
     minimumQuadraticTwist := $twist
     modifiedSzpiroRatio := $szpiroRatio
     faltingsIndex := $faltingsIndex
     modularParametrization := $modularParametrization
+    iwasawa := $iwasawa
     periodGeometry := $periodGeometry
     realPeriod := $realPeriod
     tamagawaProduct := $tamagawaProduct
@@ -280,7 +290,8 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let env ← getEnv
   if env.contains edgeName || env.contains className ||
       env.contains (base ++ `period_geometry_fact) ||
-      env.contains (base ++ `modular_parametrization_fact) then
+      env.contains (base ++ `modular_parametrization_fact) ||
+      env.contains (base ++ `iwasawa_fact) then
     emit (← `(noncomputable def $certificate : EllipticCertificate $curve := $record))
   else
     emit (← `(def $certificate : EllipticCertificate $curve := $record))

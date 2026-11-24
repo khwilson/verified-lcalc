@@ -13,9 +13,6 @@ public import VerifiedLcalc.Certificate.Witnesses.InputData
 
 namespace VerifiedLcalc
 
-deriving instance Repr for PrecisionPolicy
-deriving instance DecidableEq for PrecisionPolicy
-
 /-- Default immutable policy used by legacy producers. -/
 def globalPrecision : PrecisionPolicy := ⟨53⟩
 

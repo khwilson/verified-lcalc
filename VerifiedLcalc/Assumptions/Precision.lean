@@ -9,7 +9,8 @@ public import VerifiedLcalc.Certificate.Witnesses.Assumptions
 
 /-! Explicit curve-specific hypotheses for upgrading numerical smallness. -/
 
-@[expose] public section
+public section
 
-deriving instance Repr for VerifiedLcalc.Assumptions.CurvePrecisionClaim
-deriving instance DecidableEq for VerifiedLcalc.Assumptions.CurvePrecisionClaim
+export VerifiedLcalc.Assumptions (
+  instReprCurvePrecisionClaim instDecidableEqCurvePrecisionClaim
+)

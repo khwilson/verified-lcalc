@@ -174,6 +174,39 @@ private def certifyLocalRootNumbers (base : Name) (curve rows : Ident)
       exact LocalReductionClaim.rootNumber_correct row $curve $d $hd
         (List.all_eq_true.mp $hv row hrow)))
 
+private def certifySerreInvariants (base : Name) (curve : Ident)
+    (hasMinimality : Bool) : CommandElabM Unit := do
+  let some report ← bindStored base `serreInvariants `serre_invariants
+      (← `(List (ℕ × ℕ × ℕ))) | return
+  unless hasMinimality do
+    logInfo m!"Unverified {base} serre_invariants: supply global minimality evidence"
+    return
+  unless ← hasOptionalProof (← `(if Int.gcd ($curve).Δ ($curve).c₄ = 1 ∧
+      ¬ 2 ∣ ($curve).Δ.natAbs then some () else none)) `serreInvariants do
+    logInfo m!"Unverified {base} serre_invariants: requires semistability and good reduction at 2"
+    return
+  let global := rootIdent (base ++ `global_minimal)
+  let fact := rootIdent (base ++ `serre_invariants_fact)
+  emit (← `(def $fact : SemistableSerreRecipeFact $curve where
+    minimal := $global
+    semistable := (semistable_iff_coprime_of_isGlobalMinimal $curve $global).2 (by decide +kernel)
+    goodAtTwo := by decide +kernel
+    rows := $report
+    exactRows := by
+      cbv
+      first
+      | simp <;> cbv <;> simp <;> done
+      | simp [List.orderedInsert_cons] <;> cbv <;> simp <;> done))
+  auditAxioms (base ++ `serre_invariants_fact)
+  checked (base ++ `serre_invariants)
+    (← `(∀ p k n : ℕ, (p, k, n) ∈ $report ↔
+      p.Prime ∧ (k, n) = semistableSerrePair ($curve).Δ.natAbs p ∧
+        (k, n) ≠ usualSerrePair ($curve).Δ.natAbs))
+    (← `(by
+      intro p k n
+      change (p, k, n) ∈ ($fact).rows ↔ _
+      rw [($fact).exactRows, mem_semistableSerreInvariants_iff]))
+
 private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
     (hasMinimality hasLocalData : Bool) : CommandElabM Unit := do
   let hglobal := rootIdent (base ++ `global_minimal)
@@ -726,6 +759,7 @@ def certifyStoredInvariants (base : Name)
   let hm := rootIdent (base ++ `minimality_valid)
   let d := rootIdent (base ++ `localData)
   let hd := rootIdent (base ++ `local_data_valid)
+  certifySerreInvariants base curve hasMinimality
   certifyReductionInvariants base curve hn m hm hasMinimality hasLocalData
   if let some values ← bindStored base `badPrimes `bad_primes (← `(List Nat)) then
     if hasMinimality then

@@ -34,6 +34,7 @@ deriving instance ToExpr for IsogenyEdgeClaim
 deriving instance ToExpr for AdelicGeneratorsClaim
 deriving instance ToExpr for TorsionGrowthFieldClaim
 deriving instance ToExpr for CanonicalHeightsClaim
+deriving instance ToExpr for Sum
 deriving instance ToExpr for EllipticWitness
 
 

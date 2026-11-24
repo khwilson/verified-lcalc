@@ -6,6 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic
+public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
 
 /-! # Shared input records for elliptic-curve certificates
 
@@ -38,6 +39,7 @@ structure AdelicGeneratorsClaim where
   modulus : ℕ
   /-- Row-major quadruples of least nonnegative matrix entries. -/
   rows : List (ℕ × ℕ × ℕ × ℕ)
+  deriving Repr, DecidableEq
 
 /-- Catalogue references supplied for an integral equation. These fields record provenance. -/
 structure CatalogueMetadata (curve : WeierstrassCurve ℤ) where
@@ -66,6 +68,7 @@ structure AbcQualityClaim where
   error : Rat
   /-- All prime factors of the abc product, with multiplicity. -/
   factors : List Nat
+  deriving Repr, DecidableEq
 
 /-- A single oriented edge claim with an exact integral target equation. -/
 structure IsogenyEdgeClaim where
@@ -75,6 +78,7 @@ structure IsogenyEdgeClaim where
   degree : Nat
   /-- Optional x-coordinate of a kernel point with y=0. -/
   kernelX : Option Rat := none
+  deriving Repr, DecidableEq
 
 /-- The field presentation and absolute degree from one `ec_torsion_growth` row. -/
 structure TorsionGrowthFieldClaim where
@@ -82,6 +86,7 @@ structure TorsionGrowthFieldClaim where
   coefficients : List ℤ
   /-- The claimed absolute field degree. -/
   degree : ℕ
+  deriving Repr, DecidableEq
 
 /-- The decimal heights from `ec_mwbsd`, ordered by the accompanying `gens`. -/
 structure CanonicalHeightsClaim where
@@ -89,6 +94,7 @@ structure CanonicalHeightsClaim where
   reported : List ℚ
   /-- Optional absolute error radii in the same order. -/
   errors : Option (List ℚ) := none
+  deriving Repr, DecidableEq
 
 /-- A stored regulator decimal and optional explicit absolute-error evidence. -/
 structure RegulatorClaim where
@@ -96,6 +102,7 @@ structure RegulatorClaim where
   reported : Rat
   /-- Explicit absolute error bound; absence means an exact-value claim. -/
   error : Option Rat := none
+  deriving Repr, DecidableEq
 
 /-- One submitted p-adic ball for the regulator of the input equation. -/
 structure PadicRegulatorClaim where
@@ -107,6 +114,7 @@ structure PadicRegulatorClaim where
   val : ℤ
   /-- Proposed least nonnegative residue of the unit factor modulo `p^(prec - val)`. -/
   unit : ℤ
+  deriving Repr, DecidableEq
 
 /-- A reported decimal from an archimedean invariant or analytic quotient. -/
 structure DecimalEnclosureClaim where
@@ -114,6 +122,7 @@ structure DecimalEnclosureClaim where
   reported : Rat
   /-- Explicit absolute error radius, if supplied with the report. -/
   error : Option Rat := none
+  deriving Repr, DecidableEq
 
 /-- A finite list containing the abscissa of every affine integral solution. -/
 structure IntegralXSupport (curve : WeierstrassCurve ℤ) where
@@ -130,6 +139,7 @@ structure TorsionBoundWitness where
   secondPrime : Nat
   /-- Claimed positive gcd of the two reduced point counts. -/
   bound : Nat
+  deriving Repr, DecidableEq
 
 /-! ## Finite-prime rows and Tate transcripts -/
 
@@ -152,6 +162,7 @@ structure LocalReductionClaim where
   kodairaSymbol : Option Int := none
   /-- Claimed arithmetic local sign at this prime. -/
   rootNumber : Option Int := none
+  deriving Repr, DecidableEq
 
 end VerifiedLcalc
 
@@ -162,6 +173,7 @@ Both the factorization and the minimality checks are rechecked in the kernel. -/
 structure MinimalityWitness where
   /-- Prime factors, with multiplicity, of the equation discriminant. -/
   primes : List Nat
+  deriving Repr, DecidableEq
 
 /-- A finite Tate reduction transcript. Codes: II=2, III=3, IV=4,
 I0*=-1, IV*=-4, III*=-3, II*=-2, I_n*=-(4+n). -/
@@ -182,6 +194,7 @@ structure TateWitness where
   chain : List Int := []
   /-- Integer code for the proposed Kodaira symbol. -/
   kodaira : Int
+  deriving Repr, DecidableEq
 
 /-- Finite transcripts for the only primes requiring wild root-number data. -/
 structure WildData where
@@ -189,6 +202,7 @@ structure WildData where
   atTwo : Option TateWitness
   /-- Transcript at residue characteristic three, when additive reduction occurs. -/
   atThree : Option TateWitness
+  deriving Repr, DecidableEq
 
 end VerifiedLcalc.EllipticCurve
 
@@ -206,11 +220,13 @@ structure Box where
   imLo : Rat
   /-- Upper imaginary endpoint. -/
   imHi : Rat
+  deriving Repr, DecidableEq
 
 /-- Immutable precision settings recorded in numerical evidence. -/
 structure PrecisionPolicy where
   /-- Number of binary precision bits requested by the exact evaluator. -/
   precisionBits : Nat
+  deriving Repr, DecidableEq
 
 /-- An exact rational interpretation of a reported Taylor leading coefficient
 and its explicit absolute-error radius. -/
@@ -219,6 +235,7 @@ structure SpecialLValueClaim where
   reported : Rat
   /-- Explicit claimed maximum absolute error. -/
   error : Rat
+  deriving Repr, DecidableEq
 
 end VerifiedLcalc
 
@@ -249,6 +266,7 @@ structure CentralResult where
   tail : Rat
   /-- Rational rectangle enclosing the central value in real coordinates. -/
   box : Box
+  deriving Repr, DecidableEq
 
 /-- Finite first-derivative output. Its numerical interpretation is recorded
 separately by `DerivativePayloadCorrect`. -/
@@ -277,6 +295,7 @@ structure DerivativeResult where
   tail : Rat
   /-- Rational rectangle enclosing the normalized derivative integral. -/
   box : Box
+  deriving Repr, DecidableEq
 
 end VerifiedLcalc.EllipticCurve
 
@@ -294,5 +313,6 @@ structure CurvePrecisionClaim where
   derivativeCount : Nat
   /-- Strict lower bound separating the first nonzero derivative from cutoff. -/
   nonzeroGap : Rat
+  deriving Repr, DecidableEq
 
 end VerifiedLcalc.Assumptions

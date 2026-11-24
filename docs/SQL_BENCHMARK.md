@@ -77,7 +77,8 @@ Each curve has named, individually audited theorems for the available components
 - finite numerical payload correctness, when an interval separates zero;
 - exact analytic rank and negative-sign lower bounds, where established.
 
-The global `Audit*.lean` checks run before the campaign. `AuditIntervalComponents`
+The archived campaign ran the global audits before benchmarking.
+[`AuditIntervalComponents.lean`](../tests/audits/AuditIntervalComponents.lean)
 explicitly guards rounding, interval addition, Horner evaluation, interval sums,
 polynomial/Fourier tails, exponential bounds and the evaluator's finite contract.
 Every conductor also prints axiom dependencies for every named concrete component.

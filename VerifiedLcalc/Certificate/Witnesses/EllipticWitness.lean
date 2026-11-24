@@ -76,6 +76,14 @@ structure EllipticWitness where
   modPrimeImage : Option (Nat × String) := none
   /-- The reported curve-level residual image labels. -/
   modPrimeImages : Option (List String) := none
+  /-- A source prime and its prime-adic image label. -/
+  padicImage : Option (Nat × String) := none
+  /-- The source list of prime-adic image labels. -/
+  padicImages : Option (List String) := none
+  /-- The source list of modular-curve labels for finite images. -/
+  modulusImages : Option (List String) := none
+  /-- Reported exceptional residual primes with Serre weight and prime-to-ℓ conductor. -/
+  serreInvariants : Option (List (ℕ × ℕ × ℕ)) := none
   /-- Claims for the ordered tuple of b₂, b₄, b₆ and b₈. -/
   bInvariants : Option (Int × Int × Int × Int) := none
   /-- Claims for the ordered pair of c₄ and c₆. -/
@@ -116,6 +124,10 @@ structure EllipticWitness where
   faltingsIndex : Option Nat := none
   /-- Reported ratio of the largest area in the class to the input area. -/
   faltingsRatio : Option Nat := none
+  /-- Prime-indexed Iwasawa values or status markers in the native producer format. -/
+  iwasawaData : Option (List (Nat × Sum String (List Nat))) := none
+  /-- Proposed good-prime vanishing threshold. Zero is the producer's sentinel. -/
+  iwasawaThreshold : Option Nat := none
   /-- A p-adic regulator ball proposed for the supplied equation. -/
   padicRegulator : Option PadicRegulatorClaim := none
   /-- The class label carried by a native stored p-adic regulator row. -/
@@ -198,5 +210,6 @@ structure EllipticWitness where
   minimality : Option MinimalityWitness := none
   /-- Transcripts at 2 and 3 for the arithmetic conductor and root number. -/
   localData : Option WildData := none
+  deriving Repr, DecidableEq
 
 end VerifiedLcalc

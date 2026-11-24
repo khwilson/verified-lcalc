@@ -86,6 +86,56 @@ theorem residual37_surjective {subject : WeierstrassCurve ℤ} [h : EmptyListRes
   change entry ∈ ([] : List _) at he
   exact List.not_mem_nil he
 
+example : padicImageReference "5.120.0.1" = some (5, 1, [(2, 0, 0, 1)]) := rfl
+
+example : (padicImageReference "25.120.0.1").any (fun (p, k, rows) =>
+    rows.all fun (a, b, c, d) => decide (Int.gcd ((a : ℤ) * d - b * c) (p ^ k) = 1)) =
+    true := by decide +kernel
+
+example : finiteImageReference "22.2.0.a.1" = some (22,
+    [(1, 1, 21, 0), (1, 2, 0, 1), (1, 0, 2, 1), (21, 2, 20, 3), (13, 2, 13, 3)]) := rfl
+
+example : (finiteImageReference "22.2.0.a.1").any (fun (n, rows) =>
+    rows.all fun (a, b, c, d) => decide (Int.gcd ((a : ℤ) * d - b * c) n = 1)) =
+    true := by decide +kernel
+
+/-- The 40.a2 source list carries a verified level-two sublist. -/
+theorem modm40_sublist :
+    let checked := Modulus40.certificate.modulusImages.get (by rfl)
+    (checked.entries.map ModulusImageLabelFact.label).Sublist Modulus40.claimed_modm_images :=
+  Modulus40.modm_images
+
+example : ((Modulus40.certificate.modulusImages.get (by rfl)).entries.map
+    ModulusImageLabelFact.label) = ["2.6.0.a.1"] := rfl
+
+section
+
+variable {action : PadicGaloisImageFact padic69Model ⟨2, Nat.prime_two⟩}
+  [h : CataloguePadic69 action]
+
+include h
+
+/-- The exact 69.a1 Tate image agrees with the full inverse image of the mod-2 Borel. -/
+theorem padic69_preimage :
+    ∃ c : Matrix.GeneralLinearGroup (Fin 2) (AdelicLocalRing ⟨2, Nat.prime_two⟩),
+      action.image = ((residualImageReferenceGroup 2 [(1, 1, 0, 1)]).comap
+        (localImageReduction ⟨2, Nat.prime_two⟩ 1)).map (MulAut.conj c).toMonoidHom := by
+  obtain ⟨depth, rows, htable, hconj⟩ :=
+    ((PadicRow69.certificate (h := h)).padicImage.get (by rfl)).correct
+  change some (2, 1, [(1, 1, 0, 1)]) = some (2, depth, rows) at htable
+  simp only [Option.some.injEq, Prod.mk.injEq, true_and] at htable
+  rcases htable with ⟨rfl, rfl⟩
+  exact hconj
+
+/-- The separate coverage proof for 69.a1 identifies its complete non-CM support. -/
+theorem padic69_coverage (p : Nat.Primes) :
+    ∃ image : PadicGaloisImageFact padic69Model p,
+      p ∈ ([⟨2, Nat.prime_two⟩] : List Nat.Primes).toFinset ↔ image.image ≠ ⊤ :=
+  (((PadicList69.certificate (h := h)).padicImages.get (by rfl)).coverage.get
+    (by rfl)).val.complete p
+
+end
+
 section
 
 variable {exactImage : AdelicImageFact emptyListModel} [h : CatalogueAdelic37 exactImage]
@@ -176,6 +226,19 @@ example : ReportsOnly.witness.nonmaxPrimes = some [] := rfl
 example : ReportsOnly.certificate.modPrimeImages = none := rfl
 example : ReportsOnly.witness.modPrimeImages = some [] := rfl
 
+section
+
+variable {action : FiniteGaloisImageFact emptyListModel} {adelic : AdelicImageFact emptyListModel}
+  [h : CatalogueModulus37 action adelic]
+
+/-- The native 37.a1 list has independent evidence for every submitted entry. -/
+theorem modm37_all :
+    let checked := (Modulus37.certificate (h := h)).modulusImages.get (by rfl)
+    checked.entries.map ModulusImageLabelFact.label = Modulus37.claimed_modm_images :=
+  Modulus37.modm_images_all (h := h)
+
+end
+
 private meta def rejectGalois (base : Name) (command : Syntax)
     (check : Option String := none) : CommandElabM Unit := do
   let messages := (← get).messages
@@ -200,6 +263,8 @@ private meta def rejectGalois (base : Name) (command : Syntax)
       `claimed_adelic_image, `adelic_image_fact, `adelic_image, `adelic_image_certificate,
       `claimed_adelic_level, `claimed_adelic_index, `claimed_adelic_genus,
       `adelic_image_level, `adelic_image_index, `adelic_image_genus, `adelic_image_format,
+      `claimed_elladic_image, `elladic_image_fact, `elladic_image, `elladic_images_fact,
+      `claimed_modm_images, `modm_images_fact, `modm_images, `modm_images_source, `modm_images_all,
       `certificate] do
     if env.contains (base ++ suffix) then throwError "Rejected report leaked {base ++ suffix}"
 
@@ -244,6 +309,39 @@ run_cmd do
       with_proofs ({ modPrimeImages := some { images := [splitModTwoLabel, splitModTwoLabel] } } :
         IntegralCurveProofs splitModel))) (some "modell_images_distinct_primes")
 
+
+run_cmd do
+  if (← getEnv).contains `VerifiedLcalcTests.GaloisImage.Modulus40.modm_images_all then
+    throwError "A partial finite image report asserted validity of every submitted entry"
+  rejectGalois `BogusFiniteImageWithoutEntries (← `(certify_ec BogusFiniteImageWithoutEntries from
+    { equation := splitModel, modulusImages := some ["bogus"] }
+      with_proofs ({
+        modulusImages := some {
+          reported := ["bogus"]
+          entries := []
+          sublist := List.nil_sublist _
+          hasEvidence := by simp } } : IntegralCurveProofs splitModel)))
+  rejectGalois `WrongFiniteImageList (← `(certify_ec WrongFiniteImageList from
+    { equation := splitModel, modulusImages := some ["2.6.0.a.1"] }
+      with_proofs modm40Attachment)) (some "modm_images")
+
+section
+
+variable {action : PadicGaloisImageFact padic69Model ⟨2, Nat.prime_two⟩}
+  [h : CataloguePadic69 action]
+
+run_cmd do
+  rejectGalois `WrongPadicPrime (← `(certify_ec WrongPadicPrime from_json_string
+    r#"{ "ainvs":[1,0,1,-16,-25], "prime":3, "elladic_image":"2.3.0.1" }"#
+      with_proofs (padic69Attachment h))) (some "elladic_image")
+  rejectGalois `WrongPadicLabel (← `(certify_ec WrongPadicLabel from_json_string
+    r#"{ "ainvs":[1,0,1,-16,-25], "prime":2, "elladic_image":"2.6.0.1" }"#
+      with_proofs (padic69Attachment h))) (some "elladic_image")
+  rejectGalois `WrongPadicList (← `(certify_ec WrongPadicList from_json_string
+    r#"{ "ainvs":[1,0,1,-16,-25], "elladic_images":[] }"#
+      with_proofs (padic69Attachment h))) (some "elladic_images")
+
+end
 
 section
 
@@ -302,7 +400,8 @@ run_cmd do
       ``residual40_conjugate, ``residual40_list_entry, ``residual37_surjective,
       ``Adelic37.certificate, ``PartialAdelic37.certificate, ``adelic37_minimal_level,
       ``adelic37_full_preimage, ``adelic37_index, ``adelic37_finite_index, ``adelic37_genus,
-      ``adelic37_partial_label] do
+      ``adelic37_partial_label, ``PadicLean69.certificate, ``Modulus40.certificate,
+      ``padic69_preimage, ``padic69_coverage, ``modm40_sublist, ``modm37_all] do
     for assumption in ← liftTermElabM (Lean.collectAxioms declaration) do
       unless [``propext, ``Classical.choice, ``Quot.sound].contains assumption do
         throwError "Unexpected Galois-image axiom: {assumption}"
