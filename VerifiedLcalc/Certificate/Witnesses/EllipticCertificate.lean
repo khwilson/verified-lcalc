@@ -41,6 +41,14 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   adelicGenerators :
     letI := Classical.decEq (AlgebraicClosure ℚ)
     Option (FiniteGaloisImageFact curve) := none
+  /-- Exact residual image evidence for the submitted prime row. -/
+  modPrimeImage :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (ModPrimeImageFact curve) := none
+  /-- Exact residual image evidence for the submitted curve-level label list. -/
+  modPrimeImages :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (ModPrimeImageListFact curve) := none
   /-- Proof identifying the geometric endomorphism ring. -/
   complexMultiplication : Option (ComplexMultiplicationFacts curve) := none
   /-- Proof of a globally minimal integral model of a minimum-conductor quadratic twist. -/
@@ -89,6 +97,14 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   adelicGenerators :
     letI := Classical.decEq (AlgebraicClosure ℚ)
     Option (FiniteGaloisImageFact curve) := none
+  /-- The checked exact residual image for the submitted prime row. -/
+  modPrimeImage :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (ModPrimeImageFact curve) := none
+  /-- Checked exact residual images for the submitted list, with optional coverage. -/
+  modPrimeImages :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (ModPrimeImageListFact curve) := none
   /-- Checked identification of the geometric endomorphism ring. -/
   complexMultiplication : Option (ComplexMultiplicationFacts curve) := none
   /-- Checked minimum-conductor twist and its globally minimal integral equation. -/

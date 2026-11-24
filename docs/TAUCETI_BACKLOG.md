@@ -418,3 +418,28 @@ canonical-height doubling law. An explicit uniform bound then gives an
 error divided by `4^n` when enclosing the height using the naive height of
 `2^n • P`. Include points at infinity, torsion, and nonminimal equations
 in the specification unless a particular bound explicitly assumes minimality.
+
+## TC-22 — certified residual conjugacy classes and completeness
+
+Target G1 in the [EC/Q coverage roadmap](roadmaps/LMFDB_Q_CERTIFICATION.md).
+For a nonsingular elliptic curve over ℚ and a prime ℓ, identify the absolute
+Galois image on all geometric ℓ-torsion with the matrices of the splitting
+field action on an ordered torsion basis. Prove that change of basis gives
+conjugate subgroups and derive a finite check from a certified description
+of the splitting field. For geometrically non-CM curves over ℚ, pair a
+checked residual image at each candidate exceptional prime with explicit
+arithmetic hypotheses ensuring surjectivity at all other primes. For
+geometrically CM curves, determine the appropriate comparison subgroup and
+prove the hypothesis under which the representation attains it.
+
+The project reuses `WeierstrassCurve.torsionGaloisAction`,
+`WeierstrassCurve.nonempty_basis_torsionBy`, `Matrix.GeneralLinearGroup`,
+`Subgroup.closure`, `Subgroup.map`, and `MulAut.conj`. The catalogue label
+semantics use the representative matrices from Sutherland's Section 6.4
+and Table 3. The checked interface requires explicit image and conjugacy
+proofs, so neither the catalogue nor a conjecturally complete label
+classification supplies a geometric premise.
+[Pinned finite action](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Point/Galois.lean)
+· [Pinned torsion basis](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Isogeny/MulByInt/Torsion/Structure.lean)
+· [Pinned inner automorphisms](https://github.com/leanprover-community/mathlib4/blob/31ce06eaadf4a200c0e1407c5f10953cf606b8f8/Mathlib/Algebra/Group/End.lean)
+· [Candidate open-subgroup API](https://github.com/TauCetiProject/TauCeti/pull/45304)

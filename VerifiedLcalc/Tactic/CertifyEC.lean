@@ -41,6 +41,8 @@ The matrix requires the reduced minimal models in lexicographic order.
 The Galois fields `nonmax_primes` and `nonmax_rad` use complete non-CM
 `IntegralCurveProofs.nonmaxSupport`. The field `adelic_gens` uses
 `IntegralCurveProofs.adelicGenerators` at the reported finite modulus.
+The residual fields `modell_image` and `modell_images` use the corresponding
+`modPrimeImage` and `modPrimeImages` evidence for exact Sutherland conjugacy classes.
 Prerequisite-dependent claims without the required evidence are reported as unverified. See
 `docs/LMFDB_INVARIANTS.md` for the exact mathematical outputs and trust boundary.
 JSON can supply `ainvs`, `ap` or `aplist`, and `integral_points` or
@@ -315,14 +317,15 @@ def certifyJson (name : Name) (text : String)
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
         "num_int_pts", "class_size", "class_deg", "isogeny_matrix", "isogeny_degrees",
-        "nonmax_primes", "nonmax_rad", "adelic_gens",
+        "nonmax_primes", "nonmax_rad", "adelic_gens", "modell_image", "modell_images",
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
         ["torsion_growth", "heights", "heights_evidence", "regulator", "regulator_evidence",
           "real_period", "real_period_evidence", "tamagawa_product", "sha_an", "sha_an_evidence",
           "sha", "sha_primes"] ++
         algebraicKeys ++ localKeys ++
           if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
-              (CurveDataJson.optionalData j "adelic_gens").isSome then ["prime"] else []
+              (CurveDataJson.optionalData j "adelic_gens").isSome ||
+              (CurveDataJson.optionalData j "modell_image").isSome then ["prime"] else []
       let checkedAbcQuality := (← getEnv).contains (base ++ `abc_quality)
       let checkedCM := (← getEnv).contains (base ++ `cm)
       let checkedTwistEquation := (← getEnv).contains (base ++ `min_quad_twist_ainvs)

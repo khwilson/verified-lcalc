@@ -40,7 +40,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `manin_constant` | `curvedata` | Report | [`ModularParametrizationInput.maninConstant`](Algebraic.lean). Reported differential scaling of the modular parametrization. |
 | `min_quad_twist_ainvs` | `curvedata` | Checked | [`MinimumQuadraticTwistFacts.equation`](Algebraic.lean). Requires a globally minimal integral model, a rational change of variables and minimum algorithmic conductor among quadratic twists. Available at `certificate.minimumQuadraticTwist.minimum`. Its optional `uniqueMinimum` evidence proves uniqueness in the ordinary non-CM case. Producer tie-breaking remains open. |
 | `min_quad_twist_disc` | `curvedata` | Checked | [`MinimumQuadraticTwistFacts.discriminant`](Algebraic.lean). Fundamental discriminant of the same minimum-conductor twist, at `certificate.minimumQuadraticTwist.minimum.discriminant`. Producer tie-breaking remains open. |
-| `modell_images` | `curvedata` | Report | [`GaloisImageClaims.modPrimeImages`](FinitePrimes.lean). List of mod-ℓ image labels. |
+| `modell_images` | `curvedata` | Checked with evidence | [`EllipticWitness.modPrimeImages`](EllipticWitness.lean) and [`ModPrimeImageListFact`](FinitePrimes.lean). Verifies each listed residual conjugacy class, with optional exhaustive non-CM residual support. |
 | `modm_images` | `curvedata` | Report | [`GaloisImageClaims.modmImages`](FinitePrimes.lean). List of image labels at the reported moduli. |
 | `nonmax_primes` | `curvedata` | Checked | [`EllipticWitness.nonmaxPrimes`](EllipticWitness.lean) with [`NonmaxPrimeSupportFact`](FinitePrimes.lean). Proves precisely the exceptional primes for geometrically non-CM curves. |
 | `nonmax_rad` | `curvedata` | Checked | [`EllipticWitness.nonmaxRadical`](EllipticWitness.lean) and [`NonmaxPrimeSupportFact.primes`](FinitePrimes.lean). Exact product over the proved support. |
@@ -107,7 +107,7 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `adelic_gens` | `galrep` | Checked | [`EllipticWitness.adelicGenerators`](EllipticWitness.lean) with [`FiniteGaloisImageFact`](FinitePrimes.lean). The matrices generate the entire image on torsion at the reported modulus. |
 | `adelic_image` | `galrep` | Report | [`AdelicGaloisImageClaim.adelicImage`](FinitePrimes.lean). Label for the adelic row (source key 0). |
 | `elladic_image` | `galrep` | Report | [`PrimeGaloisImageClaim.padicImage`](FinitePrimes.lean). Reported label. [`PadicGaloisImageFact`](FinitePrimes.lean) specifies the actual Tate-module image in a chosen basis. |
-| `modell_image` | `galrep` | Report | [`PrimeGaloisImageClaim.modPrimeImage`](FinitePrimes.lean). Reported label. [`FiniteGaloisImageFact`](FinitePrimes.lean) specifies the finite-level image. |
+| `modell_image` | `galrep` | Checked with evidence | [`EllipticWitness.modPrimeImage`](EllipticWitness.lean) and [`ModPrimeImageFact`](FinitePrimes.lean). Identifies the full residual image up to conjugacy at the source row's prime. |
 
 ## p-adic regulators (`ec_padic`)
 

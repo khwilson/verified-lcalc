@@ -41,6 +41,9 @@ run_cmd do
   for (decl, subject) in [(``VerifiedLcalc.LocalTamagawaFact, `FinitePrimes),
       (``VerifiedLcalc.NonmaxPrimeSupportFact, `FinitePrimes),
       (``VerifiedLcalc.FiniteGaloisImageFact, `FinitePrimes),
+      (``VerifiedLcalc.ModPrimeImageFact, `FinitePrimes),
+      (``VerifiedLcalc.ModPrimeImageCoverage, `FinitePrimes),
+      (``VerifiedLcalc.ModPrimeImageListFact, `FinitePrimes),
       (``VerifiedLcalc.ConditionalAnalyticRank, `Analytic),
       (``VerifiedLcalc.TorsionWitness, `Algebraic),
       (``VerifiedLcalc.DiscriminantWitness, `Invariants)] do

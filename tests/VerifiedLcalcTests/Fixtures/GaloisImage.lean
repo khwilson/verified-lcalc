@@ -34,9 +34,15 @@ instance : E.IsElliptic := ⟨isUnit_iff_ne_zero.mpr (by decide +kernel)⟩
 
 attribute [local instance] Classical.decEq
 
-private theorem fixes_two (σ : K ≃ₐ[ℚ] K)
-    (P : AddSubgroup.torsionBy W.toAffine.Point (2 : ℤ)) :
-    Multiplicative.toAdd (E.torsionGaloisAction 2 σ) P = P := by
+private theorem fixes_split_two {a b r s t : ℤ}
+    (factorization : ∀ x : K, x ^ 3 + (a : K) * x + b = (x - r) * (x - s) * (x - t))
+    (σ : K ≃ₐ[ℚ] K)
+    (P : AddSubgroup.torsionBy
+      (((⟨0, 0, 0, a, b⟩ : WeierstrassCurve ℤ).baseChange ℚ).baseChange K).toAffine.Point
+      (2 : ℤ)) :
+    Multiplicative.toAdd
+      (((⟨0, 0, 0, a, b⟩ : WeierstrassCurve ℤ).baseChange ℚ).torsionGaloisAction 2 σ) P =
+      P := by
   apply Subtype.ext
   rw [torsionGaloisAction_apply_coe, pointGaloisAction_apply]
   obtain ⟨P, ht⟩ := P
@@ -49,49 +55,136 @@ private theorem fixes_two (σ : K ≃ₐ[ℚ] K)
       simpa only [two_zsmul] using ht
     have hy := (Affine.Point.some_add_self_eq_zero_iff h).mp hadd
     rw [Affine.evalEval_polynomialY] at hy
-    have hy₂ : 2 * y = 0 := by simpa [W, E, model, baseChange] using hy
+    have hy₂ : 2 * y = 0 := by simpa [baseChange] using hy
     have ey : y = 0 := (mul_eq_zero.mp hy₂).resolve_left two_ne_zero
     subst y
-    have eqn : 0 = x ^ 3 - x := by
-      simpa [W, E, model, baseChange, sub_eq_add_neg] using (Affine.equation_iff _ _).mp h.1
-    have hprod : x * (x - 1) * (x + 1) = 0 := by linear_combination -eqn
+    have eqn : 0 = x ^ 3 + (a : K) * x + b := by
+      simpa [baseChange] using (Affine.equation_iff _ _).mp h.1
+    have hprod : (x - r) * (x - s) * (x - t) = 0 := (factorization x).symm.trans eqn.symm
     rw [Affine.Point.map_some, Affine.Point.some.injEq]
     simp only [AlgEquiv.coe_toAlgHom, map_zero, and_true]
     rcases mul_eq_zero.mp hprod with hh | hh
     · rcases mul_eq_zero.mp hh with hh | hh
-      · simp [hh]
       · simp [sub_eq_zero.mp hh]
-    · simp [eq_neg_of_add_eq_zero_left hh]
+      · simp [sub_eq_zero.mp hh]
+    · simp [sub_eq_zero.mp hh]
 
-/-- Every Galois matrix on the geometric 2-torsion is the identity. -/
-def modTwoImage : FiniteGaloisImageFact model where
+/-- The full mod-2 action of a short equation with split cubic in rational coordinates. -/
+def splitModTwoImage {a b r s t : ℤ}
+    [((⟨0, 0, 0, a, b⟩ : WeierstrassCurve ℤ).baseChange ℚ).IsElliptic]
+    (factorization : ∀ x : K, x ^ 3 + (a : K) * x + b = (x - r) * (x - s) * (x - t)) :
+    FiniteGaloisImageFact (⟨0, 0, 0, a, b⟩ : WeierstrassCurve ℤ) where
   modulus := 2
   generators := [1]
   correct := by
-    let b := (nonempty_basis_torsionBy W 2 (by norm_num)).some
-    refine ⟨b, ?_⟩
+    let curve := (⟨0, 0, 0, a, b⟩ : WeierstrassCurve ℤ).baseChange ℚ
+    let basis := (nonempty_basis_torsionBy (curve.baseChange K) 2 (by norm_num)).some
+    refine ⟨basis, ?_⟩
     intro g
-    change Matrix.GeneralLinearGroup (Fin 2) (ZMod 2) at g
     change g ∈
         Subgroup.closure {a | a ∈ ([1] : List (Matrix.GeneralLinearGroup (Fin 2) (ZMod 2)))} ↔
       ∃ σ : K ≃ₐ[ℚ] K, ∀ P,
-        b.equivFun (Multiplicative.toAdd (E.torsionGaloisAction 2 σ) P) = g.val *ᵥ b.equivFun P
-    simp only [List.mem_singleton, Set.ofPred_eq_eq_singleton, Subgroup.closure_singleton_one,
-      Subgroup.mem_bot]
+        basis.equivFun (Multiplicative.toAdd (curve.torsionGaloisAction 2 σ) P) =
+          g.val *ᵥ basis.equivFun P
+    simp only [List.mem_singleton, Set.ofPred_eq_eq_singleton, Subgroup.closure_singleton_one]
     constructor
     · rintro rfl
-      exact ⟨1, fun P => by rw [fixes_two]; simp⟩
+      exact ⟨1, fun P => by
+        rw [fixes_split_two factorization]
+        exact (Matrix.one_mulVec _).symm⟩
     · rintro ⟨σ, h⟩
       apply Units.ext
       apply Matrix.mulVec_injective
       funext v
-      obtain ⟨P, rfl⟩ := b.equivFun.surjective v
-      simpa [fixes_two] using (h P).symm
+      obtain ⟨P, rfl⟩ := basis.equivFun.surjective v
+      have hP := h P
+      rw [fixes_split_two factorization] at hP
+      change g.val *ᵥ basis.equivFun P =
+        (1 : Matrix (Fin 2) (Fin 2) (ZMod 2)) *ᵥ basis.equivFun P
+      rw [Matrix.one_mulVec]
+      exact hP.symm
+
+/-- Every Galois matrix on the geometric 2-torsion is the identity. -/
+def modTwoImage : FiniteGaloisImageFact model :=
+  splitModTwoImage (r := 0) (s := 1) (t := -1) fun x => by push_cast; ring
 
 certify_ec ExactModTwo from_json_string
   r#"{ "ainvs":[0,0,0,-1,0], "prime":0, "adelic_image":"2.6.0.?",
        "adelic_gens":[[1,0,0,1]], "discriminant":64, "integral_points":[[0,0]] }"#
   with_proofs ({ adelicGenerators := some modTwoImage } : IntegralCurveProofs model)
+
+/-- LMFDB curve 40.a2, whose cubic splits at the rational roots −2, −1 and 3. -/
+abbrev splitModel : WeierstrassCurve ℤ := ⟨0, 0, 0, -7, -6⟩
+
+instance : (splitModel.baseChange ℚ).IsElliptic :=
+  ⟨isUnit_iff_ne_zero.mpr (by decide +kernel)⟩
+
+/-- The exact mod-2 image of 40.a2 matches Sutherland's split-Cartan label. -/
+def splitModTwoLabel : ModPrimeImageFact splitModel where
+  finiteImage := splitModTwoImage (r := -2) (s := -1) (t := 3) fun x => by push_cast; ring
+  prime := Nat.prime_two
+  label := "2Cs"
+  conjugate := by
+    refine ⟨[(1, 0, 0, 1)], rfl, 1, ?_⟩
+    change Subgroup.closure {g | g ∈ ([1] : List (Matrix.GeneralLinearGroup (Fin 2) (ZMod 2)))} =
+      (residualImageReferenceGroup 2 [(1, 0, 0, 1)]).map (MulAut.conj 1).toMonoidHom
+    have hrow : galoisMatrixRow (1 : Matrix.GeneralLinearGroup (Fin 2) (ZMod 2)) =
+        (1, 0, 0, 1) := by decide +kernel
+    rw [residualImageReferenceGroup, ← hrow]
+    simp only [List.mem_singleton, galoisMatrixRow_injective.eq_iff, Set.ofPred_eq_eq_singleton,
+      Subgroup.closure_singleton_one, Subgroup.map_bot]
+
+/-- Attach the exact image independently to either of the two reporting fields. -/
+def splitModTwoAttachment : IntegralCurveProofs splitModel :=
+  { modPrimeImage := some splitModTwoLabel
+    modPrimeImages := some { images := [splitModTwoLabel] } }
+
+certify_ec Residual40 from_json_string
+  r#"{ "ainvs":[0,0,0,-7,-6], "prime":2, "modell_image":"2Cs", "modell_images":["2Cs"] }"#
+  with_proofs splitModTwoAttachment
+
+certify_ec Residual40Lean from {
+  equation := splitModel
+  modPrimeImage := some (2, "2Cs")
+  modPrimeImages := some ["2Cs"]
+} with_proofs splitModTwoAttachment
+
+/-- The integral equation of 37.a1, whose source list of residual exceptions is empty. -/
+abbrev emptyListModel : WeierstrassCurve ℤ := ⟨0, 0, 1, -1, 0⟩
+
+instance : (emptyListModel.baseChange ℚ).IsElliptic :=
+  ⟨isUnit_iff_ne_zero.mpr (by decide +kernel)⟩
+
+/-- Geometric evidence needed to conclude the absence of exceptional residual primes. -/
+class EmptyListResidualImages (subject : outParam (WeierstrassCurve ℤ)) : Prop where
+  /-- The model in the source row. -/
+  equation_eq : subject = emptyListModel
+  /-- The curve has no geometric complex multiplication. -/
+  nonCM : ¬ (emptyListModel.baseChange ℚ).HasGeometricCM
+  /-- Each prime-torsion action has full image. -/
+  full : ∀ p : Nat.Primes, ∃ image : FiniteGaloisImageFact emptyListModel,
+    (image.modulus : ℕ) = (p : ℕ) ∧ Subgroup.closure {g | g ∈ image.generators} = ⊤
+
+/-- An empty report certifies exhaustiveness only with independent all-prime evidence. -/
+def emptyListAttachment {subject : WeierstrassCurve ℤ} (h : EmptyListResidualImages subject) :
+    IntegralCurveProofs emptyListModel where
+  modPrimeImages := some {
+    images := []
+    coverage := some ⟨{
+      nonCM := h.nonCM
+      complete p := by
+        obtain ⟨image, hp, himage⟩ := h.full p
+        exact ⟨image, hp, by simp [himage]⟩ }⟩ }
+
+section
+
+variable {subject : WeierstrassCurve ℤ} [h : EmptyListResidualImages subject]
+
+certify_ec EmptyResidual37 from_json_string
+  r#"{ "ainvs":[0,0,1,-1,0], "modell_images":[] }"#
+  with_proofs (emptyListAttachment h)
+
+end
 
 /-- LMFDB curve 338.e1, whose two listed exceptional primes distinguish residual and
 prime-adic maximality at 2. -/

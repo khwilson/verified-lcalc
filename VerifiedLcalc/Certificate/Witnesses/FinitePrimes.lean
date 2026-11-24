@@ -7,6 +7,7 @@ module
 
 public import VerifiedLcalc.Certificate.Witnesses.Invariants
 public import VerifiedLcalc.Certificate.LocalReductionSpecs
+public import VerifiedLcalc.Certificate.ResidualImageLabels
 public import VerifiedLcalc.EllipticCurve.Tate.ArithmeticSpecs
 public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReductionSpec
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
@@ -176,6 +177,43 @@ structure FiniteGaloisImageFact (curve : WeierstrassCurve ℤ)
             (Multiplicative.toAdd
               ((curve.baseChange ℚ).torsionGaloisAction ((modulus : ℕ) : ℤ) σ) P) =
           (g : Matrix (Fin 2) (Fin 2) (ZMod (modulus : ℕ))) *ᵥ basis.equivFun P
+
+/-- An exact residual Galois image identified with a supported Sutherland conjugacy class. -/
+structure ModPrimeImageFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)] where
+  /-- The full geometric torsion image in an ordered basis. -/
+  finiteImage : FiniteGaloisImageFact curve
+  /-- The torsion modulus is a rational prime. -/
+  prime : Nat.Prime (finiteImage.modulus : ℕ)
+  /-- The Sutherland label of the image. -/
+  label : String
+  /-- The generated image is a conjugate of the reference subgroup for the label. -/
+  conjugate : ∃ rows,
+    residualImageLabelGenerators label = some ((finiteImage.modulus : ℕ), rows) ∧
+      ∃ c : Matrix.GeneralLinearGroup (Fin 2) (ZMod (finiteImage.modulus : ℕ)),
+        Subgroup.closure {g | g ∈ finiteImage.generators} =
+          (residualImageReferenceGroup (finiteImage.modulus : ℕ) rows).map
+            (MulAut.conj c).toMonoidHom
+
+/-- Exhaustiveness of a residual image list under the non-CM reporting convention. -/
+structure ModPrimeImageCoverage (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)]
+    (images : List (ModPrimeImageFact curve)) : Prop where
+  /-- The curve has no geometric complex multiplication. -/
+  nonCM : ¬ (curve.baseChange ℚ).HasGeometricCM
+  /-- The primes appearing in the list are precisely the primes with proper residual image. -/
+  complete : ∀ p : Nat.Primes, ∃ image : FiniteGaloisImageFact curve,
+    (image.modulus : ℕ) = (p : ℕ) ∧
+      ((∃ entry ∈ images, (entry.finiteImage.modulus : ℕ) = (p : ℕ)) ↔
+        Subgroup.closure {g | g ∈ image.generators} ≠ ⊤)
+
+/-- Verified entries of the submitted curve-level list, with optional non-CM exhaustiveness. -/
+structure ModPrimeImageListFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)] where
+  /-- One exact conjugacy-class identification per listed label, in report order. -/
+  images : List (ModPrimeImageFact curve)
+  /-- Optional evidence that the list covers all and only the exceptional residual primes. -/
+  coverage : Option (PLift (ModPrimeImageCoverage curve images)) := none
 
 /-- The exact image on the full Tate module over the algebraic closure of the rationals.
 The subgroup carries the entire prime-adic conclusion. -/
