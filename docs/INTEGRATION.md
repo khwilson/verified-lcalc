@@ -104,7 +104,7 @@ precision policy.
 ## Verification
 
     lake build
-    lake build VerifiedLcalc.Assumptions.Regression
+    lake build VerifiedLcalc.Verification.NumericalCertification
     lake env lean tests/audits/AuditArithmetic.lean
     lake env lean tests/audits/AuditIntegration.lean
     lake env lean tests/audits/Audit.lean
