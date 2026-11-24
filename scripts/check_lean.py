@@ -28,6 +28,7 @@ AUDITS = (
     "tests/consumers/TraceHash.lean",
     "tests/consumers/CremonaLabels.lean",
     "tests/consumers/PeriodGeometry.lean",
+    "tests/consumers/IntrinsicTorsionFaltingsIndex.lean",
     "tests/consumers/GaloisImage.lean",
     "tests/consumers/Geometry.lean",
     "tests/consumers/SecondMellinDerivative.lean",

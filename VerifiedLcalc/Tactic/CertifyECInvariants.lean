@@ -9,6 +9,7 @@ public import VerifiedLcalc.Certificate.Support.Torsion
 public import VerifiedLcalc.Certificate.Support.TorsionPresentation
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public import VerifiedLcalc.Verification.PadicRegulator
+public import VerifiedLcalc.Verification.IntrinsicTorsion
 public meta import Lean
 
 /-! Internal stored-invariant checks dispatched exclusively by `certify_ec`.
@@ -499,6 +500,38 @@ private def certifyTorsionPresentation (base : Name) (curve : Ident) : CommandEl
   auditAxioms name
 
 /-- Check one optional equation invariant and return the corresponding proved value. -/
+private def exactTorsionOrder (name : Name) : CommandElabM Nat := do
+  let some order ← (liftTermElabM do
+    let type ← inferType (mkConst name)
+    let some (_, _, value) := type.eq?
+      | throwError "Expected an exact torsion cardinality"
+    (evalNat (← whnf value)).run)
+    | throwError "Expected a closed exact rational torsion order"
+  pure order
+
+private def certifyIntrinsicTorsion (base : Name) (curve : Ident) : CommandElabM Unit := do
+  let some claim ← bindStored base `intrinsicTorsion `intrinsic_torsion (← `(ℕ)) | return
+  checked (base ++ `intrinsic_torsion_positive) (← `(0 < $claim)) (← `(by decide +kernel))
+  let exactName := base ++ `torsion
+  let proved ← if (← getEnv).contains exactName then
+    pure ((← exactTorsionOrder exactName) == 1)
+  else pure false
+  unless proved do
+    logInfo m!"Unverified {base} intrinsic_torsion: this check requires trivial rational torsion"
+    return
+  let name := base ++ `intrinsic_torsion_fact
+  let fact := rootIdent name
+  let correct := rootIdent (base ++ `intrinsic_torsion_value)
+  checked (base ++ `intrinsic_torsion_value) (← `($claim = (1 : ℕ)))
+    (← `(by decide +kernel))
+  emit (← `(def $fact : IntrinsicTorsionFact $curve := ⟨$claim, $correct,
+    $(rootIdent exactName)⟩))
+  auditAxioms name
+  checked (base ++ `intrinsic_torsion)
+    (← `(∀ S : AddSubgroup (AddCommGroup.torsion (($curve).baseChange ℚ).toAffine.Point),
+      Nat.card S = $claim))
+    (← `(fun S => ($fact).card_subgroup S))
+
 private def certifyTorsionPrimes (base : Name) : CommandElabM Unit := do
   let claim ← bindStored base `torsionPrimes `torsion_primes (← `(List Nat))
   let exactName := base ++ `torsion
@@ -506,12 +539,7 @@ private def certifyTorsionPrimes (base : Name) : CommandElabM Unit := do
     if claim.isSome then
       logInfo m!"Unverified {base} torsion_primes: supply an exact torsion cardinality"
     return
-  let some order ← (liftTermElabM do
-    let type ← inferType (mkConst exactName)
-    let some (_, _, value) := type.eq?
-      | throwError "Expected an exact torsion cardinality"
-    (evalNat (← whnf value)).run)
-    | throwError "Expected a closed exact rational torsion order"
+  let order ← exactTorsionOrder exactName
   let orderTerm : TSyntax `term := ⟨Syntax.mkNumLit (toString order)⟩
   let primes := rootIdent (base ++ `torsion_primes)
   emit (← `(def $primes : List Nat := (Nat.primeFactorsList $orderTerm).eraseDups))
@@ -607,6 +635,7 @@ def certifyStoredInvariants (base : Name)
   certifyTorsionPresentation base curve
   certifyTorsionGeneration base curve
   certifyTorsionPrimes base
+  certifyIntrinsicTorsion base curve
   certifyProofFacts base curve proofs
   certifyRankZeroRegulator base
   certifyPadicRegulator base curve

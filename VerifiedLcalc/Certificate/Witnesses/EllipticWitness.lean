@@ -98,6 +98,8 @@ structure EllipticWitness where
   faltingsHeight : Option DecimalEnclosureClaim := none
   /-- Reported stable Faltings height and optional absolute error radius. -/
   stableFaltingsHeight : Option DecimalEnclosureClaim := none
+  /-- Reported zero-based position in the class ordered by Faltings height. -/
+  faltingsIndex : Option Nat := none
   /-- Reported ratio of the largest area in the class to the input area. -/
   faltingsRatio : Option Nat := none
   /-- A p-adic regulator ball proposed for the supplied equation. -/
@@ -138,6 +140,8 @@ structure EllipticWitness where
   localInvariants : Option (List LocalReductionClaim) := none
   /-- Reduction evidence bounding the order of the full rational torsion subgroup. -/
   torsionBound : Option TorsionBoundWitness := none
+  /-- Reported order of the radical of the rational torsion pairing. -/
+  intrinsicTorsion : Option Nat := none
   /-- Claimed exact order of the full rational torsion subgroup. -/
   torsion : Option Nat := none
   /-- Claims for individual prime-indexed L-function coefficients. -/

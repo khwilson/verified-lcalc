@@ -134,11 +134,13 @@ residue-characteristic exception. Given explicit generators $P_i$, prove
 onto the rational torsion subgroup. Verify the homomorphism, exact orders and
 injectivity, then use the upper bound for surjectivity. Accept trivial,
 cyclic and noncyclic examples, and rejection of a same-order wrong structure
-or a list of dependent generators. For intrinsic torsion, use functions
+or a list of dependent generators. For nontrivial rational torsion, use functions
 with divisor $n(P-O)$ and norm evaluation on a disjoint degree-zero divisor
 representing $Q-O$. Prove independence of choices and symmetric bilinearity,
 then evaluate on a verified torsion basis and compute the radical of the
-pairing. Test a nontrivial group with proper radical.
+pairing. Test a nontrivial group with proper radical. The checker already
+proves order one when the full rational torsion group is trivial.
+[TauCeti backlog TC-25](../TAUCETI_BACKLOG.md#tc-25--faltings-order-and-intrinsic-torsion).
 [LMFDB convention](https://www.lmfdb.org/knowledge/show/ec.intrinsic_torsion) and
 [Yamazaki et al.](https://arxiv.org/abs/2512.00787).
 
