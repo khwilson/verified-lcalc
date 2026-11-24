@@ -23,7 +23,7 @@ def certifyIwasawa (base : Name) (attachment : Option Ident) : CommandElabM Unit
   let threshold ← bindStored base `iwasawaThreshold `iwp0 (← `(ℕ))
   if rows.isNone && threshold.isNone then return
   let some supplied ← attachedFact attachment `iwasawa |
-    logInfo m!"Unverified {base} Iwasawa data: supply normalized interpolation or threshold evidence"
+    logInfo m!"Unverified {base} Iwasawa data: supply interpolation or threshold evidence"
   let curve := rootIdent (base ++ `curve)
   let evidenceName := base ++ `iwasawa_evidence
   let evidence := rootIdent evidenceName

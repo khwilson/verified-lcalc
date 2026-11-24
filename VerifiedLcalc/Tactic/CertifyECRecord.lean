@@ -282,7 +282,8 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let env ← getEnv
   if env.contains edgeName || env.contains className ||
       env.contains (base ++ `period_geometry_fact) ||
-      env.contains (base ++ `modular_parametrization_fact) || env.contains (base ++ `iwasawa_fact) then
+      env.contains (base ++ `modular_parametrization_fact) ||
+      env.contains (base ++ `iwasawa_fact) then
     emit (← `(noncomputable def $certificate : EllipticCertificate $curve := $record))
   else
     emit (← `(def $certificate : EllipticCertificate $curve := $record))

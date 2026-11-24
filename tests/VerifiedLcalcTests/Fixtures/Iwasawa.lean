@@ -89,7 +89,8 @@ def facts {level : ℕ} (h : Interpolation11 level) : IwasawaFacts curve11a2 whe
       series := h.series3
       interpolation := Or.inl ⟨by unfold iwasawaGood; decide, h.root3, h.interpolation3⟩
       order := IwasawaSeriesOrder.ofUnitConstantCoeff
-        (h.interpolation3.unit_of_augmentation h.root3 h.initial3 (nonanomalous3 h.symbols.realization)
+        (h.interpolation3.unit_of_augmentation h.root3 h.initial3
+          (nonanomalous3 h.symbols.realization)
           (unit_lift_one_fifth ((h.symbol3_eq 0).trans (congrArg Rat.cast h.central)))) } }]
   threshold := some {
     prime := ⟨7, by decide⟩
