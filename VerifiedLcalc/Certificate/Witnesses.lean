@@ -18,7 +18,8 @@ choose a module under `VerifiedLcalc.Certificate.Witnesses`.
 * `Invariants` covers Weierstrass invariants, abc quality, and conductor and root number
   compatibility. `FinitePrimes` covers local reduction, minimal models, coefficients,
   and Galois images.
-* `Algebraic` covers points, Mordell–Weil bounds, the regulator, torsion, and isogenies.
+* `Algebraic` covers points, Mordell–Weil bounds, the regulator, torsion, isogenies,
+  complex period area and Faltings heights.
   `Analytic` covers finite checks, analytic enclosures, special values, and rank.
 * `EllipticWitness` defines the command input. `EllipticCertificate` defines the optional Lean
   proof attachments and the checked result available as `Name.certificate`.

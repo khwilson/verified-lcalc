@@ -419,6 +419,35 @@ error divided by `4^n` when enclosing the height using the naive height of
 `2^n • P`. Include points at infinity, torsion, and nonminimal equations
 in the specification unless a particular bound explicitly assumes minimality.
 
+## TC-20 — complex period area and Faltings ratio
+
+The certificate uses TauCeti's `WeierstrassCurve.periodLattice` and Mathlib's
+`ZLattice.covolume` to state the Euclidean period area. The input model and
+every representative used for the class ratio are globally minimal. The
+stable height uses an explicit formula in terms of area, discriminant and
+the rational j-invariant denominator.
+
+For a nonsingular rational Weierstrass equation, relate the complex covolume
+of the normalized period lattice to period integrals or other computable
+analytic data, with explicit rational error bounds. Include both signs of
+the discriminant and specify the invariant differential and real-component
+normalization. For the stable height, compare the logarithmic correction
+with the change of minimal discriminant under semistable base change. For
+the class ratio, relate pullback of Néron differentials along rational
+isogenies to maps of period lattices and prove the hypotheses under which
+the maximum-to-input area ratio is an exact lattice index. Those results
+would let callers construct witnesses without independently supplying area
+enclosures and exact class comparisons.
+
+[Pinned period lattice](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/Analysis/SpecialFunctions/Elliptic/Period/Lattice.lean)
+· [Pinned covolume](https://github.com/leanprover-community/mathlib4/blob/31ce06eaadf4a200c0e1407c5f10953cf606b8f8/Mathlib/Algebra/Module/ZLattice/Covolume.lean)
+
+An upstream review at TauCeti `fb3fbc9f05780f456267a29168dfae7a98c2d8d0`
+found the normalized lattice and real-period APIs. The related open PR
+#43196 develops the real-period isogeny formula with Tamagawa and Kummer
+ratios. The complex maximum-to-input lattice index remains a separate target.
+[Reviewed pull request](https://github.com/TauCetiProject/TauCeti/pull/43196)
+
 ## TC-21 — normalized p-adic heights and regulators over ℚ
 
 - **Roadmap target:** [LMFDB G3](roadmaps/LMFDB_Q_CERTIFICATION.md#g3--iwasawa-invariants-and-p-adic-regulator).

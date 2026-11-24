@@ -79,12 +79,58 @@ private def certifyModifiedSzpiroRatio (base : Name) (curve : Ident) (attachment
       $error $hvalid))
   auditAxioms name
 
-/-- Compare optional geometry claims to the shared proof attachment and check any
-modified Szpiro enclosure with an explicit radius. -/
+private def checkPeriodEnclosure (base input label field : Name) (fact : Option Ident) :
+    CommandElabM Unit := do
+  let some report ← bindStored base input label (← `(DecimalEnclosureClaim)) | return
+  checked (base ++ Name.mkSimple s!"{label}_error_nonnegative")
+    (← `(0 ≤ ($report).error.getD 0)) (← `(by decide +kernel))
+  let some geometry := fact |
+    logInfo m!"Unverified {base} {label}: supply a proved enclosure on a globally minimal equation"
+    return
+  let projection := mkIdent field
+  let enclosure ← `(($geometry).$projection)
+  unless ← hasOptionalProof enclosure label do
+    logInfo m!"Unverified {base} {label}: supply a proved enclosure on a globally minimal equation"
+    return
+  checked (base ++ label)
+    (← `(∃ value, $enclosure = some value ∧ value.reported = ($report).reported ∧
+      ($report).error.getD value.error.val = value.error.val))
+    (← `(by refine ⟨_, rfl, ?_, ?_⟩ <;> first | rfl | decide +kernel))
+
+private def certifyPeriodGeometry (base : Name) (curve : Ident) (attachment : Option Ident) :
+    CommandElabM Unit := do
+  let geometry ← if let some fact ← attachedFact attachment `periodGeometry then do
+    let name := base ++ `period_geometry_fact
+    let geometry := rootIdent name
+    emit (← `(noncomputable def $geometry : PeriodGeometryFacts $curve := $fact))
+    auditAxioms name
+    pure (some geometry)
+  else pure none
+  checkPeriodEnclosure base `area `area `area geometry
+  checkPeriodEnclosure base `faltingsHeight `faltings_height `height geometry
+  checkPeriodEnclosure base `stableFaltingsHeight `stable_faltings_height `stableHeight geometry
+  let some report ← bindStored base `faltingsRatio `faltings_ratio (← `(ℕ)) | return
+  checked (base ++ `faltings_ratio_positive) (← `(0 < $report)) (← `(by decide +kernel))
+  let some geometry := geometry |
+    logInfo m!"Unverified {base} faltings_ratio: supply a complete class and exact area ratio"
+    return
+  let ratio ← `(($geometry).ratio)
+  unless ← hasOptionalProof ratio `faltings_ratio do
+    logInfo m!"Unverified {base} faltings_ratio: supply a complete class and exact area ratio"
+    return
+  checked (base ++ `faltings_ratio)
+    (← `(∃ value, $ratio = some value ∧ value.ratio.val = $report))
+    (← `(by
+      refine ⟨_, rfl, ?_⟩
+      first | rfl | decide +kernel))
+
+/-- Check geometric, period and Faltings claims against the shared proof attachment
+and verify any modified Szpiro enclosure with an explicit radius. -/
 def certifyGeometryFacts (base : Name) (attachment : Option Ident) : CommandElabM Unit := do
   let curve := rootIdent (base ++ `curve)
   certifyCM base curve attachment
   certifyMinimumTwist base curve attachment
   certifyModifiedSzpiroRatio base curve attachment
+  certifyPeriodGeometry base curve attachment
 
 end VerifiedLcalc.CertifyEC

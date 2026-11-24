@@ -32,9 +32,9 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **55 of 85 distinct LMFDB column names** with the evidence
+The command covers **59 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
-has a checker gives 30 in `ec_curvedata`, 3 in `ec_classdata`, 10 in
+has a checker gives 33 in `ec_curvedata`, 3 in `ec_classdata`, 11 in
 `ec_mwbsd`, 8 in `ec_localdata`, 2 in `ec_galrep`, and 2 in
 `ec_torsion_growth`. Shared names such as `class_size` count once.
 Project-specific keys are excluded. The four ball coordinates shared with
@@ -97,6 +97,10 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `num_int_pts` | `numIntegralPoints` | Exact cardinality theorem from supplied exhaustive `IntegralXSupport`; available at `certificate.algebraic.completeIntegralPoints` with finite-set completeness and `Finite` evidence. Without support it is unverified, but a count below the number of distinct checked points or seed-fiber solutions is rejected. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
 | `rank`, `rank_bounds` | `algebraicRank`, `algebraicRankBounds` | Verify supplied endpoints against a typed proof of bounds on the actual Mordell–Weil rank. A singleton proof gives exact rank. |
+| `area` | `area` | Rational enclosure of the Euclidean covolume in ℂ of the globally minimal equation's normalized period lattice. |
+| `faltings_height` | `faltingsHeight` | Rational enclosure of `−log(area)/2` on the globally minimal equation. |
+| `stable_faltings_height` | `stableFaltingsHeight` | Rational enclosure of the Faltings height plus `log(denominator(j)/abs(Δ))/12`. |
+| `faltings_ratio` | `faltingsRatio` | Exact positive integer quotient of the greatest area of a globally minimal representative in the proved complete rational isogeny class by the input area. |
 | `real_period` | `realPeriod` | A supplied `RealPeriodFact` at `certificate.realPeriod` bounds the full minimal real period, including both real components when present. |
 | `tamagawa_product` | `tamagawaProduct` | A supplied `TamagawaProductFact` at `certificate.tamagawaProduct` proves the exact intrinsic product over all rational finite places. |
 | `sha_an` | `analyticSha` | A supplied or composed `AnalyticShaFact` at `certificate.analyticSha` encloses the analytic BSD quotient for an explicit modular realization, with exact analytic order and positive denominator. |

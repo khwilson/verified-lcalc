@@ -36,7 +36,7 @@ the source schema before creating a witness.
 | `ec_curvedata.degree, manin_constant, optimality` | Degree and differential scaling for the modular parametrization, and optimal-quotient status. The producer's optimality codes above 1 express ambiguity among candidates. Manin data can be conditional on optimality. I3. |
 | `ec_curvedata.analytic_rank`; `ec_mwbsd.special_value` | Vanishing order at 1 and leading coefficient $L^{(r)}(1)/r!$ in arithmetic normalization. Rank 0/1 are supported with full checked numerical payloads. Reference data for higher rank may carry uncertainty. A1. |
 | `ec_mwbsd.heights, real_period, area, tamagawa_product, sha_an`; `ec_curvedata.regulator, sha, sha_primes` | Canonical heights, full real Néron period, complex period lattice area, product of local Tamagawa numbers, determinant for a Mordell–Weil basis, and analytic BSD quotient. Stored integer `sha` is analytic data, potentially rounded, and `sha_primes` lists its prime divisors. L2 and A2–A3. |
-| `ec_curvedata.abc_quality, szpiro_ratio, faltings_height, stable_faltings_height, faltings_ratio, faltings_index` | The coprime abc triple from $j/1728$, the **modified** Szpiro ratio $\log\max(\lvert c_4\rvert^3,\lvert c_6\rvert^2)/\log N$ of a minimal model, the Faltings heights, and the Néron lattice index relative to the least-height curve in the class. The producer's `faltings_index` is an ordering index. A2 and I1. |
+| `ec_curvedata.abc_quality, szpiro_ratio, faltings_height, stable_faltings_height, faltings_ratio, faltings_index` | The coprime abc triple from $j/1728$, the **modified** Szpiro ratio $\log\max(\lvert c_4\rvert^3,\lvert c_6\rvert^2)/\log N$ of a minimal model, the Faltings heights, and the exact ratio of the largest complex area in the class to the input area. The producer's `faltings_index` is an ordering index. A2 and I1. |
 | `ec_galrep.prime, modell_image, elladic_image, adelic_image, adelic_gens`; `ec_curvedata.modell_images, elladic_images, modm_images, adelic_level, adelic_index, adelic_genus, nonmax_primes, nonmax_rad, serre_invariants` | Images in a specified torsion basis up to conjugacy, subgroup presentation, conductor-independent image level and index, genus of the associated modular curve, exceptional primes and their radical, and exceptional triples (prime, Serre weight, Serre conductor). The renderer uses prime 0 for an adelic row. A partial label with unknown component can still convey verified numerical invariants if independently justified. G1 accepts exact finite-image generator evidence, exact conjugacy proofs for supported Sutherland residual labels, and complete non-CM exceptional-support evidence. Residual coverage and integral ℓ-adic coverage use separate proofs. |
 | `ec_torsion_growth.degree, field, torsion` | Absolute field degree, defining polynomial in ascending coefficient order, and full torsion invariant factors of the base change. G2 distinguishes one field from primitive growth and exhaustivity over a degree range. |
 | `ec_iwasawa.iwdata, iwp0` | Prime-indexed ordinary/multiplicative $(\lambda,\mu)$ or supersingular $(\lambda^+,\lambda^-,\mu)$ data, with explicit missing/additive codes. A positive `iwp0` asserts vanishing of all these analytic invariants for good primes at or above that threshold. G3. |
@@ -270,12 +270,16 @@ difference between the canonical and naïve heights on a nonsingular rational
 Weierstrass model, with explicit dependence on that model. Use it to enclose
 the pairing and determinant for an M2 basis.
 [TauCeti backlog TC-19](../TAUCETI_BACKLOG.md#tc-19--explicit-canonical-height-error-over-ℚ).
+The checker accepts proved enclosures for the complex period area and both
+heights through `PeriodGeometryFacts`. It checks an exact integer area ratio
+when a complete class of globally minimal equations and an attained maximum
+are supplied.
+
 Prove period integrals with tail/error bounds for both real-component
 types, plus a comparison between the complex area integral and covolume of
 the Néron period lattice. Use the verified metrics to evaluate Faltings height
-and the change to semistable base change for stable height. An exact Faltings
-ratio requires actual lattice inclusion and index or a rigorously isolated
-integer under a proved integrality theorem. Pin the additive constants and
+and the change to semistable base change for stable height. A general ratio witness generator needs actual lattice inclusion and index or a rigorously isolated
+integer under a proved integrality theorem. [TauCeti backlog TC-20](../TAUCETI_BACKLOG.md#tc-20--complex-period-area-and-faltings-ratio). Pin the additive constants and
 the differential normalization against each source before accepting any
 decimal. Accept exact rank-zero regulator $1$, a positive-rank interval,
 both signs of Δ for periods and a case with different stable and unstable

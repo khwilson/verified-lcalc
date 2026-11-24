@@ -76,6 +76,14 @@ structure EllipticWitness where
   canonicalHeights : Option CanonicalHeightsClaim := none
   /-- Stored regulator value and any explicit error evidence. -/
   regulator : Option RegulatorClaim := none
+  /-- Reported complex period area and optional absolute error radius. -/
+  area : Option DecimalEnclosureClaim := none
+  /-- Reported Faltings height and optional absolute error radius. -/
+  faltingsHeight : Option DecimalEnclosureClaim := none
+  /-- Reported stable Faltings height and optional absolute error radius. -/
+  stableFaltingsHeight : Option DecimalEnclosureClaim := none
+  /-- Reported ratio of the largest area in the class to the input area. -/
+  faltingsRatio : Option Nat := none
   /-- A p-adic regulator ball proposed for the supplied equation. -/
   padicRegulator : Option PadicRegulatorClaim := none
   /-- Reported full real period and optional absolute error radius. -/
