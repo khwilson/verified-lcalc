@@ -97,6 +97,17 @@ structure RegulatorClaim where
   /-- Explicit absolute error bound; absence means an exact-value claim. -/
   error : Option Rat := none
 
+/-- One submitted p-adic ball for the regulator of the input equation. -/
+structure PadicRegulatorClaim where
+  /-- Reported prime. -/
+  p : ℕ
+  /-- Absolute precision exponent. -/
+  prec : ℤ
+  /-- Signed valuation of the reported ball. -/
+  val : ℤ
+  /-- Proposed least nonnegative residue of the unit factor modulo `p^(prec - val)`. -/
+  unit : ℤ
+
 /-- A reported decimal from an archimedean invariant or analytic quotient. -/
 structure DecimalEnclosureClaim where
   /-- Exact rational interpretation of the reported decimal. -/

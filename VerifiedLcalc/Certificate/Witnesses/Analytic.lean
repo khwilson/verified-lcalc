@@ -14,6 +14,8 @@ public import VerifiedLcalc.Certificate.Numerical.RankContracts
 public import VerifiedLcalc.Certificate.Numerical.CentralFormula
 public import VerifiedLcalc.Certificate.Numerical.Payloads
 public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
+public import VerifiedLcalc.EllipticCurve.PadicRegulator
+public import TauCeti.AlgebraicGeometry.EllipticCurve.Supersingular
 public import Mathlib.Analysis.Analytic.Order
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 public import TauCeti.AlgebraicGeometry.EllipticCurve.MinimalModel.RealPeriod
@@ -293,7 +295,8 @@ structure RoundedAnalyticShaFact (curve : WeierstrassCurve ℤ)
 
 /-- A reported ball for a p-adic regulator on the curve used by the producer.
 
-For LMFDB this subject is curve number 1 in the class. The ball has center
+The LMFDB display looks up a stored positive-rank row only for curve number 1
+in the class and displays one directly for rank zero. The ball has center
 `p^val * unit` and additive error subgroup `p^prec ℤ_p`. The source's `prec` counts
 absolute precision, so the unit has `prec - val` relative digits. -/
 structure PadicRegulatorReport (curve : WeierstrassCurve ℤ) where
@@ -309,6 +312,34 @@ structure PadicRegulatorReport (curve : WeierstrassCurve ℤ) where
   unit : ℤ
   /-- The representative is a p-adic unit. -/
   unit_not_dvd : ¬ ((p : ℕ) : ℤ) ∣ unit
+
+/-- A normalized p-adic ball containing the empty ordinary height determinant of the
+specified rational curve. The proof is independent of any catalogue class label. -/
+structure RankZeroPadicRegulatorFact (curve : WeierstrassCurve ℤ) where
+  /-- Prime, precision, valuation and unit supplied by the report. -/
+  report : PadicRegulatorReport curve
+  /-- The submitted equation is smooth after reduction at the reported prime. -/
+  good : (curve.baseChange (ZMod (report.p : ℕ))).Δ ≠ 0
+  /-- The reduced elliptic curve is ordinary at the reported prime. -/
+  ordinary :
+    letI : Fact (report.p : ℕ).Prime := ⟨report.p.property⟩
+    (curve.baseChange (ZMod (report.p : ℕ))).IsOrdinary report.p
+  /-- The unit representative lies in the canonical residue interval. -/
+  normalized : 0 ≤ report.unit ∧
+    report.unit < (report.p : ℕ) ^ (report.prec - report.val).toNat
+  /-- Nonsingularity of the rational curve. -/
+  elliptic : (curve.baseChange ℚ).IsElliptic
+  /-- The rank of its rational point module is zero. -/
+  rankZero :
+    letI := elliptic
+    Module.finrank ℤ (curve.baseChange ℚ).toAffine.Point = 0
+  /-- The determinant differs from the reported center by an element of `p^prec ℤ_p`. -/
+  contains :
+    letI := elliptic
+    letI : Fact (report.p : ℕ).Prime := ⟨report.p.property⟩
+    ‖rankZeroPadicRegulator (curve.baseChange ℚ) rankZero report.p -
+      (report.p : ℚ_[(report.p : ℕ)]) ^ report.val * (report.unit : ℚ_[(report.p : ℕ)])‖ ≤
+      ((report.p : ℕ) : ℝ) ^ (-report.prec)
 
 /-- The reported analytic Iwasawa invariants at an ordinary or multiplicative prime. -/
 structure OrdinaryIwasawaInvariants where
@@ -356,5 +387,7 @@ structure AnalyticFacts (curve : WeierstrassCurve ℤ) where
   rank : Option (ConditionalAnalyticRank curve) := none
   /-- A reported Taylor leading coefficient checked against the actual enclosure. -/
   specialValue : Option (SpecialLValueFacts curve) := none
+  /-- A p-adic regulator enclosure supported by a checked rank-zero proof. -/
+  padicRegulator : Option (RankZeroPadicRegulatorFact curve) := none
 
 end VerifiedLcalc
