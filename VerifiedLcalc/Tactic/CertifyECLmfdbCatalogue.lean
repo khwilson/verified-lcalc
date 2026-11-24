@@ -44,6 +44,18 @@ def catalogueNumeral (input : TSyntax `term) : CommandElabM (Option (TSyntax `te
     let term ← withTransparency .all <| Meta.reduce (← instantiateMVars term)
     return (← getNatValue? term).map fun n => quote n
 
+/-- Compare a closed catalogue label to its integer-indexed serialization. -/
+def catalogueStringProof (claim : Ident) (closed : TSyntax `term) : CommandElabM (TSyntax `term) :=
+  `(by
+    first
+    | rfl
+    | change $closed = $claim
+      unfold $claim
+      apply String.toList_injective
+      first | rw [lmfdbIsoLabel] | rw [lmfdbCurveLabel]
+      all_goals simp [lmfdbIsoLabelChars, lmfdbClassCodeChars,
+        Nat.toDigits_eq_ite (by decide : 1 < 10)])
+
 /-- Compare a supplied value with the value computed from its mathematical order proof. -/
 private def catalogueValue (base field : Name) (claim : Option Ident)
     (expected : Option (TSyntax `term)) (evidence : String)
@@ -55,15 +67,7 @@ private def catalogueValue (base field : Name) (claim : Option Ident)
     return ← `(none)
   let valid := base ++ field
   let proof ← if let some closed := normalized then
-    `(by
-      first
-      | rfl
-      | change $closed = $claim
-        unfold $claim
-        apply String.toList_injective
-        first | rw [lmfdbIsoLabel] | rw [lmfdbCurveLabel]
-        all_goals simp [lmfdbIsoLabelChars, lmfdbClassCodeChars,
-          Nat.toDigits_eq_ite (by decide : 1 < 10)])
+    catalogueStringProof claim closed
   else `(by first | rfl | decide +kernel)
   checked valid (← `($expected = $claim)) proof
   `(some ⟨$claim, congrArg some $(rootIdent valid)⟩)
