@@ -15,7 +15,8 @@ dispatch checks the requested fields and assembles an `EllipticCertificate`.
 Import the certificate's module to reuse its data and proofs through
 `Name.certificate`.
 
-For example, the native JSON field `tamagawa_number` is decoded by
+For example, in the [179.a1 JSON fixture](../../../tests/fixtures/lmfdb/179.a1.json)
+the row at prime 179 has `"tamagawa_number": 1`. It is decoded by
 [`CurveDataJson.localReductionClaim`](../CurveDataJson.lean) into a
 [`LocalReductionClaim`](InputData.lean), the same row a Lean caller can
 build. The row goes in `EllipticWitness.localInvariants`.
