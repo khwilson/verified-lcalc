@@ -54,7 +54,9 @@ and optional fact fields defaulting to `none`. The [witness directory](VerifiedL
 contains the input record, the checked `EllipticCertificate` exported as
 `Name.certificate`, and their component structures. Components are grouped by
 subject in `FinitePrimes`, `Analytic`, `Algebraic`, and `Invariants`.
-Shared input records live in `InputData`. For complete rank candidates,
+Shared input records live in `InputData`. Follow a
+[local Tamagawa field from input to proof](VerifiedLcalc/Certificate/Witnesses/README.md#how-a-field-reaches-the-certificate).
+For complete rank candidates,
 `EllipticWitness.central result minimality localData` and
 `.derivative result minimality localData` populate this same record.
 See [CERTIFY_EC.md](docs/CERTIFY_EC.md) for complete examples,

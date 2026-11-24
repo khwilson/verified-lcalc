@@ -2,7 +2,6 @@ module
 
 public import VerifiedLcalc.Verification.WildCertification
 public import VerifiedLcalc.Certificate.LocalReductionSpecs
-public import VerifiedLcalc.Certificate.LocalInvariantSpecs
 public import VerifiedLcalc.EllipticCurve.Tate.Tamagawa
 public import VerifiedLcalc.EllipticCurve.Tate.Kodaira
 public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReduction
@@ -245,6 +244,14 @@ def LocalReductionClaim.checkTamagawa (row : LocalReductionClaim) (e : Weierstra
   row.tamagawaNumber.all fun n =>
     isPrime row.prime && (n != 0) && (!supportsTamagawaOne e row.prime || n == 1)
 
+/-- Exact local Tamagawa data at the supported primes of the supplied equation. -/
+def LocalReductionClaim.TamagawaSpec (row : LocalReductionClaim) (e : WeierstrassCurve ℤ) :
+    Prop :=
+  ∀ n, row.tamagawaNumber = some n → ∃ hp : row.prime.Prime,
+    letI : Fact row.prime.Prime := ⟨hp⟩
+    supportsTamagawaOne e row.prime = true →
+      (e.baseChange ℚ).tamagawaNumberAt (rationalPlace row.prime) = n
+
 /-- Successful local checks certify the completed-field Tamagawa factor at supported primes. -/
 theorem LocalReductionClaim.tamagawa_correct (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
     [(e.baseChange ℚ).IsElliptic] (h : row.checkTamagawa e = true) : row.TamagawaSpec e := by
@@ -265,6 +272,13 @@ def LocalReductionClaim.checkRootNumberInput (row : LocalReductionClaim) : Bool 
 def LocalReductionClaim.checkRootNumber (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
     (d : WildData) : Bool :=
   row.checkRootNumberInput && row.rootNumber.all fun value => wildLocalRoot e d row.prime == value
+
+/-- The supplied sign agrees with the local arithmetic formula at the checked prime. -/
+def LocalReductionClaim.RootNumberSpec (row : LocalReductionClaim)
+    (e : WeierstrassCurve ℤ) (d : WildData) : Prop :=
+  ∀ value, row.rootNumber = some value → ∃ hp : row.prime.Prime,
+    letI : Fact row.prime.Prime := ⟨hp⟩
+    (value = 1 ∨ value = -1) ∧ wildLocalRootSpec e d row.prime = value
 
 /-- The executable check certifies the local arithmetic sign for validated transcripts. -/
 theorem LocalReductionClaim.rootNumber_correct (row : LocalReductionClaim)
@@ -294,6 +308,14 @@ def hasMinimalityDependentLocalClaim (rows : List LocalReductionClaim) : Bool :=
 /-- Whether any row requests a specific additive Kodaira code. -/
 def hasAdditiveKodairaClaim (rows : List LocalReductionClaim) : Bool :=
   rows.any fun row => row.kodairaSymbol.any fun code => (kodairaIIndex code).isNone
+
+/-- Exact canonical symbol for a good or multiplicative code, or exclusion of
+the multiplicative family for an additive code. -/
+def LocalReductionClaim.KodairaSpec (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)
+    [(e.baseChange ℚ).IsElliptic] : Prop :=
+  ∃ hp : row.prime.Prime,
+    letI : Fact row.prime.Prime := ⟨hp⟩
+    ∀ code, row.kodairaSymbol = some code → KodairaCodeSpec (e.baseChange ℚ) row.prime code
 
 /-- Successful finite local checks certify the supported Kodaira statement. -/
 theorem LocalReductionClaim.kodaira_correct (row : LocalReductionClaim) (e : WeierstrassCurve ℤ)

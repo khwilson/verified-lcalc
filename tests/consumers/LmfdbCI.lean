@@ -49,6 +49,13 @@ example : (LMFDB.C179a1.certificate.arithmetic.tamagawa.map fun fact =>
 
 example :
     letI : Fact (Nat.Prime 179) := ⟨by decide +kernel⟩
+    (LMFDB.C179a1.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 179) = 1 := by
+  let facts := LMFDB.C179a1.certificate.arithmetic.tamagawa
+  let first := facts[0]'(by decide +kernel)
+  exact first.correct
+
+example :
+    letI : Fact (Nat.Prime 179) := ⟨by decide +kernel⟩
     (LMFDB.C179a1.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 179) = .I 1 := by
   let row : LocalReductionClaim :=
     { prime := 179, discriminantValuation := some 1, jDenominatorValuation := some 1,
