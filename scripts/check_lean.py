@@ -31,6 +31,7 @@ AUDITS = (
     "tests/consumers/PeriodGeometry.lean",
     "tests/consumers/IntrinsicTorsionFaltingsIndex.lean",
     "tests/consumers/ModularParametrization.lean",
+    "tests/consumers/Iwasawa.lean",
     "tests/consumers/GaloisImage.lean",
     "tests/consumers/SerreInvariants.lean",
     "tests/consumers/Geometry.lean",

@@ -669,7 +669,7 @@ run_cmd do
     `tamagawaProduct]
   let analytic := #[`centralResult, `derivativeResult, `catalogueAnalyticRank,
     `specialLValue, `realPeriod, `analyticSha, `sha, `shaPrimes, `padicRegulator,
-    `padicRegulatorClassLabel]
+    `padicRegulatorClassLabel, `iwasawaData, `iwasawaThreshold]
   let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionPrimes,
     `torsionGeneratorOrders, `torsionGrowthField, `intrinsicTorsion]
   let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do

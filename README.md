@@ -69,7 +69,7 @@ independence automation.
 Stored j/discriminant invariants, bad-prime sets, coefficient prefixes, and
 standalone conductor/root claims use that same interface. See
 [LMFDB_INVARIANTS.md](docs/LMFDB_INVARIANTS.md) for supported fields, evidence
-requirements, and the invariant groups still awaiting proof integration.
+requirements, and the remaining cases and proof production work.
 
 A consumer can simply write:
 

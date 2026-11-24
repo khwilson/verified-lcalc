@@ -6,6 +6,8 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.Algebraic
+public import VerifiedLcalc.EllipticCurve.Modularity.IwasawaSpecs
+public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Conductor
 public import VerifiedLcalc.Certificate.Witnesses.ArtifactData
 public import VerifiedLcalc.EllipticCurve.OrdinaryPadicSigma
 public import VerifiedLcalc.EllipticCurve.RationalPlace
@@ -245,6 +247,114 @@ structure RealPeriodFact (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).
   error : { ε : ℚ // 0 ≤ ε }
   /-- The full real period, including all real components, lies within this error. -/
   correct : |(curve.baseChange ℚ).minimalRealPeriod - (reported : ℝ)| ≤ (error.val : ℝ)
+
+/-- The rational real modular symbols of the given minimal curve, shared by all primes. -/
+structure IwasawaModularSymbols (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The weight-two cusp form with the actual curve's Fourier coefficients. -/
+  realization : ModularRealization curve
+  /-- The equation is a globally minimal integral model. -/
+  minimal : WeierstrassCurve.IsGlobalMinimal ℤ (curve.baseChange ℚ)
+  /-- The level is the norm of the algorithmic conductor ideal. -/
+  level_eq : realization.level =
+    Ideal.absNorm ((curve.baseChange ℚ).algorithmicConductor ℤ)
+  /-- Rational values of the plus modular symbol at the rational cusps. -/
+  value : ℚ → ℚ
+  /-- The symbols are normalized by the full minimal real period of this curve. -/
+  correct : ∀ r, (value r : ℝ) = Modularity.normalizedRealModularSymbol realization r
+
+/-- Valuation data locating the first coefficient of minimum valuation. -/
+structure IwasawaSeriesOrder (p : ℕ) [Fact p.Prime] (series : PowerSeries ℤ_[p]) where
+  /-- First index that attains the least valuation. -/
+  lambda : ℕ
+  /-- The common lower bound, attained at that index. -/
+  mu : ℕ
+  /-- No coefficient has smaller valuation. -/
+  lower : ∀ n, (mu : ℕ∞) ≤
+    IsDiscreteValuationRing.addVal ℤ_[p] (PowerSeries.coeff n series)
+  /-- The coefficient at this index attains the lower bound. -/
+  attained : IsDiscreteValuationRing.addVal ℤ_[p] (PowerSeries.coeff lambda series) = mu
+  /-- No earlier coefficient attains the lower bound. -/
+  earlier : ∀ n < lambda, (mu : ℕ∞) <
+    IsDiscreteValuationRing.addVal ℤ_[p] (PowerSeries.coeff n series)
+
+/-- Exact interpolation and coefficient orders for an ordinary or multiplicative prime. -/
+structure IwasawaUnsignedSeries (curve : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
+    (symbol : ℚ → ℤ_[p]) where
+  /-- The selected cyclotomic coordinate convention is for odd primes. -/
+  odd : 2 < p
+  /-- The ordinary unit root or multiplicative Euler unit. -/
+  alpha : ℤ_[p]ˣ
+  /-- The integral p-adic L-series. -/
+  series : PowerSeries ℤ_[p]
+  /-- All finite-level congruences in the appropriate local reduction case. -/
+  interpolation : Modularity.UnsignedIwasawaInterpolation curve symbol alpha series
+  /-- Coefficient valuation witnesses for the unsigned series. -/
+  order : IwasawaSeriesOrder p series
+
+/-- Exact interpolation and coefficient orders for a signed supersingular pair. -/
+structure IwasawaSignedSeries (curve : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
+    (symbol : ℚ → ℤ_[p]) where
+  /-- The odd prime has good reduction and is in the range of the signed convention. -/
+  good : 5 ≤ p ∧ Modularity.iwasawaGood curve p
+  /-- The arithmetic trace vanishes. -/
+  trace_eq_zero : Modularity.iwasawaTrace curve p = 0
+  /-- The plus p-adic L-series. -/
+  plus : PowerSeries ℤ_[p]
+  /-- The minus p-adic L-series. -/
+  minus : PowerSeries ℤ_[p]
+  /-- The signed pair satisfies the congruence at every finite level. -/
+  interpolation : Modularity.SignedlyInterpolates symbol plus minus
+  /-- Coefficient valuation witnesses for the plus series. -/
+  plusOrder : IwasawaSeriesOrder p plus
+  /-- Coefficient valuation witnesses for the minus series. -/
+  minusOrder : IwasawaSeriesOrder p minus
+  /-- The producer's numeric format uses one common μ for both signs. -/
+  mu_eq : plusOrder.mu = minusOrder.mu
+
+/-- Supported exact Iwasawa data at a prime, tied to normalized symbols. -/
+structure IwasawaPrimeEvidence (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] (symbols : IwasawaModularSymbols curve) where
+  /-- The prime indexing the cyclotomic row. -/
+  prime : Nat.Primes
+  /-- Integral p-adic values of the rational symbols. -/
+  integralSymbol : letI : Fact prime.val.Prime := ⟨prime.property⟩
+    ℚ → ℤ_[prime.val]
+  /-- The integral symbol values represent the same rational numbers in the p-adic field. -/
+  symbol_eq : letI : Fact prime.val.Prime := ⟨prime.property⟩
+    ∀ r, (integralSymbol r : ℚ_[prime.val]) = (symbols.value r : ℚ_[prime.val])
+  /-- A proved additive marker from the two invariants of the globally minimal equation. -/
+  additive : Option (PLift (¬ Modularity.iwasawaGood curve prime.val ∧
+    (curve.baseChange (ZMod prime.val)).c₄ = 0)) := none
+  /-- A proved unsigned row, if submitted. -/
+  unsigned : letI : Fact prime.val.Prime := ⟨prime.property⟩
+    Option (IwasawaUnsignedSeries curve prime.val integralSymbol) := none
+  /-- A proved signed row, if submitted. -/
+  signed : letI : Fact prime.val.Prime := ⟨prime.property⟩
+    Option (IwasawaSignedSeries curve prime.val integralSymbol) := none
+
+/-- Independent normalized interpolation hypotheses above a proposed good-prime bound. -/
+structure IwasawaThresholdEvidence (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] (symbols : IwasawaModularSymbols curve) where
+  /-- The proposed prime threshold. -/
+  prime : Nat.Primes
+  /-- This criterion uses the ordinary and trace-zero signed cases at primes at least five. -/
+  atLeastFive : 5 ≤ prime.val
+  /-- For every good prime in range, integral symbols and the arithmetic interpolation inputs. -/
+  atGoodPrime : ∀ (p : Nat.Primes), prime.val ≤ p.val → Modularity.iwasawaGood curve p.val →
+    letI : Fact p.val.Prime := ⟨p.property⟩
+    ∃ symbol : ℚ → ℤ_[p.val],
+      (∀ r, (symbol r : ℚ_[p.val]) = (symbols.value r : ℚ_[p.val])) ∧
+      Modularity.GoodPrimeIwasawaUnitInput curve symbol
+
+/-- Prime-indexed Iwasawa and threshold evidence based on an explicit modular-symbol model. -/
+structure IwasawaFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
+  /-- Normalized symbols on the specified minimal equation. -/
+  symbols : IwasawaModularSymbols curve
+  /-- Supported numeric interpolation data at selected primes. -/
+  rows : List (IwasawaPrimeEvidence curve symbols) := []
+  /-- Independent hypotheses for checking the good-prime vanishing threshold. -/
+  threshold : Option (IwasawaThresholdEvidence curve symbols) := none
 
 /-- A reported covolume of the complex period lattice for the Néron differential on this curve. -/
 structure ComplexPeriodAreaReport (curve : WeierstrassCurve ℤ) where

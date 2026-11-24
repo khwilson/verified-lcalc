@@ -124,6 +124,10 @@ structure EllipticWitness where
   faltingsIndex : Option Nat := none
   /-- Reported ratio of the largest area in the class to the input area. -/
   faltingsRatio : Option Nat := none
+  /-- Prime-indexed Iwasawa values or status markers in the native producer format. -/
+  iwasawaData : Option (List (Nat × Sum String (List Nat))) := none
+  /-- Proposed good-prime vanishing threshold. Zero is the producer's sentinel. -/
+  iwasawaThreshold : Option Nat := none
   /-- A p-adic regulator ball proposed for the supplied equation. -/
   padicRegulator : Option PadicRegulatorClaim := none
   /-- The class label carried by a native stored p-adic regulator row. -/

@@ -1,6 +1,6 @@
 # LMFDB invariants through `certify_ec`
 
-The [EC/Q coverage roadmap](roadmaps/LMFDB_Q_CERTIFICATION.md) inventories the related LMFDB tables and specifies the reusable theorem and checker work for each remaining field.
+The [EC/Q coverage roadmap](roadmaps/LMFDB_Q_CERTIFICATION.md) inventories the related LMFDB tables and specifies the reusable theorem and checker work for the remaining interpretations and cases.
 
 `certify_ec` remains the sole public interface. Each optional witness field
 requests a check against the represented curve. Missing fields make no claim.
@@ -30,13 +30,16 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_galrep` | 7 | The generator field is checked at the reported finite modulus in a proved torsion basis. Supported residual labels identify exact images up to conjugacy. Partial adelic labels carry exact level, index and genus with a separate simultaneous image proof. |
 | `ec_padic` | 5 | The native rank-one singleton-class ball is checked at a good ordinary prime above three with independent sigma evidence. The separate rank-zero display encoding uses the curve-level empty determinant. |
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
-| `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
+| `ec_iwasawa` | 3 | Checked selected prime rows and a universal good-prime vanishing bound, with normalized interpolation evidence. |
 
-The command covers **83 of 85 distinct LMFDB column names** with the evidence
+The command covers **85 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
 has a checker gives 51 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
-`ec_mwbsd`, 8 in `ec_localdata`, 4 in `ec_galrep`, 4 in `ec_padic`, and
-1 in `ec_torsion_growth`. Shared names such as `class_size` count once.
+`ec_mwbsd`, 8 in `ec_localdata`, 4 in `ec_galrep`, 4 in `ec_padic`,
+1 in `ec_torsion_growth`, and 2 in `ec_iwasawa`. Shared names such as
+`class_size` count once. Counting table-qualified interpretations separately
+gives **100 of 101** with a supported check. The extension torsion
+invariant factors in `ec_torsion_growth.torsion` remain a separate proof target.
 The four stored p-adic coordinates enter this tally through the proof-parametric
 rank-one checker. The curve-level rank-zero display and project-specific keys
 are outside the stored-column count.
@@ -397,6 +400,39 @@ from the extension degree in a torsion-growth row.
 [ecdata producer](https://github.com/JohnCremona/ecdata/blob/master/scripts/files.py)
 · [LMFDB 11.a2](https://www.lmfdb.org/EllipticCurve/Q/11/a/2)
 
+### Analytic Iwasawa data
+
+Supply native JSON `iwdata` as an object keyed by prime. Ordinary or
+multiplicative entries have shape `[lambda, mu]`, and signed entries
+have shape `[lambdaPlus, lambdaMinus, commonMu]`. The markers
+`"a"`, `"o?"` and `"s?"` preserve additive and unknown statuses.
+The equivalent Lean inputs are `iwasawaData` and `iwasawaThreshold`.
+
+The `IntegralCurveProofs.iwasawa` attachment anchors all prime data to
+the cusp form's actual arithmetic Fourier coefficients and to rational
+modular symbols normalized by the full minimal real period. Integral
+finite-level congruences connect these symbols to the proposed power
+series for the trivial tame character. The verifier checks the
+ordinary and multiplicative normalization at odd primes, and the
+trace-zero signed normalization at good primes at least five.
+Certified values follow from the least p-adic coefficient valuation
+and its first occurrence. The consumer can access the matched prime
+evidence through `Name.certificate.iwasawa`. Unknown rows or rows
+without evidence remain in the input.
+
+A positive `iwp0` requires evidence covering every good prime at or
+above the submitted prime. The local augmentation conditions imply
+vanishing for the applicable ordinary or signed series at each such
+prime. Above the bound, the evidence supplies existence of the
+applicable series and the argument gives vanishing for every
+interpolant with that normalization. Zero is the producer's sentinel.
+The conditional 11.a2 fixture derives the row at three and the
+threshold seven from its independently supplied symbols and
+interpolation assumptions.
+[ecdata producer](https://github.com/JohnCremona/ecdata/blob/master/scripts/files.py)
+· [Pollack's implementation](https://github.com/rpollack9974/Iwasawa-invariants)
+· [LMFDB Iwasawa conventions](https://www.lmfdb.org/knowledge/show/ec.iwasawa_invariants)
+
 ### Geometric endomorphisms, minimum twists and modified Szpiro ratio
 
 Use `with_proofs` with an `IntegralCurveProofs` attachment. Its
@@ -418,12 +454,11 @@ checks the claimed error against the two logarithms. Each checked result is
 available in the correspondingly named field of `Name.certificate`.
 
 
-## Remaining invariant groups
+## Remaining cases and proof production
 
-These fields remain unverified metadata unless a check above independently
-covers their mathematical content. A matching list length, product, numerical
-approximation, or classification-table entry is not a substitute for the
-missing theorem.
+The current checks cover the cases and evidence described above. The
+following work would extend that support or construct evidence that the
+verifier currently requires from the caller.
 
 | Group / fields | Proof work still needed |
 | --- | --- |
@@ -433,8 +468,8 @@ missing theorem.
 | CM and minimum twist evidence production | A geometric endomorphism-ring classifier and a general minimum-conductor twist algorithm. Native ordering among equally good twists is a separate open obligation. |
 | Heights, periods, regulator, Faltings data, special values | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |
 | Algebraic Sha | A separate cohomological/descent proof of finiteness, cardinality, or a primary component. |
-| Remaining Galois-image levels, Serre and Iwasawa data, and full extension torsion | The relevant representations, fields, group images, and completeness proofs. |
-| Labels, ordering/index fields, hashes | Catalogue/provenance metadata; not mathematical identity certificates. |
+| Additional Galois-image cases, Serre data beyond the supported semistable case, and full extension torsion | The relevant representations, fields, group images, and completeness proofs. |
+| Catalogue labels, orderings and hashes | Produce the complete rosters, compatible curve models and verified coefficient lists required by the corresponding checkers. |
 
 Mazur's classification restricts rational elliptic-curve torsion over `ℚ` to
 cyclic groups or groups of the form `ℤ/2ℤ × ℤ/2mℤ`. The checked outputs cover

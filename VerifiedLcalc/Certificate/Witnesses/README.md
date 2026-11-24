@@ -4,7 +4,7 @@ Start with [`EllipticWitness`](EllipticWitness.lean) for input to `certify_ec` a
 
 The index covers **85 distinct column names** across **101 table-qualified columns** in the eight EC/ℚ tables, excluding the database row identifier `id`. Each name appears once. The table column omits the `ec_` prefix. [LMFDB schema for 37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
 
-All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **83 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
+All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **85 of 85 distinct names** and **100 of 101 table-qualified columns** in the stated cases. The separate `ec_torsion_growth.torsion` interpretation still needs full invariant-factor evidence. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
 
 ## Curve data (`ec_curvedata`)
 
@@ -143,5 +143,5 @@ The class label supplies catalogue provenance.
 
 | LMFDB field | Table(s) | Status | Witness and scope |
 | --- | --- | --- | --- |
-| `iwdata` | `iwasawa` | Report | [`IwasawaReport.entries`](Analytic.lean) holds [`IwasawaPrimeReport.data`](Analytic.lean). Distinguishes ordinary or multiplicative pairs, signed supersingular data, additive cases, and unknown values. |
-| `iwp0` | `iwasawa` | Report | [`IwasawaReport.vanishingThreshold`](Analytic.lean). Optional prime threshold for the reported vanishing at every good prime at or above it. |
+| `iwdata` | `iwasawa` | Mixed | [`IwasawaPrimeEvidence`](Analytic.lean) and [`IwasawaSeriesOrder.correct`](../../Verification/Iwasawa.lean) check supported rows using actual curve-normalized modular symbols. Unknown and unsupported rows stay as reports. |
+| `iwp0` | `iwasawa` | Mixed | [`IwasawaThresholdEvidence.vanishing`](../../Verification/Iwasawa.lean) proves simultaneous analytic Iwasawa vanishing at every good prime at or above a checked positive prime. Zero is a report sentinel. |
