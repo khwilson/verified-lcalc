@@ -21,6 +21,8 @@ private noncomputable def checked11 : IwasawaFacts curve11a2 :=
 example : checked11.rows.length = 1 := rfl
 example : checked11.rowFor 2 = none := rfl
 example : checked11.rowFor 5 = none := rfl
+example : Checked11.claimed_iwdata.find? (fun row => row.1 == 5) =
+    some (5, .inr [0, 1]) := rfl
 example : (checked11.rowFor 3).isSome = true := rfl
 example : (checked11.threshold.get (by rfl)).prime.val = 7 := rfl
 
