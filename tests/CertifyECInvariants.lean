@@ -662,7 +662,7 @@ run_cmd do
   cover ``EllipticWitness
     (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++
       isogeny ++ geometry ++ galois ++ #[`lmfdbNumber, `isoNlabel, `lmfdbIso, `lmfdbLabel,
-        `cremonaIso, `cremonaLabel, `cremonaNumber])
+        `traceHash, `cremonaIso, `cremonaLabel, `cremonaNumber])
   cover ``AdelicGeneratorsClaim #[`modulus, `rows]
   cover ``IsogenyEdgeClaim #[`target, `degree, `kernelX]
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,

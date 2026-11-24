@@ -37,6 +37,8 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   isogenyClass : Option (IsogenyClassEvidence curve) := none
   /-- Complete ordered isogeny classes at the actual conductor, with the subject's index. -/
   conductorClassRoster : Option (ConductorClassRoster curve) := none
+  /-- Proof of every arithmetic coefficient used in the published trace fingerprint. -/
+  traceHashCoefficients : Option (TraceHashCoefficients curve) := none
   /-- Conductor scope and complete singleton proofs for Cremona label checks. -/
   cremonaSingleton : Option (CremonaSingletonEvidence curve) := none
   /-- Actual non-CM and complete exceptional support evidence for the local Tate modules. -/
@@ -103,6 +105,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
     Option (IsogenyClassOrdering facts.representatives)) := none
   /-- Checked LMFDB ordering indices and encoded labels for the supplied equation. -/
   lmfdbCatalogue : LmfdbCatalogueFacts curve := {}
+  /-- A published trace fingerprint checked against every prescribed coefficient. -/
+  traceHash : Option (TraceHashFact curve) := none
   /-- Cremona number and labels when the relevant orderings are singleton. -/
   cremonaCatalogue : Option (CremonaSingletonFacts curve) := none
   /-- Complete checked exceptional support for the non-CM curve. -/

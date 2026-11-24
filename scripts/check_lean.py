@@ -25,6 +25,7 @@ AUDITS = (
     "tests/consumers/DegreeTwoIsogeny.lean",
     "tests/consumers/IsogenyClass.lean",
     "tests/consumers/LmfdbCatalogue.lean",
+    "tests/consumers/TraceHash.lean",
     "tests/consumers/CremonaLabels.lean",
     "tests/consumers/PeriodGeometry.lean",
     "tests/consumers/IntrinsicTorsionFaltingsIndex.lean",

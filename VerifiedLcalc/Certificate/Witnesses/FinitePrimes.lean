@@ -8,6 +8,7 @@ module
 public import VerifiedLcalc.Certificate.Witnesses.Invariants
 public import VerifiedLcalc.Certificate.LocalReductionSpecs
 public import VerifiedLcalc.Certificate.ResidualImageLabels
+public import VerifiedLcalc.EllipticCurve.LmfdbTraceHash
 public import VerifiedLcalc.EllipticCurve.Tate.ArithmeticSpecs
 public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReductionSpec
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
@@ -29,6 +30,8 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Cu
 * `ArithmeticFacts` collects optional minimal-model facts, intrinsic Tamagawa factors,
   finite transcript validity, potential good reduction, and prime-indexed and consecutive
   L-function coefficients. Its modular facts require an explicit arithmetic realization.
+* `TraceHashCoefficients` proves the full prime coefficient vector, and `TraceHashFact`
+  identifies its published weighted fingerprint.
 * `FiniteGaloisImageFact` and `PadicGaloisImageFact` give exact images in supplied bases.
 * `ModPrimeImageFact` identifies the exact residual image up to conjugacy. A checked
   `ModPrimeImageListFact` can also carry exhaustive non-CM `ModPrimeImageCoverage`.
@@ -43,6 +46,22 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Cu
 namespace VerifiedLcalc
 
 open EllipticCurve NumberField WeierstrassCurve
+
+/-- Exact arithmetic coefficients for all prime indices of the published trace hash. -/
+structure TraceHashCoefficients (curve : WeierstrassCurve ℤ) where
+  /-- Coefficients in the fixed ascending prime order of the source. -/
+  coefficients : List ℤ
+  /-- The full vector is exactly the prescribed sequence of actual curve coefficients. -/
+  correct : coefficients = lmfdbTraceHashPrimes.map (fun p => (curve.baseChange ℚ).LFunction p)
+
+/-- An exact checked trace fingerprint of the submitted equation. -/
+structure TraceHashFact (curve : WeierstrassCurve ℤ) where
+  /-- Full coefficient vector and its mathematical proof. -/
+  evidence : TraceHashCoefficients curve
+  /-- The reported canonical residue. -/
+  value : ℤ
+  /-- The hash of the actual rational L-function coefficients equals the reported residue. -/
+  correct : lmfdbTraceHash (curve.baseChange ℚ) = value
 
 /-- An intrinsic local Tamagawa factor with its completed-field equality. -/
 structure LocalTamagawaFact (curve : WeierstrassCurve ℤ) where

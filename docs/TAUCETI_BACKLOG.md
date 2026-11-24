@@ -538,6 +538,24 @@ and a tensor-valued evaluation.
 [LMFDB definition](https://www.lmfdb.org/knowledge/show/ec.intrinsic_torsion)
 · [Yamazaki, Yang, Yoo and Yu](https://arxiv.org/abs/2512.00787v3)
 
+## TC-26 — complete trace fingerprint inputs
+
+- **Roadmap target:** [LMFDB rational trace fingerprint](roadmaps/LMFDB_Q_CERTIFICATION.md).
+  The current checker accepts an exact vector of all prime coefficients at
+  primes in `[4096,8192)`. The arithmetic object is the prescribed weighted
+  sum modulo `2^61 - 1`. The input proof must identify each coefficient,
+  including any bad prime in the interval, with the curve's `LFunction`.
+- **Missing constructor:** Build the full vector efficiently from a nonsingular
+  rational equation and exact reduction evidence. Reuse proved finite-field
+  point counts for good primes and checked local minimality and reduction
+  for bad primes. Any batch acceleration needs a correctness theorem against
+  the arithmetic `LFunction` values.
+- **Existing interfaces:** TauCeti `e0e414ce` supplies `LFunction` and
+  `Isogeny.LFunction_eq`. Mathlib `31ce06ea` supplies integer remainders and
+  the decidable prime predicate. The existing `primeCoefficientsValid_sound`
+  theorem can justify individual entries when its finite checks succeed.
+  [LMFDB producer and weights](https://github.com/LMFDB/lmfdb/blob/28f9f0e38f2f027b13edcb2facece1bb45b47170/lmfdb/utils/trace_hash.py)
+
 ## TC-27 — historical Cremona ordering
 
 - **Roadmap target:** [LMFDB I1](roadmaps/LMFDB_Q_CERTIFICATION.md).

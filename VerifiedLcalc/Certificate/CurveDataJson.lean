@@ -430,6 +430,7 @@ def decode (j : Json) : Except String EllipticWitness := do
   let isoNlabel ← optionalValue j "iso_nlabel" nonnegativeInteger
   let lmfdbIso ← optionalValue j "lmfdb_iso" Json.getStr?
   let lmfdbLabel ← optionalValue j "lmfdb_label" Json.getStr?
+  let traceHash ← optionalValue j "trace_hash" integer
   let cremonaIso ← optionalValue j "Ciso" Json.getStr?
   let cremonaLabel ← optionalValue j "Clabel" Json.getStr?
   let cremonaNumber ← optionalValue j "Cnumber" nonnegativeInteger
@@ -500,6 +501,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     isoNlabel
     lmfdbIso
     lmfdbLabel
+    traceHash
     cremonaIso
     cremonaLabel
     cremonaNumber

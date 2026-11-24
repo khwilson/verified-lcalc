@@ -50,6 +50,8 @@ structure EllipticWitness where
   lmfdbIso : Option String := none
   /-- Reported conductor, isogeny class code, and curve number. -/
   lmfdbLabel : Option String := none
+  /-- Reported rational LMFDB trace hash. -/
+  traceHash : Option Int := none
   /-- Reported Cremona isogeny class identifier. -/
   cremonaIso : Option String := none
   /-- Reported full Cremona curve label. -/
