@@ -93,15 +93,14 @@ example : LabelsAsMetadata.certificate.lmfdbCatalogue = {} := rfl
 /-- Check the intended rejection point and the absence of partially emitted declarations. -/
 private meta def expectRejected (base field : Name) (command : Syntax) : CommandElabM Unit := do
   let saved := (← get).messages
-  let failure ← try
+  let diagnostics ← try
     elabCommand command
-    pure false
-  catch error =>
-    let message ← error.toMessageData.toString
-    pure ((message.splitOn s!"failed checking {base}.{field}").length > 1)
+    (← get).messages.toList.mapM fun message => message.data.toString
+  catch error => pure [← error.toMessageData.toString]
   let env ← getEnv
   set { (← get) with messages := saved }
-  unless failure do throwError "Expected rejection while checking {base}.{field}"
+  unless diagnostics.any (fun text => (text.splitOn s!"failed checking {base}.{field}").length > 1) do
+    throwError "Expected rejection while checking {base}.{field}, got {diagnostics}"
   for suffix in [`curve, `witness, `lmfdb_conductor_class_roster, `lmfdb_ordered_class,
       `lmfdb_catalogue, `certificate] do
     if env.contains (base ++ suffix) then
