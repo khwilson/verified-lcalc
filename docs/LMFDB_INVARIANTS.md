@@ -131,7 +131,7 @@ reviewed LMFDB ordering and base-26 encoding.
 | `adelic_index` | `adelicIndex` | Index of that image in the integral adelic general linear group. |
 | `adelic_genus` | `adelicGenus` | Genus of the compactified effective quotient of the determinant-one integral pullback. |
 | `adelic_image` | `adelicImage` | At prime zero, a partial label `N.i.g.?` is checked against the proved level, index and genus with the class suffix unspecified. |
-| `serre_invariants` | `serreInvariants` | Complete list of exceptional triples from Serre's published formula on a checked globally minimal semistable equation with good reduction at two. The intrinsic residual-ramification comparison is an upstream target. |
+| `serre_invariants` | `serreInvariants` | Complete list of exceptional triples from Serre's published formula on a checked globally minimal semistable equation with good reduction at two. The default conductor is the norm of the algorithmic conductor. The intrinsic residual-ramification comparison is an upstream target. |
 | `adelic_gens` | `adelicGenerators` | Complete image on the full geometric torsion of the reported modulus in a supplied basis. Requires an `FiniteGaloisImageFact` through `with_proofs`. |
 | `num_int_pts` | `numIntegralPoints` | Exact cardinality theorem from supplied exhaustive `IntegralXSupport`; available at `certificate.algebraic.completeIntegralPoints` with finite-set completeness and `Finite` evidence. Without support it is unverified, but a count below the number of distinct checked points or seed-fiber solutions is rejected. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
