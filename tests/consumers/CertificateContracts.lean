@@ -15,6 +15,10 @@ open VerifiedLcalc Lean Elab Command
 #check TamagawaProductFact
 #check AnalyticShaFact
 #check RoundedAnalyticShaFact
+#check PadicRegulatorClaim
+#check PadicRegulatorReport
+#check RankZeroPadicRegulatorFact.contains
+#check AnalyticFacts.padicRegulator
 #check IntegralXSupport
 #check CompleteIntegralPointFacts
 #check DegreeTwoIsogenyFact
@@ -115,6 +119,7 @@ end MordellWeilInstance
 run_cmd do
   let imported := (← getEnv).allImportedModuleNames
   for backend in [`VerifiedLcalc.Verification.CurveData,
+    `VerifiedLcalc.Verification.PadicRegulator,
     `VerifiedLcalc.Verification.IntegralPointCount,
     `VerifiedLcalc.Verification.DegreeTwoIsogeny,
     `VerifiedLcalc.Verification.DegreeTwoIsogenyRaw,

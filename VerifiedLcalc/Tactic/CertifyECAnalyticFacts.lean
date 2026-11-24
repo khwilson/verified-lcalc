@@ -32,12 +32,14 @@ def analyticFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `ter
       (← `(0 ≤ ($claim).error)) (← `(by decide +kernel))
     pure (some claim)
   else pure none
+  let padicName := base ++ `padic_regulator_fact
+  let padic ← if (← getEnv).contains padicName then `(some $(rootIdent padicName)) else `(none)
   let resultName := base ++ `result
   let some result := env.find? resultName
     | do
       if specialInput.isSome then
         logInfo m!"Unverified {base}.special_value: no checked analytic payload"
-      return ← `(({ } : AnalyticFacts $curve))
+      return ← `(({ padicRegulator := $padic } : AnalyticFacts $curve))
   let resultId := rootIdent resultName
   let hcurve := rootIdent (base ++ `result_curve_eq)
   let hp := rootIdent (base ++ `payload_correct)
@@ -93,10 +95,12 @@ def analyticFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `ter
       `(some $fact)
   else `(none)
   if central then
-    `(({ central := $numeric, rank := $rank, specialValue := $specialValue } :
+    `(({ central := $numeric, rank := $rank, specialValue := $specialValue,
+          padicRegulator := $padic } :
       AnalyticFacts $curve))
   else
-    `(({ derivative := $numeric, rank := $rank, specialValue := $specialValue } :
+    `(({ derivative := $numeric, rank := $rank, specialValue := $specialValue,
+          padicRegulator := $padic } :
       AnalyticFacts $curve))
 
 end VerifiedLcalc.CertifyEC

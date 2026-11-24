@@ -26,6 +26,7 @@ deriving instance Repr, DecidableEq for IsogenyEdgeClaim
 deriving instance Repr, DecidableEq for DecimalEnclosureClaim
 deriving instance Repr, DecidableEq for AdelicGeneratorsClaim
 deriving instance Repr, DecidableEq for TorsionGrowthFieldClaim
+deriving instance Repr, DecidableEq for PadicRegulatorClaim
 deriving instance Repr, DecidableEq for CanonicalHeightsClaim
 deriving instance Repr, DecidableEq for EllipticWitness
 

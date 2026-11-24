@@ -8,6 +8,7 @@ public import VerifiedLcalc.EllipticCurve.TwoFactorTorsion
 public import VerifiedLcalc.Certificate.Support.Torsion
 public import VerifiedLcalc.Certificate.Support.TorsionPresentation
 public import VerifiedLcalc.Tactic.CertifyECCommon
+public import VerifiedLcalc.Verification.PadicRegulator
 public meta import Lean
 
 /-! Internal stored-invariant checks dispatched exclusively by `certify_ec`.
@@ -59,6 +60,35 @@ private def certifyRankZeroRegulator (base : Name) : CommandElabM Unit := do
   let fact := rootIdent (base ++ `regulator_facts)
   emit (← `(def $fact : RegulatorFacts (($curve).baseChange ℚ) :=
     Certification.rankZeroRegulatorFacts (($curve).baseChange ℚ) $claim $rankZero $valid))
+
+/-- Check the submitted p-adic ball when an independent exact rank-zero proof is present. -/
+private def certifyPadicRegulator (base : Name) (curve : Ident) : CommandElabM Unit := do
+  let some claim ← bindStored base `padicRegulator `padic_regulator (← `(PadicRegulatorClaim)) |
+    return
+  let valid := rootIdent (base ++ `padic_regulator_valid)
+  checked (base ++ `padic_regulator_valid)
+    (← `(Certification.PadicRegulatorClaimValid $claim)) (← `(by decide +kernel))
+  let prime := rootIdent (base ++ `padic_regulator_good_ordinary)
+  checked (base ++ `padic_regulator_good_ordinary)
+    (← `(Certification.goodOrdinaryPadicPrime $curve ($claim).p = true))
+    (← `(by decide +kernel))
+  let rankName := base ++ `algebraic_rank
+  let rankValue := base ++ `mordell_weil_rank
+  let isZero ← if (← getEnv).contains rankName then
+    liftTermElabM do
+      let rhs ← whnf (mkConst rankValue)
+      Meta.isDefEq rhs (mkNatLit 0)
+    else pure false
+  unless isZero do
+    logInfo m!"Unverified {base} padic_regulator: supply an exact algebraic rank of zero"
+    return
+  let center := rootIdent (base ++ `padic_regulator_center)
+  checked (base ++ `padic_regulator_center)
+    (← `(($claim).val = 0 ∧ ($claim).unit = 1)) (← `(by decide +kernel))
+  let fact := rootIdent (base ++ `padic_regulator_fact)
+  emit (← `(def $fact : RankZeroPadicRegulatorFact $curve :=
+    Certification.rankZeroPadicRegulatorFact $curve $claim $valid $prime
+      $(rootIdent rankName) $center))
 
 /-- Check local signs with the validated minimal model and wild data. -/
 private def certifyLocalRootNumbers (base : Name) (curve rows : Ident)
@@ -579,6 +609,7 @@ def certifyStoredInvariants (base : Name)
   certifyTorsionPrimes base
   certifyProofFacts base curve proofs
   certifyRankZeroRegulator base
+  certifyPadicRegulator base curve
   if let some s ← bindStored base `discriminantSign `discriminant_sign (← `(Int)) then
     checked (base ++ `discriminant_sign) (← `(($curve).Δ.sign = $s)) (← `(by decide +kernel))
   if let some j ← bindStored base `jInvariant `j_invariant (← `(Rat)) then
