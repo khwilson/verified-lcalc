@@ -24,6 +24,9 @@ open VerifiedLcalc Lean Elab Command
 #check DegreeTwoIsogenyFact
 #check IsogenyClassModel
 #check IsogenyClassOrdering
+#check ConductorClassRoster
+#check LmfdbCatalogueFacts
+#check EllipticCertificate.lmfdbCatalogue
 #check IsogenyClassEvidence
 #check EllipticCertificate.isogenyClass
 #check NonmaxPrimeSupportFact
@@ -135,6 +138,7 @@ run_cmd do
     `VerifiedLcalc.Verification.DegreeTwoIsogeny,
     `VerifiedLcalc.Verification.DegreeTwoIsogenyRaw,
     `VerifiedLcalc.Verification.IsogenyClass,
+    `VerifiedLcalc.Verification.LmfdbCatalogue,
     `VerifiedLcalc.Certificate.Support.GaloisImage,
     `VerifiedLcalc.Tactic.CertifyECGalois,
     `VerifiedLcalc.Verification.ModifiedSzpiroRatio,

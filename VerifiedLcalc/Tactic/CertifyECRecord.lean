@@ -237,6 +237,10 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let tamagawaProduct ← optionalFactTerm base `tamagawa_product_fact
   let analyticSha ← optionalFactTerm base `analytic_sha_fact
   let roundedAnalyticSha ← optionalFactTerm base `rounded_analytic_sha_fact
+  let catalogueName := base ++ `lmfdb_catalogue
+  let catalogue ← if (← getEnv).contains catalogueName then
+    `($(rootIdent catalogueName))
+  else `({})
   let record ← `({
     nonsingular := $nonsingular
     equationFacts := $equationFacts
@@ -248,6 +252,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     torsionGrowthField := $torsionGrowthField
     isogeny := $isogeny
     isogenyClass := $isogenyClass
+    lmfdbCatalogue := $catalogue
     nonmaxPrimes := $nonmaxPrimes
     adelicGenerators := $adelicGenerators
     modPrimeImage := $modPrimeImage

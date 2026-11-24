@@ -41,7 +41,8 @@ the source schema before creating a witness.
 | `ec_torsion_growth.degree, field, torsion` | Absolute field degree, defining polynomial in ascending coefficient order, and full torsion invariant factors of the base change. G2 distinguishes one field from primitive growth and exhaustivity over a degree range. |
 | `ec_iwasawa.iwdata, iwp0` | Prime-indexed ordinary/multiplicative $(\lambda,\mu)$ or supersingular $(\lambda^+,\lambda^-,\mu)$ data, with explicit missing/additive codes. A positive `iwp0` asserts vanishing of all these analytic invariants for good primes at or above that threshold. G3. |
 | `ec_padic.p, prec, unit, val` | Stored positive-rank class rows specify a p-adic ball for the producer’s curve. The same coordinates encode the checked curve-level rank-zero display. G3. |
-| Across tables `id, lmfdb_label, lmfdb_iso, lmfdb_number, Ciso, Clabel, Cnumber, iso_nlabel, trace_hash` | Identifiers, joins, orderings, and fingerprints. Validate their syntax or snapshot consistency in import tooling. If mathematical class or curve identity is requested, check actual rational maps. A hash or catalogue match does not prove identity. |
+| `ec_curvedata.lmfdb_number, iso_nlabel, lmfdb_iso, lmfdb_label` and related copies | The math-derived curve and class indices and their encodings can be checked with the required complete ordered classes and rational maps. [TC-23](../TAUCETI_BACKLOG.md#tc-23--certified-conductor-rosters-and-catalogue-ordering). |
+| Across tables `id, Ciso, Clabel, Cnumber, trace_hash` | Identifiers, joins, orderings, and fingerprints. A mathematical class or curve identification requires actual rational maps. |
 
 Derived displays such as equation invariants, local Euler polynomials, the sign
 product including the real place, analytic Sha factors, and associations with

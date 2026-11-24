@@ -492,3 +492,23 @@ classification supplies a geometric premise.
 · [Pinned torsion basis](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Isogeny/MulByInt/Torsion/Structure.lean)
 · [Pinned inner automorphisms](https://github.com/leanprover-community/mathlib4/blob/31ce06eaadf4a200c0e1407c5f10953cf606b8f8/Mathlib/Algebra/Group/End.lean)
 · [Candidate open-subgroup API](https://github.com/TauCetiProject/TauCeti/pull/45304)
+
+## TC-23 — certified conductor rosters and catalogue ordering
+
+- **Roadmap target:** [LMFDB I1](roadmaps/LMFDB_Q_CERTIFICATION.md), with a
+  second completeness problem for all rational isogeny classes at a fixed
+  conductor. A supplied `ConductorClassRoster` proves that the subject and each
+  representative have the same actual algorithmic conductor norm. Its
+  exhaustivity theorem covers arbitrary nonsingular rational equations with that
+  conductor. Strict first-difference order uses their arithmetic `LFunction`
+  coefficients. Isogeny invariance implies the listed classes are distinct.
+- **Missing constructor:** Produce that roster from certified enumeration and
+  exclusion, using hypotheses for the stated conductor range and an effective
+  bound or witness for the first differing normalized arithmetic coefficient of
+  each pair. The within-class ordered reduced minimal model constructor remains
+  part of TC-15. No computed label or hash supplies either exhaustivity claim.
+- **Existing interfaces:** TauCeti `e0e414ce` supplies `algorithmicConductor`,
+  `Isogeny.LFunction_eq`, `LFunction`, and reduced minimal models. Mathlib
+  `31ce06ea` supplies `Nat.digits` and `Nat.ofDigits_digits`.
+  [LMFDB label convention](https://www.lmfdb.org/knowledge/show/ec.q.lmfdb_label)
+  · [Sage base-26 producer](https://github.com/sagemath/sage/blob/develop/src/sage/databases/cremona.py#L168-L236)
