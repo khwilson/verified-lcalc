@@ -21,7 +21,7 @@ def abcProduct (j : ℚ) : ℕ :=
   (t.num * (c - t.num) * c).natAbs
 
 /-- The integer whose logarithm is the numerator of the modified Szpiro ratio. -/
-def modifiedSzpiroNumerator (curve : WeierstrassCurve ℤ) : ℕ :=
+abbrev modifiedSzpiroNumerator (curve : WeierstrassCurve ℤ) : ℕ :=
   max (curve.c₄.natAbs ^ 3) (curve.c₆.natAbs ^ 2)
 
 end VerifiedLcalc.Certification
