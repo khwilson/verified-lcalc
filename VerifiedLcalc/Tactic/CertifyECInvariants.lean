@@ -9,6 +9,7 @@ public import VerifiedLcalc.Certificate.Support.Torsion
 public import VerifiedLcalc.Certificate.Support.TorsionPresentation
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public import VerifiedLcalc.Verification.PadicRegulator
+public import VerifiedLcalc.Tactic.CertifyECLmfdbCatalogue
 public import VerifiedLcalc.Verification.TorsionBoundFacts
 public meta import Lean
 
@@ -62,6 +63,58 @@ private def certifyRankZeroRegulator (base : Name) : CommandElabM Unit := do
   emit (← `(def $fact : RegulatorFacts (($curve).baseChange ℚ) :=
     Certification.rankZeroRegulatorFacts (($curve).baseChange ℚ) $claim $rankZero $valid))
 
+/-- Reduce a numeric projection before the kernel comparison. Its proof still checks
+definitional equality with the corresponding field of the full evidence record. -/
+private def storedPadicNumeral (term : TSyntax `term) (type : Name) :
+    CommandElabM (TSyntax `term) := do
+  let result ← runTermElabM fun _ => do
+    let value ← Term.elabTerm term (some (mkConst type))
+    Term.synthesizeSyntheticMVarsNoPostponing
+    withTransparency .all <| Meta.reduce (← instantiateMVars value)
+  literalSyntax result
+
+/-- Attach a checked native class regulator when its independent proof data are present. -/
+private def certifyStoredClassPadicRegulator (base : Name) (curve claim valid prime : Ident)
+    (label : Ident) : CommandElabM Unit := do
+  let attachment := base ++ `integral_proofs
+  let proofs := if (← getEnv).contains attachment then some (rootIdent attachment) else none
+  let some data ← attachedFact proofs `storedPadicRegulator |
+    logInfo m!"Unverified {base} padic_regulator: supply class and sigma evaluation proofs"
+    return
+  let evidence := rootIdent (base ++ `stored_padic_evidence)
+  emit (← `(def $evidence : StoredPadicRegulatorEvidence $curve := $data))
+  let samePrime := base ++ `stored_padic_prime_eq
+  checked samePrime (← `(($claim).p = (($evidence).p : Nat)))
+    (← `(by first | rfl | decide +kernel))
+  let classLabel := base ++ `stored_padic_label_eq
+  let comparison ← do
+    let some conductor ← catalogueNumeral (← `(($evidence).roster.conductor)) |
+      `(by first | rfl | decide +kernel)
+    let some index ← catalogueNumeral (← `(($evidence).roster.classIndex.val)) |
+      `(by first | rfl | decide +kernel)
+    catalogueStringProof label (← `(lmfdbIsoLabel $conductor $index))
+  checked classLabel
+    (← `(lmfdbIsoLabel ($evidence).roster.conductor ($evidence).roster.classIndex.val = $label))
+    comparison
+  let arithmetic := base ++ `stored_padic_arithmetic
+  let p ← storedPadicNumeral (← `((($evidence).p : Nat))) ``Nat
+  let n ← storedPadicNumeral (← `((($evidence).multiple : Nat))) ``Nat
+  let terms ← storedPadicNumeral (← `(($evidence).logTerms)) ``Nat
+  let w ← storedPadicNumeral (← `(($evidence).approximation)) ``Rat
+  let prec ← storedPadicNumeral (← `(($evidence).approximationPrecision)) ``Int
+  checked arithmetic
+    (← `(Certification.StoredPadicRegulatorValid $claim ($evidence).p ($evidence).multiple
+      ($evidence).logTerms ($evidence).approximation ($evidence).approximationPrecision))
+    (← `(by
+      change Certification.StoredPadicRegulatorValid $claim $p $n $terms $w $prec
+      decide +kernel))
+  let fact := base ++ `stored_padic_regulator_fact
+  emit (← `(def $(rootIdent fact) : StoredPadicRegulatorFact $curve :=
+    Certification.storedPadicRegulatorFact $curve $evidence $label $(rootIdent classLabel)
+      $claim $valid $(rootIdent samePrime)
+      (by rw [← $(rootIdent samePrime)]; exact $prime) $(rootIdent arithmetic)))
+  auditAxioms fact
+
 /-- Check the submitted p-adic ball when an independent exact rank-zero proof is present. -/
 private def certifyPadicRegulator (base : Name) (curve : Ident) : CommandElabM Unit := do
   let some claim ← bindStored base `padicRegulator `padic_regulator (← `(PadicRegulatorClaim)) |
@@ -73,6 +126,10 @@ private def certifyPadicRegulator (base : Name) (curve : Ident) : CommandElabM U
   checked (base ++ `padic_regulator_good_ordinary)
     (← `(Certification.goodOrdinaryPadicPrime $curve ($claim).p = true))
     (← `(by decide +kernel))
+  if let some label ← bindStored base `padicRegulatorClassLabel `padic_regulator_class
+      (← `(String)) then
+    certifyStoredClassPadicRegulator base curve claim valid prime label
+    return
   let rankName := base ++ `algebraic_rank
   let rankValue := base ++ `mordell_weil_rank
   let isZero ← if (← getEnv).contains rankName then
