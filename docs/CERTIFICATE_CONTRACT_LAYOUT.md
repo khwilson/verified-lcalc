@@ -133,8 +133,8 @@ The public command adds one local module and loses three; the standalone raw
 witness imports the same modules. These counts follow source imports at the
 pinned dependencies and include ordinary and public edges.
 
-`Certificate.InvariantSpecs` contains the integer abc product shared by its witness and verifier. It also
-names the modified Szpiro numerator for the checker, while the checked field
+`Certificate.InvariantSpecs` contains the integer abc product shared by its witness and
+verifier. It also names the modified Szpiro numerator for the checker, while the checked field
 exposes the explicit c-invariant formula for direct rewriting. The
 Kodaira and adelic specifications own the branching on optional data.
 The compiler-backed layout audit checks declaration and field documentation

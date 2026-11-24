@@ -57,7 +57,8 @@ run_cmd do
       unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
         throwError "Unexpected axiom in {name}: {axiomName}"
   for name in [``Certification.AssumedExactEvidence.mk,
-      ``Certification.AssumedNumericalEvidence.mk, ``Assumptions.CurvePrecisionClaim.Hypotheses.mk] do
+      ``Certification.AssumedNumericalEvidence.mk,
+      ``Assumptions.CurvePrecisionClaim.Hypotheses.mk] do
     let axioms ← liftTermElabM (Lean.collectAxioms name)
     unless axioms.contains ``Assumptions.ellipticModularity do
       throwError "Opt-in witness lost its modularity boundary: {name}"
