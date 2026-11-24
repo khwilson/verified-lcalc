@@ -31,12 +31,12 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `faltings_index` | `curvedata` | Report | [`FaltingsInput.orderingIndex`](Algebraic.lean). Reported position in the isogeny class’s height ordering. |
 | `faltings_ratio` | `curvedata` | Report | [`FaltingsInput.ratio`](Algebraic.lean). Reported Néron lattice index relative to the least-height curve in the class. |
 | `intrinsic_torsion` | `curvedata` | Report | [`IntrinsicTorsionInput.order`](Algebraic.lean). Reported order of the radical of the rational torsion pairing. |
-| `iso_nlabel` | `curvedata` | Metadata | [`CatalogueMetadata.isoNlabel`](InputData.lean). Reported catalogue identifier or ordering. |
+| `iso_nlabel` | `curvedata` | Checked | [`LmfdbCatalogueFacts.classIndex`](Algebraic.lean). Zero-based index with a complete ordered conductor roster. |
 | `isogeny_degrees` | `curvedata` | Checked | [`IsogenyClassFacts.isogenyDegrees`](Algebraic.lean). Distinct minimum degrees from the input curve, using its row in the proved complete class. |
 | `jinv` | `curvedata` | Checked | [`RationalInvariantFacts.jInvariant`](Invariants.lean). Exact equality with the j-invariant after base change to ℚ. |
-| `lmfdb_iso` | `curvedata`, `classdata`, `padic` | Metadata | [`CatalogueMetadata.lmfdbIso`](InputData.lean). Reported catalogue identifier or ordering. |
-| `lmfdb_label` | `curvedata`, `mwbsd`, `iwasawa`, `torsion_growth`, `localdata`, `galrep` | Metadata | [`CatalogueMetadata.lmfdbLabel`](InputData.lean). Reported catalogue identifier or ordering. |
-| `lmfdb_number` | `curvedata` | Metadata | [`CatalogueMetadata.lmfdbNumber`](InputData.lean). Reported catalogue identifier or ordering. |
+| `lmfdb_iso` | `curvedata`, `classdata`, `padic` | Checked | [`LmfdbCatalogueFacts.isoLabel`](Algebraic.lean). Class label derived from the actual conductor and ordered roster. A separate table join needs its own subject evidence. |
+| `lmfdb_label` | `curvedata`, `mwbsd`, `iwasawa`, `torsion_growth`, `localdata`, `galrep` | Checked | [`LmfdbCatalogueFacts.curveLabel`](Algebraic.lean). Curve label derived from both mathematical orderings. A separate table join needs its own subject evidence. |
+| `lmfdb_number` | `curvedata` | Checked | [`LmfdbCatalogueFacts.number`](Algebraic.lean). One-based position of the reduced minimal equation within its isogeny class. |
 | `manin_constant` | `curvedata` | Report | [`ModularParametrizationInput.maninConstant`](Algebraic.lean). Reported differential scaling of the modular parametrization. |
 | `min_quad_twist_ainvs` | `curvedata` | Checked | [`MinimumQuadraticTwistFacts.equation`](Algebraic.lean). Requires a globally minimal integral model, a rational change of variables and minimum algorithmic conductor among quadratic twists. Available at `certificate.minimumQuadraticTwist.minimum`. Its optional `uniqueMinimum` evidence proves uniqueness in the ordinary non-CM case. Producer tie-breaking remains open. |
 | `min_quad_twist_disc` | `curvedata` | Checked | [`MinimumQuadraticTwistFacts.discriminant`](Algebraic.lean). Fundamental discriminant of the same minimum-conductor twist, at `certificate.minimumQuadraticTwist.minimum.discriminant`. Producer tie-breaking remains open. |

@@ -438,3 +438,23 @@ in the specification unless a particular bound explicitly assumes minimality.
   `WeierstrassCurve.isOrdinary_iff_not_dvd_frobeniusTrace`. Mathlib `31ce06ea`
   provides `Padic` and `Matrix.det_isEmpty`. At rank zero the determinant is
   already checked on the actual empty Mordell–Weil index set.
+
+## TC-23 — certified conductor rosters and catalogue ordering
+
+- **Roadmap target:** [LMFDB I1](roadmaps/LMFDB_Q_CERTIFICATION.md), with a
+  second completeness problem for all rational isogeny classes at a fixed
+  conductor. A supplied `ConductorClassRoster` proves that the subject and each
+  representative have the same actual algorithmic conductor norm. Its
+  exhaustivity theorem covers arbitrary nonsingular rational equations with that
+  conductor. Strict first-difference order uses their arithmetic `LFunction`
+  coefficients. Isogeny invariance implies the listed classes are distinct.
+- **Missing constructor:** Produce that roster from certified enumeration and
+  exclusion, using hypotheses for the stated conductor range and an effective
+  bound or witness for the first differing normalized arithmetic coefficient of
+  each pair. The within-class ordered reduced minimal model constructor remains
+  part of TC-15. No computed label or hash supplies either exhaustivity claim.
+- **Existing interfaces:** TauCeti `e0e414ce` supplies `algorithmicConductor`,
+  `Isogeny.LFunction_eq`, `LFunction`, and reduced minimal models. Mathlib
+  `31ce06ea` supplies `Nat.digits` and `Nat.ofDigits_digits`.
+  [LMFDB label convention](https://www.lmfdb.org/knowledge/show/ec.q.lmfdb_label)
+  · [Sage base-26 producer](https://github.com/sagemath/sage/blob/develop/src/sage/databases/cremona.py#L168-L236)

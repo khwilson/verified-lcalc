@@ -6,6 +6,8 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.InputData
+public import VerifiedLcalc.EllipticCurve.LmfdbLabel
+public import TauCeti.AlgebraicGeometry.EllipticCurve.LFunction.Basic
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
 public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenerated
 public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.Regulator.Basic
@@ -44,6 +46,9 @@ public import Mathlib.RingTheory.AdjoinRoot
   The producer's tie rules require a separate comparison.
 * `IntrinsicTorsionInput`, `ModularParametrizationInput`, and `FaltingsInput` record
   the respective catalogue reports.
+* `ConductorClassRoster` proves the complete rational isogeny classes at a specified conductor,
+  ordered by the arithmetic q-expansion. `LmfdbCatalogueFacts` uses this roster and the reduced
+  minimal order within the subject's class to check catalogue indices and labels.
 * `AlgebraicFacts` collects optional checked points, orders, rank bounds, and regulator data.
 -/
 
@@ -312,6 +317,61 @@ structure IsogenyClassEvidence (curve : WeierstrassCurve ℤ)
   model : IsogenyClassModel curve
   /-- Evidence of the native LMFDB order, required when comparing an ordered matrix. -/
   ordering : Option (IsogenyClassOrdering model.representatives) := none
+
+/-- All rational isogeny classes of the subject's conductor in strict order of their normalized
+q-expansion coefficients. The subject is proved isogenous to the representative at its index. -/
+structure ConductorClassRoster (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The common conductor of the listed rational isogeny classes. -/
+  conductor : ℕ
+  /-- The conductor equals the norm of the intrinsic rational algorithmic conductor. -/
+  conductor_eq : Ideal.absNorm ((curve.baseChange ℚ).algorithmicConductor ℤ) = conductor
+  /-- Number of isogeny classes at this conductor. -/
+  size : ℕ
+  /-- One rational elliptic curve from each class. -/
+  representatives : Fin size → WeierstrassCurve ℚ
+  /-- Each representative is nonsingular. -/
+  elliptic : ∀ i, (representatives i).IsElliptic
+  /-- Each representative has the same conductor as the subject. -/
+  sameConductor : ∀ i,
+    letI := elliptic i
+    Ideal.absNorm ((representatives i).algorithmicConductor ℤ) = conductor
+  /-- Every rational elliptic curve with this conductor is isogenous to a listed representative. -/
+  exhaustive : ∀ W : WeierstrassCurve ℚ, ∀ h : W.IsElliptic,
+    letI := h
+    Ideal.absNorm (W.algorithmicConductor ℤ) = conductor →
+      ∃ i, Nonempty (TauCeti.Isogeny W.toAffine (representatives i).toAffine)
+  /-- For each increasing pair, the first unequal arithmetic coefficient increases.
+  The coefficient at positive index `n` is TauCeti's `LFunction n` of that curve. -/
+  ordered : ∀ i j, i < j → ∃ n : ℕ, 0 < n ∧
+    (∀ m : ℕ, 0 < m → m < n → (representatives i).LFunction m =
+      (representatives j).LFunction m) ∧
+    (representatives i).LFunction n < (representatives j).LFunction n
+  /-- Zero-based position of the subject's isogeny class. -/
+  classIndex : Fin size
+  /-- The subject belongs to the selected isogeny class. -/
+  subjectIsogenous : Nonempty
+    (TauCeti.Isogeny (curve.baseChange ℚ).toAffine (representatives classIndex).toAffine)
+
+/-- Checked catalogue fields share their conductor roster and reduced minimal curve order.
+Each submitted value is retained only when its required order evidence is available. -/
+structure LmfdbCatalogueFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
+  /-- Complete isogeny classes at the subject's conductor, in arithmetic coefficient order. -/
+  roster : Option (ConductorClassRoster curve) := none
+  /-- Complete reduced minimal representatives of the subject's isogeny class, in order. -/
+  orderedClass : Option (Σ m : IsogenyClassModel curve, IsogenyClassOrdering m.representatives) :=
+    none
+  /-- Checked one-based position of the subject's reduced minimal equation in its own class. -/
+  number : Option { n : ℕ // orderedClass.map (fun c => c.1.curveIndex.val + 1) = some n } := none
+  /-- Checked zero-based position of the subject's isogeny class among classes of its conductor. -/
+  classIndex : Option { n : ℕ // roster.map (fun r => r.classIndex.val) = some n } := none
+  /-- Checked class label, formed from the conductor and the class index. -/
+  isoLabel : Option { label : String // roster.map
+    (fun r => lmfdbIsoLabel r.conductor r.classIndex.val) = some label } := none
+  /-- Checked curve label, formed from the conductor and the two indices. -/
+  curveLabel : Option { label : String // (roster.bind fun r => orderedClass.map
+    (fun c => lmfdbCurveLabel r.conductor r.classIndex.val (c.1.curveIndex.val + 1))) =
+      some label } := none
 
 /-- Exact description of the endomorphism ring over the separable closure of ℚ.
 The zero code specifies the integer ring and a negative code specifies the quadratic

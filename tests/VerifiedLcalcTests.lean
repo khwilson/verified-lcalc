@@ -11,6 +11,7 @@ public import VerifiedLcalcTests.Fixtures.BSDSha
 public import VerifiedLcalcTests.Fixtures.DegreeTwoIsogeny
 public import VerifiedLcalcTests.Fixtures.ExtensionData
 public import VerifiedLcalcTests.Fixtures.IsogenyClass
+public import VerifiedLcalcTests.Fixtures.LmfdbCatalogue
 public import VerifiedLcalcTests.Fixtures.GaloisImage
 public import VerifiedLcalcTests.Fixtures.Curve11Arithmetic
 public import VerifiedLcalcTests.Fixtures.Curve11Central

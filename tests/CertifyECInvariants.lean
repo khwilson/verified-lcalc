@@ -660,7 +660,7 @@ run_cmd do
   let galois := #[`nonmaxPrimes, `nonmaxRadical, `adelicGenerators]
   cover ``EllipticWitness
     (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++
-      isogeny ++ geometry ++ galois)
+      isogeny ++ geometry ++ galois ++ #[`lmfdbNumber, `isoNlabel, `lmfdbIso, `lmfdbLabel])
   cover ``AdelicGeneratorsClaim #[`modulus, `rows]
   cover ``IsogenyEdgeClaim #[`target, `degree, `kernelX]
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,

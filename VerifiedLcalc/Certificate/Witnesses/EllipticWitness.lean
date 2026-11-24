@@ -42,6 +42,14 @@ structure EllipticWitness where
   isogenyMatrix : Option (List (List Nat)) := none
   /-- The claimed distinct minimum isogeny degrees from the input curve's row. -/
   isogenyDegrees : Option (List Nat) := none
+  /-- Reported one-based index within the LMFDB isogeny class. -/
+  lmfdbNumber : Option Nat := none
+  /-- Reported zero-based index among isogeny classes of this conductor. -/
+  isoNlabel : Option Nat := none
+  /-- Reported conductor and alphabetic isogeny class code. -/
+  lmfdbIso : Option String := none
+  /-- Reported conductor, isogeny class code, and curve number. -/
+  lmfdbLabel : Option String := none
   /-- The reported complete exceptional-prime list. -/
   nonmaxPrimes : Option (List Nat) := none
   /-- The reported product of the exceptional primes. -/

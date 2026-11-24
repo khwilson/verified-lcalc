@@ -32,9 +32,9 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **53 of 85 distinct LMFDB column names** with the evidence
+The command covers **57 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
-has a checker gives 29 in `ec_curvedata`, 3 in `ec_classdata`, 10 in
+has a checker gives 33 in `ec_curvedata`, 3 in `ec_classdata`, 10 in
 `ec_mwbsd`, 8 in `ec_localdata`, 1 in `ec_galrep`, and 2 in
 `ec_torsion_growth`. Shared names such as `class_size` count once.
 Project-specific keys are excluded. The four ball coordinates shared with
@@ -48,6 +48,20 @@ The former can be proved through `certificate.torsion.cardinality`. The latter
 has its own roadmap target. The public contract index lists the canonical Lean
 modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.md)
 · [Roadmap targets](roadmaps/LMFDB_Q_CERTIFICATION.md)
+
+## Mathematical catalogue ordering
+
+| LMFDB field | Checked projection in `certificate.lmfdbCatalogue` | Evidence |
+| --- | --- | --- |
+| `lmfdb_number` | `number` | Complete rational isogeny class and lexicographic order of its reduced minimal equations. This gives a one-based position. |
+| `iso_nlabel` | `classIndex` | Complete rational isogeny class roster at the actual algorithmic conductor, ordered by arithmetic q-expansion. The subject is proved isogenous to the representative at its zero-based position. |
+| `lmfdb_iso` | `isoLabel` | The conductor roster gives the conductor and class index used to form the class label. |
+| `lmfdb_label` | `curveLabel` | Both proofs give the conductor, class index, and curve number used to form the full label. |
+
+The same field can provide metadata in other tables. The mathematical projection
+is scoped to the proved subject equation or its isogeny class. Comparisons use the
+reviewed LMFDB ordering and base-26 encoding.
+[LMFDB label convention](https://www.lmfdb.org/knowledge/show/ec.q.lmfdb_label)
 
 ## Checks implemented
 

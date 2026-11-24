@@ -238,8 +238,30 @@ unverified.
 
 The rank-zero JSON example is a finite-precision encoding of the value
 displayed by LMFDB. The display reads a stored class row for positive rank
-and LMFDB curve number 1. A supplied `lmfdb_iso` is catalogue metadata.
+and LMFDB curve number 1. Within the p-adic object, `lmfdb_iso` is catalogue metadata.
 [LMFDB p-adic regulator renderer](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/elliptic_curve.py#L775-L792)
+
+## Check the LMFDB catalogue indices and labels
+
+Submit any of `lmfdb_number`, `iso_nlabel`, `lmfdb_iso`, and `lmfdb_label`
+as exact JSON fields, or use the corresponding Lean fields `lmfdbNumber`,
+`isoNlabel`, `lmfdbIso`, and `lmfdbLabel`.
+
+- `lmfdb_number` uses `IntegralCurveProofs.isogenyClass` with complete
+  reduced minimal ordering. It is one plus the subject's position in that order.
+- `iso_nlabel` and `lmfdb_iso` use `IntegralCurveProofs.conductorClassRoster`.
+  The roster covers all rational isogeny classes of the subject's intrinsic
+  algorithmic conductor norm. Strict lexicographic order uses the actual rational
+  L-function coefficients. A rational isogeny places the subject in the selected
+  class.
+- `lmfdb_label` uses both proofs. Submit the full label alone or alongside the
+  individual fields.
+
+The conductor is written in decimal, the zero-based class index in base 26
+(`0 ↦ a`, `25 ↦ z`, `26 ↦ ba`), and the one-based curve number in decimal.
+Each checked value and its proof are available under
+`Name.certificate.lmfdbCatalogue`. A field with missing order evidence remains
+unverified. [LMFDB label convention](https://www.lmfdb.org/knowledge/show/ec.q.lmfdb_label)
 
 ## Check a stored special value
 
