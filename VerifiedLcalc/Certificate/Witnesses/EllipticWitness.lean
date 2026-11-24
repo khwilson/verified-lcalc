@@ -76,6 +76,12 @@ structure EllipticWitness where
   modPrimeImage : Option (Nat × String) := none
   /-- The reported curve-level residual image labels. -/
   modPrimeImages : Option (List String) := none
+  /-- A source prime and its prime-adic image label. -/
+  padicImage : Option (Nat × String) := none
+  /-- The source list of prime-adic image labels. -/
+  padicImages : Option (List String) := none
+  /-- The source list of modular-curve labels for finite images. -/
+  modulusImages : Option (List String) := none
   /-- Claims for the ordered tuple of b₂, b₄, b₆ and b₈. -/
   bInvariants : Option (Int × Int × Int × Int) := none
   /-- Claims for the ordered pair of c₄ and c₆. -/

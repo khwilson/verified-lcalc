@@ -717,3 +717,23 @@ directly. The missing reusable result is the rational pairing in TC-25.
   · [TauCeti PR 41775](https://github.com/TauCetiProject/TauCeti/pull/41775)
   · [TauCeti PR 41484](https://github.com/TauCetiProject/TauCeti/pull/41484)
   · [Cremona's period comparison](https://wstein.org/papers/ars-manin/html/node13.html)
+
+## TC-30 — native integral and composite image catalogues
+
+Target [LMFDB G1](roadmaps/LMFDB_Q_CERTIFICATION.md). For a nonsingular
+rational elliptic curve with exact Tate and finite torsion representations,
+prove the compatibility of the reductions in explicit ordered bases. Give
+finite criteria for kernel containment in the local integral image at the
+small primes and in the simultaneous image at composite moduli. Derive
+conjugacy of the full inverse images from finite conjugacy and a lifting
+theorem. For source enumeration, determine which finite projections the
+producer stores and prove validity of the chosen representative at each
+listed modulus, including the determinant, scalar and twist suffixes of
+the modular-curve catalogue.
+
+The verifier uses exact comparisons with explicit generator data and
+accepts a verified sublist of the finite report. The pinned interfaces are
+`WeierstrassCurve.tateModuleGaloisRepresentation`, `PadicInt.toZModPow`,
+`Subgroup.comap` and `MulAut.conj`.
+[RSZB labeling and generation](https://doi.org/10.1017/fms.2022.38)
+· [Candidate upstream level API](https://github.com/TauCetiProject/TauCeti/pull/45304)

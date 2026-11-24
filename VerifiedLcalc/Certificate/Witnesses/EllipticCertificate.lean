@@ -59,6 +59,18 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   modPrimeImages :
     letI := Classical.decEq (AlgebraicClosure ℚ)
     Option (ModPrimeImageListFact curve) := none
+  /-- Exact comparison with the submitted prime-adic row. -/
+  padicImage :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (PadicImageLabelFact curve) := none
+  /-- Exact comparisons for the submitted list of prime-adic labels. -/
+  padicImages :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (PadicImageListFact curve) := none
+  /-- Verified entries of the source list of modular-curve labels for finite images. -/
+  modulusImages :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (ModulusImageListFact curve) := none
   /-- Proof identifying the geometric endomorphism ring. -/
   complexMultiplication : Option (ComplexMultiplicationFacts curve) := none
   /-- Proof of a globally minimal integral model of a minimum-conductor quadratic twist. -/
@@ -135,6 +147,18 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   modPrimeImages :
     letI := Classical.decEq (AlgebraicClosure ℚ)
     Option (ModPrimeImageListFact curve) := none
+  /-- The checked exact prime-adic image for the source row. -/
+  padicImage :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (PadicImageLabelFact curve) := none
+  /-- The checked source prime-adic labels and optional exceptional-prime coverage. -/
+  padicImages :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (PadicImageListFact curve) := none
+  /-- The verified sublist of modular-curve labels for finite images. -/
+  modulusImages :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (ModulusImageListFact curve) := none
   /-- Checked identification of the geometric endomorphism ring. -/
   complexMultiplication : Option (ComplexMultiplicationFacts curve) := none
   /-- Checked minimum-conductor twist and its globally minimal integral equation. -/

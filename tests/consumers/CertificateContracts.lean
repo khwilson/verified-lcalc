@@ -47,6 +47,10 @@ open VerifiedLcalc Lean Elab Command
 #check EllipticCertificate.modPrimeImages
 #check EllipticCertificate.nonmaxPrimes
 #check EllipticCertificate.adelicGenerators
+#check PadicImageLabelFact
+#check PadicImageListFact
+#check ModulusImageLabelFact
+#check ModulusImageListFact
 #check AdelicImageFact
 #check AdelicGenusFact
 #check AdelicImageCertificate
