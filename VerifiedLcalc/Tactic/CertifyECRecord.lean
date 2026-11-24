@@ -231,6 +231,9 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let adelicImage ← optionalFactTerm base `adelic_image_certificate
   let modPrimeImage ← optionalFactTerm base `modell_image_fact
   let modPrimeImages ← optionalFactTerm base `modell_images_fact
+  let padicImage ← optionalFactTerm base `elladic_image_fact
+  let padicImages ← optionalFactTerm base `elladic_images_fact
+  let modulusImages ← optionalFactTerm base `modm_images_fact
   let serreInvariants ← optionalFactTerm base `serre_invariants_fact
   let cm ← optionalFactTerm base `cm_fact
   let twist ← optionalFactTerm base `minimum_quadratic_twist_evidence
@@ -268,6 +271,9 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     adelicImage := $adelicImage
     modPrimeImage := $modPrimeImage
     modPrimeImages := $modPrimeImages
+    padicImage := $padicImage
+    padicImages := $padicImages
+    modulusImages := $modulusImages
     serreInvariants := $serreInvariants
     complexMultiplication := $cm
     minimumQuadraticTwist := $twist

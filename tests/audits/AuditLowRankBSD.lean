@@ -1,6 +1,9 @@
 import VerifiedLcalc.Verification.LowRankBSD
 import VerifiedLcalc.EllipticCurve.AlgebraicRank
 
+/-! # Opt-in low-rank BSD axiom dependencies -/
+
+-- This audit intentionally uses `#print axioms` to check proof dependencies.
 set_option linter.hashCommand false
 
 -- These conclusions depend on the one isolated forward implication assumption.

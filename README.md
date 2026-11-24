@@ -119,6 +119,12 @@ make check
 make test
 ```
 
+`make test-lean` runs the [axiom audits](tests/audits) along with certificate
+regressions. For an individual audit, build the relevant library modules and run
+`lake env lean tests/audits/Audit.lean` from the repository root. The
+[assumptions guide](VerifiedLcalc/Assumptions/README.md) explains the separate
+modularity and low-rank BSD audits.
+
 Ruff and ty cover the remaining Python download/benchmark plumbing. Mathematical
 computation and certificate verification are in Lean.
 

@@ -335,6 +335,7 @@ def certifyJson (name : Name) (text : String)
         "nonmax_primes", "nonmax_rad", "adelic_gens", "modell_image", "modell_images",
         "serre_invariants",
         "adelic_level", "adelic_index", "adelic_genus", "adelic_image",
+        "elladic_image", "elladic_images", "modm_images",
         "lmfdb_number", "iso_nlabel", "lmfdb_iso", "lmfdb_label",
         "Ciso", "Clabel", "Cnumber", "trace_hash",
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
@@ -350,7 +351,8 @@ def certifyJson (name : Name) (text : String)
           if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
               (CurveDataJson.optionalData j "adelic_gens").isSome ||
               (CurveDataJson.optionalData j "modell_image").isSome ||
-              (CurveDataJson.optionalData j "adelic_image").isSome then ["prime"] else []
+              (CurveDataJson.optionalData j "adelic_image").isSome ||
+              (CurveDataJson.optionalData j "elladic_image").isSome then ["prime"] else []
       let checkedAbcQuality := (← getEnv).contains (base ++ `abc_quality)
       let checkedCM := (← getEnv).contains (base ++ `cm)
       let checkedTwistEquation := (← getEnv).contains (base ++ `min_quad_twist_ainvs)
