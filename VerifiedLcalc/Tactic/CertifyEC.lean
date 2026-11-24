@@ -339,7 +339,8 @@ def certifyJson (name : Name) (text : String)
           "padic_regulator", "real_period", "real_period_evidence", "tamagawa_product",
           "sha_an", "sha_an_evidence", "sha", "sha_primes", "area", "area_evidence",
           "faltings_height", "faltings_height_evidence", "stable_faltings_height",
-          "stable_faltings_height_evidence", "faltings_ratio", "faltings_index", "iwdata", "iwp0"] ++
+          "stable_faltings_height_evidence", "faltings_ratio", "faltings_index",
+          "degree", "manin_constant", "optimality", "iwdata", "iwp0"] ++
         algebraicKeys ++ localKeys ++
         (if CurveDataJson.hasFlatStoredPadicRegulator j then
           ["p", "prec", "val", "unit"] else []) ++

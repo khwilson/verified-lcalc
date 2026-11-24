@@ -677,6 +677,47 @@ and remain local. The trivial-group specialization
 `VerifiedLcalc.IntrinsicTorsionFact.card_radical` uses Mathlib cardinality
 directly. The missing reusable result is the rational pairing in TC-25.
 
+## TC-28 — rational modular maps and the optimal Jacobian quotient
+
+- Upstream candidate `VerifiedLcalc.Modularity.cuspDatumInftyGammaZero` and
+  its cusp, scaling and width lemmas use the effective image of Γ₀(N) for
+  natural N. Translation by one lies in Γ₀(N) and every stabilizer element
+  is projectively an integral translation. This complements the pinned
+  Γ(N) result, with natural levels and no nonzero-level hypothesis for
+  the width-one computation.
+- `VerifiedLcalc.Modularity.gammaZeroFunctionField` uses positive level
+  and rational Laurent coefficients on the compact Γ₀ quotient. Identify
+  this field with the function field of the canonical algebraic model
+  over ℚ, and prove that its nonconstant embeddings from elliptic function
+  fields induce the pointed rational maps used by
+  `VerifiedLcalc.Modularity.ModularPullback`, with extension degree equal
+  to the geometric map degree. For an elliptic target with a globally
+  minimal equation, identify `ModularPullback.PullsBackDifferential` with
+  pullback of the invariant differential against the differential of a
+  normalized weight-two cusp form at the same level.
+- `VerifiedLcalc.Modularity.gammaZeroDifferentialPeriods` uses the
+  normalized Eichler primitive at weight two and integral loops from a
+  fixed point. Identify these generators with all closed-cycle periods
+  and relate equality with the target lattice to connected kernel of the
+  induced Jacobian quotient for a nonconstant pointed modular map.
+  Prove the level-eleven pointed identification and normalized map to
+  turn the conditional producer fixtures into unconditional examples.
+- Pinned APIs include TauCeti's
+  `isCofinite_Gamma0`, `cuspDatumInftyGamma`,
+  `Subgroup.CompactifiedQuotient.coeffSubfield`,
+  `eichlerIntegral`, and `WeierstrassCurve.periodLattice`. Mathlib
+  supplies `Algebra.finrank_eq_one_iff_bijective_algebraMap`.
+  Searched pinned and current Mathlib and TauCeti, and open PRs for modular
+  parametrization, optimal quotient, Manin constant and modular function
+  field. TauCeti's modular polynomial and Siegel-function integrality
+  PRs treat related function fields rather than the Jacobian comparison.
+  [Pinned Γ(N) cusp data](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/NumberTheory/ModularForms/CongruenceSubgroups/Fuchsian.lean)
+  · [Current TauCeti snapshot](https://github.com/TauCetiProject/TauCeti/tree/afdb5315ed242f286fba37760118c20786373352)
+  · [Current Mathlib snapshot](https://github.com/leanprover-community/mathlib4/tree/ad205c14a0c55fa548ffa14615e353d0733e6b1b)
+  · [TauCeti PR 41775](https://github.com/TauCetiProject/TauCeti/pull/41775)
+  · [TauCeti PR 41484](https://github.com/TauCetiProject/TauCeti/pull/41484)
+  · [Cremona's period comparison](https://wstein.org/papers/ars-manin/html/node13.html)
+
 ## TC-29 — normalized cyclotomic distributions and Iwasawa thresholds
 
 - For weight-two forms on Γ₀(N) with rational coefficients, relate the

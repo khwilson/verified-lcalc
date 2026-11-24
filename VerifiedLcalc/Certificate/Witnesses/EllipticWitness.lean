@@ -100,6 +100,12 @@ structure EllipticWitness where
   canonicalHeights : Option CanonicalHeightsClaim := none
   /-- Stored regulator value and any explicit error evidence. -/
   regulator : Option RegulatorClaim := none
+  /-- Reported minimum degree of the modular parametrization. -/
+  modularDegree : Option Nat := none
+  /-- Reported positive factor of the Néron differential. -/
+  maninConstant : Option Nat := none
+  /-- Producer optimality code, including ambiguity codes above one. -/
+  optimality : Option Nat := none
   /-- Reported complex period area and optional absolute error radius. -/
   area : Option DecimalEnclosureClaim := none
   /-- Reported Faltings height and optional absolute error radius. -/
