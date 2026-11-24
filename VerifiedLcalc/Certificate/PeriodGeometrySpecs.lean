@@ -34,4 +34,9 @@ j-invariant denominator from the same equation as the area. -/
 def catalogueStableFaltingsHeight (W : WeierstrassCurve ℚ) [W.IsElliptic] : ℝ :=
   catalogueFaltingsHeight W + Real.log ((W.j.den : ℝ) / |(W.Δ : ℝ)|) / 12
 
+/-- The producer sorts by increasing Faltings height, then increasing native LMFDB number.
+The native indices in a complete ordered class start at zero. -/
+def faltingsPrecedes {n : ℕ} (height : Fin n → ℝ) (i j : Fin n) : Prop :=
+  height i < height j ∨ height i = height j ∧ i < j
+
 end VerifiedLcalc

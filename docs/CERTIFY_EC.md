@@ -713,5 +713,21 @@ For a submitted value with matching evidence the command emits a theorem
 such as `Name.area` about that report. With the JSON key omitted, a standalone
 proof supplied in the Lean attachment still appears in
 `Name.certificate.periodGeometry`. In that case there is no theorem about a
-catalogue value. A decimal alone stays a report. The checker leaves `faltings_index` as catalogue
-ordering metadata.
+catalogue value. A decimal alone stays a report.
+
+## Faltings order and intrinsic torsion
+
+Attach `IntegralCurveProofs.faltingsIndex` for the zero-based `faltings_index`.
+The proof identifies the complete class and its native LMFDB ordering, then
+identifies exactly the members preceding the input by Faltings height.
+Equal heights are ordered by the native LMFDB curve number. The finset of
+predecessors and its membership theorem are available at
+`Name.certificate.faltingsIndex`.
+[Catalogue sort rule](https://github.com/JohnCremona/ecdata/blob/6fedd3ab463a70e52061ebc0b04832ad19fd2e01/scripts/files.py#L739-L767)
+
+A report of `intrinsic_torsion` is checked when the rational torsion
+cardinality is proved to be one. A two-prime `torsion_bound` of one suffices.
+The theorem at `Name.certificate.intrinsicTorsion` applies to every subgroup
+of the full rational torsion group and hence to the radical of the catalogue's
+divisor-evaluation pairing. Reports for other curves remain unverified.
+[LMFDB definition](https://www.lmfdb.org/knowledge/show/ec.intrinsic_torsion)

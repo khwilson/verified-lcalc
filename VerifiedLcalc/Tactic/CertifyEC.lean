@@ -40,7 +40,9 @@ The native isogeny class fields `class_size`, `class_deg`, `isogeny_degrees` and
 `isogeny_matrix` use `IntegralCurveProofs.isogenyClass` supplied with `with_proofs`.
 The matrix requires the reduced minimal models in lexicographic order.
 The period area, Faltings heights and class-relative area ratio use
-`IntegralCurveProofs.periodGeometry` supplied with `with_proofs`.
+`IntegralCurveProofs.periodGeometry` supplied with `with_proofs`. The index uses
+`IntegralCurveProofs.faltingsIndex` with exact height comparisons and the native tie-break.
+The intrinsic torsion order is checked in the proved trivial rational torsion case.
 The Galois fields `nonmax_primes` and `nonmax_rad` use complete non-CM
 `IntegralCurveProofs.nonmaxSupport`. The field `adelic_gens` uses
 `IntegralCurveProofs.adelicGenerators` at the reported finite modulus.
@@ -315,7 +317,8 @@ def certifyJson (name : Name) (text : String)
       let algebraicKeys := if CurveDataJson.inlineAnalyticRankField j then [] else ["rank"]
       let known := ["schema", "ainvs", "ap", "aplist", "integral_points", "xcoord_integral_points",
         "minimality", "local_data", "gens", "ngens", "torsion_generators",
-        "torsion_generator_orders", "torsion_structure", "torsion_primes", "rank_bounds",
+        "torsion_generator_orders", "torsion_structure", "torsion_primes", "intrinsic_torsion",
+        "rank_bounds",
         "algebraic_rank", "infinite_order_points",
         "independent_points", "independent_generator_points", "binvs", "cinvs",
         "discriminant", "jinv", "signD", "absD", "conductor", "global_root_number", "anlist",
@@ -328,7 +331,7 @@ def certifyJson (name : Name) (text : String)
           "padic_regulator", "real_period", "real_period_evidence", "tamagawa_product",
           "sha_an", "sha_an_evidence", "sha", "sha_primes", "area", "area_evidence",
           "faltings_height", "faltings_height_evidence", "stable_faltings_height",
-          "stable_faltings_height_evidence", "faltings_ratio"] ++
+          "stable_faltings_height_evidence", "faltings_ratio", "faltings_index"] ++
         algebraicKeys ++ localKeys ++
           if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
               (CurveDataJson.optionalData j "adelic_gens").isSome ||

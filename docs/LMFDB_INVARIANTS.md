@@ -32,9 +32,9 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **63 of 85 distinct LMFDB column names** with the evidence
+The command covers **65 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
-has a checker gives 37 in `ec_curvedata`, 3 in `ec_classdata`, 11 in
+has a checker gives 39 in `ec_curvedata`, 3 in `ec_classdata`, 11 in
 `ec_mwbsd`, 8 in `ec_localdata`, 2 in `ec_galrep`, and 2 in
 `ec_torsion_growth`. Shared names such as `class_size` count once.
 Project-specific keys are excluded. The four ball coordinates shared with
@@ -114,6 +114,8 @@ reviewed LMFDB ordering and base-26 encoding.
 | `area` | `area` | Rational enclosure of the Euclidean covolume in ℂ of the globally minimal equation's normalized period lattice. |
 | `faltings_height` | `faltingsHeight` | Rational enclosure of `−log(area)/2` on the globally minimal equation. |
 | `stable_faltings_height` | `stableFaltingsHeight` | Rational enclosure of the Faltings height plus `log(denominator(j)/abs(Δ))/12`. |
+| `faltings_index` | `faltingsIndex` | Exact number of class members preceding the input in increasing Faltings height, with ties ordered by native LMFDB number. Requires exact comparisons on a proved complete and canonically ordered class. |
+| `intrinsic_torsion` | `intrinsicTorsion` | Order one for every subgroup of the proved trivial rational torsion group. In particular this proves the order of the radical of the catalogue's torsion pairing. |
 | `faltings_ratio` | `faltingsRatio` | Exact positive integer quotient of the greatest area of a globally minimal representative in the proved complete rational isogeny class by the input area. |
 | `real_period` | `realPeriod` | A supplied `RealPeriodFact` at `certificate.realPeriod` bounds the full minimal real period, including both real components when present. |
 | `tamagawa_product` | `tamagawaProduct` | A supplied `TamagawaProductFact` at `certificate.tamagawaProduct` proves the exact intrinsic product over all rational finite places. |
@@ -336,7 +338,7 @@ missing theorem.
 | Group / fields | Proof work still needed |
 | --- | --- |
 | Specific additive `kodaira_symbol`, intrinsic local epsilon factors, other `tamagawa_number` branches | Export the existing transcript checks with the appropriate geometric/local compatibility. Tamagawa-group cardinalities need their own proofs; they are not covered by the current authorized assumption. |
-| Tighter torsion bounds and `intrinsic_torsion` | Construct tight bounds for the rational torsion group or prove the required torsion pairing statement. |
+| Tighter torsion bounds and `intrinsic_torsion` | Construct tight bounds for the rational torsion group and evaluate the catalogue pairing when the group is nontrivial. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Rank intervals can be supplied as Lean proofs and are checked against the actual rational point group; exact rank requires a singleton interval. `ngens` checks only the length of the supplied generator list, not that it is a basis. Integral-point counts can use supplied exhaustive support; deriving it automatically still needs a bound and complete search. |
 | CM and minimum twist evidence production | A geometric endomorphism-ring classifier and a general minimum-conductor twist algorithm. Native ordering among equally good twists is a separate open obligation. |
 | Modular `degree`, `manin_constant`, `optimality` | Statements about the modular parametrization, not the degree of an arbitrary isogeny. |

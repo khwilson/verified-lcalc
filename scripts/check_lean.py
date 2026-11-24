@@ -26,6 +26,7 @@ AUDITS = (
     "tests/consumers/IsogenyClass.lean",
     "tests/consumers/LmfdbCatalogue.lean",
     "tests/consumers/PeriodGeometry.lean",
+    "tests/consumers/IntrinsicTorsionFaltingsIndex.lean",
     "tests/consumers/GaloisImage.lean",
     "tests/consumers/Geometry.lean",
     "tests/consumers/SecondMellinDerivative.lean",

@@ -509,6 +509,16 @@ structure IntrinsicTorsionInput (curve : WeierstrassCurve ℤ) where
   /-- The decoded `intrinsic_torsion` value. -/
   order : ℕ
 
+/-- Exact evidence for the intrinsic torsion order in the trivial rational torsion case.
+Every subgroup of the rational torsion group then has order one. -/
+structure IntrinsicTorsionFact (curve : WeierstrassCurve ℤ) where
+  /-- The reported intrinsic torsion order. -/
+  reported : ℕ
+  /-- The report equals the order of a trivial group. -/
+  reported_eq_one : reported = 1
+  /-- Exact cardinality of all rational torsion points, including the identity. -/
+  torsion_card : Nat.card (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point) = 1
+
 /-- Input only. The degree and differential scaling of a modular parametrization,
 and the producer's status code for optimality. -/
 structure ModularParametrizationInput (curve : WeierstrassCurve ℤ) where
@@ -529,6 +539,22 @@ structure FaltingsInput (curve : WeierstrassCurve ℤ) where
   ratio : Option ℕ := none
   /-- The producer's position in the Faltings-height ordering of the class. -/
   orderingIndex : Option ℕ := none
+
+/-- The representatives before the input curve in the catalogue's zero-based Faltings
+ordering, with exact height comparisons and the native tie-break. -/
+structure FaltingsIndexFact (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
+  /-- Pairwise distinct and exhaustive rational isogeny class representatives. -/
+  model : IsogenyClassModel curve
+  /-- Canonical reduced minimal equations in native LMFDB order. -/
+  ordering : IsogenyClassOrdering model.representatives
+  /-- Exactly the representatives lexicographically before the input by height and native index. -/
+  predecessors : Finset (Fin model.classSize)
+  /-- Membership is equivalent to a strict height comparison or an exact tie and lower
+  native index. -/
+  mem_predecessors : ∀ i, i ∈ predecessors ↔
+    faltingsPrecedes (fun j =>
+      let _ := model.elliptic j
+      catalogueFaltingsHeight (model.representatives j)) i model.curveIndex
 
 /-- A rational center and nonnegative absolute error with a proof for a specified real value. -/
 structure PeriodGeometryEnclosure (value : ℝ) where

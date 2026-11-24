@@ -442,6 +442,7 @@ def decode (j : Json) : Except String EllipticWitness := do
   let area ← decimalEnclosureClaim j "area"
   let faltingsHeight ← decimalEnclosureClaim j "faltings_height"
   let stableFaltingsHeight ← decimalEnclosureClaim j "stable_faltings_height"
+  let faltingsIndex ← optionalValue j "faltings_index" nonnegativeInteger
   let faltingsRatio ← optionalValue j "faltings_ratio" nonnegativeInteger
   let padicRegulator ← optionalValue j "padic_regulator" fun row => do
     return {
@@ -475,6 +476,7 @@ def decode (j : Json) : Except String EllipticWitness := do
   let semistable ← optionalValue j "semistable" Json.getBool?
   let squarefreeDiscriminant ← optionalValue j "squarefree_disc" Json.getBool?
   let localInvariants ← localReductionClaims j
+  let intrinsicTorsion ← optionalValue j "intrinsic_torsion" nonnegativeInteger
   let torsion ← optionalValue j "torsion" nonnegativeInteger
   let torsionBound ← optionalValue j "torsion_bound" fun value => do
     let firstPrime ← nonnegativeInteger (← value.getObjVal? "first_prime")
@@ -516,6 +518,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     area
     faltingsHeight
     stableFaltingsHeight
+    faltingsIndex
     faltingsRatio
     padicRegulator
     realPeriod
@@ -536,6 +539,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     squarefreeDiscriminant
     localInvariants
     torsionBound
+    intrinsicTorsion
     torsion
     primeCoefficients := primeData
     integralCoordinates := pointData
