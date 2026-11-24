@@ -88,8 +88,9 @@ private meta def expectRegulatorRejected (name : Name) (command : Syntax) : Comm
     pure (← get).messages.hasErrors
   catch _ => pure true
   set { (← get) with messages }
-  unless failed do throwError "Incorrect rank-zero regulator report accepted: {name}"
-  for suffix in [`curve, `certificate, `regulator_value_valid, `regulator_eq_one] do
+  unless failed do throwError "Incorrect regulator report accepted: {name}"
+  for suffix in [`curve, `certificate, `regulator_value_valid, `regulator_eq_one,
+      `padic_regulator_valid, `padic_regulator_good_ordinary, `padic_regulator_fact] do
     if (← getEnv).contains (name ++ suffix) then
       throwError "Rejected regulator report leaked {name ++ suffix}"
 
@@ -100,6 +101,88 @@ run_cmd do
   expectRegulatorRejected `NegativeRegulatorError (← `(certify_ec NegativeRegulatorError from
     { equation := curve, regulator := some ⟨1, some (-1)⟩ }
     with_proofs proofs))
+/-- The imported aggregate preserves the reported prime and the three ball coordinates. -/
+theorem imported_padic_regulator_coordinates :
+    let fact := Checked.certificate.analytic.padicRegulator.get (by rfl)
+    ((fact.report.p : ℕ), fact.report.prec, fact.report.val, fact.report.unit) = (7, 20, 0, 1) :=
+  rfl
+
+/-- Read the exact enclosure of the determinant from the compiled mixed certificate. -/
+theorem imported_padic_regulator_contains :
+    let fact := Checked.certificate.analytic.padicRegulator.get (by rfl)
+    letI := fact.elliptic
+    letI : Fact (fact.report.p : ℕ).Prime := ⟨fact.report.p.property⟩
+    ‖VerifiedLcalc.EllipticCurve.rankZeroPadicRegulator (Checked.curve.baseChange ℚ)
+        fact.rankZero fact.report.p -
+      (fact.report.p : ℚ_[(fact.report.p : ℕ)]) ^ fact.report.val *
+        (fact.report.unit : ℚ_[(fact.report.p : ℕ)])‖ ≤
+      ((fact.report.p : ℕ) : ℝ) ^ (-fact.report.prec) :=
+  (Checked.certificate.analytic.padicRegulator.get (by rfl)).contains
+
+run_cmd do
+  let modularity := ``VerifiedLcalc.Assumptions.ellipticModularity
+  unless (← liftTermElabM <| Lean.collectAxioms ``Checked.conductor).contains modularity do
+    throwError "Expected the mixed certificate's conductor to depend on modularity"
+  for fact in [``Checked.certificate, ``imported_padic_regulator_coordinates,
+      ``imported_padic_regulator_contains] do
+    for axiomName in ← liftTermElabM <| Lean.collectAxioms fact do
+      unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+        throwError "Unexpected p-adic regulator axiom in {fact}: {axiomName}"
+
+certify_ec TypedPadicRegulator from
+  { equation := curve, padicRegulator := some ⟨7, 1, 0, 1⟩ }
+  with_proofs proofs
+
+example : TypedPadicRegulator.certificate.analytic.padicRegulator.isSome = true := rfl
+
+-- The p = 53 row from https://www.lmfdb.org/EllipticCurve/Q/data/37.a1.
+-- Absolute precision 20 permits 21 unit digits.
+-- The catalogue class and rank are metadata and the row supplies no determinant proof.
+certify_ec PositiveRankPadicReport from_json_string
+  r#"{
+    "ainvs":[0,0,1,-1,0],
+    "rank":1,
+    "padic_regulator":{
+      "lmfdb_iso":"37.a","p":53,"prec":20,"val":"-1","unit":28826931810788641528595139585738795
+    }
+  }"#
+
+example : PositiveRankPadicReport.certificate.analytic.padicRegulator.isNone = true := rfl
+example : PositiveRankPadicReport.claimed_padic_regulator.val = -1 := rfl
+
+-- A signed-valuation report can retain more unit digits than its absolute precision.
+certify_ec SignedValuationPadicReport from
+  { equation := curve, padicRegulator := some ⟨7, 1, -1, 8⟩ }
+
+example : SignedValuationPadicReport.certificate.analytic.padicRegulator.isNone = true := rfl
+
+certify_ec PartialRankForPadicRegulator from
+  { equation := curve, padicRegulator := some ⟨7, 20, 0, 1⟩ }
+  with_proofs partialProofs
+
+example : PartialRankForPadicRegulator.certificate.analytic.padicRegulator.isNone = true := rfl
+
+run_cmd do
+  expectRegulatorRejected `BadReductionPadicRegulator (← `(
+    certify_ec BadReductionPadicRegulator from
+    { equation := curve, padicRegulator := some ⟨3, 20, 0, 1⟩ }
+    with_proofs proofs))
+  expectRegulatorRejected `SupersingularPadicRegulator (← `(
+    certify_ec SupersingularPadicRegulator from
+    { equation := curve, padicRegulator := some ⟨5, 20, 0, 1⟩ }
+    with_proofs proofs))
+  expectRegulatorRejected `ShortPadicRegulator (← `(certify_ec ShortPadicRegulator from
+    { equation := curve, padicRegulator := some ⟨7, 0, 0, 1⟩ }
+    with_proofs proofs))
+  expectRegulatorRejected `UnnormalizedPadicRegulator (← `(
+    certify_ec UnnormalizedPadicRegulator from
+    { equation := curve, padicRegulator := some ⟨7, 1, 0, 8⟩ }
+    with_proofs proofs))
+  expectRegulatorRejected `WrongCenterPadicRegulator (← `(
+    certify_ec WrongCenterPadicRegulator from
+    { equation := curve, padicRegulator := some ⟨7, 20, 0, 2⟩ }
+    with_proofs proofs))
+
 example : Checked.certificate.algebraic.integralYFibers.isSome = true := by rfl
 example : Checked.certificate.algebraic.rank.isSome = true := by rfl
 

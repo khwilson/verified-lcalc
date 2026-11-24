@@ -102,7 +102,7 @@ private theorem sigma3_geometric_bound {q : ℝ} (hq : 0 ≤ q) (hmax : q ≤ 1 
   have hlt : 16 * q < 1 := by linarith
   have hgeom := summable_geometric_of_lt_one (show 0 ≤ 16 * q by positivity) hlt
   have hsum : Summable (fun n : ℕ => (σ 3 (n + 1) : ℝ) * q ^ (n + 1)) :=
-    Summable.of_nonneg_of_le (fun n => mul_nonneg (Nat.cast_nonneg _) (pow_nonneg hq _)) hle 
+    Summable.of_nonneg_of_le (fun n => mul_nonneg (Nat.cast_nonneg _) (pow_nonneg hq _)) hle
       (hgeom.mul_left q)
   have hall : Summable (fun n : ℕ => (σ 3 n : ℝ) * q ^ n) := (summable_nat_add_iff 1).mp hsum
   rw [← hall.sum_add_tsum_nat_add 1]

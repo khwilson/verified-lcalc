@@ -100,7 +100,13 @@ certify_ec Checked from_json_string
   r#"{
     "ainvs":[0,0,1,0,-7],"xcoord_integral_points":[3,3],
     "num_int_pts":2,"rank":0,
-    "regulator":1
+    "regulator":1,
+    "padic_regulator":{"p":7,"prec":20,"val":0,"unit":"1"},
+    "conductor":27,"minimality":[3,3,3,3,3,3,3,3,3],
+    "local_data":{"at_two":null,"at_three":{
+      "r":"0","s":"0","t":"1","starT":"1","cubicRoot":"1",
+      "quadraticRoot":"0","chain":[],"kodaira":"-4"
+    }}
   }"#
   with_proofs proofs
 

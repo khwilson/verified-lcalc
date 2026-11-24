@@ -80,6 +80,8 @@ structure EllipticWitness where
   stableFaltingsHeight : Option DecimalEnclosureClaim := none
   /-- Reported ratio of the largest area in the class to the input area. -/
   faltingsRatio : Option Nat := none
+  /-- A p-adic regulator ball proposed for the supplied equation. -/
+  padicRegulator : Option PadicRegulatorClaim := none
   /-- Reported full real period and optional absolute error radius. -/
   realPeriod : Option DecimalEnclosureClaim := none
   /-- Reported product of finite-place Tamagawa numbers. -/

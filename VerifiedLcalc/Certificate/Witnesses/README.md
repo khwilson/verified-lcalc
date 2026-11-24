@@ -4,7 +4,7 @@ Start with [`EllipticWitness`](EllipticWitness.lean) for input to `certify_ec` a
 
 The index covers **85 distinct column names** across **101 table-qualified columns** in the eight EC/ℚ tables, excluding the database row identifier `id`. Each name appears once. The table column omits the `ec_` prefix. [LMFDB schema for 37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
 
-All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **53 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
+All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **57 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
 
 ## Curve data (`ec_curvedata`)
 
@@ -117,6 +117,18 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `prec` | `padic` | Report | [`PadicRegulatorReport.prec`](Analytic.lean). Absolute precision of the residue. The unit has `prec - val` relative digits. |
 | `unit` | `padic` | Report | [`PadicRegulatorReport.unit`](Analytic.lean). Unit representative of the residue, coprime to the reported prime. |
 | `val` | `padic` | Report | [`PadicRegulatorReport.val`](Analytic.lean). Signed p-adic valuation of the reported nonzero residue. |
+
+Stored class rows supply reports. The curve-level rank-zero display has a
+checked finite-precision representation using the same four coordinates.
+
+| Field | Scope | Status | Checked projection |
+| --- | --- | --- | --- |
+| `p` | Rank-zero display | Checked | [`RankZeroPadicRegulatorFact.good`](Analytic.lean) and [`RankZeroPadicRegulatorFact.ordinary`](Analytic.lean) prove smooth ordinary reduction at the prime in the report. |
+| `prec`, `val`, `unit` | Rank-zero display | Checked | [`RankZeroPadicRegulatorFact.contains`](Analytic.lean) proves that the normalized ball contains the curve’s empty height determinant. [`RankZeroPadicRegulatorFact.normalized`](Analytic.lean) bounds the unit representative. |
+
+The fact is available through `certificate.analytic.padicRegulator`.
+Proofs use the specified equation and its actual Mordell–Weil rank.
+The class label supplies catalogue provenance.
 
 ## Torsion growth (`ec_torsion_growth`)
 

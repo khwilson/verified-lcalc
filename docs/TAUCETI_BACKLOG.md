@@ -447,3 +447,23 @@ found the normalized lattice and real-period APIs. The related open PR
 #43196 develops the real-period isogeny formula with Tamagawa and Kummer
 ratios. The complex maximum-to-input lattice index remains a separate target.
 [Reviewed pull request](https://github.com/TauCetiProject/TauCeti/pull/43196)
+
+## TC-21 — normalized p-adic heights and regulators over ℚ
+
+- **Roadmap target:** [LMFDB G3](roadmaps/LMFDB_Q_CERTIFICATION.md#g3--iwasawa-invariants-and-p-adic-regulator).
+  Define the normalized ordinary cyclotomic p-adic height pairing of a rational
+  elliptic curve at a good ordinary prime, with the differential and
+  logarithm normalization explicit. Prove descent modulo torsion, bilinearity
+  and symmetry. Define the regulator as the height matrix determinant on a
+  basis of the free Mordell–Weil quotient and prove independence of that
+  integral basis. Supply a checked evaluator for the pairing and determinant
+  with an absolute-precision error bound, including negative valuations.
+- **Source comparison:** Identify the normalization and the specific curve used
+  for the stored class row. A proposed class-to-curve transfer also needs the
+  relevant change-of-model or isogeny theorem, with its scaling factor.
+  [LMFDB renderer](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/elliptic_curve.py#L775-L792)
+- **Existing interfaces:** TauCeti `e0e414ce` provides Mordell–Weil finite
+  generation and the ordinary trace criterion
+  `WeierstrassCurve.isOrdinary_iff_not_dvd_frobeniusTrace`. Mathlib `31ce06ea`
+  provides `Padic` and `Matrix.det_isEmpty`. At rank zero the determinant is
+  already checked on the actual empty Mordell–Weil index set.

@@ -433,6 +433,12 @@ def decode (j : Json) : Except String EllipticWitness := do
   let faltingsHeight ← decimalEnclosureClaim j "faltings_height"
   let stableFaltingsHeight ← decimalEnclosureClaim j "stable_faltings_height"
   let faltingsRatio ← optionalValue j "faltings_ratio" nonnegativeInteger
+  let padicRegulator ← optionalValue j "padic_regulator" fun row => do
+    return {
+      p := ← nonnegativeInteger (← row.getObjVal? "p")
+      prec := ← integer (← row.getObjVal? "prec")
+      val := ← integer (← row.getObjVal? "val")
+      unit := ← integer (← row.getObjVal? "unit") }
   let realPeriod ← decimalEnclosureClaim j "real_period"
   let tamagawaProduct ← optionalValue j "tamagawa_product" nonnegativeInteger
   let analyticSha ← decimalEnclosureClaim j "sha_an"
@@ -495,6 +501,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     faltingsHeight
     stableFaltingsHeight
     faltingsRatio
+    padicRegulator
     realPeriod
     tamagawaProduct
     analyticSha
