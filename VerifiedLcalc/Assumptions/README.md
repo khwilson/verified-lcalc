@@ -35,7 +35,7 @@ modularity for its canonical analytic realization. The command audits every
 emitted theorem according to its checked component. Finite arithmetic and
 numerical conclusions use only the standard Lean axioms. The designated
 modularity-dependent conclusions may also use `ellipticModularity`.
-Low-rank BSD remains opt-in even when using `certify_ec). The
+Low-rank BSD remains opt-in even when using `certify_ec`. The
 [opt-in verification module](../Verification/LowRankBSD.lean) applies the
 axiom to the explicit realization carried by the conditional analytic proof.
 
