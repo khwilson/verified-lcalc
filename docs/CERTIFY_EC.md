@@ -676,5 +676,9 @@ and `faltings_ratio`. To require a particular rational radius for a decimal,
 include `area_evidence`, `faltings_height_evidence`, or
 `stable_faltings_height_evidence` with an `error` field. The checker compares
 each submitted center and any submitted radius with the attached enclosure.
-A decimal alone stays a report. The checker leaves `faltings_index` as catalogue
+For a submitted value with matching evidence the command emits a theorem
+such as `Name.area` about that report. With the JSON key omitted, a standalone
+proof supplied in the Lean attachment still appears in
+`Name.certificate.periodGeometry`. In that case there is no theorem about a
+catalogue value. A decimal alone stays a report. The checker leaves `faltings_index` as catalogue
 ordering metadata.

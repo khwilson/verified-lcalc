@@ -15,16 +15,34 @@ open Lean Elab Command VerifiedLcalcTests.SquarePeriod
 private noncomputable def square := Square32.certificate.periodGeometry.get (by rfl)
 
 example : |complexPeriodArea (Square32.curve.baseChange ℚ) -
-    (Square32.claimed_area.reported : ℝ)| ≤ 2 :=
-  (square.area.get (by rfl)).within_error
+    (Square32.claimed_area.reported : ℝ)| ≤ 2 := by
+  let f := square.area.get (by rfl)
+  have hc : f.reported = Square32.claimed_area.reported := by decide +kernel
+  have he : f.error.val = (2 : ℚ) := by decide +kernel
+  have h := f.within_error
+  rw [hc, he] at h
+  norm_num at h ⊢
+  exact h
 
 example : |catalogueFaltingsHeight (Square32.curve.baseChange ℚ) -
-    (Square32.claimed_faltings_height.reported : ℝ)| ≤ 1 :=
-  (square.height.get (by rfl)).within_error
+    (Square32.claimed_faltings_height.reported : ℝ)| ≤ 1 := by
+  let f := square.height.get (by rfl)
+  have hc : f.reported = Square32.claimed_faltings_height.reported := by decide +kernel
+  have he : f.error.val = (1 : ℚ) := by decide +kernel
+  have h := f.within_error
+  rw [hc, he] at h
+  norm_num at h ⊢
+  exact h
 
 example : |catalogueStableFaltingsHeight (Square32.curve.baseChange ℚ) -
-    (Square32.claimed_stable_faltings_height.reported : ℝ)| ≤ 1 :=
-  (square.stableHeight.get (by rfl)).within_error
+    (Square32.claimed_stable_faltings_height.reported : ℝ)| ≤ 1 := by
+  let f := square.stableHeight.get (by rfl)
+  have hc : f.reported = Square32.claimed_stable_faltings_height.reported := by decide +kernel
+  have he : f.error.val = (1 : ℚ) := by decide +kernel
+  have h := f.within_error
+  rw [hc, he] at h
+  norm_num at h ⊢
+  exact h
 
 example : Square32.certificate.periodGeometry.bind PeriodGeometryFacts.ratio = none := rfl
 
@@ -57,6 +75,17 @@ certify_ec ReportsOnly from ({
   faltingsRatio := some 1 } : EllipticWitness)
 
 example : ReportsOnly.certificate.periodGeometry = none := rfl
+
+certify_ec LeanAreaOnly from { equation := squareCurve } with_proofs squareProofs
+
+example : LeanAreaOnly.witness.area = none := rfl
+example : (LeanAreaOnly.certificate.periodGeometry.bind PeriodGeometryFacts.area).isSome = true :=
+  rfl
+
+run_cmd do
+  for suffix in [`area, `faltings_height, `stable_faltings_height] do
+    if (← getEnv).contains (`LeanAreaOnly ++ suffix) then
+      throwError "A proof attachment emitted a match to an absent report: {suffix}"
 
 private meta def rejectPeriod (base : Name) (cmd : Syntax)
     (label : String) : CommandElabM Unit := do

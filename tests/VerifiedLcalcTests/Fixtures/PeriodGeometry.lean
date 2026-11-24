@@ -29,7 +29,7 @@ def ratio (h : Exhaustive) : FaltingsRatioFact source where
   isMaximum _ := le_rfl
   ratio := ⟨1, by decide⟩
   area_eq := by
-    simp only [model, Subtype.val, Nat.cast_one, one_mul]
+    simp only [model, Nat.cast_one, one_mul]
 
 /-- Proof attachment with no numerical enclosures, for the exact ratio path. -/
 def attachment (h : Exhaustive) : IntegralCurveProofs source :=
