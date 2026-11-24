@@ -2,6 +2,8 @@ import VerifiedLcalcTests.Fixtures.SerreInvariants
 import VerifiedLcalc.Certificate.SerreInvariants
 import Lean
 
+/-! # Imported semistable Serre invariants and conductor identity -/
+
 open Lean Elab Command
 open VerifiedLcalc VerifiedLcalcTests.SerreInvariants NumberField WeierstrassCurve
 

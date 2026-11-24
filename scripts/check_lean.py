@@ -30,6 +30,7 @@ AUDITS = (
     "tests/consumers/CremonaLabels.lean",
     "tests/consumers/PeriodGeometry.lean",
     "tests/consumers/IntrinsicTorsionFaltingsIndex.lean",
+    "tests/consumers/ModularParametrization.lean",
     "tests/consumers/GaloisImage.lean",
     "tests/consumers/SerreInvariants.lean",
     "tests/consumers/Geometry.lean",

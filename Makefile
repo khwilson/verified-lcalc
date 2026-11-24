@@ -42,6 +42,7 @@ test-certificates: certificates
 	lake -f lakefile.certificates.lean env lean tests/consumers/Geometry.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/PeriodGeometry.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/IntrinsicTorsionFaltingsIndex.lean
+	lake -f lakefile.certificates.lean env lean tests/consumers/ModularParametrization.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/ExtensionData.lean
 	lake -f lakefile.certificates.lean env lean tests/consumers/SpecialValueContract.lean
 

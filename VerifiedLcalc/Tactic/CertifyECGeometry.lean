@@ -140,6 +140,58 @@ private def certifyFaltingsIndex (base : Name) (curve : Ident) (attachment : Opt
     checked (base ++ `faltings_index) (← `(($fact).index = $value))
       (← `(by first | rfl | decide +kernel))
 
+private def certifyModularParametrization (base : Name) (curve : Ident)
+    (attachment : Option Ident) : CommandElabM Unit := do
+  let degree ← bindStored base `modularDegree `degree (← `(ℕ))
+  let manin ← bindStored base `maninConstant `manin_constant (← `(ℕ))
+  let optimality ← bindStored base `optimality `optimality (← `(ℕ))
+  let some supplied ← attachedFact attachment `modularParametrization |
+    if degree.isSome || manin.isSome || optimality.isSome then
+      logInfo m!"Unverified {base} modular parametrization: supply the minimum modular map"
+    return
+  let evidenceName := base ++ `modular_parametrization_evidence
+  let evidence := rootIdent evidenceName
+  emit (← `(noncomputable def $evidence : ModularParametrizationFacts $curve := $supplied))
+  auditAxioms evidenceName
+  let degreeMatch ← if let some report := degree then do
+    let name := base ++ `modular_degree
+    checked name
+      (← `(($evidence).degree.val = $report))
+      (← `(by first | rfl | decide +kernel))
+    let proof := rootIdent name
+    `(some ⟨$report, $proof⟩)
+  else `(none)
+  let maninMatch ← if let some report := manin then do
+    let name := base ++ `manin_constant
+    checked name (← `(($evidence).maninConstant.val = $report))
+      (← `(by first | rfl | decide +kernel))
+    let proof := rootIdent name
+    `(some ⟨$report, $proof⟩)
+  else `(none)
+  let optimalityMatch ← if let some report := optimality then do
+    if !(← hasOptionalProof (← `(if $report ≤ 1 then some () else none)) `optimality) then
+      logInfo m!"Unverified {base} optimality: the producer reports an ambiguous candidate set"
+      `(none)
+    else if !(← hasOptionalProof (← `(($evidence).optimal)) `optimality) then
+      logInfo m!"Unverified {base} optimality: supply the full period image comparison"
+      `(none)
+    else
+      let name := base ++ `optimality
+      checked name
+        (← `(∃ status, ($evidence).optimal = some status ∧
+          Modularity.optimalityStatusCode status.val = $report))
+        (← `(by
+          refine ⟨_, rfl, ?_⟩
+          rfl))
+      let proof := rootIdent name
+      `(some ⟨$report, $proof⟩)
+  else `(none)
+  let name := base ++ `modular_parametrization_fact
+  let result := rootIdent name
+  emit (← `(noncomputable def $result : CertifiedModularParametrization $curve :=
+    ⟨$evidence, $degreeMatch, $maninMatch, $optimalityMatch⟩))
+  auditAxioms name
+
 /-- Check geometric, period and Faltings claims against the shared proof attachment
 and verify any modified Szpiro enclosure with an explicit radius. -/
 def certifyGeometryFacts (base : Name) (attachment : Option Ident) : CommandElabM Unit := do
@@ -149,5 +201,6 @@ def certifyGeometryFacts (base : Name) (attachment : Option Ident) : CommandElab
   certifyModifiedSzpiroRatio base curve attachment
   certifyPeriodGeometry base curve attachment
   certifyFaltingsIndex base curve attachment
+  certifyModularParametrization base curve attachment
 
 end VerifiedLcalc.CertifyEC
