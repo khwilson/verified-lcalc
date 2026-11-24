@@ -159,6 +159,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   modulusImages :
     letI := Classical.decEq (AlgebraicClosure ℚ)
     Option (ModulusImageListFact curve) := none
+  /-- Complete exceptional triples under the semistable Serre recipe. -/
+  serreInvariants : Option (SemistableSerreRecipeFact curve) := none
   /-- Checked identification of the geometric endomorphism ring. -/
   complexMultiplication : Option (ComplexMultiplicationFacts curve) := none
   /-- Checked minimum-conductor twist and its globally minimal integral equation. -/

@@ -32,6 +32,7 @@ AUDITS = (
     "tests/consumers/IntrinsicTorsionFaltingsIndex.lean",
     "tests/consumers/ModularParametrization.lean",
     "tests/consumers/GaloisImage.lean",
+    "tests/consumers/SerreInvariants.lean",
     "tests/consumers/Geometry.lean",
     "tests/consumers/SecondMellinDerivative.lean",
     "tests/consumers/Additive.lean",

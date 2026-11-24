@@ -737,3 +737,21 @@ accepts a verified sublist of the finite report. The pinned interfaces are
 `Subgroup.comap` and `MulAut.conj`.
 [RSZB labeling and generation](https://doi.org/10.1017/fms.2022.38)
 · [Candidate upstream level API](https://github.com/TauCetiProject/TauCeti/pull/45304)
+
+## TC-31 — intrinsic residual Serre invariants
+
+For the nonsemisimplified geometric torsion representation of a rational
+elliptic curve, define the prime-to-residual-characteristic Artin conductor
+using inertia and the higher ramification filtration on the representation.
+Define Serre's weight from the residual representation at the residue
+characteristic, including the dyadic exceptional convention. Prove Serre's
+good and multiplicative reduction formulas for a minimal semistable model
+with good reduction at two, using finite flatness in the good case and
+the Tate extension class in the multiplicative case. The arithmetic
+enumeration is `VerifiedLcalc.mem_semistableSerreInvariants_iff`.
+The pinned Artin conductor construction is for multiplicative characters.
+The pinned `Nat.factorization` and `Nat.mem_primeFactors` provide the
+arithmetic indexing.
+[Serre, Proposition 5 and §§4.1.11–12](https://doi.org/10.1215/S0012-7094-87-05413-5)
+· [Pinned ramification infrastructure](https://github.com/TauCetiProject/TauCeti/tree/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/NumberTheory/LocalField/Herbrand)
+· [Pinned factorization](https://github.com/leanprover-community/mathlib4/blob/31ce06eaadf4a200c0e1407c5f10953cf606b8f8/Mathlib/Data/Nat/Factorization/Defs.lean)

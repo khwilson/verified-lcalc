@@ -375,6 +375,12 @@ def decode (j : Json) : Except String EllipticWitness := do
     (← array value 256).toList.mapM Json.getStr?
   let modulusImages ← optionalValue j "modm_images" fun value => do
     (← array value 256).toList.mapM Json.getStr?
+  let serreInvariants ← optionalValue j "serre_invariants" fun value => do
+    (← array value 256).toList.mapM fun row => do
+      let triple ← array row 3
+      unless triple.size == 3 do throw "Expected a Serre prime/weight/conductor triple"
+      return (← nonnegativeInteger triple[0]!, ← nonnegativeInteger triple[1]!,
+        ← nonnegativeInteger triple[2]!)
   let catalogueAnalyticRank ← optionalValue j "analytic_rank" nonnegativeInteger
   let mut primeCoefficients : Array (Nat × Int) := #[]
   if let some rows := optionalData j "ap" then
@@ -548,6 +554,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     padicImage
     padicImages
     modulusImages
+    serreInvariants
     bInvariants
     cInvariants
     discriminant
