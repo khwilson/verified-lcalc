@@ -40,7 +40,9 @@ example : faltingsPrecedes (fun _ : Fin 3 => (2 : ℝ)) 0 1 ∧
     ¬ faltingsPrecedes (fun _ : Fin 3 => (2 : ℝ)) 1 0 := by
   simp [faltingsPrecedes]
 
-certify_ec Bare from ({ equation := source, intrinsicTorsion := some 1,
+certify_ec Bare from ({
+  equation := source
+  intrinsicTorsion := some 1
   faltingsIndex := some 0 } : EllipticWitness)
 
 example : Bare.certificate.intrinsicTorsion = none ∧ Bare.certificate.faltingsIndex = none :=
