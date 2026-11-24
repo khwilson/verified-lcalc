@@ -321,9 +321,9 @@ def certifyJson (name : Name) (text : String)
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
         ["torsion_growth", "heights", "heights_evidence", "regulator", "regulator_evidence",
           "padic_regulator", "real_period", "real_period_evidence", "tamagawa_product",
-          "sha_an", "sha_an_evidence", "sha", "sha_primes", "area", "area_evidence", "faltings_height",
-          "faltings_height_evidence", "stable_faltings_height", "stable_faltings_height_evidence",
-          "faltings_ratio"] ++
+          "sha_an", "sha_an_evidence", "sha", "sha_primes", "area", "area_evidence",
+          "faltings_height", "faltings_height_evidence", "stable_faltings_height",
+          "stable_faltings_height_evidence", "faltings_ratio"] ++
         algebraicKeys ++ localKeys ++
           if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
               (CurveDataJson.optionalData j "adelic_gens").isSome then ["prime"] else []

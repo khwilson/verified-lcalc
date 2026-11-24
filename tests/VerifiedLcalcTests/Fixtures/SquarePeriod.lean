@@ -92,13 +92,16 @@ private theorem sigma3_pow (n : ℕ) : (σ 3 (n + 1) : ℝ) ≤ 16 ^ n := by
       norm_num
 
 set_option maxHeartbeats 700000 in
+-- Comparing the shifted divisor series with a geometric series requires extra elaboration.
 private theorem sigma3_geometric_bound {q : ℝ} (hq : 0 ≤ q) (hmax : q ≤ 1 / 500) :
     (∑' n : ℕ, (σ 3 n : ℝ) * q ^ n) ≤ 1 / 484 := by
   have hle : ∀ n : ℕ, (σ 3 (n + 1) : ℝ) * q ^ (n + 1) ≤ q * (16 * q) ^ n := by
     intro n
     calc
       _ ≤ 16 ^ n * q ^ (n + 1) := mul_le_mul_of_nonneg_right (sigma3_pow n) (by positivity)
-      _ = _ := by rw [mul_pow, pow_succ]; ring
+      _ = _ := by
+        rw [mul_pow, pow_succ]
+        ring
   have hlt : 16 * q < 1 := by linarith
   have hgeom := summable_geometric_of_lt_one (show 0 ≤ 16 * q by positivity) hlt
   have hsum : Summable (fun n : ℕ => (σ 3 (n + 1) : ℝ) * q ^ (n + 1)) :=
@@ -130,7 +133,9 @@ private theorem E4_I_size : ∃ e : ℝ, ModularForm.E₄ UpperHalfPlane.I = (e 
   let q := Real.exp (-(2 * Real.pi))
   have hq : 0 ≤ q := (Real.exp_pos _).le
   have hmax : q ≤ 1 / 500 := exp_neg_bound
-  have hn : ‖q‖ < 1 := by rw [Real.norm_of_nonneg hq]; linarith
+  have hn : ‖q‖ < 1 := by
+    rw [Real.norm_of_nonneg hq]
+    linarith
   let s := TauCeti.divisorSumAt 3 q
   have slo : 0 ≤ s := by
     simp only [s, TauCeti.divisorSumAt_def, Int.cast_natCast]
@@ -154,12 +159,16 @@ private theorem area_bounds_of_sq (a : ℝ) (hn : 0 ≤ a)
     (h : a ^ 2 = ‖UpperHalfPlane.I.periodPair.g₂ / 4‖) : 5.6 ≤ a ∧ a ≤ 7.1 := by
   obtain ⟨e,he,elo,ehi⟩ := E4_I_size
   rw [UpperHalfPlane.g₂_periodPair, he] at h
-  have hc : 4 * (Real.pi : ℂ)^4 / 3 * (e : ℂ) / 4 = ((Real.pi ^ 4 / 3 * e : ℝ) : ℂ) := by
+  have hc : 4 * (Real.pi : ℂ) ^ 4 / 3 * (e : ℂ) / 4 = ((Real.pi ^ 4 / 3 * e : ℝ) : ℂ) := by
     push_cast
     ring
   rw [hc, Complex.norm_real, Real.norm_of_nonneg (by positivity)] at h
-  have lo : 3.14 ^ 4 * (1:ℝ) ≤ Real.pi ^ 4 * e := by gcongr; exact Real.pi_gt_d2.le
-  have hi : Real.pi ^ 4 * e ≤ 3.15 ^ 4 * (3 / 2:ℝ) := by gcongr; linarith [Real.pi_lt_d2]
+  have lo : 3.14 ^ 4 * (1 : ℝ) ≤ Real.pi ^ 4 * e := by
+    gcongr
+    exact Real.pi_gt_d2.le
+  have hi : Real.pi ^ 4 * e ≤ 3.15 ^ 4 * (3 / 2 : ℝ) := by
+    gcongr
+    linarith [Real.pi_lt_d2]
   constructor <;> nlinarith
 
 /-- The square period lattice gives a coarse rigorous area interval for 32.a3. -/
