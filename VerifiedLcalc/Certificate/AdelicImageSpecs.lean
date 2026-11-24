@@ -92,4 +92,10 @@ def formatPartialAdelicImage (level index genus : ℕ) : String :=
   String.ofList (Nat.toDigits 10 level ++ ['.'] ++ Nat.toDigits 10 index ++
     ['.'] ++ Nat.toDigits 10 genus ++ ['.', '?'])
 
+/-- A partial catalogue label requires all three numerical invariant values. -/
+def formatPartialAdelicImageOf (level index genus : Option ℕ) : Option String :=
+  match level, index, genus with
+  | some n, some i, some g => some (formatPartialAdelicImage n i g)
+  | _, _, _ => none
+
 end VerifiedLcalc

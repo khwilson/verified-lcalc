@@ -21,12 +21,16 @@ def kodairaIIndex (code : Int) : Option Nat :=
   else if 5 ≤ code then some (code - 4).toNat
   else none
 
-/-- The canonical Tate symbol is the claimed `Iₙ`, or lies outside that family
-when the code represents additive reduction. -/
-def KodairaCodeSpec (W : WeierstrassCurve ℚ) [W.IsElliptic] (p : Nat)
-    [Fact p.Prime] (code : Int) : Prop :=
-  match kodairaIIndex code with
+/-- The exact `Iₙ` index, or exclusion of every `Iₙ` in the additive case. -/
+def KodairaIndexSpec (W : WeierstrassCurve ℚ) [W.IsElliptic] (p : Nat)
+    [Fact p.Prime] (index : Option Nat) : Prop :=
+  match index with
   | some n => W.reductionSymbol (RationalLocalRing p) = .I n
   | none => ∀ n, W.reductionSymbol (RationalLocalRing p) ≠ .I n
+
+/-- Interpret the multiplicative-family part of a PARI Kodaira code. -/
+def KodairaCodeSpec (W : WeierstrassCurve ℚ) [W.IsElliptic] (p : Nat)
+    [Fact p.Prime] (code : Int) : Prop :=
+  KodairaIndexSpec W p (kodairaIIndex code)
 
 end VerifiedLcalc.EllipticCurve

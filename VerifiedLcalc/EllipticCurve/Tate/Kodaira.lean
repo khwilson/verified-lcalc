@@ -73,7 +73,7 @@ theorem checkKodairaCode_correct (e : WeierstrassCurve ℤ) (p : Nat) [Fact p.Pr
     simp only [WeierstrassCurve.baseChange, map_Δ, map_c₄, eq_intCast,
       ZMod.intCast_zmod_eq_zero_iff_dvd]
   have hf := (beq_iff_eq.mp (Bool.and_eq_true_iff.mp h).2)
-  unfold KodairaCodeSpec
+  unfold KodairaCodeSpec KodairaIndexSpec
   by_cases hadd : modelReduction e p = .additive
   · rw [ite_eq_left hadd] at hf
     rw [hf]

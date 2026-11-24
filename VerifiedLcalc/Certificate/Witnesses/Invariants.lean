@@ -5,6 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
+public import VerifiedLcalc.Certificate.InvariantSpecs
 public import VerifiedLcalc.Certificate.Witnesses.InputData
 public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
 public import TauCeti.AlgebraicGeometry.EllipticCurve.AbcQuality
@@ -63,10 +64,7 @@ structure AbcQualityFacts (curve : WeierstrassCurve ℤ)
   /-- The domain condition for TauCeti's abc quality. -/
   defined : (curve.baseChange ℚ).j ≠ 0 ∧ (curve.baseChange ℚ).j ≠ 1728
   /-- The supplied factors multiply to the reduced abc product of `j / 1728`. -/
-  factorization :
-    let t := (curve.baseChange ℚ).j / 1728
-    let c : ℤ := t.den
-    claim.factors.prod = (t.num * (c - t.num) * c).natAbs
+  factorization : claim.factors.prod = Certification.abcProduct (curve.baseChange ℚ).j
   /-- Every supplied factor is prime. -/
   primeFactors : ∀ p ∈ claim.factors, p.Prime
   /-- The actual TauCeti quality lies within the claimed absolute error. -/
@@ -116,7 +114,7 @@ structure ModifiedSzpiroRatioFacts (curve : WeierstrassCurve ℤ)
   /-- The logarithmic ratio of the larger minimal c-invariant power to the conductor
   lies within the stated error of the report. -/
   within_error :
-    |Real.log (max (curve.c₄.natAbs ^ 3) (curve.c₆.natAbs ^ 2) : ℕ) /
+    |Real.log (Certification.modifiedSzpiroNumerator curve) /
       Real.log conductor - (reported : ℝ)| ≤ (error : ℝ)
 
 /-- Arithmetic facts conditional on an explicit modular realization of the curve. -/
