@@ -50,6 +50,12 @@ structure EllipticWitness where
   lmfdbIso : Option String := none
   /-- Reported conductor, isogeny class code, and curve number. -/
   lmfdbLabel : Option String := none
+  /-- Reported Cremona isogeny class identifier. -/
+  cremonaIso : Option String := none
+  /-- Reported full Cremona curve label. -/
+  cremonaLabel : Option String := none
+  /-- Reported number of the curve in its Cremona class. -/
+  cremonaNumber : Option Nat := none
   /-- The reported complete exceptional-prime list. -/
   nonmaxPrimes : Option (List Nat) := none
   /-- The reported product of the exceptional primes. -/

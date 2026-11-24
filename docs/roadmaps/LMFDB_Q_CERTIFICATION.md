@@ -42,7 +42,8 @@ the source schema before creating a witness.
 | `ec_iwasawa.iwdata, iwp0` | Prime-indexed ordinary/multiplicative $(\lambda,\mu)$ or supersingular $(\lambda^+,\lambda^-,\mu)$ data, with explicit missing/additive codes. A positive `iwp0` asserts vanishing of all these analytic invariants for good primes at or above that threshold. G3. |
 | `ec_padic.p, prec, unit, val` | Stored positive-rank class rows specify a p-adic ball for the producer’s curve. The same coordinates encode the checked curve-level rank-zero display. G3. |
 | `ec_curvedata.lmfdb_number, iso_nlabel, lmfdb_iso, lmfdb_label` and related copies | The math-derived curve and class indices and their encodings can be checked with the required complete ordered classes and rational maps. [TC-23](../TAUCETI_BACKLOG.md#tc-23--certified-conductor-rosters-and-catalogue-ordering). |
-| Across tables `id, Ciso, Clabel, Cnumber, trace_hash` | Identifiers, joins, orderings, and fingerprints. A mathematical class or curve identification requires actual rational maps. |
+| `ec_curvedata.Ciso, Clabel, Cnumber` | Exact Cremona indices and labels in the supported singleton orderings for conductors up to 500000. Historical orders of larger indexing sets remain open. [TC-27](../TAUCETI_BACKLOG.md#tc-27--historical-cremona-ordering). |
+| Across tables `id, trace_hash` | Identifiers, joins, and fingerprints. A mathematical class or curve identification requires actual rational maps. |
 
 Derived displays such as equation invariants, local Euler polynomials, the sign
 product including the real place, analytic Sha factors, and associations with
@@ -393,9 +394,10 @@ were designed against Mathlib `31ce06ea` and TauCeti `e0e414ce`.
 | A3 | TauCeti’s full real period, regulator and Tamagawa product, Mathlib’s torsion subgroup, and the leading coefficient for an explicit realization. | Enclose all factors in the analytic BSD quotient and justify rounding. The algebraic cardinality requires the independent descent and finiteness proof described above. |
 | G1 and G3 | TauCeti’s `torsionGaloisAction` and `tateModuleGaloisRepresentation`, with a supplied basis. The p-adic reports retain source precision and signed Iwasawa branches. | Prove CM implies integral j for elliptic curves over ℚ. For geometrically non-CM curves over ℚ, prove effective exceptional-support bounds and criteria lifting finite image computations to exact local images. Identify subgroup labels up to conjugacy and prove the simultaneous adelic lift, level, genus, CM maximality and Serre data. TauCeti PR [#45304](https://github.com/TauCetiProject/TauCeti/pull/45304) supplies candidate profinite matrix and level infrastructure. Construct the normalized p-adic height determinant and ordinary or signed p-adic L-series, including proofs of the large-prime threshold. |
 
-Catalogue labels and trace hashes live in a provenance record. Checking a snapshot’s labels and
-ordering belongs in the importer. A claim of mathematical identity needs an isomorphism or an
-isogeny as appropriate.
+The importer can check snapshot provenance. The certificate's checked
+catalogue indices and arithmetic fingerprints use the mathematical evidence
+above. A claim of mathematical identity needs an isomorphism or an isogeny
+as appropriate.
 
 ## Implementation order
 
