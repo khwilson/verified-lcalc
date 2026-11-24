@@ -13,6 +13,7 @@ public import VerifiedLcalcTests.Fixtures.ExtensionData
 public import VerifiedLcalcTests.Fixtures.IsogenyClass
 public import VerifiedLcalcTests.Fixtures.IntrinsicTorsionFaltingsIndex
 public import VerifiedLcalcTests.Fixtures.ModularParametrization
+public import VerifiedLcalcTests.Fixtures.Iwasawa
 public import VerifiedLcalcTests.Fixtures.LmfdbCatalogue
 public import VerifiedLcalcTests.Fixtures.TraceHash
 public import VerifiedLcalcTests.Fixtures.StoredPadicRegulator
@@ -20,6 +21,7 @@ public import VerifiedLcalcTests.Fixtures.CremonaLabels
 public import VerifiedLcalcTests.Fixtures.PeriodGeometry
 public import VerifiedLcalcTests.Fixtures.SquarePeriod
 public import VerifiedLcalcTests.Fixtures.GaloisImage
+public import VerifiedLcalcTests.Fixtures.SerreInvariants
 public import VerifiedLcalcTests.Fixtures.Curve11Arithmetic
 public import VerifiedLcalcTests.Fixtures.Curve11Central
 public import VerifiedLcalcTests.Fixtures.Curve27a3

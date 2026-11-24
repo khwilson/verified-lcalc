@@ -1,5 +1,8 @@
 import VerifiedLcalc.Verification.DerivativeCertification
 
+/-! # First derivative certificate axiom dependencies -/
+
+-- This audit intentionally uses `#print axioms` to check proof dependencies.
 set_option linter.hashCommand false
 
 /-- info: 'VerifiedLcalc.Numerics.intervalMul_sound' depends on axioms: [propext, Classical.choice, Quot.sound] -/
@@ -45,4 +48,3 @@ set_option linter.hashCommand false
 /-- info: 'VerifiedLcalc.Certification.certifyDerivativeModel' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity] -/
 #guard_msgs (whitespace := lax) in
 #print axioms VerifiedLcalc.Certification.certifyDerivativeModel
-

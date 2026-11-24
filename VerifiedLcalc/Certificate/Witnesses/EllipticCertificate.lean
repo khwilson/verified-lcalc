@@ -59,6 +59,18 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   modPrimeImages :
     letI := Classical.decEq (AlgebraicClosure ℚ)
     Option (ModPrimeImageListFact curve) := none
+  /-- Exact comparison with the submitted prime-adic row. -/
+  padicImage :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (PadicImageLabelFact curve) := none
+  /-- Exact comparisons for the submitted list of prime-adic labels. -/
+  padicImages :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (PadicImageListFact curve) := none
+  /-- Verified entries of the source list of modular-curve labels for finite images. -/
+  modulusImages :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (ModulusImageListFact curve) := none
   /-- Proof identifying the geometric endomorphism ring. -/
   complexMultiplication : Option (ComplexMultiplicationFacts curve) := none
   /-- Proof of a globally minimal integral model of a minimum-conductor quadratic twist. -/
@@ -76,6 +88,8 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   modularParametrization : Option (ModularParametrizationFacts curve) := none
   /-- Proved complex period area, Faltings heights and class-relative area ratio. -/
   periodGeometry : Option (PeriodGeometryFacts curve) := none
+  /-- Normalized cyclotomic interpolation and optional Iwasawa threshold evidence. -/
+  iwasawa : Option (IwasawaFacts curve) := none
   /-- Proved enclosure for the full minimal real period. -/
   realPeriod : Option (RealPeriodFact curve) := none
   /-- Proved product of all intrinsic finite-place Tamagawa numbers. -/
@@ -135,6 +149,20 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   modPrimeImages :
     letI := Classical.decEq (AlgebraicClosure ℚ)
     Option (ModPrimeImageListFact curve) := none
+  /-- The checked exact prime-adic image for the source row. -/
+  padicImage :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (PadicImageLabelFact curve) := none
+  /-- The checked source prime-adic labels and optional exceptional-prime coverage. -/
+  padicImages :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (PadicImageListFact curve) := none
+  /-- The verified sublist of modular-curve labels for finite images. -/
+  modulusImages :
+    letI := Classical.decEq (AlgebraicClosure ℚ)
+    Option (ModulusImageListFact curve) := none
+  /-- Complete exceptional triples under the semistable Serre recipe. -/
+  serreInvariants : Option (SemistableSerreRecipeFact curve) := none
   /-- Checked identification of the geometric endomorphism ring. -/
   complexMultiplication : Option (ComplexMultiplicationFacts curve) := none
   /-- Checked minimum-conductor twist and its globally minimal integral equation. -/
@@ -147,6 +175,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   modularParametrization : Option (CertifiedModularParametrization curve) := none
   /-- Checked complex period area, Faltings heights and class-relative area ratio. -/
   periodGeometry : Option (PeriodGeometryFacts curve) := none
+  /-- Checked Iwasawa rows and threshold, with the normalized modular-symbol model. -/
+  iwasawa : Option (IwasawaFacts curve) := none
   /-- Checked full real period enclosure. -/
   realPeriod : Option (RealPeriodFact curve) := none
   /-- Checked product of the intrinsic finite-place Tamagawa numbers. -/

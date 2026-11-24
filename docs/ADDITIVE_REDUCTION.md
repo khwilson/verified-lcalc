@@ -43,9 +43,11 @@ These proofs require no modularity axiom. `ReductionExamples.lean` also checks
 that the stronger criterion is necessary for 32.a4, rejects a scaled equation,
 and proves the actual coefficient a_4=0 for 32.a4.
 
-## Reproduce and cache
+## Historical reproduction and cache
 
-Run:
+These producer and audit commands refer to the `fcdc4f2` baseline. In the
+current checkout, `make test-lean` builds and runs the
+[compiled additive consumer](../tests/consumers/Additive.lean).
 
 ```sh
 lake exe additive-witnesses --check

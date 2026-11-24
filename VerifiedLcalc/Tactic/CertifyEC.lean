@@ -52,6 +52,8 @@ The Galois fields `nonmax_primes` and `nonmax_rad` use complete non-CM
 simultaneous all-prime image in `IntegralCurveProofs.adelicImage`.
 The residual fields `modell_image` and `modell_images` use the corresponding
 `modPrimeImage` and `modPrimeImages` evidence for exact Sutherland conjugacy classes.
+On globally minimal semistable equations with good reduction at two,
+`serre_invariants` checks the complete exceptional list in Serre's local formula.
 Prerequisite-dependent claims without the required evidence are reported as unverified. See
 `docs/LMFDB_INVARIANTS.md` for the exact mathematical outputs and trust boundary.
 JSON can supply `ainvs`, `ap` or `aplist`, and `integral_points` or
@@ -331,7 +333,9 @@ def certifyJson (name : Name) (text : String)
         "bad_primes", "num_bad_primes", "semistable", "squarefree_disc", "local_invariants",
         "num_int_pts", "class_size", "class_deg", "isogeny_matrix", "isogeny_degrees",
         "nonmax_primes", "nonmax_rad", "adelic_gens", "modell_image", "modell_images",
+        "serre_invariants",
         "adelic_level", "adelic_index", "adelic_genus", "adelic_image",
+        "elladic_image", "elladic_images", "modm_images",
         "lmfdb_number", "iso_nlabel", "lmfdb_iso", "lmfdb_label",
         "Ciso", "Clabel", "Cnumber", "trace_hash",
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
@@ -340,14 +344,15 @@ def certifyJson (name : Name) (text : String)
           "sha_an", "sha_an_evidence", "sha", "sha_primes", "area", "area_evidence",
           "faltings_height", "faltings_height_evidence", "stable_faltings_height",
           "stable_faltings_height_evidence", "faltings_ratio", "faltings_index",
-          "degree", "manin_constant", "optimality"] ++
+          "degree", "manin_constant", "optimality", "iwdata", "iwp0"] ++
         algebraicKeys ++ localKeys ++
         (if CurveDataJson.hasFlatStoredPadicRegulator j then
           ["p", "prec", "val", "unit"] else []) ++
           if localKeys.any (fun key => (CurveDataJson.optionalData j key).isSome) ||
               (CurveDataJson.optionalData j "adelic_gens").isSome ||
               (CurveDataJson.optionalData j "modell_image").isSome ||
-              (CurveDataJson.optionalData j "adelic_image").isSome then ["prime"] else []
+              (CurveDataJson.optionalData j "adelic_image").isSome ||
+              (CurveDataJson.optionalData j "elladic_image").isSome then ["prime"] else []
       let checkedAbcQuality := (← getEnv).contains (base ++ `abc_quality)
       let checkedCM := (← getEnv).contains (base ++ `cm)
       let checkedTwistEquation := (← getEnv).contains (base ++ `min_quad_twist_ainvs)

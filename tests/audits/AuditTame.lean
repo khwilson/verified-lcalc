@@ -1,7 +1,12 @@
 import VerifiedLcalc.Verification.TameCertification
 import VerifiedLcalc.Verification.TameNegativeSign
-open VerifiedLcalc.EllipticCurve VerifiedLcalc.Modularity VerifiedLcalc.Certification
+
+/-! # Tame reduction axiom dependencies -/
+
+-- This audit intentionally uses `#print axioms` to check proof dependencies.
 set_option linter.hashCommand false
+
+open VerifiedLcalc.EllipticCurve VerifiedLcalc.Modularity VerifiedLcalc.Certification
 set_option linter.style.setOption false
 set_option pp.fullNames true
 /-- info: 'VerifiedLcalc.EllipticCurve.tameAdditiveRoot_correct' depends on axioms: [propext, Classical.choice, Quot.sound] -/

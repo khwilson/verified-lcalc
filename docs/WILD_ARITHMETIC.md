@@ -99,7 +99,7 @@ subjects and source hashes and rebuilds the full theorem dependency graph.
 
 `WildExamples.lean` includes residue characteristics 2, 3 and both together,
 and checks rejection of a wrong Kodaira code, a shortened I_n* chain,
-unsupported primes, and singular equations. `AuditWild.lean` guards the
+unsupported primes, and singular equations. `tests/audits/AuditWild.lean` guards the
 arithmetic-versus-conditional theorem dependency boundary.
 
 ## TauCeti check

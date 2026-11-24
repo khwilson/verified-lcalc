@@ -67,7 +67,7 @@ modular realization, or evaluate derivatives. Those remain explicit limits.
 
 `ArithmeticExamples.lean` checks an actual coefficient at a bad characteristic-
 two prime (14.a4, a_4=1), and a good characteristic-two prime with small trace
-(17.a2, a_4=-1). Neither example depends on modularity. `AuditArithmetic.lean`
+(17.a2, a_4=-1). Neither example depends on modularity. `tests/audits/AuditArithmetic.lean`
 guards the new arithmetic dependency boundary. Existing integration and
 conditional audits check the analytic/certificate boundaries separately.
 
