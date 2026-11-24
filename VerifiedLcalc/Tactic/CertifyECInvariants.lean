@@ -135,7 +135,11 @@ private def certifySerreInvariants (base : Name) (curve : Ident)
     semistable := (semistable_iff_coprime_of_isGlobalMinimal $curve $global).2 (by decide +kernel)
     goodAtTwo := by decide +kernel
     rows := $report
-    exactRows := by with_unfolding_all rfl))
+    exactRows := by
+      cbv
+      first
+      | simp <;> cbv <;> simp <;> done
+      | simp [List.orderedInsert_cons] <;> cbv <;> simp <;> done))
   auditAxioms (base ++ `serre_invariants_fact)
   checked (base ++ `serre_invariants)
     (← `(∀ p k n : ℕ, (p, k, n) ∈ $report ↔
