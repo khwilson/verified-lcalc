@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 
 public import VerifiedLcalc.Certificate.Numerical.Intervals
@@ -10,12 +15,16 @@ public import VerifiedLcalc.Upstream.LedvinkaExponentialCore
 namespace VerifiedLcalc.Numerics
 open Inclusion.IntervalDyadicReal
 
-/-- Outward rounding for a real argument between two exact rational endpoints.
-Floor the lower endpoint and negate the floor of the negated upper endpoint. -/
-def rationalExpBounds (lo hi : Rat) (prec : Nat) : Rat × Rat :=
+/-- Outward dyadic bounds for the exponential on an interval with rational endpoints.
+Floor the lower argument and negate the floor of the negated upper argument. -/
+def rationalExpDyadicBounds (lo hi : Rat) (prec : Nat) : Dyadic × Dyadic :=
   let lower := lo.toDyadic prec
   let upper := -((-hi).toDyadic prec)
-  ((expBounds lower prec).1.toRat, (expBounds upper prec).2.toRat)
+  ((expBounds lower prec).1, (expBounds upper prec).2)
+
+/-- Rational endpoints of the outward dyadic enclosure of the exponential. -/
+def rationalExpBounds (lo hi : Rat) (prec : Nat) : Rat × Rat :=
+  Prod.map Dyadic.toRat Dyadic.toRat (rationalExpDyadicBounds lo hi prec)
 
 /-- Exact data for a rational multiple of an exponential term. -/
 structure RationalExpTerm where

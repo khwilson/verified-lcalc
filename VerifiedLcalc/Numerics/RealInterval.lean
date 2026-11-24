@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 public import VerifiedLcalc.Numerics.RealIntervalCore
 public import VerifiedLcalc.Numerics.RationalExp
@@ -132,6 +137,29 @@ theorem polynomialBounds_sound (bits : Nat) (i : RealInterval) (q : ℝ) (hq : i
   | cons a cs ih =>
     exact roundInterval_sound bits _ _ (intervalAdd_sound _ _ _ _
       ⟨by simp,by simp⟩ (intervalMul_sound _ _ _ _ hq ih))
+
+/-- Dyadic Horner evaluation agrees exactly with the rational computation at a nonnegative
+lower endpoint, including the outward rounding at every step. -/
+theorem dyadicPolynomialBounds_toRat (bits : Nat) (q : Dyadic × Dyadic) (hq : 0 ≤ q.1)
+    (cs : List Int) :
+    ((dyadicPolynomialBounds bits q cs).1.toRat, (dyadicPolynomialBounds bits q cs).2.toRat) =
+      polynomialBounds bits (q.1.toRat, q.2.toRat) cs := by
+  induction cs with
+  | nil =>
+    simp [dyadicPolynomialBounds, polynomialBounds]
+  | cons a cs ih =>
+    let p := dyadicPolynomialBounds bits q cs
+    change (p.1.toRat, p.2.toRat) = _ at ih
+    rw [polynomialBounds, ← ih]
+    have hq' : 0 ≤ q.1.toRat := by
+      simpa only [Dyadic.toRat_zero] using Dyadic.toRat_le_toRat_iff.mpr hq
+    have hlo : 0 ≤ p.1.toRat ↔ 0 ≤ p.1 := by rw [← Dyadic.toRat_zero, Dyadic.toRat_le_toRat_iff]
+    have hhi : p.2.toRat ≤ 0 ↔ p.2 ≤ 0 := by rw [← Dyadic.toRat_zero, Dyadic.toRat_le_toRat_iff]
+    by_cases hl : 0 ≤ p.1 <;> by_cases hh : p.2 ≤ 0 <;>
+      simp only [dyadicPolynomialBounds, roundInterval, intervalAdd, intervalMul, ite_eq_left hq',
+        Dyadic.roundUp_eq_neg_roundDown_neg, ← Dyadic.toDyadic_toRat, Dyadic.toRat_add,
+        Dyadic.toRat_intCast, Dyadic.toRat_neg, Dyadic.toRat_mul, hlo, hhi, hl, hh,
+        ↓reduceIte, p]
 
 private theorem sum_map_range (f : Nat → ℝ) (n : Nat) :
     ((List.range n).map f).sum = ∑ k ∈ Finset.range n, f k := by

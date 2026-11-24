@@ -1,8 +1,16 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 module
 public import VerifiedLcalc.Numerics.RealInterval
 public import VerifiedLcalc.Numerics.PolynomialTail
 public import VerifiedLcalc.EllipticCurve.DerivativeCore
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+
+/-! # Fourier truncation and certified pointwise interval bounds for quadrature -/
+
 @[expose] public section
 namespace VerifiedLcalc.Numerics
 open MeasureTheory Set
@@ -27,6 +35,7 @@ private theorem polynomial_range (a : Nat → Int) (q : ℝ) (M k : Nat) :
     rw [he']
     ring
 
+/-- A Fourier prefix is the Horner polynomial multiplied by its first power of the argument. -/
 theorem prefix_polynomial (a : Nat → Int) (q : ℝ) (M : Nat) :
     (∑ j ∈ Finset.range M, (a (j+1) : ℝ)*q^(j+1)) =
       q*polynomialValue q ((List.range M).map (fun j => a (j+1))) := by
@@ -66,6 +75,24 @@ theorem fourier_prefix_error (a : Nat → Int) (cs : List Int) (q Q value : ℝ)
   simp only [← hc] at h
   simpa only [one_mul, ← hrem'] using h
 
+open Inclusion.IntervalDyadicReal in
+private theorem dyadicPolynomialBounds_exp_toRat (lo hi : Rat) (bits : Nat)
+    (cs : List Int) :
+    Prod.map _root_.Dyadic.toRat _root_.Dyadic.toRat
+        (dyadicPolynomialBounds bits (rationalExpDyadicBounds lo hi bits) cs) =
+      polynomialBounds bits (rationalExpBounds lo hi bits) cs := by
+  apply dyadicPolynomialBounds_toRat
+  change 0 ≤ (expBounds (lo.toDyadic bits) bits).1
+  apply _root_.Dyadic.toRat_le_toRat_iff.mp
+  change (0 : Rat) ≤ (expBounds (lo.toDyadic bits) bits).1.toRat
+  cases lo.toDyadic bits with
+  | zero =>
+    change (0 : Rat) ≤ (1 : _root_.Dyadic).toRat
+    decide
+  | ofOdd num exponent h =>
+    simp only [expBounds, expOfNatWithPrec_eq, _root_.Dyadic.toRat_ofIntWithPrec_eq_mul_two_pow]
+    positivity
+
 /-- Integral bounds of a cell follow from genuine pointwise bounds of log and
 the Fourier series. The partial series is evaluated by rounded Horner arithmetic. -/
 theorem derivativeCellBounds_sound (a : Nat → Int) (cs : List Int)
@@ -81,10 +108,13 @@ theorem derivativeCellBounds_sound (a : Nat → Int) (cs : List Int)
     cell.Contains (∫ t in (left : ℝ)..(right : ℝ), Real.log t*f t) := by
   unfold EllipticCurve.derivativeCellBounds at he
   dsimp only at he
+  have hq : Prod.map Dyadic.toRat Dyadic.toRat (rationalExpDyadicBounds (-ah * right)
+      (-al * left) bits) = rationalExpBounds (-ah * right) (-al * left) bits := rfl
+  rw [dyadicPolynomialBounds_exp_toRat, hq] at he
   cases hr : polynomialTailBound (rationalExpBounds (-ah*right) (-al*left) bits).2 3 cs.length with
-  | none => simp [hr, ← neg_mul] at he
+  | none => simp [hr, -neg_mul] at he
   | some rem =>
-    simp [hr, ← neg_mul] at he
+    simp [hr, -neg_mul] at he
     subst cell
     apply roundInterval_sound
     have hp (t : ℝ) (ht : t ∈ Icc (left : ℝ) (right : ℝ)) :
@@ -130,7 +160,7 @@ theorem derivativeCellBounds_sound (a : Nat → Int) (cs : List Int)
       (∫ t in (left : ℝ)..(right : ℝ), Real.log t*f t) ∧
       (∫ t in (left : ℝ)..(right : ℝ), Real.log t*f t) ≤
         (((intervalMul (right-left,right-left) b).2 : Rat) : ℝ)
-    simp only [intervalMul, if_pos (sub_nonneg.mpr hlr), ite_self,
+    simp only [intervalMul, ite_eq_left (sub_nonneg.mpr hlr), ite_self,
       Rat.cast_mul, Rat.cast_sub]
     constructor
     · simpa only [intervalIntegral.integral_const, smul_eq_mul] using hlo
