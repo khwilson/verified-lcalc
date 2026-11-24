@@ -14,6 +14,7 @@ example : coefficients.length = 464 := by decide +kernel
 
 set_option maxRecDepth 18000 in
 set_option maxHeartbeats 2000000 in
+-- The independent coefficient check evaluates all 4099 finite-field fibers in the kernel.
 /-- Independently verify the first coefficient with the existing local-minimality evaluator. -/
 theorem first_trace_coefficient :
     (curve.baseChange ℚ).LFunction 4099 = -58 := by
