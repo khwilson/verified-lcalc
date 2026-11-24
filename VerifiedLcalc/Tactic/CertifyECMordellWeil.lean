@@ -8,6 +8,7 @@ module
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public import VerifiedLcalc.Tactic.CertifyECBSD
 public import VerifiedLcalc.Tactic.CertifyECGeometry
+public import VerifiedLcalc.Tactic.CertifyECIwasawa
 public import VerifiedLcalc.Tactic.CertifyECGalois
 public import VerifiedLcalc.Tactic.CertifyECExtensionData
 public import VerifiedLcalc.Tactic.CertifyECIntegralPoints
@@ -114,6 +115,7 @@ def certifyProofAttachment (base : Name) (input : Option (TSyntax `term)) :
     pure name
   certifyBSDFacts base attachment
   certifyGeometryFacts base attachment
+  certifyIwasawa base attachment
   certifyGaloisFacts base attachment
   certifyExtensionData base attachment
   certifyRankClaims base curve attachment

@@ -144,6 +144,22 @@ def nonnegativeInteger (j : Json) : Except String Nat := do
   unless 0 ≤ n do throw "Expected a nonnegative integer"
   return n.toNat
 
+/-- Decode the native prime dictionary, preserving unknown and additive markers. -/
+def iwasawaDataClaims (j : Json) : Except String (List (ℕ × Sum String (List ℕ))) := do
+  let entries := (← j.getObj?).toList
+  unless entries.length ≤ 256 do throw "Oversized Iwasawa dictionary"
+  entries.mapM fun (key, value) => do
+    let some p := key.toNat? | throw "Expected an Iwasawa prime key"
+    unless 2 ≤ p && key == toString p do throw "Expected a canonical Iwasawa prime key"
+    match value with
+    | .str marker =>
+      unless ["a", "o?", "s?"].contains marker do throw "Unknown Iwasawa status marker"
+      return (p, .inl marker)
+    | _ =>
+      let values ← array value 3
+      unless values.size == 2 || values.size == 3 do throw "Expected two or three invariants"
+      return (p, .inr (← values.toList.mapM nonnegativeInteger))
+
 /-- Read the four b-invariants in order. -/
 def bValues (j : Json) : Except String (Int × Int × Int × Int) := do
   let xs ← array j 4
@@ -456,6 +472,8 @@ def decode (j : Json) : Except String EllipticWitness := do
   let stableFaltingsHeight ← decimalEnclosureClaim j "stable_faltings_height"
   let faltingsIndex ← optionalValue j "faltings_index" nonnegativeInteger
   let faltingsRatio ← optionalValue j "faltings_ratio" nonnegativeInteger
+  let iwasawaData ← optionalValue j "iwdata" iwasawaDataClaims
+  let iwasawaThreshold ← optionalValue j "iwp0" nonnegativeInteger
   let padicRegulator ← optionalValue j "padic_regulator" fun row => do
     return {
       p := ← nonnegativeInteger (← row.getObjVal? "p")
@@ -540,6 +558,8 @@ def decode (j : Json) : Except String EllipticWitness := do
     stableFaltingsHeight
     faltingsIndex
     faltingsRatio
+    iwasawaData
+    iwasawaThreshold
     padicRegulator
     realPeriod
     tamagawaProduct

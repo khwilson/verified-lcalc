@@ -53,6 +53,9 @@ open VerifiedLcalc Lean Elab Command
 #check EllipticCertificate.minimumQuadraticTwist
 #check EllipticCertificate.modifiedSzpiroRatio
 #check EllipticCertificate.periodGeometry
+#check EllipticCertificate.iwasawa
+#check IwasawaPrimeEvidence
+#check IwasawaThresholdEvidence
 #check EllipticCertificate.faltingsIndex
 #check FaltingsIndexFact.mem_predecessors
 #check EllipticCertificate.intrinsicTorsion

@@ -74,6 +74,8 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   faltingsIndex : Option (FaltingsIndexFact curve) := none
   /-- Proved complex period area, Faltings heights and class-relative area ratio. -/
   periodGeometry : Option (PeriodGeometryFacts curve) := none
+  /-- Normalized cyclotomic interpolation and optional Iwasawa threshold evidence. -/
+  iwasawa : Option (IwasawaFacts curve) := none
   /-- Proved enclosure for the full minimal real period. -/
   realPeriod : Option (RealPeriodFact curve) := none
   /-- Proved product of all intrinsic finite-place Tamagawa numbers. -/
@@ -141,6 +143,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   faltingsIndex : Option (FaltingsIndexFact curve) := none
   /-- Checked complex period area, Faltings heights and class-relative area ratio. -/
   periodGeometry : Option (PeriodGeometryFacts curve) := none
+  /-- Checked Iwasawa rows and threshold, with the normalized modular-symbol model. -/
+  iwasawa : Option (IwasawaFacts curve) := none
   /-- Checked full real period enclosure. -/
   realPeriod : Option (RealPeriodFact curve) := none
   /-- Checked product of the intrinsic finite-place Tamagawa numbers. -/

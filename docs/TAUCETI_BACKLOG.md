@@ -662,3 +662,39 @@ ordering, and partial adelic label formatter describe catalogue conventions
 and remain local. The trivial-group specialization
 `VerifiedLcalc.IntrinsicTorsionFact.card_radical` uses Mathlib cardinality
 directly. The missing reusable result is the rational pairing in TC-25.
+
+## TC-29 — normalized cyclotomic distributions and Iwasawa thresholds
+
+- For weight-two forms on Γ₀(N) with rational coefficients, relate the
+  analytic integral in `VerifiedLcalc.Modularity.normalizedRealModularSymbol`
+  to TauCeti's integral modular-symbol period map after division by the
+  full Néron real period of a globally minimal elliptic curve.
+- Prove existence and uniqueness in the integral Iwasawa algebra for
+  `OrdinarilyInterpolates` at odd good ordinary primes, and for
+  `MultiplicativelyInterpolates` at odd multiplicative primes. Formalize
+  the Teichmüller representative and transfer calculations and the
+  level-zero identity in `IwasawaLevelZeroIdentity`.
+- For good primes at least five with trace zero, construct the signed pair
+  and prove `SignedlyInterpolates`, including the level-dependent
+  alternating sign of the raw Mazur–Tate element and the two exact
+  initial augmentation identities in `IwasawaSignedInitialIdentities`.
+  Add the separate cases for p=2 and small supersingular primes.
+- `GoodPrimeIwasawaUnitInput.vanishing` derives the ordinary and signed
+  conclusions from independent normalized interpolation and augmentation
+  data. For the level-eleven fixture, discharge the universal nonanomaly
+  and integral-symbol hypotheses using prime-to-p torsion reduction,
+  the point-count bounds, and exact normalized modular symbols.
+  The exported threshold applies to every good prime in range.
+- Pinned TauCeti supplies `cuspIntegral`, `ModularSymbols.periodMap`,
+  `WeierstrassCurve.minimalRealPeriod`, and
+  `PowerSeries.muInvariant` and `PowerSeries.lambdaInvariant` over a DVR.
+  The local verifier reuses these definitions. The native report decoder
+  and matched prime selection remain catalogue code. Searched the pinned
+  sources and current project for elliptic cyclotomic interpolation. Open
+  TauCeti work on the cyclotomic cutoff and growth formula is algebraic,
+  and the Coleman norm projector is a different distribution construction.
+  [TauCeti PR 42778](https://github.com/TauCetiProject/TauCeti/pull/42778)
+  · [TauCeti PR 43208](https://github.com/TauCetiProject/TauCeti/pull/43208)
+  · [Pinned DVR invariants](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/RingTheory/PowerSeries/Weierstrass/DiscreteValuationRing.lean)
+  · [Pollack, Proposition 6.18](https://math.bu.edu/people/rpollack/Papers/On_the_padic_Lfunction_of_a_modular_form_at_a_ss_prime.pdf)
+  · [Pollack–Weston, Mazur–Tate elements](https://math.bu.edu/people/rpollack/Papers/Mazur-Tate_elements_of_modular_forms.pdf)

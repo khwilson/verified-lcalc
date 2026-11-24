@@ -356,7 +356,10 @@ from G1, a check that no proper subfield has the same growth, and identification
 equivalence. Accept strict growth, another field of the same degree without
 that growth, and duplicate presentations of an isomorphic field.
 
-**G3 · Iwasawa invariants and p-adic regulator.** Start with the analytic
+**G3 · Iwasawa invariants and p-adic regulator.** The checker supports odd
+prime ordinary and multiplicative interpolation, good trace-zero signed
+interpolation at primes at least five, and universal good-prime vanishing
+from the normalized augmentation hypotheses. Construct the analytic
 $p$-adic L-series using normalized modular symbols, including the signed
 supersingular variants. Identify its bounded power series with the source's
 convention. Check $\mu$ by certifying coefficient divisibility throughout
