@@ -53,7 +53,7 @@ supply another realization directly.
 `tests/VerifiedLcalcTests/Fixtures/GeneralModularityExamples.lean` checks applicability to the
 non-semistable curve y^2=x^3+1, independence for any two of its realizations,
 and replay of the existing 11.a2 rank-zero and 37.a1 lower-bound certificates
-through the unrestricted interfaces. `AuditGeneralModularity.lean` guards the
+through the unrestricted interfaces. `tests/audits/AuditGeneralModularity.lean` guards the
 axiom dependencies separately.
 
 The original interface work added no axiom and did not change the existing

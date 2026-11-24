@@ -5,6 +5,9 @@ import VerifiedLcalcTests.Fixtures.AssumedCurve11
 import VerifiedLcalc.Verification.NumericalCertification
 import VerifiedLcalcTests.Fixtures.AssumedCurve37
 
+/-! # Modularity-dependent certificate axioms -/
+
+-- This audit intentionally uses `#print axioms` to check proof dependencies.
 set_option linter.hashCommand false
 
 -- This audit is opt-in. Its named modularity axiom is an expected dependency.
