@@ -72,6 +72,8 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
     Fin n → (curve.baseChange ℚ).toAffine.Point), CanonicalHeightFacts points.2) := none
   /-- Proved position in the complete class's Faltings-height order. -/
   faltingsIndex : Option (FaltingsIndexFact curve) := none
+  /-- Proved minimum modular map and its normalized differential and period image. -/
+  modularParametrization : Option (ModularParametrizationFacts curve) := none
   /-- Proved complex period area, Faltings heights and class-relative area ratio. -/
   periodGeometry : Option (PeriodGeometryFacts curve) := none
   /-- Proved enclosure for the full minimal real period. -/
@@ -139,6 +141,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   modifiedSzpiroRatio : Option (ModifiedSzpiroRatioFacts curve) := none
   /-- Checked position in the complete class's Faltings-height order. -/
   faltingsIndex : Option (FaltingsIndexFact curve) := none
+  /-- Minimum modular map with exact matches for the submitted modular claims. -/
+  modularParametrization : Option (CertifiedModularParametrization curve) := none
   /-- Checked complex period area, Faltings heights and class-relative area ratio. -/
   periodGeometry : Option (PeriodGeometryFacts curve) := none
   /-- Checked full real period enclosure. -/

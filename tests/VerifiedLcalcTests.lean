@@ -12,6 +12,7 @@ public import VerifiedLcalcTests.Fixtures.DegreeTwoIsogeny
 public import VerifiedLcalcTests.Fixtures.ExtensionData
 public import VerifiedLcalcTests.Fixtures.IsogenyClass
 public import VerifiedLcalcTests.Fixtures.IntrinsicTorsionFaltingsIndex
+public import VerifiedLcalcTests.Fixtures.ModularParametrization
 public import VerifiedLcalcTests.Fixtures.LmfdbCatalogue
 public import VerifiedLcalcTests.Fixtures.TraceHash
 public import VerifiedLcalcTests.Fixtures.CremonaLabels

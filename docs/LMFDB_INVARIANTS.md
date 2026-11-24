@@ -32,10 +32,10 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **73 of 85 distinct LMFDB column names** with the evidence
+The command covers **75 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
-has a checker gives 45 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
-`ec_mwbsd`, 8 in `ec_localdata`, 3 in `ec_galrep`, and 2 in
+has a checker gives 48 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
+`ec_mwbsd`, 8 in `ec_localdata`, 3 in `ec_galrep`, and 1 in
 `ec_torsion_growth`. Shared names such as `class_size` count once.
 Project-specific keys are excluded. The four ball coordinates shared with
 `ec_padic` can be checked for the curve-level rank-zero display, which
@@ -341,6 +341,38 @@ using rational interval arithmetic and a strictly positive denominator lower
 endpoint. Rounding rejects intervals touching a half-integer boundary. The
 checked integer and prime support concern the analytic quotient.
 
+### Modular parametrization data
+
+Supply `IntegralCurveProofs.modularParametrization` with a rational
+function-field pullback from the level of the curve's conductor, taking the
+cusp at infinity to the identity. The source field uses the rational Laurent
+coefficients at the width-one cusp of the compactified effective
+Γ₀ quotient. The modular degree must equal the actual extension degree and
+be minimal among all positive finite degrees to the same target. On a
+globally minimal equation, the Manin constant is the positive scaling of
+the Néron differential against the weight-two cusp form whose entire
+Fourier expansion matches the arithmetic L-function.
+
+The optional optimality proof compares the full integral image of the
+source periods with the Néron period lattice. Equality checks code 1, and
+proper inclusion checks code 0. This is the analytic period criterion for
+connected kernel of the induced Jacobian quotient. The certificate
+exports the lattice equality or proper inclusion. The comparison to an
+algebraic Jacobian morphism is a separate upstream target. Codes above
+one remain reports about the producer's ambiguous candidate set.
+ecdata's reported Manin numbers can depend on a choice of optimal
+representative. A successful check independently proves the scaling of
+the supplied curve's minimum modular map.
+
+Submit these fields in exact JSON as `degree`, `manin_constant` and
+`optimality`, or in Lean via `modularDegree`, `maninConstant` and
+`optimality`. The certificate's `modularParametrization` record retains
+the supplied geometric evidence and an exact match for each submitted
+field that the verifier could check. The modular degree here is distinct
+from the extension degree in a torsion-growth row.
+[ecdata producer](https://github.com/JohnCremona/ecdata/blob/master/scripts/files.py)
+· [LMFDB 11.a2](https://www.lmfdb.org/EllipticCurve/Q/11/a/2)
+
 ### Geometric endomorphisms, minimum twists and modified Szpiro ratio
 
 Use `with_proofs` with an `IntegralCurveProofs` attachment. Its
@@ -375,7 +407,6 @@ missing theorem.
 | Tighter torsion bounds and `intrinsic_torsion` | Construct tight bounds for the rational torsion group and evaluate the catalogue pairing when the group is nontrivial. |
 | `rank`, `rank_bounds`, `ngens`, `num_int_pts` | Rank intervals can be supplied as Lean proofs and are checked against the actual rational point group; exact rank requires a singleton interval. `ngens` checks only the length of the supplied generator list, not that it is a basis. Integral-point counts can use supplied exhaustive support; deriving it automatically still needs a bound and complete search. |
 | CM and minimum twist evidence production | A geometric endomorphism-ring classifier and a general minimum-conductor twist algorithm. Native ordering among equally good twists is a separate open obligation. |
-| Modular `degree`, `manin_constant`, `optimality` | Statements about the modular parametrization, not the degree of an arbitrary isogeny. |
 | Heights, periods, regulator, Faltings data, special values | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |
 | Algebraic Sha | A separate cohomological/descent proof of finiteness, cardinality, or a primary component. |
 | Remaining Galois-image levels, Serre and Iwasawa data, and full extension torsion | The relevant representations, fields, group images, and completeness proofs. |

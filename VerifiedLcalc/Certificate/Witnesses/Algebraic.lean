@@ -8,6 +8,7 @@ module
 public import VerifiedLcalc.Certificate.Witnesses.InputData
 public import VerifiedLcalc.Certificate.PeriodGeometrySpecs
 public import VerifiedLcalc.EllipticCurve.LmfdbLabel
+public import VerifiedLcalc.EllipticCurve.Modularity.ParametrizationSpecs
 public import TauCeti.AlgebraicGeometry.EllipticCurve.LFunction.Basic
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
 public import TauCeti.AlgebraicGeometry.EllipticCurve.MordellWeil.FinitelyGenerated
@@ -558,6 +559,60 @@ structure ModularParametrizationInput (curve : WeierstrassCurve ℤ) where
   maninConstant : Option ℕ := none
   /-- The producer's optimality code, which can express ambiguity among candidates. -/
   optimalityCode : Option ℕ := none
+
+/-- A minimum-degree pointed rational modular parametrization, its positive Manin
+scaling, and optional verification of the full period-image criterion for optimality. -/
+structure ModularParametrizationFacts (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The matching weight-two cusp form with its actual arithmetic Fourier coefficients. -/
+  realization : Modularity.ModularRealization curve
+  /-- The model's invariant differential is a Néron differential. -/
+  minimal : WeierstrassCurve.IsGlobalMinimal ℤ (curve.baseChange ℚ)
+  /-- The level is the norm of the algorithmic conductor ideal. -/
+  level_eq : realization.level =
+    Ideal.absNorm ((curve.baseChange ℚ).algorithmicConductor ℤ)
+  /-- The actual rational-map pullback on modular and elliptic function fields. -/
+  pullback : letI : NeZero realization.level := ⟨Nat.ne_of_gt realization.positiveLevel⟩
+    Modularity.ModularPullback realization.level curve
+  /-- The modular cusp at infinity maps to the identity of the elliptic curve. -/
+  pointed : letI : NeZero realization.level := ⟨Nat.ne_of_gt realization.positiveLevel⟩
+    pullback.IsPointed
+  /-- The positive degree of the function field extension. -/
+  degree : ℕ+
+  /-- The supplied degree equals the actual function field extension degree. -/
+  degree_eq : letI : NeZero realization.level := ⟨Nat.ne_of_gt realization.positiveLevel⟩
+    pullback.degree = degree.val
+  /-- The degree is minimum among all finite rational parametrizations of this target. -/
+  minimum : letI : NeZero realization.level := ⟨Nat.ne_of_gt realization.positiveLevel⟩
+    ∀ other : Modularity.ModularPullback realization.level curve,
+      0 < other.degree → degree.val ≤ other.degree
+  /-- The positive factor on the Néron differential for the oriented map. -/
+  maninConstant : ℕ+
+  /-- The actual pullback of the Néron differential is the stated multiple of the newform. -/
+  differential : letI : NeZero realization.level := ⟨Nat.ne_of_gt realization.positiveLevel⟩
+    pullback.PullsBackDifferential realization.form maninConstant
+  /-- All periods on the source land in the target Néron period lattice. -/
+  periodImage_le :
+    Modularity.gammaZeroDifferentialPeriods realization.form maninConstant ≤
+      ((curve.baseChange ℚ).map (Rat.castHom ℂ)).periodLattice.toAddSubgroup
+  /-- Optional equality or properness of the integral period image in the target lattice. -/
+  optimal : Option { b : Bool //
+    Modularity.gammaZeroDifferentialPeriods realization.form maninConstant =
+      ((curve.baseChange ℚ).map (Rat.castHom ℂ)).periodLattice.toAddSubgroup ↔ b = true } := none
+
+/-- The supplied geometric evidence and the exact report matches emitted from it.
+An omitted or ambiguous raw field has no matching entry. -/
+structure CertifiedModularParametrization (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The independently proved minimum parametrization and differential evidence. -/
+  evidence : ModularParametrizationFacts curve
+  /-- A submitted modular degree and its equality to the true minimum degree. -/
+  degree : Option { n : ℕ // evidence.degree.val = n } := none
+  /-- A submitted Manin constant and its equality to the proved differential scaling. -/
+  maninConstant : Option { n : ℕ // evidence.maninConstant.val = n } := none
+  /-- A submitted binary optimality code with the corresponding full period-image proof. -/
+  optimality : Option { n : ℕ //
+    ∃ status, evidence.optimal = some status ∧ Modularity.optimalityStatusCode status.val = n } := none
 
 /-- Input only. The reported Faltings heights and class-relative data. -/
 structure FaltingsInput (curve : WeierstrassCurve ℤ) where

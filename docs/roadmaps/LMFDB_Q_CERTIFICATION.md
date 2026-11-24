@@ -229,16 +229,21 @@ catalogue representative, also check the producer's tie rule on the complete
 minimal-conductor set. Accept two distinct equal-conductor twists and at least
 one special-j case.
 
-**I3 · Optimal quotient and Manin constant.** Specify the $X_0(N)$ Jacobian,
+**I3 · Optimal quotient and Manin constant.** The verifier now accepts a pointed
+rational function-field pullback on compactified Γ₀, its minimum extension
+degree to the fixed curve, and its normalized differential identity. Binary
+optimality uses the full integral period image; ambiguity codes are excluded.
+For the remaining comparison, specify the $X_0(N)$ Jacobian,
 rational newform quotient and normalized map (cusp at infinity sent to the
 identity). Show the quotient has connected kernel for an optimality claim.
 For a given map prove its actual degree and
 $\phi^*\omega_E=c\,2\pi i f(z)\,dz$, with the integral minimal
 differential and $a_1(f)=1$. Requires the modular curves, Jacobian and
 quotient comparison plus effective modular-symbol lattice certificates.
-The existing analytic modular realization supplies no map or connected
-kernel. Accept a positive degree and scaling comparison on an optimal and
-a nonoptimal member of the same class.
+The analytic modular realization alone supplies no map. The 11.a2 fixture
+checks the producer fields conditional on the pointed genus-one identification,
+its differential and full period image. Construct those data unconditionally
+and extend the examples to a nonoptimal member of the same class.
 
 ## Analytic and BSD data
 
