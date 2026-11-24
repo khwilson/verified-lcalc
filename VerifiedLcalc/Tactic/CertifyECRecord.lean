@@ -235,6 +235,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let twist ← optionalFactTerm base `minimum_quadratic_twist_evidence
   let szpiroRatio ← optionalFactTerm base `szpiro_ratio_fact
   let faltingsIndex ← optionalFactTerm base `faltings_index_fact
+  let modularParametrization ← optionalFactTerm base `modular_parametrization_fact
   let periodGeometry ← optionalFactTerm base `period_geometry_fact
   let realPeriod ← optionalFactTerm base `real_period_fact
   let tamagawaProduct ← optionalFactTerm base `tamagawa_product_fact
@@ -270,6 +271,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     minimumQuadraticTwist := $twist
     modifiedSzpiroRatio := $szpiroRatio
     faltingsIndex := $faltingsIndex
+    modularParametrization := $modularParametrization
     periodGeometry := $periodGeometry
     realPeriod := $realPeriod
     tamagawaProduct := $tamagawaProduct
@@ -277,7 +279,8 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     roundedAnalyticSha := $roundedAnalyticSha })
   let env ← getEnv
   if env.contains edgeName || env.contains className ||
-      env.contains (base ++ `period_geometry_fact) then
+      env.contains (base ++ `period_geometry_fact) ||
+      env.contains (base ++ `modular_parametrization_fact) then
     emit (← `(noncomputable def $certificate : EllipticCertificate $curve := $record))
   else
     emit (← `(def $certificate : EllipticCertificate $curve := $record))
