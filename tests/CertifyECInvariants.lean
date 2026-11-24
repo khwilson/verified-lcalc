@@ -643,7 +643,7 @@ run_cmd do
     `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData,
     `tamagawaProduct]
   let analytic := #[`centralResult, `derivativeResult, `catalogueAnalyticRank,
-    `specialLValue, `realPeriod, `analyticSha, `sha, `shaPrimes, `padicRegulator]
+    `specialLValue, `realPeriod, `analyticSha, `sha, `shaPrimes, `padicRegulator, `padicRegulatorClassLabel]
   let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionPrimes,
     `torsionGeneratorOrders, `torsionGrowthField, `intrinsicTorsion]
   let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do

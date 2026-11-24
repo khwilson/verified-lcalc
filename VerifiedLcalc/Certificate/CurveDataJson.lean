@@ -462,6 +462,8 @@ def decode (j : Json) : Except String EllipticWitness := do
       prec := ← integer (← row.getObjVal? "prec")
       val := ← integer (← row.getObjVal? "val")
       unit := ← integer (← row.getObjVal? "unit") }
+  let padicRegulatorClassLabel ←
+    (optionalValue j "padic_regulator" fun row => optionalValue row "lmfdb_iso" Json.getStr?)
   let realPeriod ← decimalEnclosureClaim j "real_period"
   let tamagawaProduct ← optionalValue j "tamagawa_product" nonnegativeInteger
   let analyticSha ← decimalEnclosureClaim j "sha_an"
@@ -541,6 +543,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     faltingsIndex
     faltingsRatio
     padicRegulator
+    padicRegulatorClassLabel := padicRegulatorClassLabel.join
     realPeriod
     tamagawaProduct
     analyticSha

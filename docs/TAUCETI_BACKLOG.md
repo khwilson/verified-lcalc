@@ -467,6 +467,20 @@ ratios. The complex maximum-to-input lattice index remains a separate target.
   `WeierstrassCurve.isOrdinary_iff_not_dvd_frobeniusTrace`. Mathlib `31ce06ea`
   provides `Padic` and `Matrix.det_isEmpty`. At rank zero the determinant is
   already checked on the actual empty Mordell–Weil index set.
+- **Proof-parametric stored-row support:** `IsWeierstrassParameterSeries`,
+  `weierstrassParameterDeriv`, and `IsNormalizedOrdinarySigma` state the
+  model-specific Laurent differential characterization with integral
+  coefficients, leading term, and parity under formal negation.
+  `ordinaryPadicHeightAtMultiple` fixes the logarithm and denominator
+  conventions. `StoredPadicRegulatorEvidence` retains the hypotheses
+  determining the class model, the rank-one basis lift, the exact multiple
+  with nonsingular reduction at finite places, and the independent sigma
+  argument approximation. The finite logarithm comparison is proved
+  from that approximation. Formal existence and uniqueness, change of model,
+  and an independently certified ordinary sigma implementation remain
+  mathematical prerequisites for closed evidence.
+  [Blakestad–Grant, Theorem 8 and Remark 11](https://arxiv.org/abs/1903.02480)
+  · [Sage ordinary height procedure](https://github.com/sagemath/sage/blob/develop/src/sage/schemes/elliptic_curves/padics.py)
 
 ## TC-22 — certified residual conjugacy classes and completeness
 

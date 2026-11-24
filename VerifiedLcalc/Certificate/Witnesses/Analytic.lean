@@ -5,7 +5,10 @@ Authors: Kevin Wilson
 -/
 module
 
+public import VerifiedLcalc.Certificate.Witnesses.Algebraic
 public import VerifiedLcalc.Certificate.Witnesses.ArtifactData
+public import VerifiedLcalc.EllipticCurve.OrdinaryPadicSigma
+public import VerifiedLcalc.EllipticCurve.RationalPlace
 public import VerifiedLcalc.Certificate.Analytic.EvidencePredicates
 public import VerifiedLcalc.Certificate.Analytic.EnclosurePredicates
 public import VerifiedLcalc.Certificate.Artifacts.ScanWitness
@@ -341,6 +344,108 @@ structure RankZeroPadicRegulatorFact (curve : WeierstrassCurve ℤ) where
       (report.p : ℚ_[(report.p : ℕ)]) ^ report.val * (report.unit : ℚ_[(report.p : ℕ)])‖ ≤
       ((report.p : ℕ) : ℝ) ^ (-report.prec)
 
+/-- Arithmetic and analytic prerequisites for the rank-one ordinary regulator on
+the unique reduced minimal model in its rational isogeny class. -/
+structure StoredPadicRegulatorEvidence (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] where
+  /-- The class label follows from this exhaustive conductor roster. -/
+  roster : ConductorClassRoster curve
+  /-- The class has just one rational isomorphism type. -/
+  singletonClass : {m : IsogenyClassModel curve // m.classSize = 1}
+  /-- The supplied integral equation is already the producer's reduced minimal one. -/
+  reduced : (curve.baseChange ℚ).IsReducedMinimal
+  /-- The prime at which all p-adic evidence is given. -/
+  p : Nat.Primes
+  /-- Domain of the ordinary sigma normalization. -/
+  prime_gt_three : 3 < (p : ℕ)
+  /-- A genuine integral basis of the rational points modulo torsion. -/
+  basis : Module.Basis (Fin 1) ℤ (curve.baseChange ℚ).toAffine.PointModTorsion
+  /-- A rational point lifting the single basis vector. -/
+  generator : (curve.baseChange ℚ).toAffine.Point
+  /-- The lift represents the entire free rank-one quotient. -/
+  generator_eq : Submodule.Quotient.mk generator = basis 0
+  /-- A positive multiple used as the local height argument. -/
+  multiple : ℕ+
+  /-- The abscissa of that rational multiple. -/
+  x : ℚ
+  /-- The nonzero ordinate of that rational multiple. -/
+  y : {y : ℚ // y ≠ 0}
+  /-- The rational coordinates satisfy the original Weierstrass equation. -/
+  onCurve : (curve.baseChange ℚ).toAffine.Equation x y.val
+  /-- The coordinates are those of the actual group multiple. -/
+  multiple_eq : (multiple : ℕ) • generator =
+    WeierstrassCurve.Affine.Point.mk (x := x) (y := y.val) onCurve
+  /-- This multiple has nonsingular reduction at every finite prime,
+  so no bad-place correction is missing from the sigma formula. -/
+  goodAtFinite : ∀ l : Nat.Primes,
+    letI : Fact (l : ℕ).Prime := ⟨l.property⟩
+    (multiple : ℕ) • generator ∈
+      (curve.baseChange ℚ).toAffine.nonsingularReduction ((rationalPlace l).valuation ℚ)
+  /-- The positive square root of the reduced denominator of the abscissa. -/
+  denominator : {d : ℕ+ // (d : ℕ) ^ 2 = x.den}
+  /-- The formal expansion of the parameter `s = -1/y` is specified by the model. -/
+  parameter : letI : Fact (p : ℕ).Prime := ⟨p.property⟩; PowerSeries ℚ_[(p : ℕ)]
+  /-- The chosen expansion is the unique one at infinity. -/
+  parameter_spec :
+    letI : Fact (p : ℕ).Prime := ⟨p.property⟩
+    IsWeierstrassParameterSeries (curve.baseChange ℚ_[(p : ℕ)]) parameter ∧
+      ∀ s, IsWeierstrassParameterSeries (curve.baseChange ℚ_[(p : ℕ)]) s → s = parameter
+  /-- The actual integral ordinary sigma series on this model. -/
+  sigma : letI : Fact (p : ℕ).Prime := ⟨p.property⟩; PowerSeries ℚ_[(p : ℕ)]
+  /-- The normalized differential equation and integrality characterize the series uniquely. -/
+  sigma_spec :
+    letI : Fact (p : ℕ).Prime := ⟨p.property⟩
+    IsNormalizedOrdinarySigma (curve.baseChange ℚ_[(p : ℕ)]) parameter sigma ∧
+      ∀ s, IsNormalizedOrdinarySigma (curve.baseChange ℚ_[(p : ℕ)]) parameter s → s = sigma
+  /-- The point used in the height lies in the formal neighbourhood of infinity at `p`. -/
+  formal :
+    letI : Fact (p : ℕ).Prime := ⟨p.property⟩
+    ‖-(x : ℚ_[(p : ℕ)]) / (y.val : ℚ_[(p : ℕ)])‖ < 1
+  /-- Rational approximation of the argument of the logarithm series. -/
+  approximation : ℚ
+  /-- Absolute precision of the independently supplied approximation. -/
+  approximationPrecision : ℤ
+  /-- Error bound on the sigma evaluation before applying the logarithm. -/
+  approximation_correct :
+    letI : Fact (p : ℕ).Prime := ⟨p.property⟩
+    ‖ordinarySigmaLogArgument sigma x y.val (denominator.1 : ℕ) -
+      (approximation : ℚ_[(p : ℕ)])‖ ≤ ((p : ℕ) : ℝ) ^ (-approximationPrecision)
+  /-- Number of terms in the finite logarithm calculation. -/
+  logTerms : ℕ
+
+/-- A checked native rank-one class regulator ball, with the class binding, geometric
+prime conditions and independent sigma evaluation retained. -/
+structure StoredPadicRegulatorFact (curve : WeierstrassCurve ℤ) where
+  /-- Nonsingularity of the selected rational equation. -/
+  elliptic : (curve.baseChange ℚ).IsElliptic
+  /-- Independent arithmetic, normalization and input approximation proofs. -/
+  evidence : letI := elliptic; StoredPadicRegulatorEvidence curve
+  /-- Reported class label. -/
+  classLabel : String
+  /-- The class label was computed from the proven catalogue order. -/
+  classLabel_eq : lmfdbIsoLabel evidence.roster.conductor evidence.roster.classIndex.val = classLabel
+  /-- The four reported ball coordinates. -/
+  report : PadicRegulatorReport curve
+  /-- The report and the independent evaluation use the same prime. -/
+  prime_eq : (report.p : ℕ) = evidence.p
+  /-- The curve has good reduction at the regulator prime. -/
+  good : (curve.baseChange (ZMod (evidence.p : ℕ))).Δ ≠ 0
+  /-- The reduced curve is ordinary there. -/
+  ordinary :
+    letI : Fact (evidence.p : ℕ).Prime := ⟨evidence.p.property⟩
+    (curve.baseChange (ZMod (evidence.p : ℕ))).IsOrdinary evidence.p
+  /-- The canonical unit representative is in the reported precision range. -/
+  normalized : 0 ≤ report.unit ∧
+    report.unit < (report.p : ℕ) ^ (report.prec - report.val).toNat
+  /-- The normalized height on a basis is in the ball. In rank one the
+  height-pairing determinant is its single entry. -/
+  contains :
+    letI : Fact (evidence.p : ℕ).Prime := ⟨evidence.p.property⟩
+    ‖ordinaryPadicHeightAtMultiple evidence.sigma evidence.x evidence.y.val
+        (evidence.denominator.1 : ℕ) (evidence.multiple : ℕ) -
+      ((evidence.p : ℕ) : ℚ_[(evidence.p : ℕ)]) ^ report.val *
+        (report.unit : ℚ_[(evidence.p : ℕ)])‖ ≤ ((evidence.p : ℕ) : ℝ) ^ (-report.prec)
+
 /-- The reported analytic Iwasawa invariants at an ordinary or multiplicative prime. -/
 structure OrdinaryIwasawaInvariants where
   /-- Index of the first coefficient of minimal valuation in the source normalization. -/
@@ -389,5 +494,7 @@ structure AnalyticFacts (curve : WeierstrassCurve ℤ) where
   specialValue : Option (SpecialLValueFacts curve) := none
   /-- A p-adic regulator enclosure supported by a checked rank-zero proof. -/
   padicRegulator : Option (RankZeroPadicRegulatorFact curve) := none
+  /-- The checked normalized regulator ball for the producer's rank-one class model. -/
+  storedPadicRegulator : Option (StoredPadicRegulatorFact curve) := none
 
 end VerifiedLcalc

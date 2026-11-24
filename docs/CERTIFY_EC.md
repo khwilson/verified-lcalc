@@ -238,8 +238,45 @@ unverified.
 
 The rank-zero JSON example is a finite-precision encoding of the value
 displayed by LMFDB. The display reads a stored class row for positive rank
-and LMFDB curve number 1. Within the p-adic object, `lmfdb_iso` is catalogue metadata.
+and LMFDB curve number 1. The presence of `lmfdb_iso` selects the stored-class
+report path, which requires separate class and sigma evidence.
 [LMFDB p-adic regulator renderer](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/elliptic_curve.py#L775-L792)
+
+## Check a native ordinary p-adic regulator row
+
+Submit the grouped report with its class label under `padic_regulator` and
+`IntegralCurveProofs.storedPadicRegulator` via `with_proofs`. Lean input uses
+`EllipticWitness.padicRegulator` and `padicRegulatorClassLabel`. The command
+supports good ordinary primes above three, a rank-one integral basis of the
+Mordell–Weil quotient, and a class with one rational isomorphism type. This
+restriction selects the producer's reduced minimal equation independently of
+potential differences in within-class numbering.
+
+The attachment proves the intrinsic conductor class order, singleton class,
+reduced minimal model, basis and its point lift, a positive multiple of that
+point with nonsingular reduction at every finite place, and the actual positive
+denominator of its abscissa. It also identifies the unique formal
+Weierstrass-parameter expansion and the unique integral sigma series satisfying
+the model's invariant differential equation with leading term `t` and
+oddness under formal negation. The sigma evaluation at the multiple is
+enclosed independently before the cyclotomic logarithm is applied.
+
+The kernel checks a finite rational logarithm prefix, an ultrametric error
+bound for it, and the signed-valuation and absolute-precision residue
+comparison. The checked class regulator is exposed through
+`Name.certificate.analytic.storedPadicRegulator`. It carries a proof of
+nonvanishing and exact valuation, as well as containment in the reported ball.
+Without the attachment the native row remains a report.
+
+The 37.a row at 5 is a proof-parametric fixture. Its open hypotheses are the
+exhaustive conductor roster and its ordering, singleton isogeny class, reduced
+minimality, basis and generator identification, nonsingular reduction of the
+multiple at finite places, the unique parameter and normalized sigma series,
+and the sigma-log argument approximation modulo `5^24`. Lean checks the point
+multiple and logarithm comparison. The independent numerical approximation
+comes from a PARI/GP computation of the two local ordinary height components
+on the multiple and the unit-root slope. [Native 37.a row](https://www.lmfdb.org/EllipticCurve/Q/data/37.a)
+· [Sigma characterization](https://arxiv.org/abs/1903.02480)
 
 ## Check a rational trace fingerprint
 
