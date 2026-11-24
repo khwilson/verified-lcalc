@@ -27,15 +27,15 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_classdata` | 8 | Checked coefficients concern the represented curve. With proved complete class evidence, the command checks the class size, maximum minimum degree and an ordered degree matrix. |
 | `ec_mwbsd` | 13 | Point membership, generator count, rank bounds and integral point fibers are in `certificate.algebraic`. Exhaustive integral-point data requires a proof covering every abscissa. |
 | `ec_localdata` | 10 | Checked local arithmetic facts are indexed by prime. Exact Kodaira and Tamagawa outputs depend on the reduction case. |
-| `ec_galrep` | 7 | The generator field is checked at the reported finite modulus in a proved torsion basis. G1 covers the remaining image data. |
+| `ec_galrep` | 7 | The generator field is checked at the reported finite modulus in a proved torsion basis. Supported residual labels identify exact images up to conjugacy. G1 covers the other image data. |
 | `ec_padic` | 5 | Stored class rows remain report-only. A curve-level encoding of the rank-zero display is checked as a p-adic ball at a good ordinary prime. |
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | G3 specifies prime-indexed invariants and the uniform assertion made by a positive threshold. |
 
-The command covers **53 of 85 distinct LMFDB column names** with the evidence
+The command covers **55 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
-has a checker gives 29 in `ec_curvedata`, 3 in `ec_classdata`, 10 in
-`ec_mwbsd`, 8 in `ec_localdata`, 1 in `ec_galrep`, and 2 in
+has a checker gives 30 in `ec_curvedata`, 3 in `ec_classdata`, 10 in
+`ec_mwbsd`, 8 in `ec_localdata`, 2 in `ec_galrep`, and 2 in
 `ec_torsion_growth`. Shared names such as `class_size` count once.
 Project-specific keys are excluded. The four ball coordinates shared with
 `ec_padic` can be checked for the curve-level rank-zero display, which
@@ -91,6 +91,8 @@ modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.
 | `isogeny_matrix` | `isogenyMatrix` | Square array of minimum degrees with source indexing rows and target indexing columns. Requires reduced minimal representatives in the LMFDB lexicographic coefficient ordering. |
 | `nonmax_primes` | `nonmaxPrimes` | Complete exceptional support of the integral ℓ-adic images of a geometrically non-CM curve. Requires a `NonmaxPrimeSupportFact` through `with_proofs`. |
 | `nonmax_rad` | `nonmaxRadical` | Exact product of the distinct primes in the proved complete support. Requires the same evidence and may be submitted independently. |
+| `modell_image` | `modPrimeImage` | Exact conjugacy class of the image on all geometric ℓ-torsion, for the reported prime and a supported Sutherland label. |
+| `modell_images` | `modPrimeImages` | Exact residual conjugacy classes at the listed entries. Complete non-CM residual support requires separate all-prime evidence. |
 | `adelic_gens` | `adelicGenerators` | Complete image on the full geometric torsion of the reported modulus in a supplied basis. Requires an `FiniteGaloisImageFact` through `with_proofs`. |
 | `num_int_pts` | `numIntegralPoints` | Exact cardinality theorem from supplied exhaustive `IntegralXSupport`; available at `certificate.algebraic.completeIntegralPoints` with finite-set completeness and `Finite` evidence. Without support it is unverified, but a count below the number of distinct checked points or seed-fiber solutions is rejected. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
@@ -117,6 +119,16 @@ For example, 338.e1 lists 2 and 7 in `nonmax_primes`, and its residual
 `modell_images` lists only a label at 7.
 [LMFDB ℓ-adic search](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/elliptic_curve.py#L1344-L1353)
 · [LMFDB 338.e1](https://www.lmfdb.org/api/ec_curvedata/1373)
+
+The supported residual labels are `2Cs`, `2B`, `2Cn`, `2G` and
+`7B.2.3`. Pointwise comparison applies to CM and non-CM curves. The
+optional coverage proof uses full `GL₂(𝔽_ℓ)` as the maximal residual image
+for geometrically non-CM curves. CM reporting has a different convention
+for what counts as exceptional. Verification accepts each listed label only
+with exact subgroup evidence, and a bare empty list gives no coverage proof.
+[Sutherland, Section 6.4 and Table 3](https://doi.org/10.1017/fms.2015.33)
+· [LMFDB 40.a2](https://www.lmfdb.org/EllipticCurve/Q/40a1/)
+· [LMFDB CM example 32.a2](https://www.lmfdb.org/EllipticCurve/Q/data/32.a2)
 
 For `adelic_gens`, join the prime-zero row to the curve equation. JSON takes the
 modulus from `adelic_level` or the first component of `adelic_image` and checks

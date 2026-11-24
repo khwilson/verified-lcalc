@@ -629,6 +629,17 @@ primes as a finite set, rejects repetitions and composites, and checks the
 radical by multiplying over the proved support. The results are available
 through `Name.certificate.nonmaxPrimes`.
 
+For `modell_image`, submit the label and its `prime` from the local row.
+Attach `IntegralCurveProofs.modPrimeImage` with an exact image on the full
+geometric prime torsion and a conjugacy proof against the supported Sutherland
+label. The result is available at `Name.certificate.modPrimeImage`.
+For `modell_images`, attach `IntegralCurveProofs.modPrimeImages` with one
+checked image per label in report order. The optional coverage field proves
+that the list accounts for exactly the non-surjective residual primes, given
+geometric non-CM and all-prime image evidence. Use the list's membership
+theorem `ModPrimeImageListFact.exists_of_mem_labels` to retrieve a verified
+entry from `Name.certificate.modPrimeImages`.
+
 For `adelic_gens`, submit the generator array from the LMFDB prime-zero row
 with the curve equation and either `adelic_level` or `adelic_image`. Use
 `IntegralCurveProofs.adelicGenerators` to give the invertible matrices and
