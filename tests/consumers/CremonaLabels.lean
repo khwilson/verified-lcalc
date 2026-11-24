@@ -4,7 +4,7 @@ Part of verified-lcalc.
 Authors: Kevin Wilson
 -/
 import VerifiedLcalcTests.Fixtures.CremonaLabels
-import VerifiedLcalc.Verification.CremonaSingleton
+import VerifiedLcalc.Verification.LmfdbCatalogue
 
 /-! # Exact imported Cremona singleton facts and separate prerequisites -/
 

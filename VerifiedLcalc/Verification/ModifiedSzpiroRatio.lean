@@ -21,7 +21,7 @@ bounds on the two logarithms. -/
 def modifiedSzpiroRatioValid (curve : WeierstrassCurve ℤ) (conductor : ℕ)
     (reported error : ℚ) : Bool :=
   decide (1 < conductor ∧ 0 ≤ error) &&
-    ratioErrorValid (logNatBounds (max (curve.c₄.natAbs ^ 3) (curve.c₆.natAbs ^ 2)))
+    ratioErrorValid (logNatBounds (modifiedSzpiroNumerator curve))
       (logNatBounds conductor) reported error
 
 /-- An accepted enclosure for the arithmetic data encloses the actual ratio of the

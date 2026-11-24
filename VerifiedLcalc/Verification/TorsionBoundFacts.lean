@@ -8,7 +8,7 @@ module
 public import VerifiedLcalc.Certificate.Support.Torsion
 public import VerifiedLcalc.EllipticCurve.TorsionBound
 
-/-! # Translate the finite torsion check into mathematical certificate data -/
+/-! # Finite torsion bounds and intrinsic torsion for the trivial group -/
 
 @[expose] public section
 
@@ -66,3 +66,24 @@ theorem checked {curve : WeierstrassCurve ℤ}
   simp [EllipticCurve.checkTorsionBound, hp, hp₂, hpg, hq, hq₂, hqg, hgcd, hbound]
 
 end VerifiedLcalc.TorsionDivisorFacts
+
+namespace VerifiedLcalc.IntrinsicTorsionFact
+
+variable {curve : WeierstrassCurve ℤ}
+
+/-- Every subgroup of the trivial rational torsion group has cardinality one. -/
+theorem card_subgroup (fact : IntrinsicTorsionFact curve)
+    (S : AddSubgroup (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point)) :
+    Nat.card S = fact.reported := by
+  let _ := (Nat.card_eq_one_iff_unique.mp fact.torsion_card).1
+  exact Nat.card_unique.trans fact.reported_eq_one.symm
+
+/-- In particular, any biadditive pairing on this rational torsion group
+has a left radical of order one. -/
+theorem card_radical (fact : IntrinsicTorsionFact curve) {A : Type*} [AddCommGroup A]
+    (pairing : AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point →+
+      (AddCommGroup.torsion (curve.baseChange ℚ).toAffine.Point →+ A)) :
+    Nat.card pairing.ker = fact.reported :=
+  fact.card_subgroup pairing.ker
+
+end VerifiedLcalc.IntrinsicTorsionFact

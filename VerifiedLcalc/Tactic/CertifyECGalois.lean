@@ -127,9 +127,7 @@ private def certifyAdelicImage (base : Name) (attachment : Option Ident) :
   let mut labelTerm ← `(none)
   let mut checkedLabel := false
   if let some (label, n, i, g) := partialReport then
-    let formatted ← `((match ($actualLevel), ($actualIndex), ($actualGenus) with
-      | some n, some i, some g => some (formatPartialAdelicImage n i g)
-      | _, _, _ => none))
+    let formatted ← `(formatPartialAdelicImageOf $actualLevel $actualIndex $actualGenus)
     if ← hasOptionalProof formatted `adelic_image then
       let reportLevel := quote n
       let reportIndex := quote i

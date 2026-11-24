@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Tactic.CertifyECCommon
-public import VerifiedLcalc.Verification.TraceHash
+public import VerifiedLcalc.Verification.CurveData
 public meta import Lean
 
 /-! Internal dispatch for weighted trace hashes with checked coefficient evidence. -/

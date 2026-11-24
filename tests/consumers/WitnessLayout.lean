@@ -10,6 +10,16 @@ private def isStructureCommand (cmd : Syntax) : Bool :=
     cmd[1].isOfKind ``Parser.Command.«structure» &&
     cmd[1][0].isOfKind ``Parser.Command.structureTk
 
+private def hasDoc (modifiers : Syntax) : Bool :=
+  modifiers[0][0].isOfKind ``Parser.Command.docComment
+
+private partial def forbiddenFieldTerm (stx : Syntax) : Option Syntax :=
+  if stx.isOfKind ``Parser.Term.«match» || stx.isOfKind ``Parser.Term.byTactic ||
+      stx.isOfKind ``Parser.Term.binderTactic || stx[0].getAtomVal == "if" then
+    some stx
+  else
+    stx.getArgs.findSome? forbiddenFieldTerm
+
 run_cmd do
   let env ← getEnv
   let modules := env.allImportedModuleNames
@@ -29,6 +39,11 @@ run_cmd do
   for optIn in [`VerifiedLcalc.Assumptions.ellipticModularity,
       `VerifiedLcalc.Assumptions.analyticOrder_le_one_implies_finrank] do
     if env.contains optIn then throwError "ordinary witnesses imported the axiom {optIn}"
+  for name in [``VerifiedLcalc.EllipticWitness.mk, ``VerifiedLcalc.EllipticCertificate.mk,
+      ``VerifiedLcalc.IntegralCurveProofs.mk] do
+    for axiomName in ← liftTermElabM (Lean.collectAxioms name) do
+      unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+        throwError "Unexpected axiom in ordinary aggregate {name}: {axiomName}"
   -- Re-exporting the legacy declarations would leave their source in the old modules.
   for decl in [``VerifiedLcalc.EllipticWitness, ``VerifiedLcalc.DiscriminantWitness,
       ``VerifiedLcalc.EllipticCertificate, ``VerifiedLcalc.ArithmeticFacts,
@@ -69,6 +84,19 @@ run_cmd do
     let mut structures := 0
     for cmd in tree[1].getArgs do
       if isStructureCommand cmd then
+        let declaration := cmd[1]
+        let name := declaration[1][0].getId
+        unless hasDoc cmd[0] do
+          throwError "{path}: missing documentation for {name}"
+        -- The optional structure body contains its opener, constructor and field group.
+        let fields := declaration[4][2][0].getArgs
+        for field in fields do
+          unless hasDoc field[0] do
+            let line := source.toFileMap.toPosition (field.getPos?.getD 0)
+            throwError "{path}:{line.line}: missing documentation for a field of {name}"
+          if let some term := forbiddenFieldTerm field then
+            let line := source.toFileMap.toPosition (term.getPos?.getD 0)
+            throwError "{path}:{line.line}: move the computation or proof body to a companion"
         let derivingClause := cmd[1].getArgs.back!
         unless derivingClause[0].getArgs.isEmpty do
           throwError "{path}: derive instances in a companion module"

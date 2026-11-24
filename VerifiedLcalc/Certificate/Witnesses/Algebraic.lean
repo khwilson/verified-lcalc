@@ -7,7 +7,6 @@ module
 
 public import VerifiedLcalc.Certificate.Witnesses.InputData
 public import VerifiedLcalc.Certificate.PeriodGeometrySpecs
-public import VerifiedLcalc.EllipticCurve.CremonaLabel
 public import VerifiedLcalc.EllipticCurve.LmfdbLabel
 public import TauCeti.AlgebraicGeometry.EllipticCurve.LFunction.Basic
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
@@ -144,15 +143,17 @@ structure CompleteIntegralPointFacts (curve : WeierstrassCurve ℤ)
 structure TorsionDivisorFacts (curve : WeierstrassCurve ℤ) where
   /-- The submitted primes and proposed gcd. -/
   evidence : TorsionBoundWitness
-  /-- The first prime is prime and odd. -/
+  /-- The first residue characteristic is prime. -/
   firstPrime_prime : evidence.firstPrime.Prime
+  /-- The first residue characteristic is odd. -/
   firstPrime_odd : evidence.firstPrime ≠ 2
   /-- The first finite-field equation is nonsingular. -/
   firstGoodReduction :
     letI : Fact evidence.firstPrime.Prime := ⟨firstPrime_prime⟩
     (curve.baseChange (ZMod evidence.firstPrime)).IsElliptic
-  /-- The second prime is prime and odd. -/
+  /-- The second residue characteristic is prime. -/
   secondPrime_prime : evidence.secondPrime.Prime
+  /-- The second residue characteristic is odd. -/
   secondPrime_odd : evidence.secondPrime ≠ 2
   /-- The second finite-field equation is nonsingular. -/
   secondGoodReduction :

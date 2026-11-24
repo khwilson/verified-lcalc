@@ -602,3 +602,63 @@ and a tensor-valued evaluation.
   [LMFDB convention](https://www.lmfdb.org/knowledge/show/ec.q.cremona_label)
   · [Pinned Cremona tables](https://github.com/JohnCremona/ecdata/tree/6fedd3ab463a70e52061ebc0b04832ad19fd2e01/allcurves)
   · [Sage historical index conventions](https://github.com/sagemath/sage/blob/10.5/src/sage/databases/cremona.py)
+
+## Reusable declarations from the certificate and performance audit
+
+The pinned review used Mathlib `31ce06ea` and TauCeti `e0e414ce`. The upstream
+search inspected Mathlib `e62b985f`, TauCeti `284d4551`, and open pull requests
+for dyadic interval evaluation, Horner arithmetic, and integral adelic
+images. These are targets for human upstream planning.
+
+- **Mathlib inclusion arithmetic.** The local
+  `VerifiedLcalc.Numerics.dyadicPolynomialBounds` and
+  `VerifiedLcalc.Numerics.dyadicPolynomialBounds_toRat` compute Horner bounds
+  for integer coefficients on a fixed dyadic grid. For equality with the
+  rational recurrence, the lower argument endpoint must be nonnegative.
+  To derive polynomial soundness, require a real evaluation point between
+  the two endpoints and round outward at every step. The local
+  `VerifiedLcalc.Numerics.rationalExpDyadicBounds` and
+  `VerifiedLcalc.Numerics.rationalExpBounds_correct` are the corresponding
+  rational-argument adapter for exponential enclosures. The latter requires
+  the real argument to lie between the rational endpoints. The project
+  specializes these operations to real Fourier quadrature. The low-level
+  exponential evaluator retains David Ledvinka's attribution.
+  [Pinned inclusion extensions](https://github.com/leanprover-community/mathlib4/tree/31ce06eaadf4a200c0e1407c5f10953cf606b8f8/Mathlib/Tactic/Inclusion/Extension/IntervalDyadicReal)
+  · [Related direct dyadic division work](https://github.com/leanprover-community/mathlib4/pull/46315)
+- **Mathlib interval division.**
+  `VerifiedLcalc.Certification.ratioErrorValid_sound` uses enclosures of
+  the real numerator and denominator, a strictly positive lower endpoint
+  for the denominator, and a nonnegative rational error radius. It proves
+  absolute error about the submitted center by comparing products, which
+  avoids a division in the checker. A generic equivalent on an existing
+  interval type would serve both the local abc and modified Szpiro checks.
+- **Mathlib matrix reduction and TauCeti adelic groups.** The private
+  `VerifiedLcalc.padicGL_map_surjective` lifts entries along
+  `PadicInt.toZModPow` for a prime and positive exponent, then reflects
+  invertibility of the determinant. The matrix lemma generalizes to any
+  finite index type and a surjective local homomorphism of commutative
+  rings. The local `VerifiedLcalc.adelicCRT`,
+  `VerifiedLcalc.adelicReduction` and
+  `VerifiedLcalc.adelicReduction_surjective` use positive moduli and combine
+  finite matrix lifts with the Chinese remainder decomposition. Coordinate
+  these definitions with the upstream integral adelic group and level API.
+  [Pinned reduction](https://github.com/leanprover-community/mathlib4/blob/31ce06eaadf4a200c0e1407c5f10953cf606b8f8/Mathlib/NumberTheory/Padics/RingHoms.lean)
+  · [TauCeti adelic images PR](https://github.com/TauCetiProject/TauCeti/pull/45304)
+- **TauCeti period covolume.**
+  `VerifiedLcalc.complexPeriodArea_eq_of_minimal_change` proves area
+  invariance for two nonsingular globally minimal rational Weierstrass
+  equations related by a rational admissible coordinate change. Factor out
+  the general complex area scaling theorem for a nonsingular equation and
+  an admissible complex coordinate change, with the square of the norm of
+  its scaling factor. The rational minimal-model result then follows from
+  the unit scaling factor. This complements the normalized period-lattice
+  API. The Faltings height normalizations and catalogue order are local
+  adapters.
+  [Pinned period lattice](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/Analysis/SpecialFunctions/Elliptic/Period/Lattice.lean)
+  · [Pinned complex covolume scaling](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/Algebra/Module/ZLattice/Complex.lean)
+
+The weighted trace fingerprint, LMFDB and Cremona encodings, Faltings
+ordering, and partial adelic label formatter describe catalogue conventions
+and remain local. The trivial-group specialization
+`VerifiedLcalc.IntrinsicTorsionFact.card_radical` uses Mathlib cardinality
+directly. The missing reusable result is the rational pairing in TC-25.

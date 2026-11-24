@@ -112,3 +112,34 @@ parses every witness file with Lean and checks where the main types are defined.
 The [import audit](../tests/consumers/CertificateContracts.lean) exercises the
 lightweight compatibility API, and the [projection tests](../tests/consumers/CertificateCompatibility.lean)
 check existing downstream proofs.
+
+## Companion imports
+
+The witness audit keeps the nine subject files and all 123 witness structures.
+The production inventory has 199 modules, down from 202. The four direct
+imports below move to existing companions. Declaration names stay the same.
+
+| Previous module | Current module |
+| --- | --- |
+| `VerifiedLcalc.EllipticCurve.CremonaLabel` | `VerifiedLcalc.EllipticCurve.LmfdbLabel` |
+| `VerifiedLcalc.Verification.CremonaSingleton` | `VerifiedLcalc.Verification.LmfdbCatalogue` |
+| `VerifiedLcalc.Verification.IntrinsicTorsion` | `VerifiedLcalc.Verification.TorsionBoundFacts` |
+| `VerifiedLcalc.Verification.TraceHash` | `VerifiedLcalc.Verification.CurveData` |
+
+The receiving modules already imported every dependency of the moved
+declarations. The standalone internal trace-hash command helper inherits 37
+dependencies of `Verification.CurveData` that the public command already loads.
+The public command adds one local module and loses three; the standalone raw
+witness imports the same modules. These counts follow source imports at the
+pinned dependencies and include ordinary and public edges.
+
+`Certificate.InvariantSpecs` contains the integer abc product shared by its witness and
+verifier. It also names the modified Szpiro numerator for the checker, while the checked field
+exposes the explicit c-invariant formula for direct rewriting. The
+Kodaira and adelic specifications own the branching on optional data.
+The compiler-backed layout audit checks declaration and field documentation
+and rejects inline pattern matches, conditional branches, and tactic proof
+bodies. Proof fields still state the mathematical propositions and may name
+their companion specifications. Ordinary aggregate constructors are audited
+for standard Lean axioms, and the opt-in constructors have a separate audit
+for the authorized modularity dependency.

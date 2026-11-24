@@ -5,6 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
+public import VerifiedLcalc.Certificate.InvariantSpecs
 public import VerifiedLcalc.Certificate.Witnesses.InputData
 public import VerifiedLcalc.EllipticCurve.Modularity.ArithmeticRealizationData
 public import TauCeti.AlgebraicGeometry.EllipticCurve.AbcQuality
@@ -63,10 +64,7 @@ structure AbcQualityFacts (curve : WeierstrassCurve ℤ)
   /-- The domain condition for TauCeti's abc quality. -/
   defined : (curve.baseChange ℚ).j ≠ 0 ∧ (curve.baseChange ℚ).j ≠ 1728
   /-- The supplied factors multiply to the reduced abc product of `j / 1728`. -/
-  factorization :
-    let t := (curve.baseChange ℚ).j / 1728
-    let c : ℤ := t.den
-    claim.factors.prod = (t.num * (c - t.num) * c).natAbs
+  factorization : claim.factors.prod = Certification.abcProduct (curve.baseChange ℚ).j
   /-- Every supplied factor is prime. -/
   primeFactors : ∀ p ∈ claim.factors, p.Prime
   /-- The actual TauCeti quality lies within the claimed absolute error. -/

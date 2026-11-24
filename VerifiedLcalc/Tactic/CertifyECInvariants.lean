@@ -9,7 +9,7 @@ public import VerifiedLcalc.Certificate.Support.Torsion
 public import VerifiedLcalc.Certificate.Support.TorsionPresentation
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public import VerifiedLcalc.Verification.PadicRegulator
-public import VerifiedLcalc.Verification.IntrinsicTorsion
+public import VerifiedLcalc.Verification.TorsionBoundFacts
 public meta import Lean
 
 /-! Internal stored-invariant checks dispatched exclusively by `certify_ec`.
@@ -499,7 +499,7 @@ private def certifyTorsionPresentation (base : Name) (curve : Ident) : CommandEl
   emit (← `(def $(rootIdent name) : TorsionPresentation $source := $evidence))
   auditAxioms name
 
-/-- Check one optional equation invariant and return the corresponding proved value. -/
+/-- Read the closed order from the checked torsion-cardinality equality. -/
 private def exactTorsionOrder (name : Name) : CommandElabM Nat := do
   let some order ← (liftTermElabM do
     let type ← inferType (mkConst name)

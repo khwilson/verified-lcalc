@@ -11,6 +11,7 @@ public import VerifiedLcalc.Certificate.LocalReductionSpecs
 public import VerifiedLcalc.Certificate.ResidualImageLabels
 public import VerifiedLcalc.EllipticCurve.LmfdbTraceHash
 public import VerifiedLcalc.EllipticCurve.Tate.ArithmeticSpecs
+public import VerifiedLcalc.EllipticCurve.Tate.KodairaSpecs
 public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReductionSpec
 public import Mathlib.GroupTheory.Index
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
@@ -19,7 +20,6 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.Hom.ComplexMultipl
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.MulByInt.Torsion.Structure
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Tamagawa.Product
 public import TauCeti.AlgebraicGeometry.EllipticCurve.TateModule.Galois
-public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Curve
 public import TauCeti.AlgebraicTopology.Cellular.EulerCharacteristic.Genus
 public import TauCeti.Analysis.Complex.Fuchsian.Compactification.Basic
 
@@ -90,9 +90,7 @@ structure LocalKodairaFact (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ
   /-- An equality for the exact index, or exclusion of every `Iₙ`. -/
   correct :
     letI : Fact (prime : ℕ).Prime := ⟨prime.property⟩
-    match index with
-    | some n => (curve.baseChange ℚ).reductionSymbol (RationalLocalRing (prime : ℕ)) = .I n
-    | none => ∀ n, (curve.baseChange ℚ).reductionSymbol (RationalLocalRing (prime : ℕ)) ≠ .I n
+    KodairaIndexSpec (curve.baseChange ℚ) (prime : ℕ) index
 
 /-- The full canonical reduction symbol defined by Tate's algorithm over the rational
 local ring. The equality applies to the rational curve independently of the input model. -/
@@ -313,10 +311,9 @@ structure AdelicImageCertificate (curve : WeierstrassCurve ℤ)
   facts : AdelicImageFact curve
   /-- A matching incomplete producer label, with its class suffix unspecified. -/
   partialLabel : Option { label : String //
-    (match facts.level.map (fun n => (n.val : ℕ)), facts.index.map (fun i => (i.val : ℕ)),
-        facts.genus.map AdelicGenusFact.genus with
-      | some n, some i, some g => some (formatPartialAdelicImage n i g)
-      | _, _, _ => none) = some label } := none
+    formatPartialAdelicImageOf (facts.level.map fun n => (n.val : ℕ))
+      (facts.index.map fun i => (i.val : ℕ)) (facts.genus.map AdelicGenusFact.genus) =
+        some label } := none
 
 /-- Claimed adelic row, whose database prime sentinel is zero. The generator modulus is
 explicit even when the producer's adelic level has yet to be justified. -/

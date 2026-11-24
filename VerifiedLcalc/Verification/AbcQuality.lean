@@ -33,12 +33,6 @@ def abcMaximum (j : ℚ) : ℕ :=
   let c : ℤ := t.den
   max (max t.num.natAbs (c - t.num).natAbs) c.natAbs
 
-/-- The absolute product of the abc triple of j/1728. -/
-def abcProduct (j : ℚ) : ℕ :=
-  let t := j / 1728
-  let c : ℤ := t.den
-  (t.num * (c - t.num) * c).natAbs
-
 /-- Logarithm bounds for a natural number using exact dyadic range reduction. -/
 def logNatBounds (n : ℕ) : RealInterval :=
   let lo := (lowerLog ((n : ℤ) : Dyadic) 64).toRat
@@ -127,12 +121,10 @@ def abcQualityFactsOfCheck (e : WeierstrassCurve ℤ) [(e.baseChange ℚ).IsElli
     (claim : AbcQualityClaim) (h : abcQualityValid e claim = true) :
     CheckedAbcQualityFacts e := by
   have hdefined := abc_quality_defined_of_check e claim h
-  have hfactor : claim.factors.prod =
-      let t := (e.baseChange ℚ).j / 1728
-      let c : ℤ := t.den
-      (t.num * (c - t.num) * c).natAbs := by
+  have hfactor : claim.factors.prod = abcProduct (e.baseChange ℚ).j := by
     simp only [abcQualityValid, decide_eq_true_eq] at h
-    simpa [abcJ, abcProduct, j_invariant_of_exact_formula e (abcJ e) rfl] using h.2.2.1
+    rw [j_invariant_of_exact_formula e (abcJ e) rfl]
+    exact h.2.2.1
   have hprime : ∀ p ∈ claim.factors, p.Prime := by
     simp only [abcQualityValid, decide_eq_true_eq] at h
     exact fun p hp => (isPrime_correct p).mp (List.all_eq_true.mp h.2.2.2.1 p hp)
