@@ -38,6 +38,52 @@ example : ∃ basis : Module.Basis (Fin 2) (ZMod 2)
     Subgroup.mem_bot] at h
   exact h
 
+example : Residual40.certificate.modPrimeImage = some Residual40.modell_image_fact := rfl
+
+example :
+    let entry := Residual40.certificate.modPrimeImage.get (by rfl)
+    (((entry.finiteImage.modulus : ℕ), entry.label) = (2, "2Cs")) :=
+  Residual40.modell_image
+
+/-- The imported 40.a2 certificate identifies the subgroup of the exact mod-2 image. -/
+theorem residual40_conjugate :
+    let entry := Residual40.certificate.modPrimeImage.get (by rfl)
+    ∃ c : Matrix.GeneralLinearGroup (Fin 2) (ZMod (entry.finiteImage.modulus : ℕ)),
+      Subgroup.closure {g | g ∈ entry.finiteImage.generators} =
+        (residualImageReferenceGroup (entry.finiteImage.modulus : ℕ) [(1, 0, 0, 1)]).map
+          (MulAut.conj c).toMonoidHom := by
+  obtain ⟨rows, hr, conjugate⟩ := (Residual40.certificate.modPrimeImage.get (by rfl)).conjugate
+  change some (2, [(1, 0, 0, 1)]) = some (2, rows) at hr
+  simp only [Option.some.injEq, Prod.mk.injEq, true_and] at hr
+  simpa [← hr] using conjugate
+
+/-- Every submitted label in the 40.a2 curve-level list has a checked image. -/
+theorem residual40_list_entry (label : String) (h : label ∈ Residual40.claimed_modell_images) :
+    let list := Residual40.certificate.modPrimeImages.get (by rfl)
+    ∃ entry ∈ list.images, entry.label = label := by
+  apply ModPrimeImageListFact.exists_of_mem_labels
+  change label ∈ Residual40.modell_images_fact.images.map ModPrimeImageFact.label
+  rw [Residual40.modell_images]
+  exact h
+
+example : (Residual40.certificate.modPrimeImages.get (by rfl)).coverage = none := rfl
+
+example : Residual40Lean.claimed_modell_image = Residual40.claimed_modell_image := rfl
+example : Residual40Lean.claimed_modell_images = Residual40.claimed_modell_images := rfl
+
+/-- With geometric evidence, the empty 37.a1 list proves surjectivity at every prime. -/
+theorem residual37_surjective {subject : WeierstrassCurve ℤ} [h : EmptyListResidualImages subject]
+    (p : Nat.Primes) :
+    ∃ image : FiniteGaloisImageFact EmptyResidual37.curve,
+      (image.modulus : ℕ) = (p : ℕ) ∧ Subgroup.closure {g | g ∈ image.generators} = ⊤ := by
+  obtain ⟨image, hp, hproper⟩ :=
+    (((EmptyResidual37.certificate (h := h)).modPrimeImages.get (by rfl)).coverage.get
+      (by rfl)).down.complete p
+  refine ⟨image, hp, not_ne_iff.mp fun hne => ?_⟩
+  obtain ⟨entry, he, _⟩ := hproper.mpr hne
+  change entry ∈ ([] : List _) at he
+  exact List.not_mem_nil he
+
 section
 
 variable {subject : WeierstrassCurve ℤ} [h : CatalogueLocalImages subject]
@@ -61,11 +107,14 @@ end
 
 certify_ec ReportsOnly from_json_string
   r#"{ "ainvs":[0,0,0,-1,0], "nonmax_primes":[], "nonmax_rad":1,
-       "adelic_level":2, "adelic_gens":[[1,0,0,1]] }"#
+       "adelic_level":2, "adelic_gens":[[1,0,0,1]], "prime":0,
+       "modell_images":[] }"#
 
 example : ReportsOnly.certificate.nonmaxPrimes = none := rfl
 example : ReportsOnly.certificate.adelicGenerators = none := rfl
 example : ReportsOnly.witness.nonmaxPrimes = some [] := rfl
+example : ReportsOnly.certificate.modPrimeImages = none := rfl
+example : ReportsOnly.witness.modPrimeImages = some [] := rfl
 
 private meta def rejectGalois (base : Name) (command : Syntax)
     (check : Option String := none) : CommandElabM Unit := do
@@ -85,11 +134,13 @@ private meta def rejectGalois (base : Name) (command : Syntax)
   unless failed do throwError "Wrong Galois claim accepted: {base}"
   for suffix in [`curve, `witness, `integral_proofs, `claimed_nonmax_primes,
       `nonmax_prime_support, `nonmax_primes, `nonmax_rad,
-      `claimed_adelic_gens, `adelic_generator_fact, `adelic_gens, `certificate] do
+      `claimed_adelic_gens, `adelic_generator_fact, `adelic_gens,
+      `claimed_modell_image, `modell_image_fact, `modell_image,
+      `claimed_modell_images, `modell_images_fact, `modell_images, `certificate] do
     if env.contains (base ++ suffix) then throwError "Rejected report leaked {base ++ suffix}"
 
 run_cmd do
-  for suffix in [`nonmax_primes, `nonmax_rad, `adelic_gens] do
+  for suffix in [`nonmax_primes, `nonmax_rad, `adelic_gens, `modell_images] do
     if (← getEnv).contains (`ReportsOnly ++ suffix) then
       throwError "Bare Galois report emitted an assertion for {suffix}"
   rejectGalois `DuplicatePrimes (← `(certify_ec DuplicatePrimes from
@@ -110,6 +161,25 @@ run_cmd do
     r#"{ "ainvs":[0,0,0,-1,0], "adelic_level":2, "adelic_gens":[[1,1,0,1]] }"#
       with_proofs ({ adelicGenerators := some modTwoImage } : IntegralCurveProofs model)))
     (some "adelic_gens")
+  rejectGalois `WrongResidualLabel (← `(certify_ec WrongResidualLabel from
+    { equation := splitModel, modPrimeImage := some (2, "2B") }
+      with_proofs splitModTwoAttachment)) (some "modell_image")
+  rejectGalois `WrongResidualPrime (← `(certify_ec WrongResidualPrime from
+    { equation := splitModel, modPrimeImage := some (3, "2Cs") }
+      with_proofs splitModTwoAttachment)) (some "modell_image")
+  rejectGalois `MissingResidualPrime (← `(certify_ec MissingResidualPrime from_json_string
+    r#"{ "ainvs":[0,0,0,-7,-6], "modell_image":"2Cs" }"#))
+  rejectGalois `AdelicResidualPrime (← `(certify_ec AdelicResidualPrime from_json_string
+    r#"{ "ainvs":[0,0,0,-7,-6], "prime":0, "modell_image":"2Cs" }"#))
+    (some "modell_image_prime")
+  rejectGalois `WrongResidualList (← `(certify_ec WrongResidualList from_json_string
+    r#"{ "ainvs":[0,0,0,-7,-6], "modell_images":[] }"#
+      with_proofs splitModTwoAttachment)) (some "modell_images")
+  rejectGalois `DuplicateResidualPrime (← `(certify_ec DuplicateResidualPrime from
+    { equation := splitModel, modPrimeImages := some ["2Cs", "2Cs"] }
+      with_proofs ({ modPrimeImages := some { images := [splitModTwoLabel, splitModTwoLabel] } } :
+        IntegralCurveProofs splitModel))) (some "modell_images_distinct_primes")
+
 
 section
 
@@ -135,7 +205,8 @@ run_cmd do
   for declaration in [``modTwoImage, ``support338, ``ExactModTwo.certificate,
       ``ExactModTwo.adelic_gens, ``Exceptional338.certificate, ``Exceptional338.nonmax_primes,
       ``Reordered338.nonmax_primes,
-      ``Exceptional338.nonmax_rad] do
+      ``Exceptional338.nonmax_rad, ``Residual40.certificate, ``Residual40Lean.certificate,
+      ``residual40_conjugate, ``residual40_list_entry, ``residual37_surjective] do
     for assumption in ← liftTermElabM (Lean.collectAxioms declaration) do
       unless [``propext, ``Classical.choice, ``Quot.sound].contains assumption do
         throwError "Unexpected Galois-image axiom: {assumption}"

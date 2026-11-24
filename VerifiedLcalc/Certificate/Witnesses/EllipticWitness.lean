@@ -48,6 +48,10 @@ structure EllipticWitness where
   nonmaxRadical : Option Nat := none
   /-- The matrix generators reported for the adelic image reduced at its stated modulus. -/
   adelicGenerators : Option AdelicGeneratorsClaim := none
+  /-- A reported residual image at its source row's prime. -/
+  modPrimeImage : Option (Nat × String) := none
+  /-- The reported curve-level residual image labels. -/
+  modPrimeImages : Option (List String) := none
   /-- Claims for the ordered tuple of b₂, b₄, b₆ and b₈. -/
   bInvariants : Option (Int × Int × Int × Int) := none
   /-- Claims for the ordered pair of c₄ and c₆. -/
