@@ -663,7 +663,7 @@ and remain local. The trivial-group specialization
 `VerifiedLcalc.IntrinsicTorsionFact.card_radical` uses Mathlib cardinality
 directly. The missing reusable result is the rational pairing in TC-25.
 
-## TC-28 — native integral and composite image catalogues
+## TC-30 — native integral and composite image catalogues
 
 Target [LMFDB G1](roadmaps/LMFDB_Q_CERTIFICATION.md). For a nonsingular
 rational elliptic curve with exact Tate and finite torsion representations,
