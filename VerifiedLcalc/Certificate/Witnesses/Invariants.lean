@@ -114,7 +114,7 @@ structure ModifiedSzpiroRatioFacts (curve : WeierstrassCurve ℤ)
   /-- The logarithmic ratio of the larger minimal c-invariant power to the conductor
   lies within the stated error of the report. -/
   within_error :
-    |Real.log (Certification.modifiedSzpiroNumerator curve) /
+    |Real.log (max (curve.c₄.natAbs ^ 3) (curve.c₆.natAbs ^ 2) : ℕ) /
       Real.log conductor - (reported : ℝ)| ≤ (error : ℝ)
 
 /-- Arithmetic facts conditional on an explicit modular realization of the curve. -/
