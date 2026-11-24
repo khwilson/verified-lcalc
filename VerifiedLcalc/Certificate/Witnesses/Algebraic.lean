@@ -6,6 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.InputData
+public import VerifiedLcalc.Certificate.PeriodGeometrySpecs
 public import VerifiedLcalc.EllipticCurve.LmfdbLabel
 public import TauCeti.AlgebraicGeometry.EllipticCurve.LFunction.Basic
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Integral
@@ -49,6 +50,8 @@ public import Mathlib.RingTheory.AdjoinRoot
 * `ConductorClassRoster` proves the complete rational isogeny classes at a specified conductor,
   ordered by the arithmetic q-expansion. `LmfdbCatalogueFacts` uses this roster and the reduced
   minimal order within the subject's class to check catalogue indices and labels.
+* `PeriodGeometryFacts` carries enclosures for complex period area and Faltings heights,
+  and an exact area ratio when the entire isogeny class has been proved.
 * `AlgebraicFacts` collects optional checked points, orders, rank bounds, and regulator data.
 -/
 
@@ -526,6 +529,56 @@ structure FaltingsInput (curve : WeierstrassCurve ℤ) where
   ratio : Option ℕ := none
   /-- The producer's position in the Faltings-height ordering of the class. -/
   orderingIndex : Option ℕ := none
+
+/-- A rational center and nonnegative absolute error with a proof for a specified real value. -/
+structure PeriodGeometryEnclosure (value : ℝ) where
+  /-- Exact rational center of the enclosure. -/
+  reported : ℚ
+  /-- Exact rational absolute error radius. -/
+  error : { r : ℚ // 0 ≤ r }
+  /-- The target value lies in the claimed interval. -/
+  within_error : |value - (reported : ℝ)| ≤ (error.val : ℝ)
+
+/-- The exact catalogue ratio for the input curve, obtained from an attained maximum
+of the Néron areas of a proved complete rational isogeny class. -/
+structure FaltingsRatioFact (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
+  /-- The input equation uses a Néron differential. -/
+  inputMinimal : WeierstrassCurve.IsGlobalMinimal ℤ (curve.baseChange ℚ)
+  /-- Complete, pairwise distinct rational isogeny class with attained minimum degrees. -/
+  model : IsogenyClassModel curve
+  /-- Each representative uses a globally minimal equation, hence a Néron differential. -/
+  minimal : ∀ i, haveI := model.elliptic i
+    WeierstrassCurve.IsGlobalMinimal ℤ (model.representatives i)
+  /-- The class representative attaining the largest area. -/
+  maximizingIndex : Fin model.classSize
+  /-- The chosen representative has area at least that of every class member. -/
+  isMaximum : ∀ i,
+    haveI := model.elliptic i
+    haveI := model.elliptic maximizingIndex
+    complexPeriodArea (model.representatives i) ≤
+      complexPeriodArea (model.representatives maximizingIndex)
+  /-- The reported positive integer ratio. -/
+  ratio : { n : ℕ // 0 < n }
+  /-- The greatest area is exactly the input area multiplied by the reported ratio. -/
+  area_eq : haveI := model.elliptic maximizingIndex
+    complexPeriodArea (model.representatives maximizingIndex) =
+      (ratio.val : ℝ) * complexPeriodArea (curve.baseChange ℚ)
+
+/-- Optional independently proved area and height enclosures and exact class ratio,
+all on the same globally minimal input equation. -/
+structure PeriodGeometryFacts (curve : WeierstrassCurve ℤ) [(curve.baseChange ℚ).IsElliptic] where
+  /-- Global minimality of the supplied integral equation. -/
+  minimal : WeierstrassCurve.IsGlobalMinimal ℤ (curve.baseChange ℚ)
+  /-- Enclosure for the full complex period area. -/
+  area : Option (PeriodGeometryEnclosure (complexPeriodArea (curve.baseChange ℚ))) := none
+  /-- Enclosure for the catalogue's Faltings height. -/
+  height : Option (PeriodGeometryEnclosure (catalogueFaltingsHeight (curve.baseChange ℚ))) := none
+  /-- Enclosure for the catalogue's stable Faltings height. -/
+  stableHeight : Option
+    (PeriodGeometryEnclosure (catalogueStableFaltingsHeight (curve.baseChange ℚ))) := none
+  /-- Exact class-relative ratio when a complete class and attained maximum are proved. -/
+  ratio : Option (FaltingsRatioFact curve) := none
+
 
 /-! ## Algebraic certificate fields -/
 

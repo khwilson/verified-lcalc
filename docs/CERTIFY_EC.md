@@ -693,3 +693,25 @@ give a new finite-order point for this curve. Construct the proof with
 `Name.certificate.torsionGrowthField` exports the field, the degree proof,
 and the strict growth proof. Full extension torsion invariant factors and
 primitivity over proper subfields require additional evidence.
+
+## Complex period area and Faltings data
+
+Attach `IntegralCurveProofs.periodGeometry` with `with_proofs`. The corresponding
+`Name.certificate.periodGeometry` contains global minimality of the input equation
+and any supplied proofs for the three enclosures and the exact class ratio. The
+enclosures can be supplied independently. The class ratio carries a complete rational
+isogeny class model, a proof of global minimality for each representative, an
+index attaining the greatest area, and an exact equality with the input area times
+the positive integer ratio.
+
+The exact JSON keys are `area`, `faltings_height`, `stable_faltings_height`
+and `faltings_ratio`. To require a particular rational radius for a decimal,
+include `area_evidence`, `faltings_height_evidence`, or
+`stable_faltings_height_evidence` with an `error` field. The checker compares
+each submitted center and any submitted radius with the attached enclosure.
+For a submitted value with matching evidence the command emits a theorem
+such as `Name.area` about that report. With the JSON key omitted, a standalone
+proof supplied in the Lean attachment still appears in
+`Name.certificate.periodGeometry`. In that case there is no theorem about a
+catalogue value. A decimal alone stays a report. The checker leaves `faltings_index` as catalogue
+ordering metadata.

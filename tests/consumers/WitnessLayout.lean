@@ -46,6 +46,8 @@ run_cmd do
       (``VerifiedLcalc.ModPrimeImageListFact, `FinitePrimes),
       (``VerifiedLcalc.ConditionalAnalyticRank, `Analytic),
       (``VerifiedLcalc.TorsionWitness, `Algebraic),
+      (``VerifiedLcalc.PeriodGeometryFacts, `Algebraic),
+      (``VerifiedLcalc.FaltingsRatioFact, `Algebraic),
       (``VerifiedLcalc.DiscriminantWitness, `Invariants)] do
     let some idx := env.getModuleIdxFor? decl | throwError "missing witness {decl}"
     unless modules[idx.toNat]! == (root ++ subject) do

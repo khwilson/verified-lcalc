@@ -62,6 +62,8 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   /-- A proved height enclosure indexed by its ordered rational point list. -/
   canonicalHeights : Option (Σ points : (Σ n : ℕ,
     Fin n → (curve.baseChange ℚ).toAffine.Point), CanonicalHeightFacts points.2) := none
+  /-- Proved complex period area, Faltings heights and class-relative area ratio. -/
+  periodGeometry : Option (PeriodGeometryFacts curve) := none
   /-- Proved enclosure for the full minimal real period. -/
   realPeriod : Option (RealPeriodFact curve) := none
   /-- Proved product of all intrinsic finite-place Tamagawa numbers. -/
@@ -115,6 +117,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   minimumQuadraticTwist : Option (MinimumQuadraticTwistEvidence curve) := none
   /-- Checked modified Szpiro ratio enclosure. -/
   modifiedSzpiroRatio : Option (ModifiedSzpiroRatioFacts curve) := none
+  /-- Checked complex period area, Faltings heights and class-relative area ratio. -/
+  periodGeometry : Option (PeriodGeometryFacts curve) := none
   /-- Checked full real period enclosure. -/
   realPeriod : Option (RealPeriodFact curve) := none
   /-- Checked product of the intrinsic finite-place Tamagawa numbers. -/

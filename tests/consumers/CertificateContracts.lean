@@ -42,6 +42,12 @@ open VerifiedLcalc Lean Elab Command
 #check EllipticCertificate.complexMultiplication
 #check EllipticCertificate.minimumQuadraticTwist
 #check EllipticCertificate.modifiedSzpiroRatio
+#check EllipticCertificate.periodGeometry
+#check PeriodGeometryFacts.area
+#check PeriodGeometryFacts.height
+#check PeriodGeometryFacts.stableHeight
+#check FaltingsRatioFact.area_eq
+#check PeriodGeometryEnclosure.within_error
 #check ModifiedSzpiroRatioEvidence
 #check MinimumQuadraticTwistEvidence.uniqueMinimum
 #check EllipticCertificate.torsionGrowthField
@@ -136,6 +142,7 @@ run_cmd do
     `VerifiedLcalc.Certificate.Support.GaloisImage,
     `VerifiedLcalc.Tactic.CertifyECGalois,
     `VerifiedLcalc.Verification.ModifiedSzpiroRatio,
+    `VerifiedLcalc.Verification.PeriodGeometry,
     `VerifiedLcalc.Analytic,
     `VerifiedLcalc.Verification.TorsionBoundFacts,
     `VerifiedLcalc.EllipticCurve.TorsionBound,
