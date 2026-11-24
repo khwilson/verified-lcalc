@@ -66,9 +66,48 @@ private def certifyAdelicGenerators (base : Name) (attachment : Option Ident) :
     (← `((($fact).modulus : ℕ) = ($report).modulus ∧ ($fact).matrixRows = ($report).rows))
     (← `(by constructor <;> first | rfl | decide +kernel))
 
+/-- Compare one source row with a proved residual conjugacy class. -/
+private def certifyModPrimeImage (base : Name) (attachment : Option Ident) :
+    CommandElabM Unit := do
+  let some report ← bindStored base `modPrimeImage `modell_image (← `(ℕ × String))
+    | return
+  checked (base ++ `modell_image_prime) (← `(Nat.Prime ($report).1))
+    (← `(by decide +kernel))
+  let some proof ← attachedFact attachment `modPrimeImage
+    | logInfo m!"Unverified {base} modell_image: supply an exact residual image"
+  let curve := rootIdent (base ++ `curve)
+  let fact := rootIdent (base ++ `modell_image_fact)
+  emit (← `(def $fact :
+    @ModPrimeImageFact $curve inferInstance (Classical.decEq _) := $proof))
+  auditAxioms (base ++ `modell_image_fact)
+  checked (base ++ `modell_image)
+    (← `(((($fact).finiteImage.modulus : ℕ), ($fact).label) = $report))
+    (← `(by first | rfl | decide +kernel))
+
+/-- Compare the labels in order and rule out multiple entries at the same prime. -/
+private def certifyModPrimeImages (base : Name) (attachment : Option Ident) :
+    CommandElabM Unit := do
+  let some report ← bindStored base `modPrimeImages `modell_images (← `(List String))
+    | return
+  let some proof ← attachedFact attachment `modPrimeImages
+    | logInfo m!"Unverified {base} modell_images: supply exact residual image evidence"
+  let curve := rootIdent (base ++ `curve)
+  let fact := rootIdent (base ++ `modell_images_fact)
+  emit (← `(def $fact :
+    @ModPrimeImageListFact $curve inferInstance (Classical.decEq _) := $proof))
+  auditAxioms (base ++ `modell_images_fact)
+  checked (base ++ `modell_images)
+    (← `((($fact).images.map ModPrimeImageFact.label) = $report))
+    (← `(by first | rfl | decide +kernel))
+  checked (base ++ `modell_images_distinct_primes)
+    (← `(((($fact).images.map fun entry => (entry.finiteImage.modulus : ℕ)).Nodup)))
+    (← `(by first | exact of_decide_eq_true (by rfl) | decide +kernel))
+
 /-- Check the Galois report fields against any matching evidence in `with_proofs`. -/
 def certifyGaloisFacts (base : Name) (attachment : Option Ident) : CommandElabM Unit := do
   certifyNonmaxPrimes base attachment
   certifyAdelicGenerators base attachment
+  certifyModPrimeImage base attachment
+  certifyModPrimeImages base attachment
 
 end VerifiedLcalc.CertifyEC

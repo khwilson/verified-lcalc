@@ -7,6 +7,7 @@ module
 
 public import VerifiedLcalc.Certificate.Witnesses.Invariants
 public import VerifiedLcalc.Certificate.LocalReductionSpecs
+public import VerifiedLcalc.Certificate.ResidualImageLabels
 public import VerifiedLcalc.EllipticCurve.Tate.ArithmeticSpecs
 public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReductionSpec
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
@@ -29,8 +30,10 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Cu
   finite transcript validity, potential good reduction, and prime-indexed and consecutive
   L-function coefficients. Its modular facts require an explicit arithmetic realization.
 * `FiniteGaloisImageFact` and `PadicGaloisImageFact` give exact images in supplied bases.
-* `NonmaxPrimeSupportFact` proves complete non-CM exceptional support and determines
-  the radical as the product of those primes.
+* `ModPrimeImageFact` identifies the exact residual image up to conjugacy. A checked
+  `ModPrimeImageListFact` can also carry exhaustive non-CM `ModPrimeImageCoverage`.
+* `NonmaxPrimeSupportFact` proves complete non-CM exceptional support for the integral
+  Tate-module images and determines the radical as the product of those primes.
 * `AdelicGaloisImageClaim`, `PrimeGaloisImageClaim`, `SerreInvariantClaim` and
   `GaloisImageClaims` hold producer data whose interpretation needs further comparison theorems.
 -/
@@ -176,6 +179,43 @@ structure FiniteGaloisImageFact (curve : WeierstrassCurve ℤ)
             (Multiplicative.toAdd
               ((curve.baseChange ℚ).torsionGaloisAction ((modulus : ℕ) : ℤ) σ) P) =
           (g : Matrix (Fin 2) (Fin 2) (ZMod (modulus : ℕ))) *ᵥ basis.equivFun P
+
+/-- An exact residual Galois image identified with a supported Sutherland conjugacy class. -/
+structure ModPrimeImageFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)] where
+  /-- The full geometric torsion image in an ordered basis. -/
+  finiteImage : FiniteGaloisImageFact curve
+  /-- The torsion modulus is a rational prime. -/
+  prime : Nat.Prime (finiteImage.modulus : ℕ)
+  /-- The Sutherland label of the image. -/
+  label : String
+  /-- The generated image is a conjugate of the reference subgroup for the label. -/
+  conjugate : ∃ rows,
+    residualImageLabelGenerators label = some ((finiteImage.modulus : ℕ), rows) ∧
+      ∃ c : Matrix.GeneralLinearGroup (Fin 2) (ZMod (finiteImage.modulus : ℕ)),
+        Subgroup.closure {g | g ∈ finiteImage.generators} =
+          (residualImageReferenceGroup (finiteImage.modulus : ℕ) rows).map
+            (MulAut.conj c).toMonoidHom
+
+/-- Exhaustiveness of a residual image list under the non-CM reporting convention. -/
+structure ModPrimeImageCoverage (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)]
+    (images : List (ModPrimeImageFact curve)) : Prop where
+  /-- The curve has no geometric complex multiplication. -/
+  nonCM : ¬ (curve.baseChange ℚ).HasGeometricCM
+  /-- The primes appearing in the list are precisely the primes with proper residual image. -/
+  complete : ∀ p : Nat.Primes, ∃ image : FiniteGaloisImageFact curve,
+    (image.modulus : ℕ) = (p : ℕ) ∧
+      ((∃ entry ∈ images, (entry.finiteImage.modulus : ℕ) = (p : ℕ)) ↔
+        Subgroup.closure {g | g ∈ image.generators} ≠ ⊤)
+
+/-- Verified entries of the submitted curve-level list, with optional non-CM exhaustiveness. -/
+structure ModPrimeImageListFact (curve : WeierstrassCurve ℤ)
+    [(curve.baseChange ℚ).IsElliptic] [DecidableEq (AlgebraicClosure ℚ)] where
+  /-- One exact conjugacy-class identification per listed label, in report order. -/
+  images : List (ModPrimeImageFact curve)
+  /-- Optional evidence that the list covers all and only the exceptional residual primes. -/
+  coverage : Option (PLift (ModPrimeImageCoverage curve images)) := none
 
 /-- The exact image on the full Tate module over the algebraic closure of the rationals.
 The subgroup carries the entire prime-adic conclusion. -/

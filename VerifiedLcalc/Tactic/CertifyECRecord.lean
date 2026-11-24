@@ -227,6 +227,8 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   else `(none)
   let nonmaxPrimes ← optionalFactTerm base `nonmax_prime_support
   let adelicGenerators ← optionalFactTerm base `adelic_generator_fact
+  let modPrimeImage ← optionalFactTerm base `modell_image_fact
+  let modPrimeImages ← optionalFactTerm base `modell_images_fact
   let cm ← optionalFactTerm base `cm_fact
   let twist ← optionalFactTerm base `minimum_quadratic_twist_evidence
   let szpiroRatio ← optionalFactTerm base `szpiro_ratio_fact
@@ -252,6 +254,8 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     lmfdbCatalogue := $catalogue
     nonmaxPrimes := $nonmaxPrimes
     adelicGenerators := $adelicGenerators
+    modPrimeImage := $modPrimeImage
+    modPrimeImages := $modPrimeImages
     complexMultiplication := $cm
     minimumQuadraticTwist := $twist
     modifiedSzpiroRatio := $szpiroRatio

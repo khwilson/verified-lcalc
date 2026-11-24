@@ -657,7 +657,7 @@ run_cmd do
   let isogeny := #[`isogenyEdge, `classSize, `classDegree, `isogenyDegrees, `isogenyMatrix]
   let geometry := #[`complexMultiplication, `minimumTwistEquation, `minimumTwistDiscriminant,
     `modifiedSzpiroRatio]
-  let galois := #[`nonmaxPrimes, `nonmaxRadical, `adelicGenerators]
+  let galois := #[`nonmaxPrimes, `nonmaxRadical, `adelicGenerators, `modPrimeImage, `modPrimeImages]
   cover ``EllipticWitness
     (equation ++ rational ++ algebraic ++ arithmetic ++ analytic ++ torsion ++
       isogeny ++ geometry ++ galois ++ #[`lmfdbNumber, `isoNlabel, `lmfdbIso, `lmfdbLabel])

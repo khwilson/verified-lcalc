@@ -32,6 +32,11 @@ open VerifiedLcalc Lean Elab Command
 #check NonmaxPrimeSupportFact
 #check AdelicGeneratorsClaim
 #check FiniteGaloisImageFact
+#check ModPrimeImageFact
+#check ModPrimeImageListFact
+#check ModPrimeImageCoverage
+#check EllipticCertificate.modPrimeImage
+#check EllipticCertificate.modPrimeImages
 #check EllipticCertificate.nonmaxPrimes
 #check EllipticCertificate.adelicGenerators
 #check EllipticCertificate.complexMultiplication
