@@ -1,6 +1,9 @@
 import VerifiedLcalc.EllipticCurve.Modularity.Prefix
 import VerifiedLcalc.Verification.CentralEvaluator
 
+/-! # Arithmetic and analytic integration axioms -/
+
+-- This audit intentionally uses `#print axioms` to check proof dependencies.
 set_option linter.hashCommand false
 
 -- These implications accept mathematical witnesses as arguments. They must

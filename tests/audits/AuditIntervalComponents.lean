@@ -1,5 +1,8 @@
 import VerifiedLcalc.Verification.DerivativeCertification
 
+/-! # Interval arithmetic and evaluator axioms -/
+
+-- This audit intentionally uses `#print axioms` to check proof dependencies.
 set_option linter.hashCommand false
 
 /-- info: 'VerifiedLcalc.Numerics.roundInterval_sound' depends on axioms: [propext, Classical.choice, Quot.sound] -/
@@ -57,4 +60,3 @@ set_option linter.hashCommand false
 /-- info: 'VerifiedLcalc.EllipticCurve.minimal_prefix' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms VerifiedLcalc.EllipticCurve.minimal_prefix
-
