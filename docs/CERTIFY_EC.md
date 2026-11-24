@@ -241,6 +241,22 @@ displayed by LMFDB. The display reads a stored class row for positive rank
 and LMFDB curve number 1. Within the p-adic object, `lmfdb_iso` is catalogue metadata.
 [LMFDB p-adic regulator renderer](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/elliptic_curve.py#L775-L792)
 
+## Check Cremona labels in singleton cases
+
+Submit `Ciso` and `Clabel` as exact strings and `Cnumber` as an exact natural
+number. The matching Lean fields are `cremonaIso`, `cremonaLabel`, and
+`cremonaNumber`. Supply `IntegralCurveProofs.cremonaSingleton` through
+`with_proofs`. It carries the actual algorithmic conductor norm and a proof
+that it is in the published range, from 1 through 500000.
+
+Attach `onlyClass` for `Ciso`, `onlyCurve` for `Cnumber`, or both for `Clabel`.
+These are exhaustive proofs about the conductor's rational isogeny classes
+and the subject's rational isomorphism classes, respectively. The resulting
+proofs are available through `Name.certificate.cremonaCatalogue`. Other
+historical orderings remain unverified.
+[LMFDB convention](https://www.lmfdb.org/knowledge/show/ec.q.cremona_label)
+· [Published Cremona tables](https://github.com/JohnCremona/ecdata/tree/6fedd3ab463a70e52061ebc0b04832ad19fd2e01/allcurves)
+
 ## Check the LMFDB catalogue indices and labels
 
 Submit any of `lmfdb_number`, `iso_nlabel`, `lmfdb_iso`, and `lmfdb_label`

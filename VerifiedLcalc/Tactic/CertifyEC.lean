@@ -6,6 +6,7 @@ public import VerifiedLcalc.Tactic.CertifyECPoints
 public import VerifiedLcalc.Tactic.CertifyECInvariants
 public import VerifiedLcalc.Tactic.CertifyECIsogeny
 public import VerifiedLcalc.Tactic.CertifyECLmfdbCatalogue
+public import VerifiedLcalc.Tactic.CertifyECCremona
 public import VerifiedLcalc.Tactic.CertifyECRecord
 public import VerifiedLcalc.Tactic.CertifyECCatalogueRank
 public import VerifiedLcalc.Tactic.CertifyECMordellWeil
@@ -275,6 +276,7 @@ def certifyFields (name : Name) (input : TSyntax `term)
   certifyIsogenyEdge base isogeny
   certifyIsogenyClass base
   certifyLmfdbCatalogue base
+  certifyCremona base
   if let some result := central then certifyAnalytic base true result
   if let some result := derivative then certifyAnalytic base false result
   certifyRecord base
@@ -325,7 +327,7 @@ def certifyJson (name : Name) (text : String)
         "num_int_pts", "class_size", "class_deg", "isogeny_matrix", "isogeny_degrees",
         "nonmax_primes", "nonmax_rad", "adelic_gens", "modell_image", "modell_images",
         "adelic_level", "adelic_index", "adelic_genus", "adelic_image",
-        "lmfdb_number", "iso_nlabel", "lmfdb_iso", "lmfdb_label",
+        "lmfdb_number", "iso_nlabel", "lmfdb_iso", "lmfdb_label", "Ciso", "Clabel", "Cnumber",
         "isogeny_edge", "j_integral", "potential_good_reduction", "torsion_bound", "torsion"] ++
         ["torsion_growth", "heights", "heights_evidence", "regulator", "regulator_evidence",
           "padic_regulator", "real_period", "real_period_evidence", "tamagawa_product",

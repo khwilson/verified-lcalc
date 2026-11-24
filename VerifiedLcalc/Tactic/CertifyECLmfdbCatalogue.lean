@@ -37,7 +37,7 @@ private def orderedRoster (base : Name) (curve : Ident) : CommandElabM (Option I
 
 /-- Expose a literal formatting argument even when its record also carries local proofs.
 The generated equality checks that the literal is definitionally equal to the projection. -/
-private def catalogueNumeral (input : TSyntax `term) : CommandElabM (Option (TSyntax `term)) :=
+def catalogueNumeral (input : TSyntax `term) : CommandElabM (Option (TSyntax `term)) :=
   runTermElabM fun _ => do
     let term ← Term.elabTerm input (some (mkConst ``Nat))
     Term.synthesizeSyntheticMVarsNoPostponing

@@ -4,15 +4,15 @@ Start with [`EllipticWitness`](EllipticWitness.lean) for input to `certify_ec` a
 
 The index covers **85 distinct column names** across **101 table-qualified columns** in the eight EC/ℚ tables, excluding the database row identifier `id`. Each name appears once. The table column omits the `ec_` prefix. [LMFDB schema for 37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
 
-All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **63 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
+All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **66 of 85**. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
 
 ## Curve data (`ec_curvedata`)
 
 | LMFDB field | Table(s) | Status | Witness and scope |
 | --- | --- | --- | --- |
-| `Ciso` | `curvedata` | Metadata | [`CatalogueMetadata.cremonaIso`](InputData.lean). Reported catalogue identifier or ordering. |
-| `Clabel` | `curvedata` | Metadata | [`CatalogueMetadata.cremonaLabel`](InputData.lean). Reported catalogue identifier or ordering. |
-| `Cnumber` | `curvedata` | Metadata | [`CatalogueMetadata.cremonaNumber`](InputData.lean). Reported catalogue identifier or ordering. |
+| `Ciso` | `curvedata` | Checked | [`CremonaSingletonFacts.isoLabel`](Algebraic.lean). The conductor and suffix `a` with a complete singleton conductor roster. |
+| `Clabel` | `curvedata` | Checked | [`CremonaSingletonFacts.curveLabel`](Algebraic.lean). The conductor and suffix `a1` with both complete singleton orderings. |
+| `Cnumber` | `curvedata` | Checked | [`CremonaSingletonFacts.number`](Algebraic.lean). One with a complete singleton rational isogeny class. |
 | `abc_quality` | `curvedata` | Checked | [`AbcQualityFacts.within_error`](Invariants.lean). The reported rational and its error enclose the curve’s abc quality, using a checked factorization with j distinct from 0 and 1728. |
 | `absD` | `curvedata` | Checked | [`MinimalModelArithmeticFacts.minimalDiscriminantAbs`](FinitePrimes.lean). Absolute discriminant of a model proved globally minimal. |
 | `adelic_genus` | `curvedata` | Checked with evidence | [`EllipticWitness.adelicGenus`](EllipticWitness.lean) and [`AdelicGenusFact`](FinitePrimes.lean). Genus of the compactified effective modular quotient. |
