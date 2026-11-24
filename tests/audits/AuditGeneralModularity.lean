@@ -1,5 +1,10 @@
 import VerifiedLcalcTests.Fixtures.GeneralModularityExamples
 
+/-! # General modularity axiom dependencies -/
+
+-- This audit intentionally uses `#print axioms` to check proof dependencies.
+set_option linter.hashCommand false
+
 /-- info: 'VerifiedLcalc.Modularity.ModularRealization.formL_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms VerifiedLcalc.Modularity.ModularRealization.formL_eq

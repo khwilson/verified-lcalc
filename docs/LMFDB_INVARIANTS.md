@@ -1,6 +1,6 @@
 # LMFDB invariants through `certify_ec`
 
-The [EC/Q coverage roadmap](roadmaps/LMFDB_Q_CERTIFICATION.md) inventories the related LMFDB tables and specifies the reusable theorem and checker work for each remaining field.
+The [EC/Q coverage roadmap](roadmaps/LMFDB_Q_CERTIFICATION.md) inventories the related LMFDB tables and specifies the reusable theorem and checker work for the remaining interpretations and cases.
 
 `certify_ec` remains the sole public interface. Each optional witness field
 requests a check against the represented curve. Missing fields make no claim.
@@ -32,12 +32,14 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
 | `ec_iwasawa` | 3 | Checked selected prime rows and a universal good-prime vanishing bound, with normalized interpolation evidence. |
 
-The command covers **81 of 85 distinct LMFDB column names** with the evidence
+The command covers **85 of 85 distinct LMFDB column names** with the evidence
 specified below. Assigning each name to one table where its interpretation
-has a checker gives 48 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
-`ec_mwbsd`, 8 in `ec_localdata`, 3 in `ec_galrep`, 4 in `ec_padic`,
-1 in `ec_torsion_growth` and 2 in `ec_iwasawa`. Shared names such as
-`class_size` count once.
+has a checker gives 51 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
+`ec_mwbsd`, 8 in `ec_localdata`, 4 in `ec_galrep`, 4 in `ec_padic`,
+1 in `ec_torsion_growth`, and 2 in `ec_iwasawa`. Shared names such as
+`class_size` count once. Counting table-qualified interpretations separately
+gives **100 of 101** with a supported check. The extension torsion
+invariant factors in `ec_torsion_growth.torsion` remain a separate proof target.
 The four stored p-adic coordinates enter this tally through the proof-parametric
 rank-one checker. The curve-level rank-zero display and project-specific keys
 are outside the stored-column count.
@@ -132,6 +134,10 @@ reviewed LMFDB ordering and base-26 encoding.
 | `adelic_index` | `adelicIndex` | Index of that image in the integral adelic general linear group. |
 | `adelic_genus` | `adelicGenus` | Genus of the compactified effective quotient of the determinant-one integral pullback. |
 | `adelic_image` | `adelicImage` | At prime zero, a partial label `N.i.g.?` is checked against the proved level, index and genus with the class suffix unspecified. |
+| `elladic_image` | `padicImage` | Exact integral Tate-module image conjugate to the inverse image of a supported Rouse–Sutherland–Zureick-Brown subgroup at the native row's prime. |
+| `elladic_images` | `padicImages` | Exact integral Tate-module image for each submitted label. Exhaustiveness uses independent non-CM support evidence. |
+| `modm_images` | `modulusImages` | Checked sublist of native finite-image labels. An incomplete label `N.i.g.?` can certify minimal level, index and genus for the inverse image of the exact mod-`N` group. |
+| `serre_invariants` | `serreInvariants` | Complete list of exceptional triples from Serre's published formula on a checked globally minimal semistable equation with good reduction at two. The default conductor is the norm of the algorithmic conductor. The intrinsic residual-ramification comparison is an upstream target. |
 | `adelic_gens` | `adelicGenerators` | Complete image on the full geometric torsion of the reported modulus in a supplied basis. Requires an `FiniteGaloisImageFact` through `with_proofs`. |
 | `num_int_pts` | `numIntegralPoints` | Exact cardinality theorem from supplied exhaustive `IntegralXSupport`; available at `certificate.algebraic.completeIntegralPoints` with finite-set completeness and `Finite` evidence. Without support it is unverified, but a count below the number of distinct checked points or seed-fiber solutions is rejected. |
 | `gens`, `torsion_generators` | `generatorCoordinates`, `torsionGeneratorCoordinates` | Exact weighted triples decode to rational points with checked membership. |
@@ -174,6 +180,26 @@ with exact subgroup evidence, and a bare empty list gives no coverage proof.
 [Sutherland, Section 6.4 and Table 3](https://doi.org/10.1017/fms.2015.33)
 · [LMFDB 40.a2](https://www.lmfdb.org/EllipticCurve/Q/40a1/)
 · [LMFDB CM example 32.a2](https://www.lmfdb.org/EllipticCurve/Q/data/32.a2)
+
+The `elladic_image` and `elladic_images` labels follow the numeric
+Rouse–Sutherland–Zureick-Brown convention. Supported labels have a reference
+finite subgroup, and the proof compares the entire integral Tate-module
+image with its full inverse image. CM rows may use this pointwise comparison.
+Full support requires a separate non-CM premise and all-prime image proof.
+[RSZB labels and convention](https://doi.org/10.1017/fms.2022.38)
+· [2-adic representatives](https://github.com/AndrewVSutherland/ell-adic-galois-images/blob/66b7084148a4da13b49e0daaa76d88d64d9e085f/groups/gl2_2adic.txt)
+· [5-adic representatives](https://github.com/AndrewVSutherland/ell-adic-galois-images/blob/66b7084148a4da13b49e0daaa76d88d64d9e085f/groups/gl2_5adic.txt)
+· [LMFDB 69.a1](https://www.lmfdb.org/EllipticCurve/Q/data/69.a1)
+
+The `modm_images` list uses modular-curve labels. The known level-two
+representatives are `2.3.0.a.1` and `2.6.0.a.1`. The catalogue also includes
+`22.2.0.a.1` from the finite image recorded for 64064.o1. For `N.i.g.?`, Lean checks
+the level, index and topological genus of the full inverse image of the
+verified finite subgroup. Checking every submitted entry leaves open which
+reductions the producer chose to enumerate.
+[LMFDB 40.a2](https://www.lmfdb.org/EllipticCurve/Q/40a1/)
+· [LMFDB 37.a1](https://www.lmfdb.org/EllipticCurve/Q/data/37.a1)
+· [LMFDB 64064.o1](https://www.lmfdb.org/EllipticCurve/Q/64064/o/1)
 
 The 37.a1 native row reports `74.2.0.?`. The level and index concern the
 unsymmetrized adelic image. Genus uses the effective `PSL₂(ℝ)` image of the
@@ -428,12 +454,11 @@ checks the claimed error against the two logarithms. Each checked result is
 available in the correspondingly named field of `Name.certificate`.
 
 
-## Remaining invariant groups
+## Remaining cases and proof production
 
-These fields remain unverified metadata unless a check above independently
-covers their mathematical content. A matching list length, product, numerical
-approximation, or classification-table entry is not a substitute for the
-missing theorem.
+The current checks cover the cases and evidence described above. The
+following work would extend that support or construct evidence that the
+verifier currently requires from the caller.
 
 | Group / fields | Proof work still needed |
 | --- | --- |
@@ -443,8 +468,8 @@ missing theorem.
 | CM and minimum twist evidence production | A geometric endomorphism-ring classifier and a general minimum-conductor twist algorithm. Native ordering among equally good twists is a separate open obligation. |
 | Heights, periods, regulator, Faltings data, special values | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |
 | Algebraic Sha | A separate cohomological/descent proof of finiteness, cardinality, or a primary component. |
-| Remaining Galois-image levels, Serre data, and full extension torsion | The relevant representations, fields, group images, and completeness proofs. |
-| Labels, ordering/index fields, hashes | Catalogue/provenance metadata; not mathematical identity certificates. |
+| Additional Galois-image cases, Serre data beyond the supported semistable case, and full extension torsion | The relevant representations, fields, group images, and completeness proofs. |
+| Catalogue labels, orderings and hashes | Produce the complete rosters, compatible curve models and verified coefficient lists required by the corresponding checkers. |
 
 Mazur's classification restricts rational elliptic-curve torsion over `ℚ` to
 cyclic groups or groups of the form `ℤ/2ℤ × ℤ/2mℤ`. The checked outputs cover

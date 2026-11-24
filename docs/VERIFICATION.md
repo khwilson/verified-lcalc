@@ -120,7 +120,7 @@ BSD and cutoff-based exact vanishing have not been axiomatized.
 
 ## Integrated arithmetic and central analysis
 
-`AuditIntegration.lean` guards the selected TauCeti local-factor and
+`tests/audits/AuditIntegration.lean` guards the selected TauCeti local-factor and
 multiplicativity theorems, our arithmetic adapter, the sum–integral exchange,
 the Fourier-to-central formula, and the interval-to-rank-zero implication.
 These implications accept the required mathematical witnesses as arguments

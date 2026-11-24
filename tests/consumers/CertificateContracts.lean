@@ -40,6 +40,7 @@ open VerifiedLcalc Lean Elab Command
 #check NonmaxPrimeSupportFact
 #check AdelicGeneratorsClaim
 #check FiniteGaloisImageFact
+#check SemistableSerreRecipeFact
 #check ModPrimeImageFact
 #check ModPrimeImageListFact
 #check ModPrimeImageCoverage
@@ -47,10 +48,15 @@ open VerifiedLcalc Lean Elab Command
 #check EllipticCertificate.modPrimeImages
 #check EllipticCertificate.nonmaxPrimes
 #check EllipticCertificate.adelicGenerators
+#check PadicImageLabelFact
+#check PadicImageListFact
+#check ModulusImageLabelFact
+#check ModulusImageListFact
 #check AdelicImageFact
 #check AdelicGenusFact
 #check AdelicImageCertificate
 #check EllipticCertificate.adelicImage
+#check EllipticCertificate.serreInvariants
 #check EllipticCertificate.complexMultiplication
 #check EllipticCertificate.minimumQuadraticTwist
 #check EllipticCertificate.modifiedSzpiroRatio
