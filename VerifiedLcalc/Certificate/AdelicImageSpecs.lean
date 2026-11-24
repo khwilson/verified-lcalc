@@ -36,7 +36,7 @@ abbrev AdelicLocalRing (p : Nat.Primes) : Type :=
 abbrev AdelicGL : Type := (p : Nat.Primes) → GeneralLinearGroup (Fin 2) (AdelicLocalRing p)
 
 /-- The reduction to each prime-power factor of a positive modulus. -/
-def adelicPrimePowerReduction (N : ℕ+) : AdelicGL →*
+noncomputable def adelicPrimePowerReduction (N : ℕ+) : AdelicGL →*
     ((p : (N : ℕ).primeFactors) → GeneralLinearGroup (Fin 2)
       (ZMod (p.val ^ (N : ℕ).factorization p.val))) where
   toFun g p :=
@@ -54,8 +54,9 @@ def adelicPrimePowerReduction (N : ℕ+) : AdelicGL →*
 noncomputable def adelicCRT (N : ℕ+) : GeneralLinearGroup (Fin 2) (ZMod (N : ℕ)) ≃*
     ((p : (N : ℕ).primeFactors) → GeneralLinearGroup (Fin 2)
       (ZMod (p.val ^ (N : ℕ).factorization p.val))) :=
-  (GeneralLinearGroup.mapEquiv (Fin 2) (ZMod.equivPi N.ne_zero)).trans
-    (GeneralLinearGroup.piEquiv _)
+  (GeneralLinearGroup.mapEquiv (Fin 2) (ZMod.equivPi (N : ℕ) N.ne_zero)).trans
+    (GeneralLinearGroup.piEquiv
+      (fun p : (N : ℕ).primeFactors => ZMod (p.val ^ (N : ℕ).factorization p.val)))
 
 /-- The standard reduction of the integral adelic matrix group modulo a positive integer. -/
 noncomputable def adelicReduction (N : ℕ+) :
@@ -63,7 +64,7 @@ noncomputable def adelicReduction (N : ℕ+) :
   (adelicCRT N).symm.toMonoidHom.comp (adelicPrimePowerReduction N)
 
 /-- Diagonal embedding of the determinant-one integral group in the adelic group. -/
-def adelicSL2 : SL(2, ℤ) →* AdelicGL where
+noncomputable def adelicSL2 : SL(2, ℤ) →* AdelicGL where
   toFun g p :=
     letI : Fact p.val.Prime := ⟨p.property⟩
     Matrix.SpecialLinearGroup.mapGL (AdelicLocalRing p) g
@@ -75,12 +76,12 @@ def adelicSL2 : SL(2, ℤ) →* AdelicGL where
     exact map_mul _ g h
 
 /-- The congruence pullback consisting of determinant-one integral matrices in the adelic image. -/
-def adelicCongruenceSubgroup (H : Subgroup AdelicGL) : Subgroup SL(2, ℤ) :=
+noncomputable def adelicCongruenceSubgroup (H : Subgroup AdelicGL) : Subgroup SL(2, ℤ) :=
   H.comap adelicSL2
 
 /-- The effective modular subgroup. The map to the projective group identifies the two signs,
 as required for the coarse modular curve even when the adelic image omits `-I`. -/
-def adelicProjectiveSubgroup (H : Subgroup AdelicGL) : Subgroup PSL(2, ℝ) :=
+noncomputable def adelicProjectiveSubgroup (H : Subgroup AdelicGL) : Subgroup PSL(2, ℝ) :=
   (adelicCongruenceSubgroup H).map sl2zToPSL2R
 
 /-- The effective image of the integral modular subgroup is discrete. -/
