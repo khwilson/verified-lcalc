@@ -99,7 +99,8 @@ private meta def expectRejected (base field : Name) (command : Syntax) : Command
   catch error => pure [← error.toMessageData.toString]
   let env ← getEnv
   set { (← get) with messages := saved }
-  unless diagnostics.any (fun text => (text.splitOn s!"failed checking {base}.{field}").length > 1) do
+  let expected := s!"failed checking {base}.{field}"
+  unless diagnostics.any (fun diagnostic => (diagnostic.splitOn expected).length > 1) do
     throwError "Expected rejection while checking {base}.{field}, got {diagnostics}"
   for suffix in [`curve, `witness, `lmfdb_conductor_class_roster, `lmfdb_ordered_class,
       `lmfdb_catalogue, `certificate] do
