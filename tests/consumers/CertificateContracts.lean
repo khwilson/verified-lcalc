@@ -26,6 +26,9 @@ open VerifiedLcalc Lean Elab Command
 #check IsogenyClassOrdering
 #check ConductorClassRoster
 #check LmfdbCatalogueFacts
+#check TraceHashCoefficients
+#check TraceHashFact.correct
+#check EllipticCertificate.traceHash
 #check CremonaSingletonEvidence
 #check CremonaSingletonFacts
 #check EllipticCertificate.cremonaCatalogue
@@ -50,6 +53,10 @@ open VerifiedLcalc Lean Elab Command
 #check EllipticCertificate.minimumQuadraticTwist
 #check EllipticCertificate.modifiedSzpiroRatio
 #check EllipticCertificate.periodGeometry
+#check EllipticCertificate.faltingsIndex
+#check FaltingsIndexFact.mem_predecessors
+#check EllipticCertificate.intrinsicTorsion
+#check IntrinsicTorsionFact.torsion_card
 #check PeriodGeometryFacts.area
 #check PeriodGeometryFacts.height
 #check PeriodGeometryFacts.stableHeight
@@ -146,11 +153,13 @@ run_cmd do
     `VerifiedLcalc.Verification.DegreeTwoIsogenyRaw,
     `VerifiedLcalc.Verification.IsogenyClass,
     `VerifiedLcalc.Verification.LmfdbCatalogue,
+    `VerifiedLcalc.Verification.TraceHash,
     `VerifiedLcalc.Verification.CremonaSingleton,
     `VerifiedLcalc.Certificate.Support.GaloisImage,
     `VerifiedLcalc.Tactic.CertifyECGalois,
     `VerifiedLcalc.Verification.ModifiedSzpiroRatio,
     `VerifiedLcalc.Verification.PeriodGeometry,
+    `VerifiedLcalc.Verification.IntrinsicTorsion,
     `VerifiedLcalc.Analytic,
     `VerifiedLcalc.Verification.TorsionBoundFacts,
     `VerifiedLcalc.EllipticCurve.TorsionBound,

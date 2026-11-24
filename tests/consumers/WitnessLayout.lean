@@ -51,6 +51,8 @@ run_cmd do
       (``VerifiedLcalc.TorsionWitness, `Algebraic),
       (``VerifiedLcalc.PeriodGeometryFacts, `Algebraic),
       (``VerifiedLcalc.FaltingsRatioFact, `Algebraic),
+      (``VerifiedLcalc.FaltingsIndexFact, `Algebraic),
+      (``VerifiedLcalc.IntrinsicTorsionFact, `Algebraic),
       (``VerifiedLcalc.DiscriminantWitness, `Invariants)] do
     let some idx := env.getModuleIdxFor? decl | throwError "missing witness {decl}"
     unless modules[idx.toNat]! == (root ++ subject) do

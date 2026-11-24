@@ -44,6 +44,26 @@ theorem complexPeriodArea_eq_of_minimal_change {W₁ W₂ : WeierstrassCurve ℚ
   change ZLattice.covolume ((c.u : ℂ) • (W₁.map (Rat.castHom ℂ)).periodLattice) _ = _
   rw [ZLattice.covolume_complex_smul, hc, one_pow, one_mul]
 
+namespace FaltingsIndexFact
+
+variable {curve : WeierstrassCurve ℤ} [(curve.baseChange ℚ).IsElliptic]
+
+/-- The zero-based Faltings index is the number of representatives before the input. -/
+@[expose] def index (fact : FaltingsIndexFact curve) : ℕ := fact.predecessors.card
+
+open Classical in
+/-- The finite witness gives the exact number of predecessors among all class members. -/
+theorem index_eq_card_filter (fact : FaltingsIndexFact curve) :
+    fact.index = (Finset.univ.filter fun i => faltingsPrecedes (fun j =>
+      let _ := fact.model.elliptic j
+      catalogueFaltingsHeight (fact.model.representatives j)) i fact.model.curveIndex).card := by
+  unfold index
+  congr 1
+  ext i
+  simpa only [Finset.mem_filter, Finset.mem_univ, true_and] using fact.mem_predecessors i
+
+end FaltingsIndexFact
+
 namespace FaltingsRatioFact
 
 variable {curve : WeierstrassCurve ℤ} [(curve.baseChange ℚ).IsElliptic]

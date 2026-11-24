@@ -37,6 +37,8 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   isogenyClass : Option (IsogenyClassEvidence curve) := none
   /-- Complete ordered isogeny classes at the actual conductor, with the subject's index. -/
   conductorClassRoster : Option (ConductorClassRoster curve) := none
+  /-- Proof of every arithmetic coefficient used in the published trace fingerprint. -/
+  traceHashCoefficients : Option (TraceHashCoefficients curve) := none
   /-- Conductor scope and complete singleton proofs for Cremona label checks. -/
   cremonaSingleton : Option (CremonaSingletonEvidence curve) := none
   /-- Actual non-CM and complete exceptional support evidence for the local Tate modules. -/
@@ -68,6 +70,8 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   /-- A proved height enclosure indexed by its ordered rational point list. -/
   canonicalHeights : Option (Σ points : (Σ n : ℕ,
     Fin n → (curve.baseChange ℚ).toAffine.Point), CanonicalHeightFacts points.2) := none
+  /-- Proved position in the complete class's Faltings-height order. -/
+  faltingsIndex : Option (FaltingsIndexFact curve) := none
   /-- Proved complex period area, Faltings heights and class-relative area ratio. -/
   periodGeometry : Option (PeriodGeometryFacts curve) := none
   /-- Proved enclosure for the full minimal real period. -/
@@ -94,6 +98,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   analytic : AnalyticFacts curve
   /-- The checked full-group torsion facts. -/
   torsion : TorsionWitness curve
+  /-- Checked intrinsic subgroup order when the full rational torsion group is trivial. -/
+  intrinsicTorsion : Option (IntrinsicTorsionFact curve) := none
   /-- The checked field presentation and absolute degree for one torsion growth row. -/
   torsionGrowthField : Option (TorsionGrowthFieldFact curve) := none
   /-- A checked oriented rational isogeny edge and its integral target. -/
@@ -103,6 +109,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
     Option (IsogenyClassOrdering facts.representatives)) := none
   /-- Checked LMFDB ordering indices and encoded labels for the supplied equation. -/
   lmfdbCatalogue : LmfdbCatalogueFacts curve := {}
+  /-- A published trace fingerprint checked against every prescribed coefficient. -/
+  traceHash : Option (TraceHashFact curve) := none
   /-- Cremona number and labels when the relevant orderings are singleton. -/
   cremonaCatalogue : Option (CremonaSingletonFacts curve) := none
   /-- Complete checked exceptional support for the non-CM curve. -/
@@ -129,6 +137,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   minimumQuadraticTwist : Option (MinimumQuadraticTwistEvidence curve) := none
   /-- Checked modified Szpiro ratio enclosure. -/
   modifiedSzpiroRatio : Option (ModifiedSzpiroRatioFacts curve) := none
+  /-- Checked position in the complete class's Faltings-height order. -/
+  faltingsIndex : Option (FaltingsIndexFact curve) := none
   /-- Checked complex period area, Faltings heights and class-relative area ratio. -/
   periodGeometry : Option (PeriodGeometryFacts curve) := none
   /-- Checked full real period enclosure. -/

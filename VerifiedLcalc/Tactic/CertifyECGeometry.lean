@@ -7,6 +7,7 @@ module
 
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public import VerifiedLcalc.Verification.ModifiedSzpiroRatio
+public import VerifiedLcalc.Verification.PeriodGeometry
 
 /-! Verify geometric and modified Szpiro claims against curve-indexed evidence. -/
 
@@ -124,6 +125,21 @@ private def certifyPeriodGeometry (base : Name) (curve : Ident) (attachment : Op
       refine ⟨_, rfl, ?_⟩
       first | rfl | decide +kernel))
 
+private def certifyFaltingsIndex (base : Name) (curve : Ident) (attachment : Option Ident) :
+    CommandElabM Unit := do
+  let report ← bindStored base `faltingsIndex `faltings_index (← `(ℕ))
+  let some evidence ← attachedFact attachment `faltingsIndex |
+    if report.isSome then
+      logInfo m!"Unverified {base} faltings_index: supply the exact Faltings order in the class"
+    return
+  let name := base ++ `faltings_index_fact
+  let fact := rootIdent name
+  emit (← `(def $fact : FaltingsIndexFact $curve := $evidence))
+  auditAxioms name
+  if let some value := report then
+    checked (base ++ `faltings_index) (← `(($fact).index = $value))
+      (← `(by first | rfl | decide +kernel))
+
 /-- Check geometric, period and Faltings claims against the shared proof attachment
 and verify any modified Szpiro enclosure with an explicit radius. -/
 def certifyGeometryFacts (base : Name) (attachment : Option Ident) : CommandElabM Unit := do
@@ -132,5 +148,6 @@ def certifyGeometryFacts (base : Name) (attachment : Option Ident) : CommandElab
   certifyMinimumTwist base curve attachment
   certifyModifiedSzpiroRatio base curve attachment
   certifyPeriodGeometry base curve attachment
+  certifyFaltingsIndex base curve attachment
 
 end VerifiedLcalc.CertifyEC

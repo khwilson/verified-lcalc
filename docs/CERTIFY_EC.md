@@ -241,6 +241,19 @@ displayed by LMFDB. The display reads a stored class row for positive rank
 and LMFDB curve number 1. Within the p-adic object, `lmfdb_iso` is catalogue metadata.
 [LMFDB p-adic regulator renderer](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/elliptic_curve.py#L775-L792)
 
+## Check a rational trace fingerprint
+
+Submit `trace_hash` as an exact JSON integer or canonical decimal string, or
+use `EllipticWitness.traceHash` in Lean. For either input format, attach
+`IntegralCurveProofs.traceHashCoefficients` through `with_proofs`. The proof
+identifies the complete list of coefficients of the input curve at the
+prescribed primes in ascending order.
+
+The verifier checks the published weighted sum modulo `2^61 - 1`. A checked
+result is available through `Name.certificate.traceHash`. An incomplete list of
+separate `ap` checks and a bare reported hash leave the fingerprint unverified.
+[LMFDB trace-hash producer](https://github.com/LMFDB/lmfdb/blob/28f9f0e38f2f027b13edcb2facece1bb45b47170/lmfdb/utils/trace_hash.py)
+
 ## Check Cremona labels in singleton cases
 
 Submit `Ciso` and `Clabel` as exact strings and `Cnumber` as an exact natural
@@ -743,5 +756,21 @@ For a submitted value with matching evidence the command emits a theorem
 such as `Name.area` about that report. With the JSON key omitted, a standalone
 proof supplied in the Lean attachment still appears in
 `Name.certificate.periodGeometry`. In that case there is no theorem about a
-catalogue value. A decimal alone stays a report. The checker leaves `faltings_index` as catalogue
-ordering metadata.
+catalogue value. A decimal alone stays a report.
+
+## Faltings order and intrinsic torsion
+
+Attach `IntegralCurveProofs.faltingsIndex` for the zero-based `faltings_index`.
+The proof identifies the complete class and its native LMFDB ordering, then
+identifies exactly the members preceding the input by Faltings height.
+Equal heights are ordered by the native LMFDB curve number. The finset of
+predecessors and its membership theorem are available at
+`Name.certificate.faltingsIndex`.
+[Catalogue sort rule](https://github.com/JohnCremona/ecdata/blob/6fedd3ab463a70e52061ebc0b04832ad19fd2e01/scripts/files.py#L739-L767)
+
+A report of `intrinsic_torsion` is checked when the rational torsion
+cardinality is proved to be one. A two-prime `torsion_bound` of one suffices.
+The theorem at `Name.certificate.intrinsicTorsion` applies to every subgroup
+of the full rational torsion group and hence to the radical of the catalogue's
+divisor-evaluation pairing. Reports for other curves remain unverified.
+[LMFDB definition](https://www.lmfdb.org/knowledge/show/ec.intrinsic_torsion)

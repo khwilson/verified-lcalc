@@ -214,6 +214,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let arithmetic ← arithmeticFactsTerm base curve
   let analytic ← analyticFactsTerm base curve
   let torsion ← torsionWitnessTerm base curve
+  let intrinsicTorsion ← optionalFactTerm base `intrinsic_torsion_fact
   let torsionGrowthField ← optionalFactTerm base `torsion_growth_field_fact
   let name := base ++ `certificate
   let certificate := rootIdent name
@@ -233,6 +234,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let cm ← optionalFactTerm base `cm_fact
   let twist ← optionalFactTerm base `minimum_quadratic_twist_evidence
   let szpiroRatio ← optionalFactTerm base `szpiro_ratio_fact
+  let faltingsIndex ← optionalFactTerm base `faltings_index_fact
   let periodGeometry ← optionalFactTerm base `period_geometry_fact
   let realPeriod ← optionalFactTerm base `real_period_fact
   let tamagawaProduct ← optionalFactTerm base `tamagawa_product_fact
@@ -242,6 +244,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
   let catalogue ← if (← getEnv).contains catalogueName then
     `($(rootIdent catalogueName))
   else `({})
+  let traceHash ← optionalFactTerm base `trace_hash_fact
   let cremonaCatalogue ← optionalFactTerm base `cremona_catalogue_fact
   let record ← `({
     nonsingular := $nonsingular
@@ -251,10 +254,12 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     arithmetic := $arithmetic
     analytic := $analytic
     torsion := $torsion
+    intrinsicTorsion := $intrinsicTorsion
     torsionGrowthField := $torsionGrowthField
     isogeny := $isogeny
     isogenyClass := $isogenyClass
     lmfdbCatalogue := $catalogue
+    traceHash := $traceHash
     cremonaCatalogue := $cremonaCatalogue
     nonmaxPrimes := $nonmaxPrimes
     adelicGenerators := $adelicGenerators
@@ -264,6 +269,7 @@ def certifyRecord (base : Name) : CommandElabM Unit := do
     complexMultiplication := $cm
     minimumQuadraticTwist := $twist
     modifiedSzpiroRatio := $szpiroRatio
+    faltingsIndex := $faltingsIndex
     periodGeometry := $periodGeometry
     realPeriod := $realPeriod
     tamagawaProduct := $tamagawaProduct

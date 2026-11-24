@@ -42,8 +42,9 @@ the source schema before creating a witness.
 | `ec_iwasawa.iwdata, iwp0` | Prime-indexed ordinary/multiplicative $(\lambda,\mu)$ or supersingular $(\lambda^+,\lambda^-,\mu)$ data, with explicit missing/additive codes. A positive `iwp0` asserts vanishing of all these analytic invariants for good primes at or above that threshold. G3. |
 | `ec_padic.p, prec, unit, val` | Stored positive-rank class rows specify a p-adic ball for the producer’s curve. The same coordinates encode the checked curve-level rank-zero display. G3. |
 | `ec_curvedata.lmfdb_number, iso_nlabel, lmfdb_iso, lmfdb_label` and related copies | The math-derived curve and class indices and their encodings can be checked with the required complete ordered classes and rational maps. [TC-23](../TAUCETI_BACKLOG.md#tc-23--certified-conductor-rosters-and-catalogue-ordering). |
+| `ec_classdata.trace_hash` | Exact weighted residue at all published prime indices, checked with a complete arithmetic coefficient proof on the submitted equation. [TC-26](../TAUCETI_BACKLOG.md#tc-26--complete-trace-fingerprint-inputs). |
 | `ec_curvedata.Ciso, Clabel, Cnumber` | Exact Cremona indices and labels in the supported singleton orderings for conductors up to 500000. Historical orders of larger indexing sets remain open. [TC-27](../TAUCETI_BACKLOG.md#tc-27--historical-cremona-ordering). |
-| Across tables `id, trace_hash` | Identifiers, joins, and fingerprints. A mathematical class or curve identification requires actual rational maps. |
+| Across tables `id` | Database identifier. A mathematical class or curve identification requires actual rational maps. |
 
 Derived displays such as equation invariants, local Euler polynomials, the sign
 product including the real place, analytic Sha factors, and associations with
@@ -133,11 +134,13 @@ residue-characteristic exception. Given explicit generators $P_i$, prove
 onto the rational torsion subgroup. Verify the homomorphism, exact orders and
 injectivity, then use the upper bound for surjectivity. Accept trivial,
 cyclic and noncyclic examples, and rejection of a same-order wrong structure
-or a list of dependent generators. For intrinsic torsion, use functions
+or a list of dependent generators. For nontrivial rational torsion, use functions
 with divisor $n(P-O)$ and norm evaluation on a disjoint degree-zero divisor
 representing $Q-O$. Prove independence of choices and symmetric bilinearity,
 then evaluate on a verified torsion basis and compute the radical of the
-pairing. Test a nontrivial group with proper radical.
+pairing. Test a nontrivial group with proper radical. The checker already
+proves order one when the full rational torsion group is trivial.
+[TauCeti backlog TC-25](../TAUCETI_BACKLOG.md#tc-25--faltings-order-and-intrinsic-torsion).
 [LMFDB convention](https://www.lmfdb.org/knowledge/show/ec.intrinsic_torsion) and
 [Yamazaki et al.](https://arxiv.org/abs/2512.00787).
 
