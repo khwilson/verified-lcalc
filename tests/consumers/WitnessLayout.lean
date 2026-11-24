@@ -105,13 +105,6 @@ run_cmd do
           if let some term := forbiddenFieldTerm field then
             let line := source.toFileMap.toPosition (term.getPos?.getD 0)
             throwError "{path}:{line.line}: move the computation or proof body to a companion"
-        let derivingClause := cmd[1].getArgs.back!
-        unless derivingClause[0].getArgs.isEmpty do
-          for entry in derivingClause[0][1].getSepArgs do
-            let cls := entry[1]
-            unless entry[0].getArgs.isEmpty && cls.isIdent &&
-                ([`Repr, `DecidableEq] : List Name).contains cls.getId do
-              throwError "{path}: only inline Repr and DecidableEq are permitted"
         structures := structures + 1
       else if !([``Parser.Command.moduleDoc, ``Parser.Command.«namespace»,
           ``Parser.Command.«section», ``Parser.Command.«end», ``Parser.Command.«open»,
