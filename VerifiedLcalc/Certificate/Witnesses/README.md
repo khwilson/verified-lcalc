@@ -118,6 +118,18 @@ All 85 names have a Lean record. **Checked** means `certify_ec` can populate the
 | `unit` | `padic` | Report | [`PadicRegulatorReport.unit`](Analytic.lean). Unit representative of the residue, coprime to the reported prime. |
 | `val` | `padic` | Report | [`PadicRegulatorReport.val`](Analytic.lean). Signed p-adic valuation of the reported nonzero residue. |
 
+Stored class rows supply reports. The curve-level rank-zero display has a
+checked finite-precision representation using the same four coordinates.
+
+| Field | Scope | Status | Checked projection |
+| --- | --- | --- | --- |
+| `p` | Rank-zero display | Checked | [`RankZeroPadicRegulatorFact.good`](Analytic.lean) and [`RankZeroPadicRegulatorFact.ordinary`](Analytic.lean) prove smooth ordinary reduction at the prime in the report. |
+| `prec`, `val`, `unit` | Rank-zero display | Checked | [`RankZeroPadicRegulatorFact.contains`](Analytic.lean) proves that the normalized ball contains the curve’s empty height determinant. [`RankZeroPadicRegulatorFact.normalized`](Analytic.lean) bounds the unit representative. |
+
+The fact is available through `certificate.analytic.padicRegulator`.
+Proofs use the specified equation and its actual Mordell–Weil rank.
+The class label supplies catalogue provenance.
+
 ## Torsion growth (`ec_torsion_growth`)
 
 | LMFDB field | Table(s) | Status | Witness and scope |

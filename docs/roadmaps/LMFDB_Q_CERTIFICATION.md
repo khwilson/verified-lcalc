@@ -40,7 +40,7 @@ the source schema before creating a witness.
 | `ec_galrep.prime, modell_image, elladic_image, adelic_image, adelic_gens`; `ec_curvedata.modell_images, elladic_images, modm_images, adelic_level, adelic_index, adelic_genus, nonmax_primes, nonmax_rad, serre_invariants` | Images in a specified torsion basis up to conjugacy, subgroup presentation, conductor-independent image level and index, genus of the associated modular curve, exceptional primes and their radical, and exceptional triples (prime, Serre weight, Serre conductor). The renderer uses prime 0 for an adelic row. A partial label with unknown component can still convey verified numerical invariants if independently justified. G1 accepts exact finite-image generator evidence, exact conjugacy proofs for supported Sutherland residual labels, and complete non-CM exceptional-support evidence. Residual coverage and integral ℓ-adic coverage use separate proofs. |
 | `ec_torsion_growth.degree, field, torsion` | Absolute field degree, defining polynomial in ascending coefficient order, and full torsion invariant factors of the base change. G2 distinguishes one field from primitive growth and exhaustivity over a degree range. |
 | `ec_iwasawa.iwdata, iwp0` | Prime-indexed ordinary/multiplicative $(\lambda,\mu)$ or supersingular $(\lambda^+,\lambda^-,\mu)$ data, with explicit missing/additive codes. A positive `iwp0` asserts vanishing of all these analytic invariants for good primes at or above that threshold. G3. |
-| `ec_padic.p, prec, unit, val` | A p-adic regulator residue for the corresponding curve and normalization, indexed by class. Precision means a p-adic ball, not an exact value. G3. |
+| `ec_padic.p, prec, unit, val` | Stored positive-rank class rows specify a p-adic ball for the producer’s curve. The same coordinates encode the checked curve-level rank-zero display. G3. |
 | Across tables `id, lmfdb_label, lmfdb_iso, lmfdb_number, Ciso, Clabel, Cnumber, iso_nlabel, trace_hash` | Identifiers, joins, orderings, and fingerprints. Validate their syntax or snapshot consistency in import tooling. If mathematical class or curve identity is requested, check actual rational maps. A hash or catalogue match does not prove identity. |
 
 Derived displays such as equation invariants, local Euler polynomials, the sign
@@ -361,12 +361,16 @@ conditions and prove the characteristic-ideal comparison. For regulators define 
 and its determinant on an M2 basis, with source-specific prime and
 normalization restrictions. The stored `prec` is absolute. For valuation $v$ the
 unit has `prec - v` relative digits, and the report represents a congruence to
-$p^v u$ modulo $p^{\mathrm{prec}}\mathbf Z_p$. The renderer reads the class row
-for curve number 1. [LMFDB p-adic regulator renderer](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/elliptic_curve.py#L775-L792)
-Accept negative valuations,
-rank-zero normalization, ordinary and signed examples, and explicit missing
-records. A class join requires evidence for the curve used and for any
-transport along an isogeny.
+$p^v u$ modulo $p^{\mathrm{prec}}\mathbf Z_p$. The renderer displays one
+directly at rank zero and reads the class row for positive-rank curve
+number 1. [LMFDB p-adic regulator renderer](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/elliptic_curve.py#L775-L792)
+
+The command now checks curve-level encodings of the rank-zero display for
+good ordinary primes. The proof uses the empty height determinant indexed by
+the actual Mordell–Weil finrank. Signed valuations remain supported for
+stored reports. The positive-rank height and source comparison, signed
+examples, and isogeny transport remain open.
+[TauCeti backlog TC-21](../TAUCETI_BACKLOG.md#tc-21--normalized-p-adic-heights-and-regulators-over-ℚ)
 
 ## From field structures to checked proofs
 

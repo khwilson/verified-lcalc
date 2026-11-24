@@ -76,6 +76,8 @@ structure EllipticWitness where
   canonicalHeights : Option CanonicalHeightsClaim := none
   /-- Stored regulator value and any explicit error evidence. -/
   regulator : Option RegulatorClaim := none
+  /-- A p-adic regulator ball proposed for the supplied equation. -/
+  padicRegulator : Option PadicRegulatorClaim := none
   /-- Reported full real period and optional absolute error radius. -/
   realPeriod : Option DecimalEnclosureClaim := none
   /-- Reported product of finite-place Tamagawa numbers. -/

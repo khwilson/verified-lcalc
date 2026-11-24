@@ -643,7 +643,7 @@ run_cmd do
     `squarefreeDiscriminant, `localInvariants, `primeCoefficients, `minimality, `localData,
     `tamagawaProduct]
   let analytic := #[`centralResult, `derivativeResult, `catalogueAnalyticRank,
-    `specialLValue, `realPeriod, `analyticSha, `sha, `shaPrimes]
+    `specialLValue, `realPeriod, `analyticSha, `sha, `shaPrimes, `padicRegulator]
   let torsion := #[`torsionBound, `torsion, `torsionStructure, `torsionPrimes,
     `torsionGeneratorOrders, `torsionGrowthField]
   let cover (record : Name) (tracked : Array Name) : CommandElabM Unit := do
@@ -667,6 +667,7 @@ run_cmd do
     `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol, `rootNumber]
   cover ``AbcQualityClaim #[`reported, `error, `factors]
   cover ``RegulatorClaim #[`reported, `error]
+  cover ``PadicRegulatorClaim #[`p, `prec, `val, `unit]
   cover ``DecimalEnclosureClaim #[`reported, `error]
   cover ``TorsionBoundWitness #[`firstPrime, `secondPrime, `bound]
   cover ``TorsionGrowthFieldClaim #[`coefficients, `degree]

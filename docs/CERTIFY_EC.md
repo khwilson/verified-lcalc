@@ -218,6 +218,29 @@ the report is exactly one. A bad error or an enclosure disjoint from one rejects
 the whole command. Without an exact zero-rank proof, the field remains
 unverified; positive-rank regulators need a separate mathematical evaluator.
 
+## Check an ordinary p-adic regulator ball at rank zero
+
+Submit one grouped `padic_regulator` object in JSON, for example
+`{"p":7,"prec":20,"val":0,"unit":"1"}`, or use `EllipticWitness.padicRegulator`
+in Lean. The absolute precision `prec` and valuation `val` are signed
+integers. A nonzero ball needs `val < prec`. The unit is the least
+nonnegative representative modulo `p^(prec - val)` and must be prime to
+`p`. Exact JSON integers and canonical decimal strings are accepted.
+
+The command checks that the equation has smooth ordinary reduction at
+`p`. An independent exact Mordell–Weil rank-zero proof for the equation,
+supplied through `with_proofs`, lets the command check a ball about the
+empty height determinant, which equals one. The normalized data then have
+`val = 0`, `unit = 1`, and `prec > 0`. The proof of containment in the
+reported ball is available through `Name.certificate.analytic.padicRegulator`.
+Missing exact rank evidence or a positive rank leaves the regulator
+unverified.
+
+The rank-zero JSON example is a finite-precision encoding of the value
+displayed by LMFDB. The display reads a stored class row for positive rank
+and LMFDB curve number 1. A supplied `lmfdb_iso` is catalogue metadata.
+[LMFDB p-adic regulator renderer](https://github.com/LMFDB/lmfdb/blob/a0c7fdc3b7ab1d7f11d324242e4707896c5b3529/lmfdb/elliptic_curves/elliptic_curve.py#L775-L792)
+
 ## Check a stored special value
 
 The optional `special_value` is a leading Taylor coefficient
