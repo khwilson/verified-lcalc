@@ -75,7 +75,7 @@ hashes and rebuilds the full theorem dependency graph; changing the assumption
 statement therefore forces dependent certificates to rebuild. The strict
 regression still fails if any input is inconclusive.
 
-`AuditTame.lean` guards axiom dependencies. `TameExamples.lean` checks j=0,
+`tests/audits/AuditTame.lean` guards axiom dependencies. `TameExamples.lean` checks j=0,
 all seven potentially-good valuation classes, negative j-valuation, composite
 rejection and wild-additive rejection. `tests/consumers/Tame.lean` executes the
 cached exact rank-zero value for 49.a1.

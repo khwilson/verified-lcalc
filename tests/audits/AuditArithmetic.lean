@@ -1,5 +1,10 @@
 import VerifiedLcalcTests.Arithmetic.ArithmeticExamples
 
+/-! # Elliptic curve arithmetic axiom dependencies -/
+
+-- This audit intentionally uses `#print axioms` to check proof dependencies.
+set_option linter.hashCommand false
+
 -- Broader arithmetic is independent of the opt-in modularity axiom.
 /-- info: 'WeierstrassCurve.reduction_eq_variableChange' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in

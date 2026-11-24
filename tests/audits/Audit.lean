@@ -9,6 +9,11 @@ import VerifiedLcalc.Lmfdb
 import VerifiedLcalcTests.Fixtures.Cubic
 import VerifiedLcalcTests.Fixtures.Curve11Arithmetic
 
+/-! # Core bounds, numerical verification, and certificate axiom dependencies -/
+
+-- This audit intentionally uses `#print axioms` to check proof dependencies.
+set_option linter.hashCommand false
+
 #print axioms VerifiedLcalc.Box.valid_correct
 #print axioms VerifiedLcalc.Box.isZero_correct
 #print axioms VerifiedLcalc.Box.excludesZero_correct

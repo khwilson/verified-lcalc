@@ -1,6 +1,9 @@
 import VerifiedLcalcTests.Arithmetic.WildExamples
 import VerifiedLcalc.Verification.WildCertification
 
+/-! # Wild reduction axiom dependencies -/
+
+-- This audit intentionally uses `#print axioms` to check proof dependencies.
 set_option linter.hashCommand false
 
 /-- info: 'VerifiedLcalc.EllipticCurve.tateWitness?_sound' depends on axioms: [propext, Classical.choice, Quot.sound] -/
@@ -37,4 +40,3 @@ set_option linter.hashCommand false
 /-- info: 'VerifiedLcalc.Certification.rank_lower_bound_of_wild_negative' depends on axioms: [propext, Classical.choice, Quot.sound, VerifiedLcalc.Assumptions.ellipticModularity] -/
 #guard_msgs (whitespace := lax) in
 #print axioms VerifiedLcalc.Certification.rank_lower_bound_of_wild_negative
-

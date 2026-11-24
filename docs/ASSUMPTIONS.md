@@ -1,4 +1,11 @@
-# Temporary modularity assumption
+# History of the temporary assumptions
+
+The [current assumptions guide](../VerifiedLcalc/Assumptions/README.md) summarizes
+the active declarations and audit commands. This page records the earlier
+statements and later changes. Batch, registry and cache installation counts
+refer to the retired implementation preserved at baseline `fcdc4f2`.
+
+## Original modularity statement (2026-11-17)
 
 On 2026-11-17 the user explicitly authorized a temporary axiom for the missing
 curve-to-modular-form connection. This was the project's first exception to its
@@ -11,7 +18,7 @@ The axiom is named:
 VerifiedLcalc.Assumptions.ellipticModularity
 ```
 
-Its complete proposition is `EllipticModularity`, defined in
+The proposition at that stage was `EllipticModularity`, defined in
 `VerifiedLcalc/EllipticCurve/Modularity/Realization.lean`. For every integral
 Weierstrass equation with nonzero discriminant it asserts the existence of a
 modular realization consisting of:
@@ -34,8 +41,8 @@ modular realization consisting of:
   This general semistable compatibility was explicitly authorized by the user
   on 2026-11-17; it is assumed, not proved here.
 
-Outside that semistable criterion, the level and sign remain existentially
-supplied by a realization. The assumption
+Outside that semistable criterion, the original statement supplied the level
+and sign existentially. That statement
 does not identify an arbitrary caller-supplied N or sign with these values. It
 does not assume a numerical interval, tail bound, derivative evaluation, BSD,
 or any exact vanishing inferred from the precision cutoff.
@@ -97,11 +104,11 @@ beyond the unchanged axiom. Derivative enclosures remain unfinished.
 ## Isolation and audit
 
 The default `VerifiedLcalc` import, runtime executables, original certificates
-and `Audit.lean` do not import the axiom module. Opt in explicitly:
+and `tests/audits/Audit.lean` do not import the axiom module. Opt in explicitly:
 
 ```
 lake build VerifiedLcalc.Verification.NumericalCertification VerifiedLcalcTests.Fixtures.AssumedCurve11 VerifiedLcalcTests.Fixtures.AssumedCurve37
-lake env lean AuditAssumptions.lean
+lake env lean tests/audits/AuditAssumptions.lean
 lake env lean tests/consumers/AssumedCurve11.lean
 lake env lean tests/consumers/AssumedCurve37.lean
 lake env lean tests/consumers/AssumedCurve11Central.lean
@@ -176,7 +183,7 @@ The 1,100-input expansion retains the same single modularity axiom. Its installe
 397 rank-zero certificates and 122 separate negative-sign lower bounds depend
 on it. Fast singular traces, the fast-sign equality, invariant minimality and
 532 expanded additive coefficient-prefix proofs use only standard Lean/mathlib
-axioms. The new audits are `AuditExtended.lean` and `AuditExpandedAdditive.lean`.
+axioms. The new audits are `tests/audits/AuditExtended.lean` and `AuditExpandedAdditive.lean`.
 
 ## General modularity clarification (2026-11-18)
 
@@ -187,7 +194,7 @@ The finite conductor/root-number formulas currently implemented were the
 semistable specialization. No additional axiom was needed for the new general
 certificate interfaces and witness-independence theorem. Local arithmetic
 correctness remains separate. See GENERAL_MODULARITY.md and
-AuditGeneralModularity.lean.
+tests/audits/AuditGeneralModularity.lean.
 
 ## Tame arithmetic integration (2026-11-18)
 
@@ -201,7 +208,7 @@ compatibility. Mathematical local epsilon-factor/conductor theory is not
 claimed proved here. The executable algorithms' equality to the valuation and
 Legendre-symbol formulas is proved without this axiom. Actual numerical
 rank certification still uses proved interval enclosures and nonvanishing.
-See [TAME_ARITHMETIC.md](TAME_ARITHMETIC.md) and `AuditTame.lean`.
+See [TAME_ARITHMETIC.md](TAME_ARITHMETIC.md) and `tests/audits/AuditTame.lean`.
 
 ## Wild arithmetic compatibility (2026-11-18)
 
@@ -213,7 +220,7 @@ compatibility are explicitly **assumed** standard arithmetic compatibility in
 the existing authorized general-modularity package. Executable-to-formula
 correctness and numerical enclosures remain proved. The axiom's content is
 stronger; merely retaining its name does not imply unchanged assumptions.
-See [WILD_ARITHMETIC.md](WILD_ARITHMETIC.md) and `AuditWild.lean`.
+See [WILD_ARITHMETIC.md](WILD_ARITHMETIC.md) and `tests/audits/AuditWild.lean`.
 
 
 ## Canonical global minimality in arithmetic compatibility

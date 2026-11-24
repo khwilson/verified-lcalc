@@ -3,6 +3,11 @@ import VerifiedLcalc.EllipticCurve.Tate.InvariantMinimality
 import VerifiedLcalcTests.Arithmetic.LmfdbSupplementProofs
 import VerifiedLcalc.EllipticCurve.Modularity.FastSign
 
+/-! # Extended curve arithmetic axiom dependencies -/
+
+-- This audit intentionally uses `#print axioms` to check proof dependencies.
+set_option linter.hashCommand false
+
 /-- info: 'VerifiedLcalc.EllipticCurve.singularTrace_correct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms VerifiedLcalc.EllipticCurve.singularTrace_correct
@@ -30,4 +35,3 @@ import VerifiedLcalc.EllipticCurve.Modularity.FastSign
 /-- info: 'VerifiedLcalc.Lmfdb.all_labels_nodup' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms VerifiedLcalc.Lmfdb.all_labels_nodup
-

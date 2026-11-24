@@ -10,7 +10,7 @@ verification and importable theorem generation.
 The derivative backend uses the existing general modularity assumption and adds
 no numerical or exact-vanishing axiom. All interval, quadrature, Fourier-tail and
 Mellin differentiation proofs depend only on Lean/mathlib's standard axioms.
-`AuditDerivative.lean` guards that dependency boundary.
+`tests/audits/AuditDerivative.lean` guards that dependency boundary.
 
 For a negative-sign modular realization, write alpha = 2*pi/sqrt(N). The functional
 equation gives exact central vanishing, and differentiation of the Mellin
@@ -75,6 +75,8 @@ checks the installed backend against all 1,100 external reference records and
 fails whenever any curve remains inconclusive. Reference ranks never enter
 certificate production or proof construction.
 
+The producer and installer below belong to the historical `fcdc4f2` baseline.
+
 ```sh
 lake exe certify-derivatives
 lake env lean tests/consumers/Derivative.lean
@@ -82,9 +84,9 @@ lake env lean AuditDerivative.lean
 lake exe certify-derivatives --seal-cache
 ```
 
-The producer/installer commands finish with the strict combined regression. Its
-exit status is 1 while any fixture remains inconclusive, even if certificate
-installation succeeded. A rejected proof or registry installation exits 2.
+The historical commands finished with a strict regression against the installed
+corpus. To replay the current [derivative audit](../tests/audits/AuditDerivative.lean)
+with its dependencies, run `make test-lean`.
 
 ## Regression coverage
 
