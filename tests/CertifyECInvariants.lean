@@ -658,7 +658,7 @@ run_cmd do
   let isogeny := #[`isogenyEdge, `classSize, `classDegree, `isogenyDegrees, `isogenyMatrix]
   let geometry := #[`complexMultiplication, `minimumTwistEquation, `minimumTwistDiscriminant,
     `modifiedSzpiroRatio, `area, `faltingsHeight, `stableFaltingsHeight,
-    `faltingsRatio, `faltingsIndex]
+    `faltingsRatio, `faltingsIndex, `modularDegree, `maninConstant, `optimality]
   let galois := #[`nonmaxPrimes, `nonmaxRadical, `adelicGenerators, `modPrimeImage, `modPrimeImages,
     `adelicLevel, `adelicIndex, `adelicGenus, `adelicImage,
     `padicImage, `padicImages, `modulusImages]
