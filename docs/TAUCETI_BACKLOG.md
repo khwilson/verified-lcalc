@@ -663,7 +663,7 @@ and remain local. The trivial-group specialization
 `VerifiedLcalc.IntrinsicTorsionFact.card_radical` uses Mathlib cardinality
 directly. The missing reusable result is the rational pairing in TC-25.
 
-## TC-26 — rational modular maps and the optimal Jacobian quotient
+## TC-28 — rational modular maps and the optimal Jacobian quotient
 
 - Upstream candidate `VerifiedLcalc.Modularity.cuspDatumInftyGammaZero` and
   its cusp, scaling and width lemmas use the effective image of Γ₀(N) for

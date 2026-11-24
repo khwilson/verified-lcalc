@@ -53,6 +53,9 @@ public import Mathlib.RingTheory.AdjoinRoot
   minimal order within the subject's class to check catalogue indices and labels.
 * `PeriodGeometryFacts` carries enclosures for complex period area and Faltings heights,
   and an exact area ratio when the entire isogeny class has been proved.
+* `ModularParametrizationFacts` carries a minimum rational modular map, its differential
+  and optional full-period comparison. `CertifiedModularParametrization` records checked
+  matches to the submitted modular-map claims.
 * `CremonaSingletonFacts` uses exhaustive singleton proofs to identify the indices that
   are independent of the historical Cremona order.
 * `AlgebraicFacts` collects optional checked points, orders, rank bounds, and regulator data.
