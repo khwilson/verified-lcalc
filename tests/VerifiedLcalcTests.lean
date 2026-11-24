@@ -12,6 +12,7 @@ public import VerifiedLcalcTests.Fixtures.DegreeTwoIsogeny
 public import VerifiedLcalcTests.Fixtures.ExtensionData
 public import VerifiedLcalcTests.Fixtures.IsogenyClass
 public import VerifiedLcalcTests.Fixtures.LmfdbCatalogue
+public import VerifiedLcalcTests.Fixtures.CremonaLabels
 public import VerifiedLcalcTests.Fixtures.PeriodGeometry
 public import VerifiedLcalcTests.Fixtures.SquarePeriod
 public import VerifiedLcalcTests.Fixtures.GaloisImage
