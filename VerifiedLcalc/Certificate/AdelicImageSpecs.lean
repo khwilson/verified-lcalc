@@ -5,12 +5,10 @@ Authors: Kevin Wilson
 -/
 module
 
+public import Mathlib.Data.PNat.Defs
 public import Mathlib.Data.ZMod.QuotientRing
-public import Mathlib.GroupTheory.Index
 public import Mathlib.NumberTheory.Padics.RingHoms
-public import TauCeti.Analysis.Complex.Fuchsian.Compactification.Basic
 public import TauCeti.Topology.Algebra.Matrix.ProjectiveSpecialLinearGroup
-public import TauCeti.AlgebraicTopology.Cellular.EulerCharacteristic.Genus
 
 /-! # Integral adelic images and their modular curves
 
@@ -91,6 +89,7 @@ instance (H : Subgroup AdelicGL) : DiscreteTopology (adelicProjectiveSubgroup H)
 
 /-- The native incomplete LMFDB label with the conjugacy-class suffix unspecified. -/
 def formatPartialAdelicImage (level index genus : ℕ) : String :=
-  s!"{level}.{index}.{genus}.?"
+  String.ofList (Nat.toDigits 10 level ++ ['.'] ++ Nat.toDigits 10 index ++
+    ['.'] ++ Nat.toDigits 10 genus ++ ['.', '?'])
 
 end VerifiedLcalc

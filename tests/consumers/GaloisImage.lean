@@ -16,6 +16,8 @@ attribute [local instance] Classical.decEq
 
 example : ExactModTwo.certificate.adelicGenerators = some ExactModTwo.adelic_generator_fact := rfl
 
+example : ExactModTwo.certificate.adelicImage = none := rfl
+
 example : ExactModTwo.claimed_adelic_gens.rows = [(1, 0, 0, 1)] := rfl
 
 example : (ExactModTwo.certificate.adelicGenerators.get (by rfl)).modulus = 2 := rfl
@@ -88,6 +90,8 @@ section
 
 variable {exactImage : AdelicImageFact emptyListModel} [h : CatalogueAdelic37 exactImage]
 
+include h
+
 /-- The imported certificate identifies the genuine minimal congruence level. -/
 theorem adelic37_minimal_level :
     IsLeast {N : ℕ+ | (adelicReduction N).ker ≤ exactImage.image} 74 :=
@@ -119,11 +123,18 @@ theorem adelic37_genus :
   (((AdelicGenus37.certificate (h := h)).adelicImage.get (by rfl)).facts.genus.get
     (by rfl)).genus_eq
 
-/-- The native label with no numeric fields decodes and certifies exactly the formatted prefix. -/
+/-- The imported label equality compares the three proved invariants with the native format. -/
 theorem adelic37_partial_label :
     let checked := (PartialAdelic37.certificate (h := h)).adelicImage.get (by rfl)
-    (checked.partialLabel.get (by rfl)).val = formatPartialAdelicImage 74 2 0 :=
-  rfl
+    let facts := checked.facts
+    (match facts.level.map (fun n => (n.val : ℕ)), facts.index.map (fun i => (i.val : ℕ)),
+        facts.genus.map AdelicGenusFact.genus with
+      | some n, some i, some g => some (formatPartialAdelicImage n i g)
+      | _, _, _ => none) = some "74.2.0.?" :=
+  let checked := (PartialAdelic37.certificate (h := h)).adelicImage.get (by rfl)
+  (checked.partialLabel.get (by rfl)).property
+
+omit h
 
 example : PartialAdelic37.witness.adelicLevel = none := rfl
 example : PartialAdelic37.witness.adelicIndex = none := rfl
@@ -186,7 +197,9 @@ private meta def rejectGalois (base : Name) (command : Syntax)
       `claimed_modell_image, `modell_image_fact, `modell_image,
       `claimed_modell_images, `modell_images_fact, `modell_images,
       `claimed_adelic_image, `adelic_image_fact, `adelic_image, `adelic_image_certificate,
-      `claimed_adelic_level, `claimed_adelic_index, `claimed_adelic_genus, `certificate] do
+      `claimed_adelic_level, `claimed_adelic_index, `claimed_adelic_genus,
+      `adelic_image_level, `adelic_image_index, `adelic_image_genus, `adelic_image_format,
+      `certificate] do
     if env.contains (base ++ suffix) then throwError "Rejected report leaked {base ++ suffix}"
 
 run_cmd do
@@ -241,7 +254,10 @@ run_cmd do
     throwError "Unsupported adelic class suffix produced a checked label"
   rejectGalois `IncorrectAdelicPrefix (← `(certify_ec IncorrectAdelicPrefix from_json_string
     r#"{ "ainvs":[0,0,1,-1,0], "prime":0, "adelic_image":"74.3.0.?" }"#
-      with_proofs (adelic37Attachment h))) (some "adelic_image")
+      with_proofs (adelic37Attachment h))) (some "adelic_image_index")
+  rejectGalois `NoncanonicalAdelicPrefix (← `(certify_ec NoncanonicalAdelicPrefix from_json_string
+    r#"{ "ainvs":[0,0,1,-1,0], "prime":0, "adelic_image":"074.2.0.?" }"#
+      with_proofs (adelic37Attachment h))) (some "adelic_image_format")
   rejectGalois `IncorrectAdelicLevel (← `(certify_ec IncorrectAdelicLevel from_json_string
     r#"{ "ainvs":[0,0,1,-1,0], "adelic_level":37 }"#
       with_proofs (adelic37Attachment h))) (some "adelic_level")

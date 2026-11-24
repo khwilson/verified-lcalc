@@ -12,6 +12,7 @@ public import VerifiedLcalc.Certificate.ResidualImageLabels
 public import VerifiedLcalc.EllipticCurve.LmfdbTraceHash
 public import VerifiedLcalc.EllipticCurve.Tate.ArithmeticSpecs
 public import VerifiedLcalc.EllipticCurve.Tate.PotentialGoodReductionSpec
+public import Mathlib.GroupTheory.Index
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Affine.Point.Galois
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.Hom.ComplexMultiplication
@@ -19,6 +20,8 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.Isogeny.MulByInt.Torsion.S
 public import TauCeti.AlgebraicGeometry.EllipticCurve.Tamagawa.Product
 public import TauCeti.AlgebraicGeometry.EllipticCurve.TateModule.Galois
 public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Curve
+public import TauCeti.AlgebraicTopology.Cellular.EulerCharacteristic.Genus
+public import TauCeti.Analysis.Complex.Fuchsian.Compactification.Basic
 
 /-! # Local reduction, arithmetic coefficients, and Galois images
 
@@ -310,12 +313,10 @@ structure AdelicImageCertificate (curve : WeierstrassCurve ℤ)
   facts : AdelicImageFact curve
   /-- A matching incomplete producer label, with its class suffix unspecified. -/
   partialLabel : Option { label : String //
-    (do
-      let level ← facts.level
-      let index ← facts.index
-      let genus ← facts.genus
-      pure (formatPartialAdelicImage (level.val : ℕ) (index.val : ℕ) genus.genus)) =
-      some label } := none
+    (match facts.level.map (fun n => (n.val : ℕ)), facts.index.map (fun i => (i.val : ℕ)),
+        facts.genus.map AdelicGenusFact.genus with
+      | some n, some i, some g => some (formatPartialAdelicImage n i g)
+      | _, _, _ => none) = some label } := none
 
 /-- Claimed adelic row, whose database prime sentinel is zero. The generator modulus is
 explicit even when the producer's adelic level has yet to be justified. -/

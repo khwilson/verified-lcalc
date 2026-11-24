@@ -58,32 +58,43 @@ private theorem padicGL_map_surjective {p k : ℕ} [Fact p.Prime] [NeZero k] :
     exact A.det.isUnit)
   exact ⟨Matrix.GeneralLinearGroup.mk'' M hdet, Units.ext hM⟩
 
-/-- The integral adelic reduction surjects onto the general linear group at every modulus. -/
-theorem adelicReduction_surjective (N : ℕ+) : Function.Surjective (adelicReduction N) := by
+private theorem adelicPrimePowerReduction_apply (N : ℕ+) (g : AdelicGL)
+    (p : (N : ℕ).primeFactors) :
+    let _ : Fact p.val.Prime := ⟨Nat.prime_of_mem_primeFactors p.property⟩
+    adelicPrimePowerReduction N g p =
+      Matrix.GeneralLinearGroup.map (PadicInt.toZModPow ((N : ℕ).factorization p.val))
+        (g ⟨p.val, Nat.prime_of_mem_primeFactors p.property⟩) := rfl
+
+private theorem adelicPrimePowerReduction_surjective (N : ℕ+) :
+    Function.Surjective (adelicPrimePowerReduction N) := by
   classical
-  change Function.Surjective ((adelicCRT N).symm ∘ adelicPrimePowerReduction N)
-  apply (adelicCRT N).symm.surjective.comp
   intro A
   have lifts (p : (N : ℕ).primeFactors) : ∃ g :
       Matrix.GeneralLinearGroup (Fin 2) (AdelicLocalRing
         ⟨p.val, Nat.prime_of_mem_primeFactors p.property⟩),
-      letI : Fact p.val.Prime := ⟨Nat.prime_of_mem_primeFactors p.property⟩
+      let _ : Fact p.val.Prime := ⟨Nat.prime_of_mem_primeFactors p.property⟩
       Matrix.GeneralLinearGroup.map (PadicInt.toZModPow ((N : ℕ).factorization p.val)) g =
         A p := by
-    letI : Fact p.val.Prime := ⟨Nat.prime_of_mem_primeFactors p.property⟩
+    let _ : Fact p.val.Prime := ⟨Nat.prime_of_mem_primeFactors p.property⟩
     have hk := (Nat.prime_of_mem_primeFactors p.property).factorization_pos_of_dvd
       N.ne_zero (Nat.dvd_of_mem_primeFactors p.property)
-    letI : NeZero ((N : ℕ).factorization p.val) := ⟨hk.ne'⟩
+    let _ : NeZero ((N : ℕ).factorization p.val) := ⟨hk.ne'⟩
     exact padicGL_map_surjective (A p)
   choose lift hlift using lifts
   let g : AdelicGL := fun p =>
     if hp : p.val ∈ (N : ℕ).primeFactors then lift ⟨p.val, hp⟩ else 1
   refine ⟨g, ?_⟩
   funext p
-  change Matrix.GeneralLinearGroup.map _ (g _) = A p
-  rw [show g ⟨p.val, Nat.prime_of_mem_primeFactors p.property⟩ = lift p from
-    dif_pos p.property]
-  exact hlift p
+  let _ : Fact p.val.Prime := ⟨Nat.prime_of_mem_primeFactors p.property⟩
+  have hg : g ⟨p.val, Nat.prime_of_mem_primeFactors p.property⟩ = lift p :=
+    dite_eq_left p.property
+  exact (adelicPrimePowerReduction_apply N g p).trans
+    ((congrArg (Matrix.GeneralLinearGroup.map
+      (PadicInt.toZModPow ((N : ℕ).factorization p.val))) hg).trans (hlift p))
+
+/-- Integral adelic reduction surjects onto the general linear group at every modulus. -/
+theorem adelicReduction_surjective (N : ℕ+) : Function.Surjective (adelicReduction N) :=
+  (adelicCRT N).symm.surjective.comp (adelicPrimePowerReduction_surjective N)
 
 /-- The finite reduction at a level with full kernel containment has the original index. -/
 theorem adelicReduction_index_eq {H : Subgroup AdelicGL} {N : ℕ+}
@@ -105,10 +116,10 @@ theorem adelicCongruenceSubgroup_eq_comap {H : Subgroup AdelicGL} {N : ℕ+}
 
 /-- The genus recorded in the witness is the topological genus of the coarse modular curve. -/
 theorem AdelicGenusFact.genus_eq {H : Subgroup AdelicGL} (fact : AdelicGenusFact H) :
-    letI := fact.finiteCW
+    let _ := fact.finiteCW
     TauCeti.RiemannSurface.genus (adelicProjectiveSubgroup H).CompactifiedQuotient =
       fact.genus := by
-  letI := fact.finiteCW
+  let _ := fact.finiteCW
   exact TauCeti.RiemannSurface.genus_eq_of_eulerChar_eq fact.correct
 
 end VerifiedLcalc
