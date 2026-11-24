@@ -271,8 +271,8 @@ nonvanishing and exact valuation, as well as containment in the reported ball.
 Without the attachment the native row remains a report.
 
 The 37.a row at 5 is a proof-parametric fixture. Its open hypotheses are the
-exhaustive conductor roster and its ordering, singleton isogeny class, reduced
-minimality, basis and generator identification, nonsingular reduction of the
+conductor roster exhaustion, singleton isogeny class, basis and generator
+identification, nonsingular reduction of the
 multiple at finite places, the unique parameter and normalized sigma series,
 and the sigma-log argument approximation modulo `5^24`. Lean checks the point
 multiple and logarithm comparison. The independent numerical approximation
