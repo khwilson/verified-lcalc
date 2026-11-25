@@ -111,6 +111,8 @@ timings and historical experiments. A [1,000-curve run](docs/CERTIFY_EC_DATASET_
 produced 952 certificates in 915 seconds of active validation time, averaging
 0.96 seconds per successful certificate in batches of 20. The other 48 inputs
 hit insufficient minimality criteria.
+You can [run a fresh batch on GitHub](benchmarks/README.md#run-on-github)
+and download per-curve timings and outcomes from the run page.
 
 ## Development and historical data
 

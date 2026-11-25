@@ -1,0 +1,93 @@
+name: Set up verified-lcalc Lean
+description: Install the pinned toolchain and restore the project's Lean dependencies and artifacts.
+outputs:
+  project-cache-key:
+    description: Cache key for saving this job's project Lean artifacts.
+    value: ${{ steps.project-cache-key.outputs.key }}
+runs:
+  using: composite
+  steps:
+    - name: Configure Lake artifact cache
+      shell: bash
+      run: |
+        {
+          echo "LAKE_CONFIG=$GITHUB_WORKSPACE/verified-lcalc/scripts/tauceti-cache.toml"
+          echo "LAKE_CACHE_DIR=$GITHUB_WORKSPACE/verified-lcalc/.lake/cache"
+          echo "LAKE_ARTIFACT_CACHE=true"
+          echo "LAKE_RESTORE_ARTIFACTS=true"
+        } >> "$GITHUB_ENV"
+    - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+      with:
+        version: "0.11.25"
+        python-version: "3.14"
+    - name: Install pinned elan and Lean toolchain
+      env:
+        ELAN_VERSION: v4.2.3
+        ELAN_SHA256: df0b2b3a439961ffcbb3985214365ffe40f49bc871df04dff268c7d8e21ca8b2
+      shell: bash
+      working-directory: verified-lcalc
+      run: |
+        curl -fsSL "https://github.com/leanprover/elan/releases/download/${ELAN_VERSION}/elan-x86_64-unknown-linux-gnu.tar.gz" -o elan.tar.gz
+        echo "${ELAN_SHA256}  elan.tar.gz" | sha256sum -c -
+        tar -xzf elan.tar.gz elan-init
+        ./elan-init -y --default-toolchain none
+        rm elan-init elan.tar.gz
+        echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+        "$HOME/.elan/bin/elan" toolchain install "$(cat lean-toolchain)"
+    - name: Load pinned TauCeti cache mappings
+      shell: bash
+      working-directory: verified-lcalc
+      run: |
+        revision="$(python3 - <<'PY'
+        import json
+        from pathlib import Path
+
+        packages = json.loads(Path("lake-manifest.json").read_text())["packages"]
+        print(next(package["rev"] for package in packages if package["name"] == "TauCeti"))
+        PY
+        )"
+        # Lake fetches only the TauCeti artifacts reached by downstream build targets.
+        if ! lake cache get --package=TauCeti --service=tauceti-public \
+            --repo=TauCetiProject/TauCeti --rev="$revision" --mappings-only; then
+          echo "::warning::TauCeti cache mappings unavailable; Lake will build needed modules from source"
+        fi
+    - name: Fetch targeted Mathlib cache
+      env:
+        MATHLIB_CACHE_DIR: ${{ runner.temp }}/mathlib-cache
+      shell: bash
+      working-directory: verified-lcalc
+      run: |
+        roots="$(python3 scripts/mathlib_cache_roots.py)"
+        test -n "$roots"
+        mapfile -t modules <<< "$roots"
+        lake exe cache get "${modules[@]}"
+        lake exe cache clean!
+    - name: Compute project artifact cache key
+      id: project-cache-key
+      env:
+        DEPENDENCY_FINGERPRINT: ${{ hashFiles('verified-lcalc/lean-toolchain', 'verified-lcalc/lake-manifest.json', 'verified-lcalc/lakefile.toml', 'verified-lcalc/lakefile.certificates.lean', 'verified-lcalc/scripts/tauceti-cache.toml') }}
+      shell: bash
+      working-directory: verified-lcalc
+      run: |
+        test -n "$DEPENDENCY_FINGERPRINT"
+        prefix="lean-project-v1-ubuntu24.04-$RUNNER_OS-$RUNNER_ARCH-$DEPENDENCY_FINGERPRINT-"
+        echo "prefix=$prefix" >> "$GITHUB_OUTPUT"
+        echo "key=${prefix}$GITHUB_SHA-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
+    - name: Restore project Lean artifacts
+      id: project-cache
+      continue-on-error: true
+      uses: actions/cache/restore@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+      with:
+        path: verified-lcalc/.lake/project-cache
+        key: ${{ steps.project-cache-key.outputs.key }}
+        restore-keys: |
+          ${{ steps.project-cache-key.outputs.prefix }}
+    - name: Import cached Lake artifacts
+      if: steps.project-cache.outcome == 'success' && steps.project-cache.outputs.cache-matched-key != ''
+      shell: bash
+      working-directory: verified-lcalc
+      run: |
+        if ! (cd .lake/project-cache && sha256sum --check --quiet checksums.sha256) ||
+          ! lake cache unstage .lake/project-cache; then
+          echo "::warning::Could not import project cache artifacts. Lake will build from source."
+        fi

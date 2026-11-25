@@ -1,5 +1,27 @@
 # Dataset validation benchmark
 
+## Run on GitHub
+
+Open [Certificate batch in GitHub Actions](https://github.com/khwilson/verified-lcalc/actions/workflows/certificate-batch.yml)
+and select **Run workflow**. The default run takes the first 1,000 curves in the
+tracked [10,000-curve SQL snapshot](../data/lmfdb/sql-10000/README.md), in source
+order across all ranks. Set the zero-based `offset` to 1000 for the next 1,000.
+You can also dispatch a batch from the repository checkout.
+
+```sh
+gh workflow run certificate-batch.yml --ref main -f offset=1000 -f count=1000
+```
+
+The Actions summary counts certificates, inconclusive inputs and failures. It
+reports timings by checked rank, plus elapsed time for the benchmark as a whole.
+The job duration in Actions also includes runner setup and dependency downloads.
+Download the JSON artifact from the run page for individual curve results,
+batch timings, compiled-proof import checks and reference comparisons.
+The hosted run uses the production `certify_ec` JSON verifier. Rank-one measurements
+include its current derivative quadrature.
+
+## Run locally
+
 Run from the repository root:
 
 ```sh

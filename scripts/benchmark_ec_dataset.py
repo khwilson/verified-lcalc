@@ -19,6 +19,7 @@ import subprocess
 import sys
 import time
 from collections import Counter
+from collections.abc import Callable
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
@@ -108,11 +109,13 @@ def numerical_batches(
     return batches
 
 
-def selected_inputs(source: Path, count: int) -> list[dict[str, Any]]:
+def selected_inputs(source: Path, count: int, offset: int = 0) -> list[dict[str, Any]]:
     """Accept legacy cases or rank-free SQL inputs; expose only input fields."""
+    if count < 1 or offset < 0:
+        raise ValueError("Count must be positive and offset must be nonnegative")
     data = json.loads(source.read_text())
     rows = data["inputs"] if "inputs" in data else data["cases"]
-    selected = rows[:count]
+    selected = rows[offset : offset + count]
     if len(selected) != count or len({r["label"] for r in selected}) != count:
         raise ValueError("Not enough distinct source curves")
     return [
@@ -201,6 +204,8 @@ def adopt_generation(
     ]:
         if previous["identity"].get(key) != identity.get(key):
             raise ValueError(f"Generation environment differs: {key}")
+    if previous["identity"].get("offset", 0) != identity.get("offset", 0):
+        raise ValueError("Generation environment differs: offset")
     # Numerical candidates are untrusted and will be rechecked. A change to the
     # proof-producing frontend does not change the producer's dependencies.
     old_core = {
@@ -272,6 +277,7 @@ def adopt_generation(
 
 
 def main() -> None:
+    started = time.perf_counter()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--source", type=Path, default=ROOT / "data/lmfdb-1000-additional.json"
@@ -287,6 +293,12 @@ def main() -> None:
         help="Unique Lean module/declaration prefix for importing several datasets",
     )
     parser.add_argument("--count", type=int, default=1000)
+    parser.add_argument(
+        "--offset",
+        type=int,
+        default=0,
+        help="Skip this many source rows before selection",
+    )
     parser.add_argument(
         "--batch-work-limit",
         type=int,
@@ -322,7 +334,9 @@ def main() -> None:
         or args.batch_work_limit < 0
         or args.workers < 1
     ):
-        parser.error("Count, batch size and timeout must be positive")
+        parser.error(
+            "Count, batch size, timeout, consumer modules and workers must be positive; batch work limit must be nonnegative"
+        )
     if args.module_prefix and not re.fullmatch(
         r"[A-Za-z][A-Za-z0-9_]*", args.module_prefix
     ):
@@ -332,7 +346,7 @@ def main() -> None:
     if "inputs" in json.loads(source.read_text()) and references_path is None:
         parser.error("SQL input snapshots require --references")
     try:
-        inputs = selected_inputs(source, args.count)
+        inputs = selected_inputs(source, args.count, args.offset)
     except ValueError as error:
         parser.error(str(error))
     producer = ROOT / "benchmarks/ProduceECWitnesses.lean"
@@ -348,6 +362,7 @@ def main() -> None:
         "mathlib_revision": mathlib,
         "actual_lean_version": captured(["lean", "--version"]),
         "count": args.count,
+        "offset": args.offset,
         "batch_size": args.batch_size,
         "timeout": args.timeout,
         "producer_sha256": digest(producer),
@@ -371,7 +386,8 @@ def main() -> None:
         "mathlib_revision": mathlib,
         "platform": platform.platform(),
         "work_directory": str(work.relative_to(ROOT)),
-        "selection": "First count source rows, without rank filtering",
+        "selection": "Count contiguous source rows after offset, without rank filtering",
+        "offset": args.offset,
         "timing_clocks": {
             "batch_wall_seconds": time.get_clock_info("perf_counter").implementation,
             "command_seconds": "Lean std::chrono::steady_clock; includes suspend on macOS",
@@ -389,18 +405,55 @@ def main() -> None:
     elif output.exists():
         parser.error("Output exists; use --resume or a different output")
 
+    report["invocation_count"] = report.get("invocation_count", 0) + 1
+    report["complete"] = False
+    for key in [
+        "error",
+        "summary",
+        "by_conductor",
+        "compiled_reuse",
+        "compiled_reuse_groups",
+    ]:
+        report.pop(key, None)
+    for row in report["curves"]:
+        row.pop("reference_rank", None)
+        row.pop("reference_matches", None)
+
     def save() -> None:
+        report["wall_seconds"] = time.perf_counter() - started
         temp = output.with_suffix(".json.tmp")
         temp.write_text(json.dumps(report, indent=2) + "\n")
         temp.replace(output)
 
-    subprocess.run(
-        [*LAKE, "build", "VerifiedLcalc.Tactic.CertifyEC"],
-        cwd=ROOT,
-        check=True,
-        stdout=(work / "prebuild.log").open("w"),
-        stderr=subprocess.STDOUT,
-    )
+    save()
+    try:
+        run_benchmark(args, inputs, report, work, producer, validator, save)
+    except (Exception, KeyboardInterrupt) as error:
+        report["error"] = f"{type(error).__name__}: {error}"
+        raise
+    finally:
+        save()
+    print(json.dumps(report["summary"], indent=2), flush=True)
+    print(f"Report: {output}")
+
+
+def run_benchmark(
+    args: argparse.Namespace,
+    inputs: list[dict[str, Any]],
+    report: dict[str, Any],
+    work: Path,
+    producer: Path,
+    validator: Path,
+    save: Callable[[], None],
+) -> None:
+    with (work / "prebuild.log").open("w") as log:
+        subprocess.run(
+            [*LAKE, "build", "VerifiedLcalc.Tactic.CertifyEC"],
+            cwd=ROOT,
+            check=True,
+            stdout=log,
+            stderr=subprocess.STDOUT,
+        )
     env = dict(os.environ)
     env["LEAN_PATH"] = (
         str(work) + os.pathsep + captured([*LAKE, "env", "printenv", "LEAN_PATH"])
@@ -411,7 +464,7 @@ def main() -> None:
     if not report.get("generation_complete") and args.generation_report:
         origin_path = args.generation_report.resolve()
         previous = json.loads(origin_path.read_text())
-        report["curves"] = adopt_generation(previous, identity, inputs, work)
+        report["curves"] = adopt_generation(previous, report["identity"], inputs, work)
         report["generation"] = previous["generation"]
         report["generation_reuse"] = {
             "report_sha256": digest(origin_path),
@@ -423,7 +476,7 @@ def main() -> None:
                     "previous": previous["identity"]["production_sha256"].get(p),
                     "current": h,
                 }
-                for p, h in identity["production_sha256"].items()
+                for p, h in report["identity"]["production_sha256"].items()
                 if p.startswith("VerifiedLcalc/Tactic/")
                 and previous["identity"]["production_sha256"].get(p) != h
             },
@@ -447,24 +500,31 @@ def main() -> None:
             generation_log,
             max(args.timeout, 3600),
         )
-        if report["generation"]["returncode"] != 0:
-            save()
-            raise RuntimeError(f"Witness generation failed: {generation_log}")
-        generated = [
-            json.loads(line) for line in generation_log.read_text().splitlines()
-        ]
-        if len(generated) != len(inputs):
-            raise RuntimeError("Producer returned the wrong number of outcomes")
+        generation_failed = report["generation"]["returncode"] != 0
         report["curves"] = []
-        for entry, source_row in zip(generated, inputs, strict=True):
-            row = entry["result"]
-            if row["label"] != source_row["label"]:
-                raise RuntimeError("Producer changed the curve order")
-            row["generation_seconds"] = entry["generation_ns"] / 1e9
-            row["conductor"] = source_row["conductor"]
-            if row["status"] == "proposed":
-                row["witness_sha256"] = digest(work / "witnesses" / row["file"])
-            report["curves"].append(row)
+        with generation_log.open() as log:
+            for index, line in enumerate(log):
+                try:
+                    entry = json.loads(line)
+                except json.JSONDecodeError:
+                    if generation_failed:
+                        break
+                    raise
+                if index >= len(inputs):
+                    raise RuntimeError("Producer returned too many outcomes")
+                row = entry["result"]
+                source_row = inputs[index]
+                if row["index"] != index or row["label"] != source_row["label"]:
+                    raise RuntimeError("Producer changed the curve order")
+                row["generation_seconds"] = entry["generation_ns"] / 1e9
+                row["conductor"] = source_row["conductor"]
+                if row["status"] == "proposed":
+                    row["witness_sha256"] = digest(work / "witnesses" / row["file"])
+                report["curves"].append(row)
+        if generation_failed:
+            raise RuntimeError(f"Witness generation failed: {generation_log}")
+        if len(report["curves"]) != len(inputs):
+            raise RuntimeError("Producer returned the wrong number of outcomes")
         report["generation_complete"] = True
         save()
     candidates = [r for r in report["curves"] if "file" in r]
@@ -474,7 +534,12 @@ def main() -> None:
     )
     template = validator.read_text()
     by_label = {r["label"]: r for r in report["curves"]}
-    completed = {b["batch_index"] for b in report["batches"]}
+    completed = {
+        b["batch_index"]
+        for b in report["batches"]
+        if b["returncode"] == 0
+        and all(by_label[label]["status"] == "checked" for label in b["labels"])
+    }
     batches = numerical_batches(candidates, args.batch_size, args.batch_work_limit)
     jobs = [
         {
@@ -505,22 +570,28 @@ def main() -> None:
         measurement, events = result["measurement"], result["events"]
         batch_index = measurement["batch_index"]
         batch = batches[batch_index]
+        if events.keys() - {r["label"] for r in batch}:
+            raise RuntimeError("Unexpected curve in validation output")
         succeeded = measurement["returncode"] == 0
+        failure_status = (
+            "timeout" if measurement["status"] == "timeout" else "batch_failed"
+        )
         for row in batch:
             event = events.pop(row["label"], None)
+            row.pop("error", None)
+            row.pop("validation_seconds", None)
             if event:
                 row["validation_seconds"] = event["validation_ns"] / 1e9
-                row["status"] = event["status"] if succeeded else "batch_failed"
+                row["status"] = event["status"] if succeeded else failure_status
                 if event["error"]:
                     row["error"] = event["error"]
             else:
-                row["status"] = (
-                    "timeout" if measurement["status"] == "timeout" else "batch_failed"
-                )
+                row["status"] = failure_status
             row["module"] = measurement["module"]
             row["declaration_prefix"] = f"{args.module_prefix}Curve{row['index']:04d}"
-        if events:
-            raise RuntimeError("Unexpected curve in validation output")
+        report["batches"] = [
+            b for b in report["batches"] if b["batch_index"] != batch_index
+        ]
         report["batches"].append(measurement)
         report["batches"].sort(key=lambda b: b["batch_index"])
         phase["batch_indices"].append(batch_index)
@@ -600,7 +671,7 @@ def main() -> None:
         "groups": len(reuse_groups),
     }
     # References enter only after all mathematical checks have finished.
-    references = reference_ranks(source, references_path)
+    references = reference_ranks(args.source, args.references)
     for row in checked_rows:
         row["reference_rank"] = references[row["label"]]
         row["reference_matches"] = (
@@ -635,6 +706,9 @@ def main() -> None:
             "p95": quantile(durations, 0.95),
             "max": max(durations, default=None),
         },
+        "reference_agreements": sum(
+            r["reference_matches"] is True for r in checked_rows
+        ),
         "reference_mismatches": sum(
             r["reference_matches"] is False for r in checked_rows
         ),
@@ -659,10 +733,16 @@ def main() -> None:
                 ),
             }
         )
+    failures = {
+        status: count
+        for status, count in report["summary"]["outcomes"].items()
+        if status not in {"checked", "inconclusive"}
+    }
+    if failures:
+        raise RuntimeError(f"Benchmark failed with outcomes {failures}; logs: {work}")
+    if report["summary"]["reference_mismatches"]:
+        raise RuntimeError(f"Checked ranks differ from references; logs: {work}")
     report["complete"] = True
-    save()
-    print(json.dumps(report["summary"], indent=2), flush=True)
-    print(f"Report: {output}")
 
 
 if __name__ == "__main__":
