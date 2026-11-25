@@ -9,7 +9,7 @@ verify_replay_assets() {
   local release_id=$1 export_dir=$2 uploaded name digest
   uploaded=$(gh api --paginate --slurp \
     "repos/$GITHUB_REPOSITORY/releases/$release_id/assets?per_page=100")
-  for name in catalog.json witnesses.jsonl.gz; do
+  for name in catalog.json witnesses.jsonl.gz provenance.sigstore.json; do
     digest=$(sha256sum -- "$export_dir/$name")
     if ! jq -e --arg name "$name" --arg digest "sha256:${digest%% *}" \
       'any(.[][]; .name == $name and .state == "uploaded" and .digest == $digest)' \
@@ -27,6 +27,7 @@ case "$1" in
     [[ "$tag" =~ ^ec-certificates-[0-9]+-[0-9]+$ ]]
     test -s "$export_dir/catalog.json"
     test -s "$export_dir/witnesses.jsonl.gz"
+    test -s "$export_dir/provenance.sigstore.json"
     assets=("$export_dir"/*)
     if (( ${#assets[@]} > 1000 )); then
       echo "GitHub allows 1,000 assets per release. Rerun with a smaller count and use offsets for subsequent slices." >&2

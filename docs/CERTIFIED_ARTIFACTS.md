@@ -57,14 +57,22 @@ revision=$(gh api "repos/$repo/actions/runs/$run_id/attempts/$attempt" --jq '.he
 [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
 downloads=$(mktemp -d)
 gh release download "$tag" --repo "$repo" --dir "$downloads" \
-  --pattern catalog.json --pattern witnesses.jsonl.gz
+  --pattern catalog.json --pattern witnesses.jsonl.gz --pattern provenance.sigstore.json
 for file in catalog.json witnesses.jsonl.gz; do
   gh attestation verify "$downloads/$file" --repo "$repo" \
     --signer-workflow "$repo/.github/workflows/certificate-batch.yml" \
     --source-ref refs/heads/main --source-digest "$revision" \
-    --deny-self-hosted-runners
+    --deny-self-hosted-runners \
+    --bundle "$downloads/provenance.sigstore.json"
 done
 ```
+
+Keep `provenance.sigstore.json` along with both files when mirroring a release.
+The bundle preserves the signed evidence and lets `gh` skip the repository's
+attestation lookup. Omit `--bundle` to use the registered attestation from
+GitHub. For offline verification, supply a previously obtained trusted root
+with `--custom-trusted-root` and obtain the expected commit through a trusted
+channel before going offline. [GitHub offline verification instructions](https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations#verifying-attestations-offline)
 
 Use a clean checkout of the verified commit and install its pinned Lean
 toolchain. For a fresh checkout, follow the

@@ -123,6 +123,8 @@ jobs:
     needs: benchmark
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    outputs:
+      bundle-id: ${{ steps.transfer-bundle.outputs.artifact-id }}
     permissions:
       contents: read
       id-token: write
@@ -138,11 +140,25 @@ jobs:
           test -s "$RUNNER_TEMP/ec-release/catalog.json"
           test -s "$RUNNER_TEMP/ec-release/witnesses.jsonl.gz"
       - name: Sign build provenance
+        id: provenance
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         with:
           subject-path: |
             ${{ runner.temp }}/ec-release/catalog.json
             ${{ runner.temp }}/ec-release/witnesses.jsonl.gz
+      - name: Stage signed bundle
+        env:
+          BUNDLE_PATH: ${{ steps.provenance.outputs.bundle-path }}
+        run: |
+          test -s "$BUNDLE_PATH"
+          cp -- "$BUNDLE_PATH" "$RUNNER_TEMP/provenance.sigstore.json"
+      - name: Transfer signed bundle
+        id: transfer-bundle
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: provenance-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/provenance.sigstore.json
+          if-no-files-found: error
 
   publish:
     name: Publish audited certificate release
@@ -164,6 +180,11 @@ jobs:
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           artifact-ids: ${{ needs.benchmark.outputs.artifact-id }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/ec-release
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          artifact-ids: ${{ needs.attest.outputs.bundle-id }}
           merge-multiple: true
           path: ${{ runner.temp }}/ec-release
       - name: Upload release assets and publish

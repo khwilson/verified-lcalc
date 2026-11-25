@@ -148,6 +148,7 @@ function rowsFor(record) {
         const replay = node("div", undefined, {class: "artifact-links"});
         replay.append(link("Download exact witnesses", archive),
           link("Batch catalog", `${repository}/releases/download/${tag}/catalog.json`),
+          link("Signed provenance", `${repository}/releases/download/${tag}/provenance.sigstore.json`),
           link("Verify and replay", `${repository}/blob/${catalogue.git_revision}/docs/CERTIFIED_ARTIFACTS.md`));
         detail.append(replay);
         if (row.witness_sha256) {
