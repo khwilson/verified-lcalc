@@ -5,12 +5,29 @@ releases() {
   gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/releases?per_page=100"
 }
 
+verify_replay_assets() {
+  local release_id=$1 export_dir=$2 uploaded name digest
+  uploaded=$(gh api --paginate --slurp \
+    "repos/$GITHUB_REPOSITORY/releases/$release_id/assets?per_page=100")
+  for name in catalog.json witnesses.jsonl.gz provenance.sigstore.json; do
+    digest=$(sha256sum -- "$export_dir/$name")
+    if ! jq -e --arg name "$name" --arg digest "sha256:${digest%% *}" \
+      'any(.[][]; .name == $name and .state == "uploaded" and .digest == $digest)' \
+      <<< "$uploaded" >/dev/null; then
+      echo "$name is missing or differs from the attested artifact on release $release_id." >&2
+      return 1
+    fi
+  done
+}
+
 case "$1" in
   release)
     tag=$2
     export_dir=$3
     [[ "$tag" =~ ^ec-certificates-[0-9]+-[0-9]+$ ]]
     test -s "$export_dir/catalog.json"
+    test -s "$export_dir/witnesses.jsonl.gz"
+    test -s "$export_dir/provenance.sigstore.json"
     assets=("$export_dir"/*)
     if (( ${#assets[@]} > 1000 )); then
       echo "GitHub allows 1,000 assets per release. Rerun with a smaller count and use offsets for subsequent slices." >&2
@@ -20,21 +37,23 @@ case "$1" in
       test -f "$asset" && test ! -L "$asset" || exit 1
     done
 
-    release=$(releases | jq -c --arg tag "$tag" '[.[][] | select(.tag_name == $tag)] | first // empty')
+    release=$(releases | jq -c --arg tag "$tag" 'first(.[][] | select(.tag_name == $tag)) // empty')
     if [[ -z "$release" ]]; then
       gh release create "$tag" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
         --draft --prerelease --latest=false --title "Elliptic curve certificates $tag" \
-        --notes "Audited Lean certificates from $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID."
+        --notes "Audited Lean certificates with signed replay records from $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID."
+      release=$(releases | jq -ec --arg tag "$tag" 'first(.[][] | select(.tag_name == $tag))')
     else
       jq -e --arg sha "$GITHUB_SHA" '.prerelease and .target_commitish == $sha' <<< "$release" >/dev/null
       if jq -e '.draft == false' <<< "$release" >/dev/null; then
-        jq -e '.assets | any(.name == "catalog.json" and .state == "uploaded")' <<< "$release" >/dev/null
+        verify_replay_assets "$(jq -r '.id' <<< "$release")" "$export_dir"
         echo "$tag is already published."
         exit 0
       fi
     fi
     # Replacement is allowed only before publication, for retries after an interrupted upload.
     gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber "${assets[@]}"
+    verify_replay_assets "$(jq -r '.id' <<< "$release")" "$export_dir"
     gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false --latest=false
     ;;
   site)

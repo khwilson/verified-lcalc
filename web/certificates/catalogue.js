@@ -78,7 +78,7 @@ function factDetails({fact, catalogue}, curveLabel) {
   const list = node("dl");
   article.append(node("h3", factHeading(fact)), list);
   definition(list, "Lean theorem", node("code", fact.theorem));
-  definition(list, "Import module", node("code", fact.module));
+  definition(list, "Lean module", node("code", fact.module));
   const assumptions = node("ul");
   for (const assumption of fact.assumptions) {
     const item = node("li");
@@ -142,6 +142,21 @@ function rowsFor(record) {
       detail.append(equation);
     }
     if (facts.size) {
+      const tag = catalogue.batch?.release_tag;
+      const archive = artifactUrl(catalogue.witness_archive?.url);
+      if (archive && /^ec-certificates-\d+-\d+$/.test(tag)) {
+        const replay = node("div", undefined, {class: "artifact-links"});
+        replay.append(link("Download exact witnesses", archive),
+          link("Batch catalog", `${repository}/releases/download/${tag}/catalog.json`),
+          link("Signed provenance", `${repository}/releases/download/${tag}/provenance.sigstore.json`),
+          link("Verify and replay", `${repository}/blob/${catalogue.git_revision}/docs/CERTIFIED_ARTIFACTS.md`));
+        detail.append(replay);
+        if (row.witness_sha256) {
+          const witness = node("dl");
+          definition(witness, "Witness SHA-256", node("code", row.witness_sha256));
+          detail.append(witness);
+        }
+      }
       for (const evidence of facts.values()) detail.append(factDetails(evidence, row.label));
     } else {
       detail.append(node("h3", `${row.label} · Inconclusive`));

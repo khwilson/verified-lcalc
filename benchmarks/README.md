@@ -20,8 +20,9 @@ batch timings, compiled-proof import checks and reference comparisons.
 The hosted run uses the production `certify_ec` JSON verifier. Rank-one measurements
 include its current derivative quadrature.
 
-On `main`, a successful run also publishes its audited facts and compiled
-modules to the [curve certificate companion](https://khwilson.github.io/verified-lcalc/).
+On `main`, a successful run publishes its signed catalog and exact witnesses
+to the [curve certificate companion](https://khwilson.github.io/verified-lcalc/).
+Enable `publish_modules` to include compiled modules for immediate import.
 The job checks nonsingularity, global minimality and the exact analytic rank
 against their expected types in a fresh import before publishing. Each batch
 release supplies SHA-256 checksums and records the dependency revisions.
