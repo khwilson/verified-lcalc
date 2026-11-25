@@ -5,10 +5,30 @@ releases() {
   gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/releases?per_page=100"
 }
 
+retry_read() {
+  local delay
+  for delay in 1 2 4 8 16; do
+    if "$@"; then
+      return 0
+    fi
+    sleep "$delay"
+  done
+  "$@"
+}
+
+find_release() {
+  releases | jq -c --arg tag "$1" 'first(.[][] | select(.tag_name == $tag)) // empty'
+}
+
+draft_visible() {
+  find_release "$1" | jq -es --argjson id "$2" \
+    'length == 1 and .[0].id == $id and .[0].draft == true' >/dev/null
+}
+
 verify_replay_assets() {
   local release_id=$1 export_dir=$2 uploaded name digest
   uploaded=$(gh api --paginate --slurp \
-    "repos/$GITHUB_REPOSITORY/releases/$release_id/assets?per_page=100")
+    "repos/$GITHUB_REPOSITORY/releases/$release_id/assets?per_page=100") || return
   for name in catalog.json witnesses.jsonl.gz provenance.sigstore.json; do
     digest=$(sha256sum -- "$export_dir/$name")
     if ! jq -e --arg name "$name" --arg digest "sha256:${digest%% *}" \
@@ -18,6 +38,25 @@ verify_replay_assets() {
       return 1
     fi
   done
+}
+
+published_catalog_index() {
+  local listed
+  listed=$(releases) || return
+  jq -e --arg current "$1.json" '[
+    .[][] | select(.prerelease and (.draft | not))
+    | select(.tag_name | test("^ec-certificates-[0-9]+-[0-9]+$"))
+  ] | sort_by(.published_at, .id) | reverse | map(.tag_name + ".json")
+  | select(index($current) != null)' <<< "$listed"
+}
+
+pages_artifact_visible() {
+  local name=$1 id=$2
+  gh api --method GET --paginate --slurp \
+    "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" \
+    -f name="$name" | jq -e --arg name "$name" --argjson id "$id" '
+      [.[].artifacts[] | select(.name == $name)]
+      | length == 1 and .[0].id == $id and .[0].expired == false' >/dev/null
 }
 
 case "$1" in
@@ -37,35 +76,36 @@ case "$1" in
       test -f "$asset" && test ! -L "$asset" || exit 1
     done
 
-    release=$(releases | jq -c --arg tag "$tag" 'first(.[][] | select(.tag_name == $tag)) // empty')
+    release=$(find_release "$tag")
     if [[ -z "$release" ]]; then
-      gh release create "$tag" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
-        --draft --prerelease --latest=false --title "Elliptic curve certificates $tag" \
-        --notes "Audited Lean certificates with signed replay records from $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID."
-      release=$(releases | jq -ec --arg tag "$tag" 'first(.[][] | select(.tag_name == $tag))')
-    else
-      jq -e --arg sha "$GITHUB_SHA" '.prerelease and .target_commitish == $sha' <<< "$release" >/dev/null
-      if jq -e '.draft == false' <<< "$release" >/dev/null; then
-        verify_replay_assets "$(jq -r '.id' <<< "$release")" "$export_dir"
-        echo "$tag is already published."
-        exit 0
-      fi
+      release=$(gh api --method POST "repos/$GITHUB_REPOSITORY/releases" \
+        -f tag_name="$tag" -f target_commitish="$GITHUB_SHA" \
+        -F draft=true -F prerelease=true -f make_latest=false \
+        -f name="Elliptic curve certificates $tag" \
+        -f body="Audited Lean certificates with signed replay records from $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID.")
+    fi
+    release_id=$(jq -er --arg tag "$tag" --arg sha "$GITHUB_SHA" '
+      select(.tag_name == $tag and .target_commitish == $sha and .prerelease == true)
+      | .id | select(type == "number")' <<< "$release")
+    if jq -e '.draft == false' <<< "$release" >/dev/null; then
+      retry_read verify_replay_assets "$release_id" "$export_dir"
+      echo "$tag is already published."
+      exit 0
     fi
     # Replacement is allowed only before publication, for retries after an interrupted upload.
+    # gh release upload resolves drafts by tag, so wait for its listing to see this exact draft.
+    retry_read draft_visible "$tag" "$release_id"
     gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber "${assets[@]}"
-    verify_replay_assets "$(jq -r '.id' <<< "$release")" "$export_dir"
-    gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false --latest=false
+    retry_read verify_replay_assets "$release_id" "$export_dir"
+    gh api --method PATCH "repos/$GITHUB_REPOSITORY/releases/$release_id" \
+      -F draft=false -f make_latest=false --silent
     ;;
   site)
     tag=$2
     site_dir=$3
     mkdir -p "$site_dir/catalogs"
     cp -R web/certificates/. "$site_dir/"
-    releases | jq '[
-      .[][] | select(.prerelease and (.draft | not))
-      | select(.tag_name | test("^ec-certificates-[0-9]+-[0-9]+$"))
-    ] | sort_by(.published_at, .id) | reverse | map(.tag_name + ".json")' > "$site_dir/catalogs/index.json"
-    jq -e --arg current "$tag.json" 'index($current) != null' "$site_dir/catalogs/index.json" >/dev/null
+    retry_read published_catalog_index "$tag" > "$site_dir/catalogs/index.json"
     basenames=$(jq -r '.[]' "$site_dir/catalogs/index.json")
     while IFS= read -r basename; do
       [[ -n "$basename" ]] || continue
@@ -73,8 +113,15 @@ case "$1" in
         --pattern catalog.json --output "$site_dir/catalogs/$basename"
     done <<< "$basenames"
     ;;
+  wait-pages-artifact)
+    [[ "$3" =~ ^[0-9]+$ ]]
+    if ! retry_read pages_artifact_visible "$2" "$3"; then
+      echo "Pages artifact $2 ($3) did not become visible in run $GITHUB_RUN_ID." >&2
+      exit 1
+    fi
+    ;;
   *)
-    echo "Expected release or site command." >&2
+    echo "Expected release, site or wait-pages-artifact command." >&2
     exit 2
     ;;
 esac
