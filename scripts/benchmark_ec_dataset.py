@@ -27,6 +27,28 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.benchmark_certify_ec import LAKE, ROOT, digest, mathlib_revision
 
+CATALOG_FACT_FIELDS = ["analytic_rank", "nonsingular", "global_minimal"]
+
+
+def catalog_import_examples(row: dict[str, Any], subject: dict[str, Any]) -> str:
+    """Bind the published facts and their subject to literal values in a fresh Lean import."""
+    prefix = row["declaration_prefix"]
+    if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", prefix):
+        raise ValueError("Invalid declaration prefix in proof-import check")
+    coefficients = ", ".join(str(int(value)) for value in subject["ainvs"])
+    conductor = int(subject["conductor"])
+    rank = int(row["rank"])
+    return (
+        f"example : {prefix}.curve = (⟨{coefficients}⟩ : WeierstrassCurve ℤ) := rfl\n"
+        f"example : {prefix}.result.conductor = {conductor} := rfl\n"
+        f"example : {prefix}.curve.Δ ≠ 0 := {prefix}.nonsingular\n"
+        f"example : WeierstrassCurve.IsGlobalMinimal (NumberField.RingOfIntegers ℚ) "
+        f"({prefix}.curve.baseChange ℚ) := {prefix}.global_minimal\n"
+        f"example : analyticOrderAt "
+        f"(VerifiedLcalc.Modularity.modularWitness {prefix}.curve {prefix}.nonsingular).formL "
+        f"(1 : ℂ) = {rank} := {prefix}.analytic_rank\n"
+    )
+
 
 def captured(args: list[str]) -> str:
     return subprocess.check_output(args, cwd=ROOT, text=True).strip()
@@ -413,6 +435,7 @@ def main() -> None:
         "by_conductor",
         "compiled_reuse",
         "compiled_reuse_groups",
+        "catalog_fact_fields",
     ]:
         report.pop(key, None)
     for row in report["curves"]:
@@ -648,8 +671,7 @@ def run_benchmark(
             + "".join(f"import {m}\n" for m in group_modules)
             + "\n"
             + "".join(
-                f"example := {r['declaration_prefix']}.analytic_rank\n"
-                for r in group_rows
+                catalog_import_examples(r, inputs[r["index"]]) for r in group_rows
             )
         )
         name = f"{args.module_prefix}Consumer{start // args.consumer_modules:04d}"
@@ -658,6 +680,10 @@ def run_benchmark(
             [lean, f"{name}.lean"], work, env, work / f"{name}.log", args.timeout
         )
         measurement.update({"modules": group_modules, "curves": len(group_rows)})
+        if measurement["returncode"] == 0:
+            measurement["module_sha256"] = {
+                module: digest(work / f"{module}.olean") for module in group_modules
+            }
         reuse_groups.append(measurement)
         report["compiled_reuse_groups"] = reuse_groups
         save()
@@ -670,6 +696,7 @@ def run_benchmark(
         "cpu_seconds": sum(g["cpu_seconds"] for g in reuse_groups),
         "groups": len(reuse_groups),
     }
+    report["catalog_fact_fields"] = CATALOG_FACT_FIELDS
     # References enter only after all mathematical checks have finished.
     references = reference_ranks(args.source, args.references)
     for row in checked_rows:
