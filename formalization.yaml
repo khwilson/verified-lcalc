@@ -1,0 +1,196 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/99c678e569c7c4c0772db297c5ddd5e4c9b6322e/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: verified-lcalc
+  description: >-
+    Lean 4 verification of supplied arithmetic and analytic certificates for
+    elliptic curves over the rationals. The project checks exact data for integral
+    Weierstrass equations and uses rigorous enclosures of central L-values and
+    first derivatives to certify exact analytic ranks zero and one when the
+    required evidence is available.
+  authors:
+    - Kevin Wilson (credited in project source headers; AI assistance described below)
+  responsible_maintainers:
+    - Kevin Wilson (GitHub khwilson)
+  license: >-
+    Project-authored files with copyright notices reserve all rights. The
+    repository has no declared project-wide license. Separately attributed
+    material carries its own terms, including Apache-2.0 for TauCeti material
+    and GPL-2.0-or-later for the PARI-derived wild root-number implementation.
+    See LICENSES/ and the individual file notices.
+
+sources:
+  - title: Arithmetic and analytic certificate soundness for rational elliptic curves
+    type: original-proof
+    id: https://github.com/khwilson/verified-lcalc
+    location: VerifiedLcalc/EllipticCurve/ and VerifiedLcalc/Verification/
+    relationship: formalizes
+    note: The repository specifies the certificate formats and proves the soundness implications.
+  - title: "On the Modularity of Elliptic Curves over Q: Wild 3-Adic Exercises"
+    authors: [Christophe Breuil, Brian Conrad, Fred Diamond, Richard Taylor]
+    id: https://math.stanford.edu/~conrad/papers/tswfinal.pdf
+    type: article
+    relationship: background
+    note: >-
+      Background for the existence of a modular realization. The project's
+      axiom packages additional arithmetic compatibility for its executable
+      conductor and root-number specifications.
+  - title: "Signes locaux des courbes elliptiques en 2 et 3"
+    authors: [Emmanuel Halberstadt]
+    id: https://doi.org/10.1016/S0764-4442(98)80060-8
+    type: article
+    relationship: adapts
+    note: Source of the local sign tables at 2 and 3. See docs/WILD_ARITHMETIC.md.
+  - title: PARI/GP elliptic curve implementation
+    id: https://pari.math.u-bordeaux.fr/lcov-report/basemath/elliptic.c.gcov.html
+    type: software
+    location: "elliptic.c, localred_23, neron_2/3 and ellrootno_2/3"
+    relationship: adapts
+    license: GPL-2.0-or-later
+    note: >-
+      The attributed excerpt is data/upstream/pari-elliptic-wild.c. The
+      executable root-number table in Lean retains the PARI notice.
+  - title: lcalc 2.1.0
+    id: https://gitlab.com/-/project/12934202/uploads/679cb360a06a713233876cd6fa0ba2fa/lcalc-2.1.0.tar.xz
+    type: software
+    location: src/libLfunction/Lfind_zeros.h
+    relationship: background
+    note: >-
+      The rank-estimation workflow motivated the project. The exact
+      certificate approach and the upstream heuristic use different methods.
+      See docs/VERIFICATION.md for the inspected release archive and checksum.
+
+  - title: "The L-functions and Modular Forms Database: elliptic curves over Q"
+    authors: [The LMFDB Collaboration]
+    id: https://www.lmfdb.org/EllipticCurve/Q/
+    type: database
+    relationship: background
+    license: CC-BY-SA
+    note: >-
+      Supplies the published batch's curve labels, integral equations and
+      reference conductors. The data terms are documented at
+      https://www.lmfdb.org/api/options. Expected ranks do not supply witnesses
+      or proof evidence.
+
+related_formalizations:
+  - id: https://github.com/TauCetiProject/TauCeti
+    relationship: builds-on
+    note: Supplies elliptic curve point counting, local reduction and L-function definitions.
+  - id: https://github.com/leanprover-community/mathlib4
+    relationship: builds-on
+    note: Supplies Weierstrass curves, modular forms and complex analysis.
+
+classification:
+  arxiv: [math.NT]
+
+status:
+  scope: >-
+    The public certify_ec command verifies supplied Lean or exact JSON
+    witnesses. Finite arithmetic conclusions include local Euler-factor
+    identification under the stated hypotheses, checks against executable
+    conductor and local sign specifications, and algebraic rank lower bounds
+    from proved point independence. The published batch reports nonsingularity
+    of the supplied equation, global minimality of its integral model and exact
+    analytic rank [project assumptions: VerifiedLcalc.Assumptions.ellipticModularity].
+    Analytic certification at the
+    arithmetic center s = 1 uses nonvanishing of the central value for rank zero
+    and exact sign-forced vanishing with nonvanishing of the first derivative
+    for rank one. The general continuation from an integral equation uses the
+    temporary ellipticModularity axiom for every nonsingular equation over Q,
+    including additive reduction. It includes coefficient and Fricke matching
+    and semistable, tame and wild conductor and root-number compatibility.
+    Tate/Ogg and Halberstadt geometric compatibility remain in that
+    assumption. The LowRankBSD module is opt-in and assumes only the forward
+    analytic-to-algebraic rank implications in ranks zero and one for the same
+    curve and an explicit arithmetic modular realization. General exact
+    higher-rank certification still needs enclosures for derivatives of order
+    two and above.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms:
+    - propext
+    - Classical.choice
+    - Quot.sound
+    - VerifiedLcalc.Assumptions.ellipticModularity
+    - VerifiedLcalc.Assumptions.analyticOrder_le_one_implies_finrank
+  main_results:
+    - declaration: VerifiedLcalc.EllipticCurve.semistable_localPolynomial
+      file: VerifiedLcalc/EllipticCurve/SemistableArithmetic.lean
+      sorry_count: 0
+      axioms: &standard_axioms [propext, Classical.choice, Quot.sound]
+    - declaration: VerifiedLcalc.EllipticCurve.wildRoot_correct
+      file: VerifiedLcalc/EllipticCurve/Tate/WildArithmetic.lean
+      sorry_count: 0
+      axioms: *standard_axioms
+    - declaration: VerifiedLcalc.EllipticCurve.algebraic_finrank_lower_bound
+      file: VerifiedLcalc/EllipticCurve/AlgebraicRank.lean
+      sorry_count: 0
+      axioms: *standard_axioms
+    - declaration: VerifiedLcalc.Modularity.ModularRealization.formL_eq
+      file: VerifiedLcalc/EllipticCurve/Modularity/RealizationIndependence.lean
+      sorry_count: 0
+      axioms: *standard_axioms
+    - declaration: VerifiedLcalc.Certification.certifyCentralWithRealization
+      file: VerifiedLcalc/Verification/GeneralCertification.lean
+      sorry_count: 0
+      axioms: *standard_axioms
+    - declaration: VerifiedLcalc.Modularity.ModularRealization.analyticOrder_one_of_derivativePayload
+      file: VerifiedLcalc/Verification/DerivativeEvaluator.lean
+      sorry_count: 0
+      axioms: *standard_axioms
+    - declaration: VerifiedLcalc.Certification.certifyGeneralMinimalCentral
+      file: VerifiedLcalc/Verification/GeneralCertification.lean
+      sorry_count: 0
+      axioms: &modularity_axioms
+        - propext
+        - Classical.choice
+        - Quot.sound
+        - VerifiedLcalc.Assumptions.ellipticModularity
+    - declaration: VerifiedLcalc.Certification.certifyDerivativeModel
+      file: VerifiedLcalc/Verification/DerivativeCertification.lean
+      sorry_count: 0
+      axioms: *modularity_axioms
+    - declaration: VerifiedLcalc.Certification.algebraic_finrank_eq_zero_of_analytic_rank_zero
+      file: VerifiedLcalc/Verification/LowRankBSD.lean
+      sorry_count: 0
+      axioms: &low_rank_axioms
+        - propext
+        - Classical.choice
+        - Quot.sound
+        - VerifiedLcalc.Assumptions.analyticOrder_le_one_implies_finrank
+    - declaration: VerifiedLcalc.Certification.algebraic_finrank_eq_one_of_analytic_rank_one
+      file: VerifiedLcalc/Verification/LowRankBSD.lean
+      sorry_count: 0
+      axioms: *low_rank_axioms
+
+automation:
+  methods:
+    - method: agent
+      tool_setup: Lean 4, Lake, Mathlib, TauCeti, Lean axiom audits and GitHub Actions.
+      prompting_notes: >-
+        AGENTS.md documents the agent implementation and coordinator review
+        workflow, permitted assumptions and exact certificate requirements.
+  notes: >-
+    Lean checks proof terms and links computation to specifications. Python
+    handles data, candidate witnesses and test orchestration. The repository
+    does not record a complete run-by-run history of models or costs.
+
+fidelity:
+  divergences: >-
+    Wild table correctness is relative to a Lean arithmetic specification.
+    The local-to-global modular level and sign identifications depend on the
+    explicit modularity package. Curve-specific precision claims require
+    actual derivative enclosures and an explicit gap hypothesis. The declared
+    gap must strictly exceed the cutoff, and every nonzero derivative in the
+    stated prefix must be proved to meet the gap.
+    Exact order also requires next nonvanishing. Reference-data agreement
+    supplies neither derivative enclosures nor rank proofs.
+
+review:
+  status: self-assessed
+  notes: >-
+    The listed dependencies are checked by Lean #print axioms guards in
+    tests/audits/AuditArithmetic.lean, AuditWild.lean,
+    AuditGeneralModularity.lean, AuditDerivative.lean and AuditLowRankBSD.lean.
+    See make test-lean and .github/workflows/lean.yml for the repository checks.

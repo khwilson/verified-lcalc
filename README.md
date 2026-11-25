@@ -4,6 +4,10 @@ Lean 4 arithmetic, interval evaluation, and proof-producing metaprogramming for
 elliptic-curve analytic ranks. Curves use Mathlib's `WeierstrassCurve ℤ` directly;
 base change uses its ring-map API. There is no separate curve-equation data type.
 
+The [formalization manifest](formalization.yaml) records the mathematical scope,
+named results and assumptions. The [maintainer review list](https://github.com/khwilson/verified-lcalc/issues/88)
+tracks questions about the manifest and published computation records.
+
 `certify_ec` verifies supplied numerical and local-arithmetic witnesses and emits
 ordinary named theorems. It accepts exact JSON files, inline JSON, or Lean data.
 It performs no witness search by default. Compiling a certificate produces an
