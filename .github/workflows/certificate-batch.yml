@@ -1,4 +1,7 @@
 name: Certificate batch benchmark
+run-name: >-
+  Certificate batch (offset ${{ inputs.offset }}, count ${{ inputs.count }})
+  ${{ inputs.parent_run && format('after {0}', inputs.parent_run) || '' }}
 on:
   workflow_dispatch:
     inputs:
@@ -17,6 +20,14 @@ on:
         type: boolean
         default: false
         required: true
+      through_batch:
+        description: Last 1,000-curve batch to run (1–10, or 0 for only this run)
+        type: number
+        default: 0
+      parent_run:
+        description: Automatically set to the preceding run ID and attempt
+        type: string
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -27,6 +38,7 @@ jobs:
     outputs:
       release-tag: ${{ steps.catalog.outputs.release-tag }}
       artifact-id: ${{ steps.transfer.outputs.artifact-id }}
+      next-offset: ${{ steps.chain.outputs.next-offset }}
     defaults:
       run:
         working-directory: verified-lcalc
@@ -37,6 +49,15 @@ jobs:
         with:
           path: verified-lcalc
           persist-credentials: false
+      - name: Validate batch chain
+        id: chain
+        if: inputs.through_batch != 0 || inputs.parent_run != ''
+        env:
+          COUNT: ${{ inputs.count }}
+          OFFSET: ${{ inputs.offset }}
+          THROUGH_BATCH: ${{ inputs.through_batch }}
+          PARENT_RUN: ${{ inputs.parent_run }}
+        run: python3 scripts/plan_ec_batch_chain.py
       - name: Set up Lean and restore cached artifacts
         uses: ./verified-lcalc/.github/actions/setup-lean
       - name: Generate witnesses and verify certificates
@@ -237,3 +258,75 @@ jobs:
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
         with:
           artifact_name: ${{ env.PAGES_ARTIFACT }}
+
+  dispatch:
+    name: Dispatch next certificate batch
+    if: >-
+      github.repository == 'khwilson/verified-lcalc' &&
+      github.ref == 'refs/heads/main' &&
+      needs.deploy.result == 'success' &&
+      needs.benchmark.outputs.next-offset != ''
+    needs: [benchmark, deploy]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    defaults:
+      run:
+        shell: bash
+    env:
+      GH_TOKEN: ${{ github.token }}
+      NEXT_OFFSET: ${{ needs.benchmark.outputs.next-offset }}
+    steps:
+      - name: Check earlier attempts for this dispatch
+        id: previous
+        run: |
+          for ((attempt = 1; attempt < GITHUB_RUN_ATTEMPT; attempt++)); do
+            endpoint="repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/attempts/$attempt/jobs?per_page=100"
+            prior=$(gh api --paginate --slurp "$endpoint" | jq -r '
+              [.[].jobs[] | select(.name == "Dispatch next certificate batch") |
+                if .conclusion == "skipped" then "skipped"
+                else ([.steps[] | select(.name == "Submit workflow dispatch") |
+                  .conclusion][0] // "unknown") end][0] // "skipped"')
+            attempt_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/attempts/$attempt"
+            case "$prior" in
+              success)
+                echo "already-dispatched=true" >> "$GITHUB_OUTPUT"
+                printf 'Offset %s was dispatched in [attempt %s](%s).\n' \
+                  "$NEXT_OFFSET" "$attempt" "$attempt_url" >> "$GITHUB_STEP_SUMMARY"
+                exit 0
+                ;;
+              skipped) ;;
+              *)
+                printf 'Check [attempt %s](%s) and the workflow run list for a child at offset %s before dispatching manually.\n' \
+                  "$attempt" "$attempt_url" "$NEXT_OFFSET" >> "$GITHUB_STEP_SUMMARY"
+                exit 1
+                ;;
+            esac
+          done
+      - name: Submit workflow dispatch
+        if: steps.previous.outputs.already-dispatched != 'true'
+        env:
+          THROUGH_BATCH: ${{ inputs.through_batch }}
+          PUBLISH_MODULES: ${{ inputs.publish_modules }}
+        run: |
+          parent="$GITHUB_RUN_ID/attempts/$GITHUB_RUN_ATTEMPT"
+          endpoint="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/workflows/certificate-batch.yml/dispatches"
+          payload=$(jq -n --arg offset "$NEXT_OFFSET" --arg through "$THROUGH_BATCH" \
+            --arg publish "$PUBLISH_MODULES" --arg parent "$parent" \
+            '{ref: "main", inputs: {count: "1000", offset: $offset, through_batch: $through,
+              publish_modules: $publish, parent_run: $parent}}')
+          printf 'Requested offset %s through batch %s from run %s.\n\n' \
+            "$NEXT_OFFSET" "$THROUGH_BATCH" "$parent" >> "$GITHUB_STEP_SUMMARY"
+          if ! response=$(curl --silent --show-error --fail-with-body --max-time 30 \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header "Accept: application/vnd.github+json" \
+            --header "X-GitHub-Api-Version: 2026-03-10" \
+            --header "Content-Type: application/json" \
+            --data "$payload" "$endpoint") ||
+            ! next_run=$(jq -er '.workflow_run_id | select(type == "number" and . > 0)' <<< "$response"); then
+            echo 'Check the workflow run list for this offset and parent before dispatching manually.' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          printf '[Run %s](%s/%s/actions/runs/%s) will process offset %s.\n' \
+            "$next_run" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$next_run" "$NEXT_OFFSET" >> "$GITHUB_STEP_SUMMARY"
