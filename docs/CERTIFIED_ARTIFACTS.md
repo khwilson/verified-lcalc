@@ -1,8 +1,37 @@
 # Importing certificates and assembling a mathematical database
 
-Lean supports independently compiled modules and their composition by imports.
-The database/catalog and artifact distribution layer would be additional tooling;
-no database service has been installed by the benchmark workflow.
+## Browse the hosted certificates
+
+The [curve certificate companion](https://khwilson.github.io/verified-lcalc/)
+indexes successful manual benchmark runs published from `main`. Look up an
+LMFDB label to see the checked facts, their Lean names and project-specific
+assumptions. The link to LMFDB opens the corresponding curve record.
+
+The first three facts are nonsingularity of the supplied equation, global
+minimality of its integral model, and exact analytic rank. The rank theorem
+uses `VerifiedLcalc.Assumptions.ellipticModularity`. Each published value is
+checked by a fresh Lean process importing the compiled module. The same import
+checks the equation against the five input coefficients and the conductor in
+the numerical result against the selected input. Inconclusive rows carry no
+published facts. A label outside the published runs has no entry.
+
+Each checked entry links directly to its batch's `.olean` and to a ZIP with
+the module's companion files. Several curves can share one download. To use
+the bundle, check out the project's linked commit, install its pinned Lean
+toolchain and build `VerifiedLcalc.Tactic.CertifyEC`. Extract the ZIP into
+an empty directory and verify its checksums. Create a Lean file that imports
+the displayed module and uses `#check` on the displayed theorem name.
+From the repository checkout, run the file with the extracted module directory
+on Lean's search path:
+
+```sh
+deps="$(lake -f lakefile.certificates.lean env printenv LEAN_PATH)"
+LEAN_PATH="/absolute/path/to/extracted-module:$deps" lean UseCertificate.lean
+```
+
+The underlying [certificate releases](https://github.com/khwilson/verified-lcalc/releases)
+include the machine-readable catalog and asset checksums for each run. The
+raw benchmark statistics are a separate artifact on the Actions run page.
 
 ## Import the existing local certificates
 
@@ -35,7 +64,7 @@ declaration names, so its artifacts can coexist with the earlier dataset.
 New reports explicitly record `declaration_prefix` for each validation attempt.
 The report's `work_directory` locates that run's compiled modules.
 
-## Database layout
+## Database layout and compatibility
 
 A scalable design has four parts:
 

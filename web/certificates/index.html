@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Browse published Lean certificates for LMFDB elliptic curves over the rational numbers.">
+  <title>Elliptic curve certificates · verified-lcalc</title>
+  <link rel="stylesheet" href="catalogue.css">
+  <script type="module" src="catalogue.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#catalogue">Skip to catalogue</a>
+  <header class="masthead">
+    <div class="container masthead-inner">
+      <a class="wordmark" href="https://github.com/khwilson/verified-lcalc">verified-lcalc</a>
+      <nav aria-label="Sources">
+        <a href="https://www.lmfdb.org/EllipticCurve/Q/">LMFDB</a>
+        <a href="https://github.com/khwilson/verified-lcalc">Repository</a>
+      </nav>
+    </div>
+  </header>
+  <main id="catalogue" class="container" tabindex="-1">
+    <header class="intro">
+      <h1>Elliptic curve certificates</h1>
+      <p>Browse Lean theorems for elliptic curves over ℚ, indexed by LMFDB label. Each imported certificate includes its assumptions, source revision and reusable proof artifacts.</p>
+    </header>
+    <section aria-labelledby="browse-heading">
+      <h2 id="browse-heading">Browse the catalogue</h2>
+      <fieldset id="filters" disabled>
+        <legend class="visually-hidden">Filter curves</legend>
+        <div class="filter">
+          <label for="search">LMFDB curve label</label>
+          <input id="search" type="search" placeholder="e.g. 37.a1" spellcheck="false" autocomplete="off">
+        </div>
+        <div class="filter">
+          <label for="status">Certificate status</label>
+          <select id="status">
+            <option value="">All statuses</option>
+            <option value="checked">Imported</option>
+            <option value="inconclusive">Inconclusive</option>
+          </select>
+        </div>
+        <div class="filter">
+          <label for="rank">Analytic rank</label>
+          <select id="rank">
+            <option value="">All ranks</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+          </select>
+        </div>
+        <button id="clear" type="button">Clear filters</button>
+      </fieldset>
+      <p id="notice" class="notice" role="status">Loading published certificates…</p>
+      <noscript><p>Enable JavaScript to browse the catalogue.</p></noscript>
+      <div id="results" hidden>
+        <p id="result-count" class="result-count" aria-live="polite"></p>
+        <div class="table-wrap">
+          <table>
+            <caption class="visually-hidden">Elliptic curves with published certificate results</caption>
+            <thead>
+              <tr>
+                <th scope="col">Curve</th>
+                <th scope="col">Conductor</th>
+                <th scope="col">Certificate</th>
+                <th scope="col">Analytic rank</th>
+                <th scope="col"><span class="visually-hidden">Details</span></th>
+              </tr>
+            </thead>
+            <tbody id="curves"></tbody>
+          </table>
+        </div>
+        <nav class="pagination" aria-label="Catalogue pages">
+          <button id="previous" type="button">Previous</button>
+          <span id="page"></span>
+          <button id="next" type="button">Next</button>
+        </nav>
+      </div>
+    </section>
+  </main>
+  <footer class="container">
+    <p>Curve data by <a href="https://www.lmfdb.org/citation">The LMFDB Collaboration</a>
+      (<a href="https://www.lmfdb.org/api/options">CC-BY-SA</a>).
+      <a href="https://github.com/khwilson/verified-lcalc/tree/main/data/lmfdb/sql-10000">Snapshot provenance</a>
+      · <a href="https://github.com/khwilson/verified-lcalc/blob/main/docs/CERTIFIED_ARTIFACTS.md">How to import a certificate</a></p>
+  </footer>
+</body>
+</html>

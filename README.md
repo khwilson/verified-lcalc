@@ -113,6 +113,9 @@ produced 952 certificates in 915 seconds of active validation time, averaging
 hit insufficient minimality criteria.
 You can [run a fresh batch on GitHub](benchmarks/README.md#run-on-github)
 and download per-curve timings and outcomes from the run page.
+The [curve certificate companion](https://khwilson.github.io/verified-lcalc/)
+lists the exact facts published for each curve, with links to the compiled
+Lean proofs. See [how to import a downloaded certificate](docs/CERTIFIED_ARTIFACTS.md#browse-the-hosted-certificates).
 
 ## Development and historical data
 
