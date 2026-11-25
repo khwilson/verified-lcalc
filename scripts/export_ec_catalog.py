@@ -1,6 +1,7 @@
 """Package the imported facts from a successful hosted certificate benchmark."""
 
 import argparse
+import gzip
 import hashlib
 import json
 import re
@@ -20,6 +21,8 @@ ASSUMPTIONS = {
     "global_minimal": [],
 }
 SIDECARS = (".olean.private", ".olean.server", ".ir", ".ir.sig", ".ilean")
+WITNESS_ARCHIVE = "witnesses.jsonl.gz"
+MAX_WITNESS_LINE = 1024 * 1024
 
 
 def read_json(path: Path) -> Any:
@@ -34,6 +37,35 @@ def sha256(path: Path) -> str:
 def require(condition: object, message: str) -> None:
     if not condition:
         raise ValueError(message)
+
+
+def batch_identity(release_url: str, prefix: str) -> dict[str, Any]:
+    match = re.fullmatch(
+        r"https://github\.com/[\w.-]+/[\w.-]+/releases/download/"
+        r"(ec-certificates-([1-9][0-9]*)-([1-9][0-9]*))",
+        release_url,
+        re.ASCII,
+    )
+    if match is None:
+        raise ValueError(
+            "Expected a GitHub release URL with an ec-certificates run tag"
+        )
+    tag, run, attempt = match.groups()
+    require(
+        prefix == f"Run{run}Attempt{attempt}", "Batch prefix differs from release tag"
+    )
+    return {"release_tag": tag, "run_id": int(run), "run_attempt": int(attempt)}
+
+
+def witness_rank(witness: dict[str, Any], row: dict[str, Any]) -> str:
+    require(
+        witness["schema"] == "lcalc.ec-rank.v1"
+        and witness["subject"]
+        == {"conductor": str(row["conductor"]), "ainvs": list(map(str, row["ainvs"]))}
+        and witness["rank"] in ("0", "1"),
+        f"Witness does not bind the exported rank to {row['label']}",
+    )
+    return witness["rank"]
 
 
 def succeeded(measurement: dict[str, Any]) -> bool:
@@ -61,8 +93,14 @@ def selection(report: dict[str, Any], root: Path) -> tuple[Path, list[dict[str, 
         "Invalid benchmark selection",
     )
     require(
-        identity["runner_sha256"] == sha256(root / "scripts/benchmark_ec_dataset.py"),
-        "Benchmark does not match this checkout's typed import checks",
+        identity["runner_sha256"] == sha256(root / "scripts/benchmark_ec_dataset.py")
+        and identity["validator_sha256"] == sha256(root / "benchmarks/ValidateEC.lean")
+        and identity["production_sha256"]
+        == {
+            str(path.relative_to(root)): sha256(path)
+            for path in (root / "VerifiedLcalc").rglob("*.lean")
+        },
+        "Benchmark source fingerprints differ from this checkout",
     )
     key = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:16]
     expected_work = f".lake/ec-dataset-{key}"
@@ -196,14 +234,11 @@ def catalog_rows(
             )
             witness = read_json(witness_file)
             require(
-                witness["schema"] == "lcalc.ec-rank.v1"
-                and witness["subject"]
-                == {"conductor": str(conductor), "ainvs": list(map(str, ainvs))}
-                and witness["rank"] in ("0", "1")
-                and row["rank"] == witness["rank"]
+                row["rank"] == witness_rank(witness, entry)
                 and row["parameters"] == witness["parameters"],
                 f"Witness does not bind the exported rank to {label}",
             )
+            entry["witness_sha256"] = row["witness_sha256"]
             module = row["module"]
             checked[label] = module
             entry["facts"] = [
@@ -227,24 +262,49 @@ def catalog_rows(
     return rows, checked
 
 
+def package_witnesses(work: Path, rows: list[dict[str, Any]], output: Path) -> str:
+    with (
+        output.open("wb") as file,
+        gzip.GzipFile(filename="", mode="wb", fileobj=file, mtime=0) as archive,
+    ):
+        for index, row in enumerate(rows):
+            if row["status"] == "checked":
+                raw = (work / "witnesses" / f"{index}.json").read_bytes()
+                require(
+                    hashlib.sha256(raw).hexdigest() == row["witness_sha256"],
+                    f"Witness bytes changed for {row['label']}",
+                )
+                entry = {"label": row["label"], "witness_json": raw.decode("utf-8")}
+                line = json.dumps(entry, ensure_ascii=False).encode("utf-8") + b"\n"
+                require(
+                    len(line) <= MAX_WITNESS_LINE,
+                    f"Witness is too large for {row['label']}",
+                )
+                archive.write(line)
+    return sha256(output)
+
+
 def checksums(hashes: dict[str, str]) -> str:
     return "".join(f"{value}  {name}\n" for name, value in sorted(hashes.items()))
 
 
 def package_module(
-    work: Path, module: str, output: Path, expected_sha256: str
+    work: Path, module: str, output: Path, expected_sha256: str, witness_only: bool
 ) -> dict[str, str]:
     olean = work / f"{module}.olean"
     require(
         olean.is_file() and olean.stat().st_size > 0,
         f"Missing compiled module {module}",
     )
-    shutil.copyfile(olean, output / olean.name)
-    olean_digest = sha256(output / olean.name)
+    if not witness_only:
+        shutil.copyfile(olean, output / olean.name)
+    olean_digest = sha256(olean if witness_only else output / olean.name)
     require(
         olean_digest == expected_sha256,
         f"Compiled module differs from imported bytes: {module}",
     )
+    if witness_only:
+        return {}
     hashes = {olean.name: olean_digest}
     bundle = output / f"{module}.zip"
     with ZipFile(bundle, "w", compression=ZIP_DEFLATED) as archive:
@@ -259,17 +319,14 @@ def package_module(
 
 
 def export_catalog(
-    report_path: Path, output: Path, release_url: str, root: Path = ROOT
+    report_path: Path,
+    output: Path,
+    release_url: str,
+    root: Path = ROOT,
+    *,
+    witness_only: bool = False,
 ) -> None:
     release_url = release_url.rstrip("/")
-    require(
-        re.fullmatch(
-            r"https://github\.com/[\w.-]+/[\w.-]+/releases/download/[\w.-]+",
-            release_url,
-            re.ASCII,
-        ),
-        "--release-url must be an HTTPS GitHub release download base",
-    )
     report = read_json(report_path)
     work, inputs = selection(report, root)
     rows, checked = catalog_rows(report, inputs, work)
@@ -279,12 +336,18 @@ def export_catalog(
         ["git", "rev-parse", "HEAD"], cwd=root, text=True
     ).strip()
     identity = report["identity"]
+    batch = batch_identity(release_url, identity["module_prefix"])
     toolchain = (root / "lean-toolchain").read_text().strip()
     packages = {
         p["name"]: p["rev"] for p in read_json(root / "lake-manifest.json")["packages"]
     }
     require(
         git_revision == report["git_revision"]
+        and not subprocess.check_output(
+            ["git", "status", "--porcelain", "--untracked-files=no"],
+            cwd=root,
+            text=True,
+        ).strip()
         and toolchain == identity["toolchain"]
         and packages["mathlib"]
         == report["mathlib_revision"]
@@ -305,11 +368,14 @@ def export_catalog(
             name: digest
             for module, expected_hash in sorted(modules.items())
             for name, digest in package_module(
-                work, module, assets, expected_hash
+                work, module, assets, expected_hash, witness_only
             ).items()
         }
-        for row in rows:
-            for fact in row["facts"]:
+        hashes[WITNESS_ARCHIVE] = package_witnesses(
+            work, rows, assets / WITNESS_ARCHIVE
+        )
+        if not witness_only:
+            for fact in (fact for row in rows for fact in row["facts"]):
                 olean = f"{fact['module']}.olean"
                 bundle = f"{fact['module']}.zip"
                 fact.update(
@@ -320,6 +386,19 @@ def export_catalog(
                 )
         catalog = {
             "schema": 1,
+            "batch": batch,
+            "module_prefix": identity["module_prefix"],
+            "witness_archive": {
+                "url": f"{release_url}/{WITNESS_ARCHIVE}",
+                "sha256": hashes[WITNESS_ARCHIVE],
+            },
+            "validation_batches": [
+                {key: batch[key] for key in ("module", "labels")}
+                for batch in report["batches"]
+            ],
+            "import_groups": [
+                group["modules"] for group in report.get("compiled_reuse_groups", [])
+            ],
             "git_revision": git_revision,
             "toolchain": toolchain,
             "mathlib_revision": packages["mathlib"],
@@ -349,9 +428,14 @@ def main() -> None:
     parser.add_argument("report", type=Path)
     parser.add_argument("output", type=Path)
     parser.add_argument("--release-url", required=True)
+    parser.add_argument(
+        "--witness-only", action="store_true", help="Omit compiled modules"
+    )
     args = parser.parse_args()
     try:
-        export_catalog(args.report, args.output, args.release_url)
+        export_catalog(
+            args.report, args.output, args.release_url, witness_only=args.witness_only
+        )
     except (
         KeyError,
         OSError,

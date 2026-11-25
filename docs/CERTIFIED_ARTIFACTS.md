@@ -15,23 +15,79 @@ checks the equation against the five input coefficients and the conductor in
 the numerical result against the selected input. Inconclusive rows carry no
 published facts. A label outside the published runs has no entry.
 
-Each checked entry links directly to its batch's `.olean` and to a ZIP with
-the module's companion files. Several curves can share one download. To use
-the bundle, check out the project's linked commit, install its pinned Lean
-toolchain and build `VerifiedLcalc.Tactic.CertifyEC`. Extract the ZIP into
-an empty directory and verify its checksums. Create a Lean file that imports
-the displayed module and uses `#check` on the displayed theorem name.
-From the repository checkout, run the file with the extracted module directory
-on Lean's search path:
+When a release includes compiled modules, each checked entry links to its
+batch's `.olean` and to a ZIP with the module's companion files. Several
+curves can share one download. To use the bundle, check out the project's
+linked commit, install its pinned Lean toolchain and build
+`VerifiedLcalc.Tactic.CertifyEC`. Extract the ZIP into an empty directory and
+verify the bundle hash against the catalog. Create a Lean file that imports
+the displayed module and uses `#check` on the displayed theorem name. From
+the repository checkout, run the file with the extracted module directory on
+Lean's search path as follows.
 
 ```sh
 deps="$(lake -f lakefile.certificates.lean env printenv LEAN_PATH)"
 LEAN_PATH="/absolute/path/to/extracted-module:$deps" lean UseCertificate.lean
 ```
 
-The underlying [certificate releases](https://github.com/khwilson/verified-lcalc/releases)
-include the machine-readable catalog and asset checksums for each run. The
-raw benchmark statistics are a separate artifact on the Actions run page.
+## Verify and replay a signed release
+
+New releases contain `catalog.json` and `witnesses.jsonl.gz`, both signed by
+the certificate batch workflow on GitHub-hosted runners. The catalog records
+the selected input and checked facts, the pinned source and dependency
+revisions, and the archive digest. The compressed JSON Lines archive supplies
+the exact `certify_ec` witnesses for checked curves. The raw benchmark report
+is a separate Actions artifact.
+
+With an authenticated GitHub CLI (`gh auth login`), run the following in a
+Bash shell. Set `tag` to a tag from the certificate releases and use an empty
+download directory. This verifies both files against the expected repository,
+workflow, main branch, and source commit recorded by the Actions run.
+[Certificate releases](https://github.com/khwilson/verified-lcalc/releases) ·
+[GitHub attestation verification](https://cli.github.com/manual/gh_attestation_verify)
+
+```bash
+set -euo pipefail
+repo=khwilson/verified-lcalc
+tag=ec-certificates-RUN_ID-ATTEMPT
+[[ "$tag" =~ ^ec-certificates-([0-9]+)-([0-9]+)$ ]]
+run_id=${BASH_REMATCH[1]}
+attempt=${BASH_REMATCH[2]}
+revision=$(gh api "repos/$repo/actions/runs/$run_id/attempts/$attempt" --jq '.head_sha')
+[[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+downloads=$(mktemp -d)
+gh release download "$tag" --repo "$repo" --dir "$downloads" \
+  --pattern catalog.json --pattern witnesses.jsonl.gz
+for file in catalog.json witnesses.jsonl.gz; do
+  gh attestation verify "$downloads/$file" --repo "$repo" \
+    --signer-workflow "$repo/.github/workflows/certificate-batch.yml" \
+    --source-ref refs/heads/main --source-digest "$revision" \
+    --deny-self-hosted-runners
+done
+```
+
+Use a clean checkout of the verified commit and install its pinned Lean
+toolchain. For a fresh checkout, follow the
+[dependency cache instructions](BUILD.md) before building the verifier.
+The replay reads the catalog and witnesses, builds the pinned verification
+library as needed, and invokes Lean on the supplied witnesses. Pass
+`--curve LABEL` to replay one checked curve. Omit it to replay the batch.
+
+```bash
+git checkout --detach "$revision"
+elan toolchain install "$(cat lean-toolchain)"
+python3 scripts/replay_ec_batch.py "$downloads/catalog.json" "$downloads/witnesses.jsonl.gz"
+```
+
+Attestation verification establishes the files' provenance and integrity.
+Lean replay checks the mathematical claims under their stated assumptions.
+Older releases published before signing began remain available for compiled
+proof import and checksum verification. Their catalogs predate the signed
+replay records and may lack a witness archive.
+
+The manual workflow publishes the signed catalog and witnesses by default.
+Enable `publish_modules` to include compiled modules and ZIP bundles for
+immediate import. The replay command works for either kind of release.
 
 ## Import the existing local certificates
 

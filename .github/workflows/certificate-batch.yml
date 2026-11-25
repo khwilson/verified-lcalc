@@ -12,6 +12,11 @@ on:
         type: number
         default: 0
         required: true
+      publish_modules:
+        description: Include compiled modules and ZIP bundles in the release
+        type: boolean
+        default: false
+        required: true
 permissions:
   contents: read
 jobs:
@@ -21,6 +26,7 @@ jobs:
     timeout-minutes: 355
     outputs:
       release-tag: ${{ steps.catalog.outputs.release-tag }}
+      artifact-id: ${{ steps.transfer.outputs.artifact-id }}
     defaults:
       run:
         working-directory: verified-lcalc
@@ -75,29 +81,73 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: certificate-batch-report
+          name: certificate-batch-report-${{ github.run_attempt }}
           path: ${{ env.BENCHMARK_REPORT }}
           if-no-files-found: ignore
       - name: Audit and export proof catalog
-        if: github.ref == 'refs/heads/main'
         id: catalog
+        env:
+          PUBLISH_MODULES: ${{ inputs.publish_modules }}
         run: |
           release_tag="ec-certificates-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          export_args=()
+          if [[ "$PUBLISH_MODULES" == false ]]; then
+            export_args+=(--witness-only)
+          fi
           python3 scripts/export_ec_catalog.py "$BENCHMARK_REPORT" "$RUNNER_TEMP/ec-catalog" \
-            --release-url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/$release_tag"
+            --release-url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/$release_tag" \
+            "${export_args[@]}"
           echo "release-tag=$release_tag" >> "$GITHUB_OUTPUT"
+      - name: Test replay of the exported witness archive
+        run: |
+          catalog="$RUNNER_TEMP/ec-catalog/catalog.json"
+          label=$(jq -r 'first(.curves[] | select(.status == "checked") | .label) // empty' "$catalog")
+          replay_args=()
+          if [[ -n "$label" ]]; then
+            replay_args+=(--curve "$label")
+          fi
+          python3 scripts/replay_ec_batch.py "$catalog" "$RUNNER_TEMP/ec-catalog/witnesses.jsonl.gz" \
+            "${replay_args[@]}"
       - name: Transfer audited catalog and proof files
         if: github.ref == 'refs/heads/main'
+        id: transfer
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: ${{ steps.catalog.outputs.release-tag }}
           path: ${{ runner.temp }}/ec-catalog/
           if-no-files-found: error
 
+  attest:
+    name: Attest audited certificate records
+    if: github.repository == 'khwilson/verified-lcalc' && github.ref == 'refs/heads/main' && needs.benchmark.outputs.artifact-id != ''
+    needs: benchmark
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          artifact-ids: ${{ needs.benchmark.outputs.artifact-id }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/ec-release
+      - name: Require both replay files
+        run: |
+          test -s "$RUNNER_TEMP/ec-release/catalog.json"
+          test -s "$RUNNER_TEMP/ec-release/witnesses.jsonl.gz"
+      - name: Sign build provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: |
+            ${{ runner.temp }}/ec-release/catalog.json
+            ${{ runner.temp }}/ec-release/witnesses.jsonl.gz
+
   publish:
     name: Publish audited certificate release
     if: github.ref == 'refs/heads/main'
-    needs: benchmark
+    needs: [benchmark, attest]
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     concurrency:
@@ -113,7 +163,8 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: ${{ needs.benchmark.outputs.release-tag }}
+          artifact-ids: ${{ needs.benchmark.outputs.artifact-id }}
+          merge-multiple: true
           path: ${{ runner.temp }}/ec-release
       - name: Upload release assets and publish
         env:
