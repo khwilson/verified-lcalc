@@ -77,11 +77,17 @@ case "$1" in
     done
 
     release=$(find_release "$tag")
+    title=$(node --input-type=module -e '
+      import {readFileSync} from "node:fs";
+      import {releaseTitle} from "./web/certificates/batch-display.mjs";
+      const [path, tag] = process.argv.slice(1);
+      console.log(releaseTitle(JSON.parse(readFileSync(path, "utf8")), tag));
+    ' "$export_dir/catalog.json" "$tag")
     if [[ -z "$release" ]]; then
       release=$(gh api --method POST "repos/$GITHUB_REPOSITORY/releases" \
         -f tag_name="$tag" -f target_commitish="$GITHUB_SHA" \
         -F draft=true -F prerelease=true -f make_latest=false \
-        -f name="Elliptic curve certificates $tag" \
+        -f name="$title" \
         -f body="Audited Lean certificates with signed replay records from $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID.")
     fi
     release_id=$(jq -er --arg tag "$tag" --arg sha "$GITHUB_SHA" '
@@ -98,7 +104,7 @@ case "$1" in
     gh release upload "$tag" --repo "$GITHUB_REPOSITORY" --clobber "${assets[@]}"
     retry_read verify_replay_assets "$release_id" "$export_dir"
     gh api --method PATCH "repos/$GITHUB_REPOSITORY/releases/$release_id" \
-      -F draft=false -f make_latest=false --silent
+      -F draft=false -f name="$title" -f make_latest=false --silent
     ;;
   site)
     tag=$2

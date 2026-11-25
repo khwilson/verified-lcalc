@@ -39,6 +39,15 @@ revisions, and the archive digest. The compressed JSON Lines archive supplies
 the exact `certify_ec` witnesses for checked curves. The raw benchmark report
 is a separate Actions artifact.
 
+For the fixed [2026-11-18 LMFDB snapshot](../data/lmfdb/sql-10000/README.md),
+the ten aligned 1,000-curve slices have display labels
+`lmfdb-2026-11-18-batch001` through `lmfdb-2026-11-18-batch010`.
+The companion derives the label from the catalog's snapshot SHA-256, offset,
+and count and displays the exact Lean version recorded in the catalog.
+New releases of these slices use the label and Lean version in their titles.
+Use the immutable `ec-certificates-RUN_ID-ATTEMPT` release tag when downloading
+or verifying artifacts.
+
 With an authenticated GitHub CLI (`gh auth login`), run the following in a
 Bash shell. Set `tag` to a tag from the certificate releases and use an empty
 download directory. This verifies both files against the expected repository,
