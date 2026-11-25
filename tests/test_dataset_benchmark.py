@@ -1,5 +1,6 @@
 import json
 import os
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -51,10 +52,18 @@ def test_sql_and_legacy_inputs_do_not_expose_reference_ranks(tmp_path: Path) -> 
     row = {"label": "37.a1", "ainvs": [0, 0, 1, -1, 0], "conductor": 37}
     for key in ["inputs", "cases"]:
         source = tmp_path / f"{key}.json"
-        source.write_text(json.dumps({key: [{**row, "analytic_rank": 999}]}))
+        second = {**row, "label": "37.b1"}
+        source.write_text(
+            json.dumps(
+                {key: [{**row, "analytic_rank": 999}, {**second, "analytic_rank": 0}]}
+            )
+        )
         assert selected_inputs(source, 1) == [row]
+        assert selected_inputs(source, 1, offset=1) == [second]
         with pytest.raises(ValueError):
-            selected_inputs(source, 2)
+            selected_inputs(source, 2, offset=1)
+        with pytest.raises(ValueError):
+            selected_inputs(source, 1, offset=-1)
     duplicate = tmp_path / "duplicates.json"
     duplicate.write_text(json.dumps({"inputs": [row, row]}))
     with pytest.raises(ValueError):
@@ -159,7 +168,7 @@ def test_generation_reuse_checks_subjects_and_discards_old_proof_status(
     assert result[0]["status"] == "proposed"
     assert "validation_seconds" not in result[0] and "module" not in result[0]
     assert (work / "witnesses" / "0.json").read_bytes() == file.read_bytes()
-    for mutate in ["subject", "rank", "environment", "incomplete"]:
+    for mutate in ["subject", "rank", "environment", "offset", "incomplete"]:
         bad = copy.deepcopy(previous)
         if mutate == "subject":
             bad_inputs = [{**inputs[0], "conductor": 43}]
@@ -169,7 +178,155 @@ def test_generation_reuse_checks_subjects_and_discards_old_proof_status(
             bad["curves"][0]["rank"] = "0"
         elif mutate == "environment":
             bad["identity"]["producer_sha256"] = "different"
+        elif mutate == "offset":
+            bad["identity"]["offset"] = 1
         elif mutate == "incomplete":
             bad["generation_complete"] = False
         with pytest.raises(ValueError):
             adopt_generation(bad, identity, bad_inputs, work)
+
+
+@pytest.mark.parametrize(
+    ("failure", "expected_outcomes"),
+    [
+        (None, {"checked": 1, "inconclusive": 1}),
+        ("build", {}),
+        ("generation", {"inconclusive": 1}),
+        ("timeout", {"timeout": 1, "inconclusive": 1}),
+        ("missing", {"batch_failed": 1, "inconclusive": 1}),
+        ("mismatch", {"checked": 1, "inconclusive": 1}),
+    ],
+)
+def test_dataset_report_checkpoints_and_exit_status(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    failure: str | None,
+    expected_outcomes: dict[str, int],
+) -> None:
+    import scripts.benchmark_ec_dataset as benchmark
+
+    monkeypatch.setattr(benchmark, "ROOT", tmp_path)
+    monkeypatch.setattr(benchmark, "mathlib_revision", lambda: "mathlib")
+    monkeypatch.setattr(benchmark.platform, "platform", lambda: "test")
+    monkeypatch.setattr(benchmark, "captured", lambda _args: "version")
+    (tmp_path / "lean-toolchain").touch()
+    (tmp_path / "benchmarks").mkdir()
+    (tmp_path / "benchmarks/ProduceECWitnesses.lean").touch()
+    (tmp_path / "benchmarks/ValidateEC.lean").touch()
+    source = tmp_path / "curves.json"
+    curves = [
+        {
+            "label": label,
+            "conductor": 37,
+            "ainvs": [0, 0, 1, -1, 0],
+            "analytic_rank": 0 if failure == "mismatch" else 1,
+        }
+        for label in ["37.a1", "37.a2", "37.a3"]
+    ]
+    source.write_text(json.dumps({"cases": curves}))
+    out = tmp_path / "report.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "benchmark",
+            "--source",
+            str(source),
+            "--output",
+            str(out),
+            "--count",
+            "2",
+            "--offset",
+            "1",
+        ],
+    )
+
+    def prebuild(_args: list[str], **_kwargs: Any) -> None:
+        if failure == "build":
+            raise subprocess.CalledProcessError(1, "lake")
+
+    def timed(
+        _args: list[str], _cwd: Path, _env: dict[str, str], log: Path, _timeout: int
+    ) -> dict[str, Any]:
+        status = "finished"
+        returncode: int | None = 0
+        if log.name == "generation.jsonl":
+            inputs = json.loads((log.parent / "inputs.json").read_text())["inputs"]
+            assert inputs == [
+                {key: row[key] for key in ["label", "conductor", "ainvs"]}
+                for row in curves[1:]
+            ]
+            rows: list[dict[str, Any]] = [
+                {"index": 0, "label": "37.a2", "status": "inconclusive"},
+            ]
+            if failure == "generation":
+                status, returncode = "timeout", None
+            else:
+                (log.parent / "witnesses").mkdir()
+                (log.parent / "witnesses/1.json").write_text("{}")
+                rows.append(
+                    {
+                        "index": 1,
+                        "label": "37.a3",
+                        "status": "proposed",
+                        "rank": "1",
+                        "file": "1.json",
+                        "parameters": {
+                            "terms": "24",
+                            "steps_per_unit": "1",
+                            "cutoff": "8",
+                        },
+                    }
+                )
+            log.write_text(
+                "".join(
+                    json.dumps({"result": row, "generation_ns": 1}) + "\n"
+                    for row in rows
+                )
+            )
+        elif log.name == "Batch0000.log":
+            if failure == "timeout":
+                status, returncode = "timeout", None
+            event = {
+                "label": "37.a3",
+                "status": "checked",
+                "validation_ns": 1,
+                "error": "",
+            }
+            log.write_text(
+                "" if failure == "missing" else "EC_BENCH " + json.dumps(event) + "\n"
+            )
+            log.with_suffix(".olean").touch()
+        return {
+            "status": status,
+            "returncode": returncode,
+            "wall_seconds": 1,
+            "cpu_seconds": 1,
+        }
+
+    monkeypatch.setattr(benchmark.subprocess, "run", prebuild)
+    monkeypatch.setattr(benchmark, "timed", timed)
+    if failure is None:
+        benchmark.main()
+    else:
+        with pytest.raises((subprocess.CalledProcessError, RuntimeError)):
+            benchmark.main()
+    report = json.loads(out.read_text())
+    assert report["complete"] is (failure is None)
+    assert ("error" in report) is (failure is not None)
+    assert report["identity"]["offset"] == report["offset"] == 1
+    assert report["wall_seconds"] > 0
+    assert report["invocation_count"] == 1
+    assert [row["label"] for row in report["curves"]] == {
+        "build": [],
+        "generation": ["37.a2"],
+    }.get(failure or "", ["37.a2", "37.a3"])
+    if "summary" in report:
+        assert report["summary"]["outcomes"] == expected_outcomes
+        assert report["summary"]["reference_agreements"] == int(failure is None)
+        assert report["summary"]["reference_mismatches"] == int(failure == "mismatch")
+    if failure is None:
+        monkeypatch.setattr(sys, "argv", [*sys.argv[:-1], "0", "--resume"])
+        with pytest.raises(SystemExit, match="2"):
+            benchmark.main()
+        assert json.loads(out.read_text()) == report

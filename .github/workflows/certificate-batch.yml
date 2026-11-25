@@ -1,0 +1,77 @@
+name: Certificate batch benchmark
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: Number of curves to select from the tracked LMFDB snapshot
+        type: number
+        default: 1000
+        required: true
+      offset:
+        description: Number of leading rows to skip (zero-based)
+        type: number
+        default: 0
+        required: true
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    name: Benchmark production certify_ec
+    runs-on: ubuntu-24.04
+    timeout-minutes: 355
+    defaults:
+      run:
+        working-directory: verified-lcalc
+    env:
+      BENCHMARK_REPORT: ${{ github.workspace }}/certificate-batch.json
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: verified-lcalc
+          persist-credentials: false
+      - name: Set up Lean and restore cached artifacts
+        uses: ./verified-lcalc/.github/actions/setup-lean
+      - name: Generate witnesses and verify certificates
+        id: benchmark
+        env:
+          COUNT: ${{ inputs.count }}
+          OFFSET: ${{ inputs.offset }}
+        run: |
+          # Leave time to summarize and upload the last checkpoint on timeout.
+          status=0
+          timeout --kill-after=30s 240m python3 -u scripts/benchmark_ec_dataset.py \
+            --source data/lmfdb/sql-10000/inputs.json \
+            --references data/lmfdb/sql-10000/references.json \
+            --count "$COUNT" --offset "$OFFSET" \
+            --workers 2 --batch-size 20 --batch-work-limit 4000 --timeout 1800 \
+            --output "$BENCHMARK_REPORT" || status=$?
+          if (( status != 0 )); then
+            for log in .lake/ec-dataset-*/prebuild.log; do
+              if [[ -f "$log" ]]; then
+                echo "Tail of $log"
+                tail -n 40 "$log"
+              fi
+            done
+          fi
+          exit "$status"
+      - name: Summarize benchmark
+        if: ${{ !cancelled() }}
+        env:
+          BENCHMARK_OUTCOME: ${{ steps.benchmark.outcome }}
+        run: |
+          if [[ -s "$BENCHMARK_REPORT" ]]; then
+            python3 scripts/report_ec_batch.py "$BENCHMARK_REPORT" >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo '## Certificate batch benchmark'
+              echo
+              printf 'The benchmark step ended with status `%s` before producing a JSON report.\n' "$BENCHMARK_OUTCOME"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Upload raw benchmark report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: certificate-batch-report
+          path: ${{ env.BENCHMARK_REPORT }}
+          if-no-files-found: ignore
