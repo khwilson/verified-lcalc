@@ -6,7 +6,7 @@ Authors: Kevin Wilson
 module
 
 public import Mathlib.AlgebraicGeometry.EllipticCurve.VariableChange
-public import Mathlib.Data.Int.GCD
+import Mathlib.Data.Int.GCD
 
 /-! # Executable support conditions for intrinsic local Tamagawa factors -/
 

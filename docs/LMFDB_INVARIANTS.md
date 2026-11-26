@@ -163,7 +163,7 @@ reviewed LMFDB ordering and base-26 encoding.
 | `semistable` | `semistable` | Equivalence with TauCeti's `WeierstrassCurve.IsSemistable` over the ring of integers of ℚ, using the checked `minimality`. |
 | `squarefree_disc` | `squarefreeDiscriminant` | Equivalence with Mathlib's `Squarefree` on the absolute minimal discriminant, using the checked `minimality`. |
 | `local_invariants` or a top-level local row | `localInvariants` | Checks each supplied prime and any supplied `discriminant_valuation`, `j_denominator_valuation` or `reduction_type` against the minimal equation, using the checked `minimality`. |
-| `tamagawa_number` | `localInvariants` row field `tamagawaNumber` | Exact intrinsic Tamagawa number at a prime of supported good, multiplicative, or tame III reduction. A local test proves minimality at that prime. |
+| `tamagawa_number` | `localInvariants` row field `tamagawaNumber` | Exact intrinsic Tamagawa number at a prime of good, multiplicative `I₁` or `I₂`, or supported tame III reduction. A local test proves minimality at that prime. |
 | `kodaira_symbol` | `localInvariants` row field `kodairaSymbol` | Canonical TauCeti `Iₙ` equality for good or multiplicative reduction. For additive codes the theorem excludes every `Iₙ`. Requires `minimality`. |
 | `root_number` | `localInvariants` row field `rootNumber` | Arithmetic local sign at the row's prime. Requires checked `minimality` and `local_data`. |
 | `ap` / `aplist` | `primeCoefficients` | Actual `LFunction p` coefficients with proved sufficient local minimality checks. |

@@ -17,7 +17,8 @@ import TauCeti.RingTheory.DedekindDomain.AdicCompletionExtension
 /-! # Intrinsic Tamagawa numbers of rational curves
 
 Good reduction and multiplicative reduction of index one both give the
-intrinsic Tamagawa number one over the completed field.
+intrinsic Tamagawa number one over the completed field. Multiplicative index
+two and the checked terminal type III case both give factor two.
 -/
 
 @[expose] public section
@@ -129,11 +130,8 @@ theorem tamagawaNumberAt_eq_one_of_valuation_I_one (e : WeierstrassCurve ℤ)
   let V : Valuation F (WithZero (Multiplicative ℤ)) := Valued.v
   let S := V.valuationSubring
   let W := (e.baseChange ℚ).baseChange F
-  let : IsAdicComplete (IsLocalRing.maximalIdeal S) S := by
-    change IsAdicComplete
-      (IsLocalRing.maximalIdeal (v.adicCompletionIntegers ℚ))
-      (v.adicCompletionIntegers ℚ)
-    exact (v.isAdic_maximalIdeal_adicCompletionIntegers (K := ℚ)).isAdicComplete_iff.mpr
+  let : IsAdicComplete (IsLocalRing.maximalIdeal S) S :=
+    (v.isAdic_maximalIdeal_adicCompletionIntegers (K := ℚ)).isAdicComplete_iff.mpr
       ⟨inferInstance, inferInstance⟩
   let : Finite (IsLocalRing.ResidueField S) := by
     change Finite (IsLocalRing.ResidueField (v.adicCompletionIntegers ℚ))
@@ -143,13 +141,12 @@ theorem tamagawaNumberAt_eq_one_of_valuation_I_one (e : WeierstrassCurve ℤ)
   have hspan : IsLocalRing.maximalIdeal S = Ideal.span {ϖ} :=
     (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).mp hϖ
   let : (C.baseChange F).IsElliptic := hD ▸ inferInstanceAs (D • W).IsElliptic
-  let : IsIntegral S (C.baseChange F) := ⟨C, rfl⟩
   have hlocal := (C.baseChange F).tamagawaNumber_eq_tateLocalIndex V hspan
     (by simpa only [integralModel_baseChange_self] using hterminal)
   rw [tamagawaNumberAt_adicValued]
   change W.tamagawaNumber V = 1
-  rw [← W.tamagawaNumber_smul V D, hD, hlocal]
-  simp
+  rw [← W.tamagawaNumber_smul V D, hD, hlocal, integralModel_baseChange_self,
+    tateLocalIndex_I_one]
 
 end Place
 
@@ -161,7 +158,6 @@ theorem tamagawaNumberAt_eq_two_of_valuation_I_two (e : WeierstrassCurve ℤ)
     (hc : Valued.v (e.c₄ : (rationalPlace p).adicCompletion ℚ) = 1) :
     (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = 2 := by
   let v := rationalPlace p
-  letI : Finite (𝓞 ℚ ⧸ v.asIdeal) := finite_quotient_rationalPlace p
   let F := v.adicCompletion ℚ
   let V : Valuation F (WithZero (Multiplicative ℤ)) := Valued.v
   let S := V.valuationSubring
@@ -202,7 +198,7 @@ theorem tamagawaNumberAt_eq_two_of_typeIII_shift (e : WeierstrassCurve ℤ)
     (hb₈ : ¬ (p : ℤ) ^ 3 ∣ (D • e).b₈) :
     (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = 2 := by
   let v := rationalPlace p
-  letI : Finite (𝓞 ℚ ⧸ v.asIdeal) := finite_quotient_rationalPlace p
+  let : Finite (𝓞 ℚ ⧸ v.asIdeal) := finite_quotient_rationalPlace p
   let F := v.adicCompletion ℚ
   let V : Valuation F (WithZero (Multiplicative ℤ)) := Valued.v
   let S := V.valuationSubring
@@ -230,8 +226,6 @@ theorem tamagawaNumberAt_eq_two_of_typeIII_shift (e : WeierstrassCurve ℤ)
       (K := ℚ) (x := ϖ) (e := 1) hϖval
     simp only [pow_one] at hspan
     exact hspan
-  have hϖ : Irreducible ϖ :=
-    (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).2 hspan'.symm
   have hterminal : C.IsTateTerminal ϖ .III := by
     rw [isTateTerminal_III]
     refine ⟨?_, ?_, ?_, ?_, ?_⟩
@@ -302,13 +296,11 @@ theorem tamagawaNumberAt_eq_two_of_typeIII_shift (e : WeierstrassCurve ℤ)
     infer_instance
   let : HenselianLocalRing S := inferInstance
   let : IsIntegral S (C.baseChange F) := ⟨C, rfl⟩
-  have hspanS : IsLocalRing.maximalIdeal S = Ideal.span {ϖ} := by
-    simpa only [HeightOneSpectrum.adicCompletionIntegers, V, pow_one] using hspan'.symm
   have hterminalS :
       (integralModel S (C.baseChange F)).IsTateTerminal ϖ .III := by
     simpa only [integralModel_baseChange_self] using hterminal
   let : (C.baseChange F).IsElliptic := hD ▸ inferInstanceAs ((D.baseChange F) • W).IsElliptic
-  have hlocal := (C.baseChange F).tamagawaNumber_eq_tateLocalIndex V hspanS hterminalS
+  have hlocal := (C.baseChange F).tamagawaNumber_eq_tateLocalIndex V hspan'.symm hterminalS
   rw [tamagawaNumberAt_adicValued]
   change W.tamagawaNumber V = 2
   rw [← W.tamagawaNumber_smul V (D.baseChange F), hD, hlocal]

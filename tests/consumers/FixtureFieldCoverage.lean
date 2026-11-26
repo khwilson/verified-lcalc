@@ -305,6 +305,7 @@ private def auditSample (sample : Sample) : CommandElabM Json := do
   let source := if sample.proof == ``rank37 then "data/witnesses/37a1.json"
     else if sample.proof == ``rank112 then "data/witnesses/112a2.json"
     else if sample.curve == "17.a2" then "tests/fixtures/lmfdb/17.a2-tamagawa.json"
+    else if sample.curve == "49.a4" then "tests/fixtures/lmfdb/49.a4-tamagawa.json"
     else s!"tests/fixtures/lmfdb/{sample.curve}.json"
   let origin := if sample.field == "squarefree_disc" then "computed_from_equation"
     else if sample.field == "analytic_rank" then "certified_numerical_witness"
