@@ -119,11 +119,27 @@ theorem conductorValuation112 :
       4 :=
   (LMFDB.C112a2.conductor_valuation (2, 4) (by decide +kernel)).2
 
-/-- The compiled 112.a2 certificate gives the first eight positive-index coefficients. -/
+/-- The compiled 112.a2 certificate gives all twenty stored positive-index coefficients. -/
 theorem dirichlet112 :
-    (List.range 8).map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1)) =
-      [1, 0, -2, 0, -4, 0, -1, 0] :=
+    (List.range 20).map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1)) =
+      [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0] :=
   LMFDB.C112a2.dirichlet_coefficients
+
+/-- The checked certificate identifies all 25 entries from the stored prime-indexed list. -/
+theorem primeCoefficients112 :
+    let facts := LMFDB.C112a2.certificate.arithmetic.primeCoefficients.get (by rfl)
+    facts.val.length = 25 ∧
+      ∀ (p : ℕ) (a : ℤ), (p, a) ∈ facts.val →
+        (LMFDB.C112a2.curve.baseChange ℚ).LFunction p = a :=
+  ⟨rfl, (LMFDB.C112a2.certificate.arithmetic.primeCoefficients.get (by rfl)).property⟩
+
+/-- The stored singleton support is exactly the set of prime divisors of the torsion order. -/
+theorem torsionPrimeSupport112 (p : ℕ) :
+    p ∈ ([2] : List ℕ) ↔ p.Prime ∧
+      p ∣ Nat.card (AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) := by
+  let support := LMFDB.C112a2.certificate.torsion.primeSupport.get (by rfl)
+  have hprimes : support.primes = [2] := by decide +kernel
+  simpa only [hprimes] using support.exact_support p
 
 /-- The absolute error of the reported abc-quality decimal for 112.a2 is bounded. -/
 theorem abcQuality112 :
@@ -139,9 +155,12 @@ theorem generator112 : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation 0 2
 theorem generatorCount112 : LMFDB.C112a2.generators.coordinates.length = 1 :=
   LMFDB.C112a2.generators.count_valid
 
-/-- The listed torsion-generator coordinate is a rational point on the imported 112.a2. -/
-theorem torsionGenerator112 : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation (-2) 0 :=
-  LMFDB.C112a2.torsion_generators.points_on_curve (-2) 0 (by decide +kernel)
+/-- The full native generator list gives the rational torsion subgroup of 112.a2. -/
+theorem torsionGenerator112 :
+    LMFDB.C112a2.torsion_generators.coordinates = [(-2, 0)] ∧
+      AddSubgroup.closure (Set.range LMFDB.C112a2.torsion_generators.point) =
+        AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point :=
+  ⟨rfl, LMFDB.C112a2.torsion_generators.generates_torsion⟩
 
 /-- The full rational torsion subgroup of the imported 112.a2 has order two. -/
 theorem torsion112 :
@@ -229,8 +248,12 @@ private def samples : List Sample :=
       .modularity, false⟩,
    ⟨"ec_localdata", "conductor_valuation", "112.a2", ``conductorValuation112,
       "Exponent of 2 in the level of the modular realization.", .modularity, false⟩,
-   ⟨"ec_classdata", "anlist", "112.a2", ``dirichlet112, "Coefficients a₁ through a₈, after a₀.",
-      .unconditional, true⟩,
+   ⟨"ec_classdata", "anlist", "112.a2", ``dirichlet112,
+      "All 20 stored coefficients for the 112.a2 equation after a₀.", .unconditional, false⟩,
+   ⟨"ec_classdata", "aplist", "112.a2", ``primeCoefficients112,
+      "All 25 stored prime-indexed coefficients for the 112.a2 equation.", .unconditional, false⟩,
+   ⟨"ec_curvedata", "torsion_primes", "112.a2", ``torsionPrimeSupport112,
+      "Exact prime support [2] of the full rational torsion order.", .unconditional, false⟩,
    ⟨"ec_curvedata", "abc_quality", "112.a2", ``abcQuality112,
       "Absolute error enclosure for the specified decimal.", .unconditional, false⟩,
    ⟨"ec_mwbsd", "gens", "112.a2", ``generator112, "Membership of the supplied point.",
@@ -238,7 +261,7 @@ private def samples : List Sample :=
    ⟨"ec_mwbsd", "ngens", "112.a2", ``generatorCount112, "Length of the checked point list.",
       .unconditional, true⟩,
    ⟨"ec_mwbsd", "torsion_generators", "112.a2", ``torsionGenerator112,
-      "Membership of the supplied point.", .unconditional, true⟩,
+      "The list [(-2, 0)] generates the full rational torsion subgroup.", .unconditional, false⟩,
    ⟨"ec_curvedata", "torsion", "112.a2", ``torsion112, "Exact rational torsion cardinality.",
       .unconditional, false⟩,
    ⟨"ec_curvedata", "torsion_structure", "112.a2", ``torsionStructure112,
