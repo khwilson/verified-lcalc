@@ -360,21 +360,17 @@ def producer_statuses(
     return "reported", row_results
 
 
-def consumer_status(evidence: list[dict[str, Any]]) -> str:
-    if not evidence:
-        return "not_sampled"
-    states = {item.get("status") for item in evidence}
-    assumed = bool(states & {"assumption_backed", "conditional_fixture"})
-    partial = bool(states & {"partial", "bounded", "partial_fixture"}) or any(
-        item.get("extent") == "partial" for item in evidence
-    )
-    if assumed and partial:
-        return "partial_assumption_backed"
-    if assumed:
-        return "assumption_backed"
-    if partial:
-        return "partial"
-    return "sampled"
+def consumer_statuses(evidence: list[dict[str, Any]]) -> dict[str, int]:
+    """Count individual proof scopes without weakening or promoting alternatives."""
+    statuses: Counter[str] = Counter()
+    for item in evidence:
+        status = item["status"]
+        if item["extent"] == "partial":
+            status = "partial" if status == "unconditional" else f"partial_{status}"
+        elif status == "unconditional":
+            status = "sampled"
+        statuses[status] += 1
+    return dict(sorted(statuses.items()))
 
 
 def blocker_for(
@@ -489,7 +485,11 @@ def build_ledger(
             for item in catalog_entry.get("evidence", [])
             if item.get("curve") == label
         ]
-        consumer = consumer_status(evidence)
+        consumer_scopes = consumer_statuses(evidence)
+        if len(consumer_scopes) > 1:
+            consumer = "mixed_evidence"
+        else:
+            consumer = next(iter(consumer_scopes), "not_sampled")
         next_step = next_steps[key]
         checker_scopes = catalog_entry.get("checker_scopes", [])
         report_scopes = catalog_entry.get("report_only_scopes", [])
@@ -531,7 +531,11 @@ def build_ledger(
                     ],
                 },
                 "producer": {"status": producer_result, "observations": produced},
-                "consumer": {"status": consumer, "evidence": evidence},
+                "consumer": {
+                    "status": consumer,
+                    "statuses": consumer_scopes,
+                    "evidence": evidence,
+                },
                 "publication": {"status": "not_supplied"},
                 "blocker": blocker,
             }

@@ -17,7 +17,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from scripts.capture_lmfdb_fixture import replay_capture_bytes  # noqa: E402
-from scripts.report_lmfdb_field_ledger import build_ledger  # noqa: E402
+from scripts.report_lmfdb_field_ledger import (  # noqa: E402
+    DEFAULT_COVERAGE,
+    build_ledger,
+    consumer_statuses,
+)
 
 NATIVE = ROOT / "tests/fixtures/lmfdb/112.a2-native.json"
 MANIFEST = ROOT / "tests/fixtures/lmfdb/112.a2-native.provenance.json"
@@ -120,6 +124,33 @@ class FieldLedgerContracts(unittest.TestCase):
             ["VerifiedLcalc.Assumptions.ellipticModularity"],
         )
         self.assertEqual(evidence["extent"], "complete_for_sample")
+
+    def test_rank_consumer_distinguishes_realization_from_modularity_axiom(
+        self,
+    ) -> None:
+        audited = read_json(DEFAULT_COVERAGE)
+        rank = next(
+            field
+            for field in audited["fields"]
+            if (field["table"], field["field"]) == ("ec_curvedata", "analytic_rank")
+        )
+        proofs = {item["curve"]: item for item in rank["evidence"]}
+        conditional = proofs["37.a1"]
+        assumption_backed = proofs["112.a2"]
+        self.assertEqual(conditional["project_axioms"], [])
+        self.assertIn("ArithmeticModularRealization", conditional["statement"])
+        self.assertEqual(consumer_statuses([conditional]), {"conditional_fixture": 1})
+        self.assertEqual(
+            assumption_backed["project_axioms"],
+            ["VerifiedLcalc.Assumptions.ellipticModularity"],
+        )
+        self.assertEqual(
+            consumer_statuses([assumption_backed]), {"assumption_backed": 1}
+        )
+        self.assertEqual(
+            consumer_statuses([conditional, assumption_backed]),
+            {"conditional_fixture": 1, "assumption_backed": 1},
+        )
 
     def test_partial_consumer_evidence_remains_partial(self) -> None:
         report = ledger()
