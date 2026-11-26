@@ -379,7 +379,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "dependencies": [],
       "dependency_layer": 0,
@@ -409,7 +409,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-26 · Complete trace fingerprint inputs",
-        "line": 610
+        "line": 621
       },
       "dependencies": [],
       "dependency_layer": 0,
@@ -427,7 +427,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-31 · Intrinsic Serre invariants",
-        "line": 805
+        "line": 816
       },
       "dependencies": [
         "milestone:G1"
@@ -890,7 +890,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "dependencies": [],
       "dependency_layer": 0,
@@ -920,7 +920,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-26 · Complete trace fingerprint inputs",
-        "line": 610
+        "line": 621
       },
       "dependencies": [],
       "dependency_layer": 0,
@@ -938,7 +938,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-31 · Intrinsic Serre invariants",
-        "line": 805
+        "line": 816
       },
       "dependencies": [
         "milestone:G1"
@@ -1032,7 +1032,7 @@
           "declaration": "FixtureFieldCoverage.dirichlet112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 129
+            "line": 142
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "List.map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1))\n    (List.range 20) =\n  [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0]",
@@ -1180,7 +1180,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 129,
+            "proof_line": 142,
             "scope": "All 20 stored coefficients for the 112.a2 equation after a₀.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "List.map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1))\n    (List.range 20) =\n  [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0]",
@@ -1278,7 +1278,7 @@
           "declaration": "FixtureFieldCoverage.primeCoefficients112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 135
+            "line": 148
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "have facts := LMFDB.C112a2.certificate.arithmetic.primeCoefficients.get ⋯;\n(↑facts).length = 25 ∧\n  ∀ (p : ℕ) (a : ℤ),\n    (p, a) ∈ ↑facts → (LMFDB.C112a2.curve.baseChange ℚ).LFunction p = a",
@@ -1414,7 +1414,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 135,
+            "proof_line": 148,
             "scope": "All 25 stored prime-indexed coefficients for the 112.a2 equation.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "have facts := LMFDB.C112a2.certificate.arithmetic.primeCoefficients.get ⋯;\n(↑facts).length = 25 ∧\n  ∀ (p : ℕ) (a : ℤ),\n    (p, a) ∈ ↑facts → (LMFDB.C112a2.curve.baseChange ℚ).LFunction p = a",
@@ -2538,7 +2538,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "stages": {
         "roadmap": {
@@ -2546,7 +2546,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 538
+            "line": 549
           }
         },
         "lean": {
@@ -2762,7 +2762,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-26 · Complete trace fingerprint inputs",
-        "line": 610
+        "line": 621
       },
       "stages": {
         "roadmap": {
@@ -2770,7 +2770,7 @@
           "scope": "TC-26 · Complete trace fingerprint inputs",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 610
+            "line": 621
           }
         },
         "lean": {
@@ -2986,7 +2986,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "stages": {
         "roadmap": {
@@ -2994,7 +2994,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 538
+            "line": 549
           }
         },
         "lean": {
@@ -3210,7 +3210,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "stages": {
         "roadmap": {
@@ -3218,7 +3218,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 538
+            "line": 549
           }
         },
         "lean": {
@@ -3434,7 +3434,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "stages": {
         "roadmap": {
@@ -3442,7 +3442,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 538
+            "line": 549
           }
         },
         "lean": {
@@ -3731,7 +3731,7 @@
           "declaration": "FixtureFieldCoverage.abcQuality112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 151
+            "line": 164
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "|(LMFDB.C112a2.curve.baseChange ℚ).abcQuality LMFDB.C112a2.abc_quality_defined -\n      10348177494302118 / 10000000000000000| ≤\n  1 / 1000000000000000",
@@ -3878,7 +3878,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 151,
+            "proof_line": 164,
             "scope": "Absolute error enclosure for the specified decimal.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "|(LMFDB.C112a2.curve.baseChange ℚ).abcQuality LMFDB.C112a2.abc_quality_defined -\n      10348177494302118 / 10000000000000000| ≤\n  1 / 1000000000000000",
@@ -5166,7 +5166,7 @@
           "declaration": "FixtureFieldCoverage.rank112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 190
+            "line": 203
           },
           "fixture": "data/witnesses/112a2.json",
           "statement": "analyticOrderAt\n    (Modularity.modularWitness LMFDB.C112a2.curve\n        LMFDB.C112a2.nonsingular).formL\n    1 =\n  1",
@@ -5340,7 +5340,7 @@
             "project_axioms": [
               "VerifiedLcalc.Assumptions.ellipticModularity"
             ],
-            "proof_line": 190,
+            "proof_line": 203,
             "scope": "Exact order at 1 of the modular realization.",
             "source": "data/witnesses/112a2.json",
             "statement": "analyticOrderAt\n    (Modularity.modularWitness LMFDB.C112a2.curve\n        LMFDB.C112a2.nonsingular).formL\n    1 =\n  1",
@@ -6461,7 +6461,7 @@
           "declaration": "FixtureFieldCoverage.conductor112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 118
+            "line": 131
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "(Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level =\n  112",
@@ -6635,7 +6635,7 @@
             "project_axioms": [
               "VerifiedLcalc.Assumptions.ellipticModularity"
             ],
-            "proof_line": 118,
+            "proof_line": 131,
             "scope": "Level of the modular realization.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "(Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level =\n  112",
@@ -8062,7 +8062,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "stages": {
         "roadmap": {
@@ -8070,7 +8070,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 538
+            "line": 549
           }
         },
         "lean": {
@@ -8731,7 +8731,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "stages": {
         "roadmap": {
@@ -8739,7 +8739,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 538
+            "line": 549
           }
         },
         "lean": {
@@ -8955,7 +8955,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "stages": {
         "roadmap": {
@@ -8963,7 +8963,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 538
+            "line": 549
           }
         },
         "lean": {
@@ -9198,7 +9198,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "stages": {
         "roadmap": {
@@ -9206,7 +9206,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 538
+            "line": 549
           }
         },
         "lean": {
@@ -12736,7 +12736,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-31 · Intrinsic Serre invariants",
-        "line": 805
+        "line": 816
       },
       "stages": {
         "roadmap": {
@@ -12744,7 +12744,7 @@
           "scope": "TC-31 · Intrinsic Serre invariants",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 805
+            "line": 816
           }
         },
         "lean": {
@@ -14403,7 +14403,7 @@
           "declaration": "FixtureFieldCoverage.torsion112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 172
+            "line": 185
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "Nat.card\n    ↥(AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =\n  2",
@@ -14551,7 +14551,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 172,
+            "proof_line": 185,
             "scope": "Exact rational torsion cardinality.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "Nat.card\n    ↥(AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =\n  2",
@@ -14663,7 +14663,7 @@
           "declaration": "FixtureFieldCoverage.torsionPrimeSupport112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 143
+            "line": 156
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∀ (p : ℕ),\n  p ∈ [2] ↔\n    Nat.Prime p ∧\n      p ∣\n        Nat.card\n          ↥(AddCommGroup.torsion\n              (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point)",
@@ -14822,7 +14822,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 143,
+            "proof_line": 156,
             "scope": "Exact prime support [2] of the full rational torsion order.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "∀ (p : ℕ),\n  p ∈ [2] ↔\n    Nat.Prime p ∧\n      p ∣\n        Nat.card\n          ↥(AddCommGroup.torsion\n              (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point)",
@@ -14934,7 +14934,7 @@
           "declaration": "FixtureFieldCoverage.torsionStructure112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 177
+            "line": 190
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∃ e, ↑(e 1) = LMFDB.C112a2.torsion_generators.point ⟨0, ⋯⟩",
@@ -15093,7 +15093,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 177,
+            "proof_line": 190,
             "scope": "Full rational cyclic group with the submitted generator.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "∃ e, ↑(e 1) = LMFDB.C112a2.torsion_generators.point ⟨0, ⋯⟩",
@@ -16122,7 +16122,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "stages": {
         "roadmap": {
@@ -16130,7 +16130,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 538
+            "line": 549
           }
         },
         "lean": {
@@ -17571,7 +17571,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "stages": {
         "roadmap": {
@@ -17579,7 +17579,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 538
+            "line": 549
           }
         },
         "lean": {
@@ -18189,7 +18189,7 @@
           "declaration": "FixtureFieldCoverage.conductorValuation112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 123
+            "line": 136
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "(Modularity.modularWitness LMFDB.C112a2.curve\n          LMFDB.C112a2.nonsingular).level.factorization\n    2 =\n  4",
@@ -18523,7 +18523,7 @@
             "project_axioms": [
               "VerifiedLcalc.Assumptions.ellipticModularity"
             ],
-            "proof_line": 123,
+            "proof_line": 136,
             "scope": "Exponent of 2 in the level of the modular realization.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "(Modularity.modularWitness LMFDB.C112a2.curve\n          LMFDB.C112a2.nonsingular).level.factorization\n    2 =\n  4",
@@ -19764,7 +19764,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "stages": {
         "roadmap": {
@@ -19772,7 +19772,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 538
+            "line": 549
           }
         },
         "lean": {
@@ -21272,7 +21272,7 @@
         },
         "lean": {
           "status": "scoped_checker",
-          "scope": "Exact intrinsic factor at good, I₁ or I₂ reduction.",
+          "scope": "Exact intrinsic factor at good, I₁, I₂ or supported tame III reduction.",
           "source": {
             "path": "VerifiedLcalc/Verification/StoredInvariants.lean",
             "line": 256
@@ -21388,7 +21388,7 @@
             }
           ],
           "prerequisites": [],
-          "scope": "Exact intrinsic factor at good, I₁ or I₂ reduction.",
+          "scope": "Exact intrinsic factor at good, I₁, I₂ or supported tame III reduction.",
           "fact": null,
           "declarations": [
             {
@@ -21476,7 +21476,7 @@
             }
           ],
           "prerequisites": [],
-          "scope": "Exact intrinsic factor at good, I₁ or I₂ reduction.",
+          "scope": "Exact intrinsic factor at good, I₁, I₂ or supported tame III reduction.",
           "fact": null,
           "declarations": [
             {
@@ -21521,7 +21521,7 @@
       ],
       "examples": [],
       "checkerScopes": [
-        "Exact intrinsic factor at good, I₁ or I₂ reduction."
+        "Exact intrinsic factor at good, I₁, I₂ or supported tame III reduction."
       ],
       "reportOnlyScopes": [],
       "metadataScopes": [],
@@ -21564,7 +21564,7 @@
             "source": "ec_localdata[2].tamagawa_number",
             "claim_field": "local_invariants.2.tamagawa_number",
             "status": "unsupported",
-            "reason": "Exact Tamagawa checker supports good, I₁ or I₂ reduction",
+            "reason": "Exact Tamagawa checker supports good, I₁, I₂ or supported tame III reduction",
             "radius": null
           },
           {
@@ -22168,7 +22168,7 @@
           "declaration": "FixtureFieldCoverage.generator112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 157
+            "line": 170
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "(LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation 0 2",
@@ -22304,7 +22304,7 @@
             "curve": "112.a2",
             "extent": "partial",
             "project_axioms": [],
-            "proof_line": 157,
+            "proof_line": 170,
             "scope": "Membership of the supplied point.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "(LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation 0 2",
@@ -22578,7 +22578,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "stages": {
         "roadmap": {
@@ -22586,7 +22586,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 538
+            "line": 549
           }
         },
         "lean": {
@@ -22894,7 +22894,7 @@
           "declaration": "FixtureFieldCoverage.generatorCount112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 161
+            "line": 174
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "LMFDB.C112a2.generators.coordinates.length = 1",
@@ -23042,7 +23042,7 @@
             "curve": "112.a2",
             "extent": "partial",
             "project_axioms": [],
-            "proof_line": 161,
+            "proof_line": 174,
             "scope": "Length of the checked point list.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "LMFDB.C112a2.generators.coordinates.length = 1",
@@ -24330,7 +24330,7 @@
           "declaration": "FixtureFieldCoverage.torsionGenerator112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 165
+            "line": 178
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "LMFDB.C112a2.torsion_generators.coordinates = [(-2, 0)] ∧\n  AddSubgroup.closure (Set.range LMFDB.C112a2.torsion_generators.point) =\n    AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point",
@@ -24466,7 +24466,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 165,
+            "proof_line": 178,
             "scope": "The list [(-2, 0)] generates the full rational torsion subgroup.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "LMFDB.C112a2.torsion_generators.coordinates = [(-2, 0)] ∧\n  AddSubgroup.closure (Set.range LMFDB.C112a2.torsion_generators.point) =\n    AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point",
@@ -24571,7 +24571,7 @@
           "declaration": "FixtureFieldCoverage.integralFiber112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 184
+            "line": 197
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∀ (y : ℤ),\n  y ∈ LMFDB.C112a2.integral_y_fiber ⟨0, ⋯⟩ ↔\n    LMFDB.C112a2.curve.toAffine.Equation (-2) y",
@@ -24718,7 +24718,7 @@
             "curve": "112.a2",
             "extent": "partial",
             "project_axioms": [],
-            "proof_line": 184,
+            "proof_line": 197,
             "scope": "Complete integral fiber at x = -2.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "∀ (y : ℤ),\n  y ∈ LMFDB.C112a2.integral_y_fiber ⟨0, ⋯⟩ ↔\n    LMFDB.C112a2.curve.toAffine.Equation (-2) y",
@@ -29050,7 +29050,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 538
+        "line": 549
       },
       "stages": {
         "roadmap": {
@@ -29058,7 +29058,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 538
+            "line": 549
           }
         },
         "lean": {
@@ -31375,9 +31375,9 @@
       "node_type": "route",
       "field_id": "ec_localdata.tamagawa_number",
       "route_index": 0,
-      "label": "Exact intrinsic factor at good, I₁ or I₂ reduction.",
+      "label": "Exact intrinsic factor at good, I₁, I₂ or supported tame III reduction.",
       "kind": "checked",
-      "scope": "Exact intrinsic factor at good, I₁ or I₂ reduction.",
+      "scope": "Exact intrinsic factor at good, I₁, I₂ or supported tame III reduction.",
       "json": [
         "tamagawa_number"
       ],
@@ -31388,9 +31388,9 @@
       "node_type": "route",
       "field_id": "ec_localdata.tamagawa_number",
       "route_index": 1,
-      "label": "Exact intrinsic factor at good, I₁ or I₂ reduction.",
+      "label": "Exact intrinsic factor at good, I₁, I₂ or supported tame III reduction.",
       "kind": "checked",
-      "scope": "Exact intrinsic factor at good, I₁ or I₂ reduction.",
+      "scope": "Exact intrinsic factor at good, I₁, I₂ or supported tame III reduction.",
       "json": [
         "local_invariants",
         "tamagawa_number"
