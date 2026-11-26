@@ -382,6 +382,16 @@ def _atomic_replace(destination: Path, content: bytes) -> None:
         staged.unlink(missing_ok=True)
 
 
+def replay_capture_bytes(raw: bytes, manifest: dict[str, Any]) -> bytes:
+    """Verify exact response bytes and append the audited provenance receipt."""
+    provenance = _object(manifest.get("provenance"), "manifest provenance")
+    if hashlib.sha256(raw).hexdigest() != provenance.get("sha256"):
+        raise ValueError("Raw source SHA-256 does not match provenance manifest")
+    source = _decode(raw, "raw response")
+    projection = replay_capture(source, manifest)
+    return _inject_provenance(raw, source, projection["provenance"])
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subs = parser.add_subparsers(dest="command", required=True)
@@ -432,16 +442,7 @@ def main() -> int:
                     "Replay output must not overwrite the raw capture or its manifest"
                 )
             manifest = _decode(manifest_path.read_bytes(), "manifest")
-            provenance = _object(manifest.get("provenance"), "manifest provenance")
-            if hashlib.sha256(raw).hexdigest() != provenance.get("sha256"):
-                raise ValueError(
-                    "Raw source SHA-256 does not match provenance manifest"
-                )
-            source = _decode(raw, "raw response")
-            projection = replay_capture(source, manifest)
-            _atomic_replace(
-                args.output, _inject_provenance(raw, source, projection["provenance"])
-            )
+            _atomic_replace(args.output, replay_capture_bytes(raw, manifest))
     except (OSError, ValueError) as error:
         parser.error(str(error))
     return 0

@@ -67,6 +67,35 @@ rank requires separate evidence.
 The result can be checked again with `certify_ec MyCurve from_json "witness.json"`
 from a Lean file adjacent to the output.
 
+## Inspect field coverage for a native capture
+
+Run the field ledger against the checked-in 112.a2 capture from the repository
+root.
+
+```sh
+python3 scripts/report_lmfdb_field_ledger.py
+```
+
+Use `--native` and `--manifest` for another response and its sidecar. To add
+the producer results for that response, save the producer's stdout report and
+pass it with `--producer`. The ledger checks the capture receipts and matches
+the producer's input SHA-256 against the exact bytes of the replay before
+joining outcomes. Use `--output` to save the ledger JSON.
+
+The ledger has one entry for each of the 101 table-qualified columns in the
+Lean field catalogue. Its native observations retain the class, prime and
+extension-field row keys where applicable. An unqueried table, a query with no
+rows, and an absent or null field carry separate statuses. An empty list in a
+present row remains a captured value. Producer outcomes retain their scope
+and reason. Audited consumer entries for the curve retain their theorem,
+statement, assumptions and extent. A native value, a successful producer run
+and an audited consumer proof each record a different milestone. Publication
+requires a separately verified artifact tied to the capture.
+
+The [next-step inventory](roadmaps/lmfdb-producer-next-steps.json) records the
+evidence needed for each supported field. The [EC/Q roadmap](roadmaps/LMFDB_Q_CERTIFICATION.md)
+describes the checker contracts.
+
 ## Three input forms
 
 For prime coefficients and integral-point membership without an analytic-rank
