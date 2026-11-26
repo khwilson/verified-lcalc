@@ -10,33 +10,38 @@ and generated batch certificate corpora/installers are removed. Git baseline `fc
 local state and database volumes were not deleted; stop any old API/worker
 processes yourself.
 
-## Produce an arithmetic witness from joined LMFDB data
+## Produce a single-curve witness from joined LMFDB data
 
-Build the existing Lean verifier, then pass a single curve's joined LMFDB
-data export to the witness producer.
+Build the Lean verifier and download the joined export for a curve label.
+For an offline example, use `tests/fixtures/lmfdb/112.a2-joined.json` as the input.
 
 ```sh
 lake build VerifiedLcalc.Tactic.CertifyEC
-python3 scripts/produce_ec_witness.py tests/fixtures/lmfdb/112.a2-joined.json --output witness.json
+curl -L --fail --output 37.a1.json 'https://www.lmfdb.org/EllipticCurve/Q/data/37.a1?_format=json'
+python3 scripts/produce_ec_witness.py 37.a1.json --output witness.json
 ```
 
 The producer checks the curve, class, Mordell–Weil, local and Galois row joins.
 The Galois rows contribute repeated conductor values. The producer
-prepares arithmetic witness data, invokes `certify_ec` in Lean, and writes
+prepares evidence for supplied fields, invokes `certify_ec` in Lean, and writes
 the output only after verification succeeds. The JSON report on stdout
 gives a status, reason and source receipts for each field. Local statuses
 are indexed by prime. The report carries supplied provenance as metadata
 under `input_provenance`. A rejected claim leaves the destination untouched.
 
-The 112.a2 example checks equation invariants, the conductor with the
-existing modularity assumption, the submitted coefficient lists, rational
-point membership for both submitted families, and supported local facts.
-Its row at prime 7 has an exact Kodaira symbol and Tamagawa factor.
-At prime 2, the Kodaira
-check establishes additive reduction and the Tamagawa factor is unsupported.
-The generator check proves that the submitted points lie on the rational
-curve. A basis or saturation theorem requires additional evidence. Analytic
-and algebraic rank reports are outside this arithmetic run.
+| LMFDB fields | What the producer can certify |
+| --- | --- |
+| `torsion`, `torsion_structure`, `torsion_primes` | Two good reductions bound the order of the rational torsion subgroup. When checked point orders and the bound determine the group, Lean proves its order, invariant factors and prime support. For 112.a2 the submitted point generates a cyclic group of order two. |
+| `intrinsic_torsion` | When the full rational torsion group is proved trivial, the intrinsic torsion order is one. |
+| `abc_quality` | For j distinct from 0 and 1728 the producer factors the associated abc product. Lean bounds the error in the reported decimal by $10^{-12}$. Products above $10^{12}$ require a separately supplied factorization. |
+| `analytic_rank`, `special_value` | Lean checks a central-value or first-derivative enclosure. The rank search uses the equation and conductor independently of the reported rank. The exact analytic rank uses the project's modularity assumption. For the leading coefficient the report gives an absolute error and marks a result partial when it does not establish the last printed place. |
+| `serre_invariants` | For a globally minimal semistable model with good reduction at two, Lean checks the complete exceptional list in the arithmetic Serre recipe. Identification with intrinsic residual invariants requires additional evidence. |
+| `tamagawa_product` | Lean proves the global product is one when the complete discriminant-prime list passes the local factor-one check. This includes 37.a1. On 112.a2 the local factor at seven is one, while the additive place at two leaves the product open. |
+| `num_int_pts` | If the reduction modulo two has no affine solutions, there are no integral points. In other cases, listed points and checked fibers can supply a lower bound. Exact positive counts require an exhaustion proof. |
+
+The Mordell–Weil generator check continues to prove membership of the
+submitted rational points. A proof of a basis, saturation, or exact algebraic
+rank requires separate evidence.
 
 The result can be checked again with `certify_ec MyCurve from_json "witness.json"`
 from a Lean file adjacent to the output.

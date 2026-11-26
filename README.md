@@ -53,7 +53,7 @@ set_option maxHeartbeats 10000000
 certify_ec MyCurve from_json "witness.json"
 ```
 
-Use the [single-curve arithmetic witness producer](docs/CERTIFY_EC.md#produce-an-arithmetic-witness-from-joined-lmfdb-data) to prepare and check a witness from a joined LMFDB export.
+Use the [single-curve witness producer](docs/CERTIFY_EC.md#produce-a-single-curve-witness-from-joined-lmfdb-data) to prepare and check a witness from a joined LMFDB export.
 
 All inputs use one `EllipticWitness` record with a `WeierstrassCurve ℤ` equation
 and optional fact fields defaulting to `none`. The [witness directory](VerifiedLcalc/Certificate/Witnesses)

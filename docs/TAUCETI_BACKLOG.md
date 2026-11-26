@@ -195,6 +195,14 @@ factorization checker reuse already verified local values. The good and
 index-one proofs now apply directly to either base ring from the normalized
 discriminant and c₄ valuations.
 
+For integral equations over `ℤ`, the downstream certificate also proves a
+global product of one when every prime divisor of the discriminant is checked
+to have good reduction or multiplicative index one. This uses TauCeti's
+`WeierstrassCurve.tamagawaProduct_eq_prod` together with the pinned local
+completed-factor theorems; no new general Tamagawa API is needed for this
+case. The remaining roadmap item is transport and explicit support for factors
+above one, especially additive reduction.
+
 ## TC-11 — explicit zero-y Vélu quotient equation
 
 Status: proved locally in
@@ -805,3 +813,14 @@ to checked number-field residue data. Given independent exact-order torsion
 generators whose product of orders attains the bound, construct the additive
 equivalence onto Mathlib’s full torsion subgroup. G2 already accepts such an
 equivalence as supplied evidence.
+
+## TC-33 — modular obstructions for integral-point completeness
+
+**Hypotheses.** A Weierstrass curve over `ℤ` and a finite residue ring map.
+
+**Target.** Mathlib already provides
+`WeierstrassCurve.Affine.Equation.map`. Consider upstreaming the optional
+packaging constructor that turns a proof of no affine solutions over a finite
+residue ring into empty abscissa support over `ℤ`. This project uses that
+generic construction for the mod-two obstruction. Finite search and exact
+count packaging remain downstream verifier responsibilities.
