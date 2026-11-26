@@ -188,7 +188,9 @@ example : (GoodTamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 3)
 
 certify_ec TypeIII49a4 from_json "fixtures/lmfdb/49.a4-tamagawa.json"
 
-example : (TypeIII49a4.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 7) = 2 := by
+example :
+    letI : Fact (Nat.Prime 7) := ⟨by decide +kernel⟩
+    (TypeIII49a4.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 7) = 2 := by
   let fact := TypeIII49a4.certificate.arithmetic.tamagawa[0]'(by decide +kernel)
   have hp : fact.prime = ⟨7, by decide +kernel⟩ := Subtype.ext (by decide +kernel)
   have hv : fact.value = 2 := by decide +kernel
