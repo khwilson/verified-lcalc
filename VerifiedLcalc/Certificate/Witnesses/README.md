@@ -35,6 +35,12 @@ with TauCeti's `tamagawaNumberAt` at that row's prime. The tame type III
 route also takes the optional `LocalReductionClaim.tamagawaTypeIIIShift`.
 JSON spells it `tamagawa_type_iii` with exact integer `r`, `s`, and `t`.
 The producer proposes the change and the checker tests the submitted coordinates.
+The tame type IV route takes `LocalReductionClaim.tamagawaTypeIVEvidence` as
+`tamagawa_type_iv`: exact integer `r`, `s`, and `t`, plus exactly one of
+`residue_root` or `nonsplit_euler_power`. The checker validates the submitted
+unit-scale change and evidence against the derived terminal quadratic; it does
+not search for a change or a residue. A root proves factor three, while a
+verified nonsplit Euler value at an odd prime proves factor one.
 [Imported 179.a1 consumer](../../../tests/consumers/LmfdbCI.lean).
 
 The certificate-level `LocalReductionClaim.TamagawaSpec`, `KodairaSpec`

@@ -37,6 +37,8 @@ deriving instance ToExpr for MinimalityWitness
 deriving instance ToExpr for CentralResult
 deriving instance ToExpr for DerivativeResult
 deriving instance ToExpr for TamagawaTypeIIIShift
+deriving instance ToExpr for TypeIVTamagawaResidue
+deriving instance ToExpr for TamagawaTypeIVEvidence
 deriving instance ToExpr for LocalReductionClaim
 deriving instance ToExpr for AbcQualityClaim
 deriving instance ToExpr for RegulatorClaim

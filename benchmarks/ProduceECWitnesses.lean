@@ -138,7 +138,8 @@ private def proposeTorsion (e : WeierstrassCurve ℤ) (hne : e.Δ ≠ 0) (j : Js
 private def attachTypeIIIShift (e : WeierstrassCurve ℤ) (j : Json) : Except String Json := do
   let row ← CurveDataJson.localReductionClaim j
   let p := row.prime
-  if p ≤ 3 || row.tamagawaNumber.isNone || (tamagawaExpected? e p).isSome then
+  if p ≤ 3 || row.tamagawaNumber.isNone || row.tamagawaTypeIIIShift.isSome ||
+      row.tamagawaTypeIVEvidence.isSome || (tamagawaExpected? e p).isSome then
     return j
   let r := (-e.b₂ * Nat.gcdA 12 p) % (p : ℤ)
   let t := (-(e.a₃ + r * e.a₁) * Nat.gcdA 2 p) % (p : ℤ)
@@ -147,10 +148,46 @@ private def attachTypeIIIShift (e : WeierstrassCurve ℤ) (j : Json) : Except St
       [("r", number r), ("s", number 0), ("t", number t)])
   return j
 
+/-- Maximum producer-only search prefix for a positive type IV residue root.
+Users can submit any root below `p`; the verifier checks it without this bound. -/
+private def typeIVRootSearchLimit : Nat := 10000
+
+private def attachTypeIVEvidence (e : WeierstrassCurve ℤ) (j : Json) : Except String Json := do
+  let row ← CurveDataJson.localReductionClaim j
+  let p := row.prime
+  if p ≤ 3 || row.tamagawaNumber.isNone || row.tamagawaTypeIIIShift.isSome ||
+      row.tamagawaTypeIVEvidence.isSome || (tamagawaExpected? e p).isSome then
+    return j
+  let r := (-e.b₂ * Nat.gcdA 12 p) % (p : ℤ)
+  let t := (-(e.a₃ + r * e.a₁) * Nat.gcdA 2 p) % (p : ℤ)
+  let candidate : TamagawaTypeIVEvidence := ⟨r, 0, t, .root 0⟩
+  let model := typeIVChange candidate • e
+  let quadraticDiscriminant : ZMod p :=
+    (((model.a₃ / (p : ℤ)) ^ 2 + 4 * (model.a₆ / (p : ℤ) ^ 2) : ℤ) : ZMod p)
+  let eulerPower := quadraticDiscriminant ^ ((p - 1) / 2)
+  let evidence := if eulerPower == -1 then
+      some { candidate with residue := .nonsplitEulerPower (p - 1) }
+    else
+      let root := (List.range (min p typeIVRootSearchLimit)).find? fun y =>
+        typeIVResiduePolynomial model p (y : ZMod p) == 0
+      root.map fun y => { candidate with residue := .root y }
+  match evidence with
+  | none => return j
+  | some evidence =>
+    if !checkTameTypeIV e p evidence then
+      return j
+    return j.setObjVal! "tamagawa_type_iv" (Json.mkObj [
+      ("r", number evidence.r), ("s", number evidence.s), ("t", number evidence.t),
+      (match evidence.residue with
+      | .root y => ("residue_root", natural y)
+      | .nonsplitEulerPower value => ("nonsplit_euler_power", natural value))])
+
 private def proposeTamagawa (e : WeierstrassCurve ℤ) (j : Json) :
     Except String (List (String × Json)) := do
   let .ok rows := j.getObjValAs? (Array Json) "local_invariants" | return []
-  let updated ← rows.mapM (attachTypeIIIShift e)
+  let updated ← rows.mapM fun row => do
+    let row ← attachTypeIIIShift e row
+    attachTypeIVEvidence e row
   return if updated == rows then [] else [("local_invariants", .arr updated)]
 
 private def proposeArithmetic (j : Json) : Except String Json := do

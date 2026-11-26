@@ -153,6 +153,27 @@ structure TamagawaTypeIIIShift where
   t : Int
   deriving Repr, DecidableEq
 
+/-- Supplied residue evidence for the type IV component-group factor. -/
+inductive TypeIVTamagawaResidue where
+  /-- A specific residue representative at which the terminal quadratic vanishes. -/
+  | root (value : Nat)
+  /-- The supplied Euler-power value certifying the quadratic is nonsplit at an odd prime. -/
+  | nonsplitEulerPower (value : Nat)
+  deriving Repr, DecidableEq
+
+/-- Exact unit-scale translation and residue evidence for a type IV Tamagawa claim.
+The verifier checks these supplied values and performs no search. -/
+structure TamagawaTypeIVEvidence where
+  /-- Change in the x-coordinate. -/
+  r : Int
+  /-- Slope of the change in the y-coordinate. -/
+  s : Int
+  /-- Translation in the y-coordinate. -/
+  t : Int
+  /-- Positive-root or nonsplit Euler evidence for the terminal quadratic. -/
+  residue : TypeIVTamagawaResidue
+  deriving Repr, DecidableEq
+
 /-- Optional claims from an LMFDB local row. The reduction codes are 0 for
 additive, 1 for split multiplicative and -1 for nonsplit multiplicative. -/
 structure LocalReductionClaim where
@@ -174,6 +195,8 @@ structure LocalReductionClaim where
   rootNumber : Option Int := none
   /-- Submitted unit-scale change for the intrinsic tame type III local factor. -/
   tamagawaTypeIIIShift : Option TamagawaTypeIIIShift := none
+  /-- Submitted change and residue evidence for a type IV local factor. -/
+  tamagawaTypeIVEvidence : Option TamagawaTypeIVEvidence := none
   deriving Repr, DecidableEq
 
 end VerifiedLcalc

@@ -113,6 +113,32 @@ theorem tamagawa49a4 :
   subst prime value
   exact correct
 
+/-- The imported 50.a3 fixture certifies its type IV factor with a residue root. -/
+theorem tamagawa50a3 :
+    letI : Fact (Nat.Prime 5) := ⟨by decide +kernel⟩
+    (LMFDB.C50a3.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 5) = 3 := by
+  let fact := LMFDB.C50a3.certificate.arithmetic.tamagawa[0]'(by decide +kernel)
+  have hp : fact.prime = ⟨5, by decide +kernel⟩ := Subtype.ext (by decide +kernel)
+  have hv : fact.value = 3 := by decide +kernel
+  obtain ⟨prime, value, correct⟩ := fact
+  change prime = _ at hp
+  change value = 3 at hv
+  subst prime value
+  exact correct
+
+/-- The imported 50.a1 fixture certifies its type IV factor with nonsplit evidence. -/
+theorem tamagawa50a1 :
+    letI : Fact (Nat.Prime 5) := ⟨by decide +kernel⟩
+    (LMFDB.C50a1.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 5) = 1 := by
+  let fact := LMFDB.C50a1.certificate.arithmetic.tamagawa[0]'(by decide +kernel)
+  have hp : fact.prime = ⟨5, by decide +kernel⟩ := Subtype.ext (by decide +kernel)
+  have hv : fact.value = 1 := by decide +kernel
+  obtain ⟨prime, value, correct⟩ := fact
+  change prime = _ at hp
+  change value = 1 at hv
+  subst prime value
+  exact correct
+
 /-- The imported 179.a1 has Kodaira symbol I₁ at 179. -/
 theorem kodaira179 :
     letI : Fact (Nat.Prime 179) := ⟨localPrime179⟩
@@ -262,6 +288,10 @@ private def samples : List Sample :=
       "Intrinsic local I₂ factor at 17.", .unconditional, false⟩,
    ⟨"ec_localdata", "tamagawa_number", "49.a4", ``tamagawa49a4,
       "Intrinsic local type III factor at 7.", .unconditional, false⟩,
+   ⟨"ec_localdata", "tamagawa_number", "50.a3", ``tamagawa50a3,
+      "Intrinsic local type IV factor at 5 with a residue root.", .unconditional, false⟩,
+   ⟨"ec_localdata", "tamagawa_number", "50.a1", ``tamagawa50a1,
+      "Intrinsic local type IV factor at 5 with nonsplit evidence.", .unconditional, false⟩,
    ⟨"ec_localdata", "kodaira_symbol", "179.a1", ``kodaira179, "Exact I₁ symbol at 179.",
       .unconditional, false⟩,
    ⟨"ec_localdata", "root_number", "179.a1", ``rootNumber179,
@@ -313,6 +343,8 @@ private def auditSample (sample : Sample) : CommandElabM Json := do
     else if sample.proof == ``rank112 then "data/witnesses/112a2.json"
     else if sample.curve == "17.a2" then "tests/fixtures/lmfdb/17.a2-tamagawa.json"
     else if sample.curve == "49.a4" then "tests/fixtures/lmfdb/49.a4-tamagawa.json"
+    else if sample.curve == "50.a1" || sample.curve == "50.a3" then
+      s!"tests/fixtures/lmfdb/{sample.curve}-tamagawa.json"
     else s!"tests/fixtures/lmfdb/{sample.curve}.json"
   let origin := if sample.field == "squarefree_disc" then "computed_from_equation"
     else if sample.field == "analytic_rank" then "certified_numerical_witness"

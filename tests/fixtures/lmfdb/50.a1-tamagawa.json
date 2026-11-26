@@ -1,0 +1,34 @@
+{
+  "ainvs": [
+    1,
+    0,
+    1,
+    -126,
+    -552
+  ],
+  "signD": -1,
+  "absD": 5000,
+  "minimality": [
+    2,
+    2,
+    2,
+    5,
+    5,
+    5,
+    5
+  ],
+  "prime": 5,
+  "conductor_valuation": 2,
+  "discriminant_valuation": 4,
+  "j_denominator_valuation": 0,
+  "reduction_type": 0,
+  "kodaira_symbol": 4,
+  "tamagawa_number": 1,
+  "root_number": -1,
+  "tamagawa_type_iv": {
+    "r": 2,
+    "s": 0,
+    "t": 1,
+    "nonsplit_euler_power": 4
+  }
+}

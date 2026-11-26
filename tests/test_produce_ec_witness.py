@@ -20,6 +20,8 @@ NATIVE = ROOT / "tests/fixtures/lmfdb/112.a2-native.json"
 NATIVE_MANIFEST = NATIVE.with_suffix(".provenance.json")
 TAMAGAWA_17A2 = ROOT / "tests/fixtures/lmfdb/17.a2-tamagawa-joined.json"
 TAMAGAWA_TYPE_III_49A4 = ROOT / "tests/fixtures/lmfdb/49.a4-tamagawa-joined.json"
+TAMAGAWA_TYPE_IV_50A1 = ROOT / "tests/fixtures/lmfdb/50.a1-tamagawa-joined.json"
+TAMAGAWA_TYPE_IV_50A3 = ROOT / "tests/fixtures/lmfdb/50.a3-tamagawa-joined.json"
 LEAN = ["lake", "-f", "lakefile.certificates.lean", "env", "lean"]
 
 
@@ -103,7 +105,7 @@ class JoinChecks(unittest.TestCase):
             fields["local_invariants.7.tamagawa_number"],
             {
                 "status": "unsupported",
-                "reason": "Exact Tamagawa checker supports good, I₁, I₂ or supported tame III reduction",
+                "reason": "Exact Tamagawa checker supports good, I₁, I₂ or supplied tame III/IV evidence",
             },
         )
 
@@ -234,6 +236,43 @@ class KernelReplay(unittest.TestCase):
             self.assertEqual(report["status"], "rejected")
             self.assertIn("tamagawa_values_valid", report["error"])
             self.assertEqual(output.read_bytes(), previous)
+
+    def test_tame_type_iv_root_and_nonsplit_projection_and_corruption(self) -> None:
+        cases = (
+            (TAMAGAWA_TYPE_IV_50A3, 3, {"r": 2, "s": 0, "t": 1, "residue_root": 0}),
+            (
+                TAMAGAWA_TYPE_IV_50A1,
+                1,
+                {"r": 2, "s": 0, "t": 1, "nonsplit_euler_power": 4},
+            ),
+        )
+        for fixture, expected_factor, expected_evidence in cases:
+            with self.subTest(fixture=fixture.name), tempfile.TemporaryDirectory() as d:
+                data = json.loads(fixture.read_text(encoding="utf-8"))
+                directory = Path(d)
+                result, report, output = produce(data, directory, timeout=600)
+                self.assertEqual(result.returncode, 0, (report, result.stderr))
+                self.assertEqual(report["status"], "checked")
+                field = report["fields"]["local_invariants.5.tamagawa_number"]
+                self.assertEqual(field["status"], "checked")
+                self.assertEqual(field["sources"], ["ec_localdata[5].tamagawa_number"])
+                witness = json.loads(output.read_text(encoding="utf-8"))
+                local = witness["local_invariants"][0]
+                self.assertEqual(local["tamagawa_number"], expected_factor)
+                self.assertEqual(
+                    {key: int(value) for key, value in local["tamagawa_type_iv"].items()},
+                    expected_evidence,
+                )
+
+                previous = output.read_bytes()
+                rows(data, "ec_localdata")[0]["tamagawa_number"] = (
+                    1 if expected_factor == 3 else 3
+                )
+                result, report, output = produce(data, directory, timeout=600)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual(report["status"], "rejected")
+                self.assertIn("tamagawa_values_valid", report["error"])
+                self.assertEqual(output.read_bytes(), previous)
 
     def test_mod_two_obstruction_checks_empty_integral_count(self) -> None:
         # LMFDB 179.a1 has no points modulo two and no integral x-coordinates.

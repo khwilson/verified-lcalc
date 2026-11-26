@@ -74,6 +74,15 @@ gated replay checks the accepted factor and rejects a corrupted value.
 The checked JSON stores the producer's exact unit-scale change
 `(r, s, t) = (2, 0, 6)` in its `tamagawa_type_iii` field.
 
+The 50.a3 and 50.a1 Tamagawa fixtures project rows 123 and 124 of the same
+pinned `ecdata` snapshot (Cremona labels 50a1 and 50a2). At p=5 both rows
+have PARI type IV code 4 and discriminant valuation 4. Their respective
+Tamagawa factors are 3 and 1. The checked fixtures supply the same exact
+unit-scale change `(r,s,t) = (2,0,1)`. The split case gives the residue root 0,
+and the nonsplit case gives Euler value 4 modulo 5. The joined projections
+retain the native claims without the extra evidence, which the producer
+proposes independently.
+
 The Lean consumer checks the finite theorems and checks the modularity dependency
 on conductor and root-number theorems. The matrix inputs contain no rank data. Its consumer also reuses the separate, already
 checked analytic-rank-one witness for 112.a2 on the same integral equation.
