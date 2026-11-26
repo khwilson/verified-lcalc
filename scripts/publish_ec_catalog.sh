@@ -104,11 +104,13 @@ case "$1" in
     cp -R web/certificates/. "$site_dir/"
     node --input-type=module -e '
       import {readFileSync, writeFileSync} from "node:fs";
-      const [path, revision] = process.argv.slice(1);
-      if (!/^[0-9a-f]{40}$/.test(revision)) throw new Error("Invalid fixture source revision");
-      const report = JSON.parse(readFileSync(path, "utf8"));
-      writeFileSync(path, JSON.stringify({...report, git_revision: revision}, null, 2) + "\n");
-    ' "$site_dir/fixture-field-coverage.json" "$GITHUB_SHA"
+      const [revision, ...paths] = process.argv.slice(1);
+      if (!/^[0-9a-f]{40}$/.test(revision)) throw new Error("Invalid companion source revision");
+      for (const path of paths) {
+        const report = JSON.parse(readFileSync(path, "utf8"));
+        writeFileSync(path, JSON.stringify({...report, git_revision: revision}, null, 2) + "\n");
+      }
+    ' "$GITHUB_SHA" "$site_dir/fixture-field-coverage.json" "$site_dir/field-dependency-roadmap.json"
     retry_read published_catalog_index "$tag" > "$site_dir/catalogs/index.json"
     basenames=$(jq -r '.[]' "$site_dir/catalogs/index.json")
     while IFS= read -r basename; do

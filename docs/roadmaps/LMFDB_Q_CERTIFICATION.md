@@ -415,6 +415,26 @@ catalogue indices and arithmetic fingerprints use the mathematical evidence
 above. A claim of mathematical identity needs an isomorphism or an isogeny
 as appropriate.
 
+## Dependency waves
+
+The [companion graph](https://khwilson.github.io/verified-lcalc/roadmap.html)
+gives every table-qualified field a stable ID, the source specification, its
+Lean input and output declarations, and its producer evidence. Each route
+carries its own prerequisites. The numbering uses the deepest recorded hard
+dependency in each package. Independent routes can start earlier. The
+implementation order below is a separate scheduling plan.
+
+| Wave | Inputs and prerequisites | Outputs and field targets | Acceptance evidence |
+| --- | --- | --- | --- |
+| 1 · Independent routes | Native table and row keys, the integral equation, and the evidence specified by each selected route. Examples include a discriminant factorization for L1, good-prime reductions for M1, and an explicit modular realization for A1. | BASE, [L1](#local-arithmetic), [M1–M3](#mordellweil-and-integral-points), [I1–I3](#isogenies-twists-and-modular-parametrizations), [A1](#analytic-and-bsd-data), [G1–G3](#galois-representations-torsion-growth-and-p-adic-data), TC-23 and TC-26. These cover equation invariants, local arithmetic, points, ranks, isogenies, images, extension data, p-adic data, catalogue order and finite coefficients. Standalone period and height routes in A2 can also start here. | Replay the exact native input, compare the claimed value and audit an imported typed fact. Record the prerequisites and any assumptions per route, including arithmetic modularity for an actual analytic-rank conclusion. |
+| 2 · Compose local and class data | L2 uses intrinsic local factors and a complete bad-prime roster for the product. A2's class-relative routes use the complete I1 class and the relevant period comparisons. TC-31's intrinsic route uses G1 residual representation evidence. | [L2](#local-arithmetic) local factors and global `ec_mwbsd.tamagawa_product`, class-relative [A2](#analytic-and-bsd-data) fields such as `faltings_index` and `faltings_ratio`, and TC-31 Serre data. The arithmetic Serre recipe has its own supported scope. | Audit each local factor separately, check prime deduplication and good places off the roster, prove class completeness and ties where needed, and keep the arithmetic recipe distinct from intrinsic residual invariants. |
+| 3 · Assemble the analytic BSD quotient | [A3](#analytic-and-bsd-data)’s factor route uses exact analytic order and leading coefficient, full period, intrinsic Tamagawa product, full torsion and an appropriate regulator proof. Rank zero uses the empty basis and regulator one. Positive rank requires certified basis or finite-index evidence and canonical-height pairing enclosures. | `ec_mwbsd.sha_an`, and `ec_curvedata.sha` and `sha_primes` after a proved rounding cell and factorization. | Import the checked quotient and prove positivity of its denominator, a strict rounding cell and exact prime support where claimed. Record the numerical interval and assumptions. |
+
+The division into typed supplier contracts, examples and dependencies follows
+the pinned [TauCeti integral lattices roadmap](https://github.com/TauCetiProject/TauCetiRoadmap/blob/310573a503cec801586b593f6af269b0618ca9cb/TauCetiRoadmap/IntegralLattices/README.md#how-to-read-the-build).
+The [upstream reuse audit](../TAUCETI_BACKLOG.md#upstream-reuse-audit-2026-11-26)
+records candidate APIs seen on upstream main alongside the installed pin.
+
 ## Implementation order
 
 1. Land L1 as a few small certificate PRs, first finite semistability,

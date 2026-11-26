@@ -6,6 +6,24 @@ Source audit: TauCeti `d01c9825761c7e6168457c383458afa8668196a7`, Mathlib
 `3440367ed1804626334f13a3a534a9cbb3385a59`. This is a local backlog for upstream
 review; it does not claim external issues or pull requests were created.
 
+## Upstream reuse audit, 2026-11-26
+
+The project builds against [TauCeti e0e414ce](https://github.com/TauCetiProject/TauCeti/tree/e0e414ce57522ba17560057ad0d7f2edab91bf0c).
+This audit reads [upstream main 656ded1](https://github.com/TauCetiProject/TauCeti/tree/656ded174088660623ea049e74e99da5d637a376),
+which uses the same Lean 4.37.0-rc1 toolchain and Mathlib revision
+`31ce06eaadf4a200c0e1407c5f10953cf606b8f8`. These are source-level reuse
+findings. The companion records installed checker routes and actual producer
+replays from the project pin.
+
+| Roadmap target | Confirmed source and next adapter |
+| --- | --- |
+| TC-03 · finite coefficients | The odd-characteristic character sum counts points and gives traces, including on singular equations. The executable binary evaluator and characteristic-two path are still local. [CharacterSum](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/AlgebraicGeometry/EllipticCurve/CharacterSum.lean#L104-L118) |
+| TC-19 · heights and regulator | The Tate-limit bound is `C / ((d - 1) * d^n)` given an explicit one-step defect bound, and the limit theorem identifies the canonical height. A producer still needs an equation-specific `C` and certified Mordell–Weil basis evidence. [TateLimit](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/NumberTheory/Height/TateLimit.lean#L136-L145) · [CanonicalHeight/Limit](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/AlgebraicGeometry/EllipticCurve/CanonicalHeight/Limit.lean#L118-L124) |
+| L1 · good reduction | A prime avoiding the model discriminant gives intrinsic good reduction. The converse holds when its twelfth power also avoids the discriminant. [GoodPrimes](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/GoodPrimes.lean#L136-L154) |
+| TC-10 · multiplicative Tamagawa factors | For Henselian multiplicative reduction, a fraction-field root characterizes splitting. The downstream adapter must identify the relevant local and residue-field data. [SplitMultiplicative](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/AlgebraicGeometry/EllipticCurve/QuadraticTwist/SplitMultiplicative.lean#L281-L295) |
+| M1 · torsion | The short Nagell–Lutz result gives sharp coordinate divisibility for a short integral model. A producer needs a checked model change and point transport for the represented equation. [ShortNagellLutz](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/ShortNagellLutz.lean#L178-L186) |
+| TC-31 · Serre data | The reduced-level theorem supplies the arithmetic level. Identification with the residual conductor remains a separate proof target. [ReducedLevel](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/AlgebraicGeometry/EllipticCurve/ReducedLevel.lean#L289-L295) |
+
 ## TC-01 — extracted generic minimality criteria
 
 Status: proved source, extracted into

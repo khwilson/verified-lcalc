@@ -1,0 +1,793 @@
+{
+  "fields": {
+    "Ciso": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.Ciso"
+      ],
+      "status": "unsupported"
+    },
+    "Clabel": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.Clabel"
+      ],
+      "status": "unsupported"
+    },
+    "Cnumber": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.Cnumber"
+      ],
+      "status": "unsupported"
+    },
+    "abc_quality": {
+      "radius": "1/1000000000000",
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_curvedata.abc_quality"
+      ],
+      "status": "checked"
+    },
+    "absD": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_curvedata.absD"
+      ],
+      "status": "checked"
+    },
+    "adelic_genus": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.adelic_genus"
+      ],
+      "status": "unsupported"
+    },
+    "adelic_index": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.adelic_index"
+      ],
+      "status": "unsupported"
+    },
+    "adelic_level": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.adelic_level"
+      ],
+      "status": "unsupported"
+    },
+    "ainvs": {
+      "reason": "Given integral equation is nonsingular",
+      "sources": [
+        "ec_curvedata.ainvs"
+      ],
+      "status": "checked"
+    },
+    "analytic_rank": {
+      "reason": "Kernel-checked using the explicit ellipticModularity assumption",
+      "sources": [
+        "ec_curvedata.analytic_rank"
+      ],
+      "status": "checked"
+    },
+    "anlist": {
+      "reason": "Arithmetic L-function coefficients of the represented equation",
+      "sources": [
+        "ec_classdata.anlist"
+      ],
+      "status": "checked"
+    },
+    "aplist": {
+      "reason": "Arithmetic L-function coefficients of the represented equation",
+      "sources": [
+        "ec_classdata.aplist"
+      ],
+      "status": "checked"
+    },
+    "area": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_mwbsd.area"
+      ],
+      "status": "unsupported"
+    },
+    "bad_primes": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_curvedata.bad_primes"
+      ],
+      "status": "checked"
+    },
+    "class_deg": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_classdata.class_deg",
+        "ec_curvedata.class_deg"
+      ],
+      "status": "unsupported"
+    },
+    "class_size": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_classdata.class_size",
+        "ec_curvedata.class_size"
+      ],
+      "status": "unsupported"
+    },
+    "cm": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.cm"
+      ],
+      "status": "unsupported"
+    },
+    "conductor": {
+      "reason": "Kernel-checked using the explicit ellipticModularity assumption",
+      "sources": [
+        "ec_classdata.conductor",
+        "ec_mwbsd.conductor",
+        "ec_curvedata.conductor",
+        "ec_galrep[0].conductor",
+        "ec_galrep[2].conductor",
+        "ec_localdata[2].conductor",
+        "ec_localdata[7].conductor"
+      ],
+      "status": "checked"
+    },
+    "degree": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.degree"
+      ],
+      "status": "unsupported"
+    },
+    "elladic_images": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.elladic_images"
+      ],
+      "status": "unsupported"
+    },
+    "faltings_height": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.faltings_height"
+      ],
+      "status": "unsupported"
+    },
+    "faltings_index": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.faltings_index"
+      ],
+      "status": "unsupported"
+    },
+    "faltings_ratio": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.faltings_ratio"
+      ],
+      "status": "unsupported"
+    },
+    "gens": {
+      "reason": "Point membership only; full generation requires evidence",
+      "sources": [
+        "ec_mwbsd.gens"
+      ],
+      "status": "partial"
+    },
+    "heights": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_mwbsd.heights"
+      ],
+      "status": "unsupported"
+    },
+    "intrinsic_torsion": {
+      "reason": "Missing evidence for the exact claim",
+      "sources": [
+        "ec_curvedata.intrinsic_torsion"
+      ],
+      "status": "unsupported"
+    },
+    "iso_nlabel": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.iso_nlabel"
+      ],
+      "status": "unsupported"
+    },
+    "isogeny_degrees": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.isogeny_degrees"
+      ],
+      "status": "unsupported"
+    },
+    "isogeny_matrix": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_classdata.isogeny_matrix"
+      ],
+      "status": "unsupported"
+    },
+    "jinv": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_curvedata.jinv"
+      ],
+      "status": "checked"
+    },
+    "lmfdb_number": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.lmfdb_number"
+      ],
+      "status": "unsupported"
+    },
+    "local_data": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "Lean producer.local_data"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.2.conductor_valuation": {
+      "reason": "Kernel-checked using the explicit ellipticModularity assumption",
+      "sources": [
+        "ec_localdata[2].conductor_valuation"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.2.discriminant_valuation": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_localdata[2].discriminant_valuation"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.2.j_denominator_valuation": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_localdata[2].j_denominator_valuation"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.2.kodaira_symbol": {
+      "reason": "Additive family checked; exact symbol unverified",
+      "sources": [
+        "ec_localdata[2].kodaira_symbol"
+      ],
+      "status": "partial"
+    },
+    "local_invariants.2.prime": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_localdata[2].prime"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.2.reduction_type": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_localdata[2].reduction_type"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.2.root_number": {
+      "reason": "Exact arithmetic local sign formula",
+      "sources": [
+        "ec_localdata[2].root_number"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.2.tamagawa_number": {
+      "reason": "Exact Tamagawa checker supports good, I₁ or I₂ reduction",
+      "sources": [
+        "ec_localdata[2].tamagawa_number"
+      ],
+      "status": "unsupported"
+    },
+    "local_invariants.7.conductor_valuation": {
+      "reason": "Kernel-checked using the explicit ellipticModularity assumption",
+      "sources": [
+        "ec_localdata[7].conductor_valuation"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.7.discriminant_valuation": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_localdata[7].discriminant_valuation"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.7.j_denominator_valuation": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_localdata[7].j_denominator_valuation"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.7.kodaira_symbol": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_localdata[7].kodaira_symbol"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.7.prime": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_localdata[7].prime"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.7.reduction_type": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_localdata[7].reduction_type"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.7.root_number": {
+      "reason": "Exact arithmetic local sign formula",
+      "sources": [
+        "ec_localdata[7].root_number"
+      ],
+      "status": "checked"
+    },
+    "local_invariants.7.tamagawa_number": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_localdata[7].tamagawa_number"
+      ],
+      "status": "checked"
+    },
+    "manin_constant": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.manin_constant"
+      ],
+      "status": "unsupported"
+    },
+    "min_quad_twist_ainvs": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.min_quad_twist_ainvs"
+      ],
+      "status": "unsupported"
+    },
+    "min_quad_twist_disc": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.min_quad_twist_disc"
+      ],
+      "status": "unsupported"
+    },
+    "minimality": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "Lean producer.minimality"
+      ],
+      "status": "checked"
+    },
+    "modell_images": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.modell_images"
+      ],
+      "status": "unsupported"
+    },
+    "modm_images": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.modm_images"
+      ],
+      "status": "unsupported"
+    },
+    "ngens": {
+      "reason": "Exact length of the supplied list; basis evidence not supplied",
+      "sources": [
+        "ec_mwbsd.ngens"
+      ],
+      "status": "partial"
+    },
+    "nonmax_primes": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.nonmax_primes"
+      ],
+      "status": "unsupported"
+    },
+    "nonmax_rad": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.nonmax_rad"
+      ],
+      "status": "unsupported"
+    },
+    "num_bad_primes": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_curvedata.num_bad_primes"
+      ],
+      "status": "checked"
+    },
+    "num_int_pts": {
+      "reason": "Checked supplied points or fibers give a lower bound; completeness is unproved",
+      "sources": [
+        "ec_curvedata.num_int_pts"
+      ],
+      "status": "partial"
+    },
+    "optimality": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.optimality"
+      ],
+      "status": "unsupported"
+    },
+    "potential_good_reduction": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_curvedata.potential_good_reduction"
+      ],
+      "status": "checked"
+    },
+    "rank": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.rank"
+      ],
+      "status": "unsupported"
+    },
+    "rank_bounds": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_mwbsd.rank_bounds"
+      ],
+      "status": "unsupported"
+    },
+    "real_period": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_mwbsd.real_period"
+      ],
+      "status": "unsupported"
+    },
+    "regulator": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.regulator"
+      ],
+      "status": "unsupported"
+    },
+    "semistable": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_curvedata.semistable"
+      ],
+      "status": "checked"
+    },
+    "serre_invariants": {
+      "reason": "Missing evidence for the exact claim",
+      "sources": [
+        "ec_curvedata.serre_invariants"
+      ],
+      "status": "unsupported"
+    },
+    "sha": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.sha"
+      ],
+      "status": "unsupported"
+    },
+    "sha_an": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_mwbsd.sha_an"
+      ],
+      "status": "unsupported"
+    },
+    "sha_primes": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.sha_primes"
+      ],
+      "status": "unsupported"
+    },
+    "signD": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_curvedata.signD"
+      ],
+      "status": "checked"
+    },
+    "special_value": {
+      "radius": "18717378890518937157718985317747075610729888720453351840978991686367382948739018922980583/20921636408738842945196059549448479390617120533399260000000000000000000000000000000000000",
+      "reason": "Reported value is enclosed with the computed error radius",
+      "sources": [
+        "ec_mwbsd.special_value"
+      ],
+      "status": "partial"
+    },
+    "stable_faltings_height": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.stable_faltings_height"
+      ],
+      "status": "unsupported"
+    },
+    "szpiro_ratio": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_curvedata.szpiro_ratio"
+      ],
+      "status": "unsupported"
+    },
+    "tamagawa_product": {
+      "reason": "Missing evidence for the exact claim",
+      "sources": [
+        "ec_mwbsd.tamagawa_product"
+      ],
+      "status": "unsupported"
+    },
+    "torsion": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_curvedata.torsion"
+      ],
+      "status": "checked"
+    },
+    "torsion_generators": {
+      "reason": "Generation proved",
+      "sources": [
+        "ec_mwbsd.torsion_generators"
+      ],
+      "status": "checked"
+    },
+    "torsion_primes": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_curvedata.torsion_primes"
+      ],
+      "status": "checked"
+    },
+    "torsion_structure": {
+      "reason": "Kernel-checked certificate theorem",
+      "sources": [
+        "ec_curvedata.torsion_structure"
+      ],
+      "status": "checked"
+    },
+    "trace_hash": {
+      "reason": "No certificate route in this producer",
+      "sources": [
+        "ec_classdata.trace_hash"
+      ],
+      "status": "unsupported"
+    },
+    "xcoord_integral_points": {
+      "reason": "Exact fibers over supplied abscissas; exhaustivity needs evidence",
+      "sources": [
+        "ec_mwbsd.xcoord_integral_points"
+      ],
+      "status": "partial"
+    }
+  },
+  "input_provenance": {
+    "attribution": "The LMFDB Collaboration",
+    "captured_at": "2026-11-26T01:59:10.892609",
+    "license": "CC BY-SA",
+    "selection": "All native source tables; status, keys and exact source hash are recorded in table_capture_manifest.",
+    "source": "https://www.lmfdb.org/EllipticCurve/Q/data/112.a2?_format=json",
+    "source_revision": null,
+    "source_sha256": "a7631a589136e92ffed788998da29e801cc6683dc8c87c0bb4d7f04913181171",
+    "table_capture_manifest": [
+      {
+        "join_key": "lmfdb_label",
+        "join_value": "112.a2",
+        "name": "ec_curvedata",
+        "row_keys": [
+          "112.a2"
+        ],
+        "status": "present"
+      },
+      {
+        "join_key": "lmfdb_iso",
+        "join_value": "112.a",
+        "name": "ec_classdata",
+        "row_keys": [
+          "112.a"
+        ],
+        "status": "present"
+      },
+      {
+        "join_key": "lmfdb_label",
+        "join_value": "112.a2",
+        "name": "ec_mwbsd",
+        "row_keys": [
+          "112.a2"
+        ],
+        "status": "present"
+      },
+      {
+        "join_key": "lmfdb_label",
+        "join_value": "112.a2",
+        "name": "ec_localdata",
+        "row_keys": [
+          2,
+          7
+        ],
+        "status": "present"
+      },
+      {
+        "join_key": "lmfdb_label",
+        "join_value": "112.a2",
+        "name": "ec_galrep",
+        "row_keys": [
+          0,
+          2
+        ],
+        "status": "present"
+      },
+      {
+        "join_key": "lmfdb_label",
+        "join_value": "112.a2",
+        "name": "ec_torsion_growth",
+        "row_keys": [
+          [
+            2,
+            [
+              2,
+              -1,
+              1
+            ]
+          ],
+          [
+            4,
+            [
+              -2,
+              -4,
+              -2,
+              0,
+              1
+            ]
+          ],
+          [
+            8,
+            [
+              -12,
+              0,
+              20,
+              0,
+              -12,
+              0,
+              0,
+              0,
+              1
+            ]
+          ],
+          [
+            8,
+            [
+              1,
+              0,
+              -3,
+              0,
+              6,
+              0,
+              -3,
+              0,
+              1
+            ]
+          ],
+          [
+            8,
+            [
+              1,
+              0,
+              2,
+              0,
+              10,
+              0,
+              2,
+              0,
+              1
+            ]
+          ],
+          [
+            16,
+            [
+              -28,
+              32,
+              320,
+              224,
+              -72,
+              48,
+              208,
+              384,
+              464,
+              256,
+              48,
+              16,
+              12,
+              -8,
+              -8,
+              0,
+              1
+            ]
+          ],
+          [
+            16,
+            [
+              144,
+              0,
+              -816,
+              0,
+              1192,
+              0,
+              864,
+              0,
+              141,
+              0,
+              40,
+              0,
+              18,
+              0,
+              0,
+              0,
+              1
+            ]
+          ]
+        ],
+        "status": "present"
+      },
+      {
+        "join_key": "lmfdb_label",
+        "join_value": "112.a2",
+        "name": "ec_iwasawa",
+        "row_keys": [
+          "112.a2"
+        ],
+        "status": "present"
+      },
+      {
+        "join_key": "lmfdb_iso",
+        "join_value": "112.a",
+        "name": "ec_padic",
+        "row_keys": [
+          5,
+          17,
+          19,
+          23,
+          29,
+          31,
+          37,
+          41,
+          43,
+          47,
+          53,
+          59,
+          61,
+          67,
+          73,
+          79,
+          83,
+          89,
+          97
+        ],
+        "status": "present"
+      }
+    ]
+  },
+  "input_sha256": "d253711d5995b999321ea2ebc564bce11ffe0a43df98c6f60d022a1d6d5a134e",
+  "obligations": [
+    "intrinsic_torsion_inconclusive",
+    "special_value_precision_inconclusive"
+  ],
+  "status": "checked"
+}
