@@ -6,11 +6,11 @@ Authors: Kevin Wilson
 import VerifiedLcalc.Certificate.Json
 import VerifiedLcalc.Certificate.CurveDataJson
 
-open Lean VerifiedLcalc VerifiedLcalc.EllipticCurve
-
 /-! Explicit benchmark-only witness search. Its JSON output is untrusted input
 for `certify_ec`; no theorem or certificate is produced by this executable.
 The `--arithmetic` mode proposes evidence for one equation on stdout. -/
+
+open Lean VerifiedLcalc VerifiedLcalc.EllipticCurve
 
 private def number (n : Int) : Json := .str (toString n)
 private def natural (n : Nat) : Json := .str (toString n)
