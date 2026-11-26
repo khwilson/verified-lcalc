@@ -47,13 +47,26 @@ def produce(
 
 class JoinChecks(unittest.TestCase):
     def test_accept_native_curve_and_class_labels(self) -> None:
-        witness = build_input(joined())[0]
+        witness, _, sources = build_input(joined())
         self.assertEqual(witness["ainvs"], [0, 1, 0, 0, 4])
         self.assertEqual(witness["conductor"], 112)
         self.assertEqual([row["prime"] for row in witness["local_invariants"]], [2, 7])
+        self.assertEqual(
+            {
+                source
+                for source in sources["conductor"]
+                if source.startswith("ec_galrep")
+            },
+            {"ec_galrep[0].conductor", "ec_galrep[2].conductor"},
+        )
 
     def test_reject_mismatched_subject_rows_and_duplicate_prime(self) -> None:
-        for corruption in ("isogeny class", "local conductor", "duplicate prime"):
+        for corruption in (
+            "isogeny class",
+            "local conductor",
+            "Galois conductor",
+            "duplicate prime",
+        ):
             with (
                 self.subTest(corruption=corruption),
                 tempfile.TemporaryDirectory() as d,
@@ -70,6 +83,8 @@ class JoinChecks(unittest.TestCase):
                     rows(data, "ec_classdata")[0]["lmfdb_iso"] = "112.b"
                 elif corruption == "local conductor":
                     local[1]["conductor"] = 113
+                elif corruption == "Galois conductor":
+                    rows(data, "ec_galrep")[1]["conductor"] = 113
                 else:
                     local.append({**local[0], "id": 715})
                 result, report, output = produce(data, directory, timeout=30)
@@ -128,6 +143,8 @@ class KernelReplay(unittest.TestCase):
                     "ec_mwbsd.conductor",
                     "ec_localdata[2].conductor",
                     "ec_localdata[7].conductor",
+                    "ec_galrep[0].conductor",
+                    "ec_galrep[2].conductor",
                 },
             )
             for field in [

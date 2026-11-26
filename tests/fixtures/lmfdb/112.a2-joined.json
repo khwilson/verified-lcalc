@@ -3,17 +3,20 @@
     "112.a2",
     "112.a",
     "112.a2",
+    "112.a2",
     "112.a2"
   ],
   "tables": [
     "ec_curvedata",
     "ec_classdata",
     "ec_mwbsd",
-    "ec_localdata"
+    "ec_localdata",
+    "ec_galrep"
   ],
   "label_cols": [
     "lmfdb_label",
     "lmfdb_iso",
+    "lmfdb_label",
     "lmfdb_label",
     "lmfdb_label"
   ],
@@ -21,6 +24,7 @@
     1,
     1,
     1,
+    2,
     2
   ],
   "timestamp": "2026-11-26T01:59:10.892609",
@@ -181,6 +185,20 @@
         "kodaira_symbol": 5,
         "tamagawa_number": 1
       }
+    ],
+    [
+      {
+        "id": 1666206,
+        "prime": 0,
+        "lmfdb_label": "112.a2",
+        "conductor": 112
+      },
+      {
+        "id": 389,
+        "prime": 2,
+        "lmfdb_label": "112.a2",
+        "conductor": 112
+      }
     ]
   ],
   "provenance": {
@@ -188,6 +206,6 @@
     "source_sha256": "a7631a589136e92ffed788998da29e801cc6683dc8c87c0bb4d7f04913181171",
     "attribution": "The LMFDB Collaboration",
     "license": "CC BY-SA",
-    "selection": "Selected columns from the curve, class, Mordell–Weil, and both local rows. Original join identifiers and displayed values retained."
+    "selection": "Selected columns from the curve, class, Mordell–Weil, both local rows, and both Galois rows. The Galois rows supply join identifiers and conductor only. Original join identifiers and displayed values retained."
   }
 }

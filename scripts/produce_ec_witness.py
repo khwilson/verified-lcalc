@@ -17,6 +17,7 @@ TABLE_KEYS = {
     "ec_classdata": "lmfdb_iso",
     "ec_mwbsd": "lmfdb_label",
     "ec_localdata": "lmfdb_label",
+    "ec_galrep": "lmfdb_label",
 }
 PROOFS = {
     "ainvs": "nonsingular",
@@ -127,7 +128,7 @@ def joined_rows(
         if label_col != TABLE_KEYS[table] or not isinstance(label, str) or not label:
             raise ValueError(f"Invalid join metadata for {table}")
         items = [object_value(row, table) for row in list_value(data, table)]
-        if table != "ec_localdata" and len(items) > 1:
+        if table not in {"ec_localdata", "ec_galrep"} and len(items) > 1:
             raise ValueError(f"Expected at most one row in {table}")
         if any(row.get(label_col) != label for row in items):
             raise ValueError(f"Row label disagrees with joined label for {table}")
@@ -158,6 +159,14 @@ def joined_rows(
         for table in TABLE_FIELDS
         for row in selected.get(table, ("", []))[1]
     ]
+    galrep_primes = set()
+    for row in selected.get("ec_galrep", ("", []))[1]:
+        prime = row.get("prime")
+        if type(prime) is not int or prime < 0 or prime == 1 or prime in galrep_primes:
+            raise ValueError("Invalid or repeated ec_galrep row prime")
+        galrep_primes.add(prime)
+        if row.get("conductor") is not None:
+            flat.append((f"ec_galrep[{prime}]", {"conductor": row["conductor"]}))
     local = selected.get("ec_localdata", ("", []))[1]
     label_conductor = int(class_label.split(".", 1)[0])
     if any(
@@ -185,7 +194,11 @@ def build_input(
             raise ValueError(
                 "Supply only curve claims; the producer computes minimality and local_data"
             )
-        candidates = PROOFS.keys() if table == "input" else TABLE_FIELDS[table]
+        candidates = (
+            PROOFS.keys()
+            if table == "input"
+            else TABLE_FIELDS.get(table, {"conductor"})
+        )
         for field, value in row.items():
             if field == "local_invariants" or field in JOIN_METADATA or value is None:
                 continue

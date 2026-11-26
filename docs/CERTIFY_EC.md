@@ -12,14 +12,16 @@ processes yourself.
 
 ## Produce an arithmetic witness from joined LMFDB data
 
-Build the existing Lean verifier with `make certificates`, then pass a
-single curve's joined LMFDB data export to the witness producer.
+Build the existing Lean verifier, then pass a single curve's joined LMFDB
+data export to the witness producer.
 
 ```sh
+lake build VerifiedLcalc.Tactic.CertifyEC
 python3 scripts/produce_ec_witness.py tests/fixtures/lmfdb/112.a2-joined.json --output witness.json
 ```
 
-The producer checks the curve, class, Mordell–Weil and local row joins. It
+The producer checks the curve, class, Mordell–Weil, local and Galois row joins.
+The Galois rows contribute repeated conductor values. The producer
 prepares arithmetic witness data, invokes `certify_ec` in Lean, and writes
 the output only after verification succeeds. The JSON report on stdout
 gives a status, reason and source receipts for each field. Local statuses
