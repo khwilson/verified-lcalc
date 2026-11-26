@@ -228,8 +228,10 @@ example : ∃ e : ZMod 2 ≃+ AddCommGroup.torsion (LMFDB.C112a2.curve.baseChang
 /-- The stored list is exactly the distinct prime support of rational torsion on 112.a2. -/
 theorem imported_112a2_torsion_primes (p : ℕ) :
     p ∈ ([2] : List ℕ) ↔ p.Prime ∧
-      p ∣ Nat.card (AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) :=
-  (LMFDB.C112a2.certificate.torsion.primeSupport.get (by rfl)).exact_support p
+      p ∣ Nat.card (AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) := by
+  let support := LMFDB.C112a2.certificate.torsion.primeSupport.get (by rfl)
+  have hprimes : support.primes = [2] := by decide +kernel
+  simpa only [hprimes] using support.exact_support p
 
 /-- The complete stored torsion generator family consists of the literal point `(-2, 0)`. -/
 theorem imported_112a2_torsion_generator_list :
@@ -253,7 +255,8 @@ theorem imported_112a2_torsion_generation :
   have h := (LMFDB.C112a2.certificate.torsion.generation.get (by rfl)).down
   change AddSubgroup.closure (Set.range
     (fun i : Fin 1 => LMFDB.C112a2.torsion_generators.point ⟨i.val, i.isLt⟩)) = _ at h
-  simpa only [Set.range_unique] using h
+  have hzero : (default : Fin 1) = 0 := Subsingleton.elim _ _
+  simpa only [Set.range_unique, hzero] using h
 
 example : ¬ EllipticCurve.HasEverywherePotentialGoodReduction
     (LMFDB.C112a2.curve.baseChange ℚ) :=
