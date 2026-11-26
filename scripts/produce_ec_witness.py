@@ -1,6 +1,7 @@
 """Produce and kernel-check arithmetic evidence for one rational elliptic curve."""
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -473,16 +474,17 @@ def produce(source: Path, output: Path, report: dict[str, Any]) -> None:
         output.exists() and source.samefile(output)
     ):
         raise ValueError("Output must differ from the input")
-    with source.open(encoding="utf-8") as stream:
-        native = object_value(
-            json.load(
-                stream,
-                object_pairs_hook=unique_object,
-                parse_constant=invalid_constant,
-                parse_float=str,
-            ),
-            "input",
-        )
+    source_bytes = source.read_bytes()
+    report["input_sha256"] = hashlib.sha256(source_bytes).hexdigest()
+    native = object_value(
+        json.loads(
+            source_bytes.decode("utf-8"),
+            object_pairs_hook=unique_object,
+            parse_constant=invalid_constant,
+            parse_float=str,
+        ),
+        "input",
+    )
     witness, fields, sources = build_input(native)
     report["fields"] = fields
     if "provenance" in native:
