@@ -50,15 +50,6 @@ published_catalog_index() {
   | select(index($current) != null)' <<< "$listed"
 }
 
-pages_artifact_visible() {
-  local name=$1 id=$2
-  gh api --method GET --paginate --slurp \
-    "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" \
-    -f name="$name" | jq -e --arg name "$name" --argjson id "$id" '
-      [.[].artifacts[] | select(.name == $name)]
-      | length == 1 and .[0].id == $id and .[0].expired == false' >/dev/null
-}
-
 case "$1" in
   release)
     tag=$2
@@ -119,15 +110,8 @@ case "$1" in
         --pattern catalog.json --output "$site_dir/catalogs/$basename"
     done <<< "$basenames"
     ;;
-  wait-pages-artifact)
-    [[ "$3" =~ ^[0-9]+$ ]]
-    if ! retry_read pages_artifact_visible "$2" "$3"; then
-      echo "Pages artifact $2 ($3) did not become visible in run $GITHUB_RUN_ID." >&2
-      exit 1
-    fi
-    ;;
   *)
-    echo "Expected release, site or wait-pages-artifact command." >&2
+    echo "Expected release or site command." >&2
     exit 2
     ;;
 esac
