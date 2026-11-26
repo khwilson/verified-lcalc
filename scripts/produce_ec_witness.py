@@ -320,12 +320,16 @@ run_cmd do
   let names : List Name := [{names}]
   let mut facts := names.map fun n => (n.toString, toJson (env.contains n))
   for p in ([{primes}] : List Nat) do
-    let support ← liftTermElabM <| Lean.Meta.withTransparency .all <| Lean.Meta.whnf
-      (mkApp2 (mkConst ``VerifiedLcalc.EllipticCurve.tamagawaExpected?)
-        (mkConst ``WitnessCheck.curve) (mkNatLit p))
-    unless support.isAppOf ``Option.some || support.isAppOf ``Option.none do
-      throwError "Could not reduce Tamagawa support"
-    facts := facts ++ [("tamagawa." ++ toString p, toJson (support.isAppOf ``Option.some))]
+    let pLit : TSyntax `term := ⟨Syntax.mkNatLit p⟩
+    let checked ← liftTermElabM do
+      let query ← Term.elabTerm
+        (← `((WitnessCheck.certificate.arithmetic.tamagawa.map fun fact =>
+            (fact.prime : Nat)).contains $pLit)) (some (mkConst ``Bool))
+      Term.synthesizeSyntheticMVarsNoPostponing
+      Lean.Meta.withTransparency .all <| Lean.Meta.whnf (← instantiateMVars query)
+    unless checked.isConstOf ``Bool.true || checked.isConstOf ``Bool.false do
+      throwError "Could not read checked Tamagawa factors: {{checked}}"
+    facts := facts ++ [("tamagawa." ++ toString p, toJson (checked.isConstOf ``Bool.true))]
   for (p, code) in ([{codes}] : List (Nat × Int)) do
     let index ← liftTermElabM <| Lean.Meta.whnf
       (mkApp (mkConst ``VerifiedLcalc.EllipticCurve.kodairaIIndex) (toExpr code))
@@ -440,6 +444,8 @@ def report_fields(
     for row in witness.get("local_invariants", []):
         prime = row["prime"]
         for field, value in row.items():
+            if field == "tamagawa_type_iii":
+                continue
             key = f"local_invariants.{prime}.{field}"
             if not flags.get(f"WitnessCheck.{LOCAL_PROOFS[field]}"):
                 fields[key] = result(
@@ -512,8 +518,10 @@ def produce(source: Path, output: Path, report: dict[str, Any]) -> None:
             "Lean producer result",
         )
         evidence = object_value(produced["evidence"], "Lean evidence")
-        if evidence.keys() - GENERATED_EVIDENCE:
-            unexpected = sorted(evidence.keys() - GENERATED_EVIDENCE)
+        if evidence.keys() - (GENERATED_EVIDENCE | {"local_invariants"}):
+            unexpected = sorted(
+                evidence.keys() - (GENERATED_EVIDENCE | {"local_invariants"})
+            )
             raise ValueError(
                 f"Unexpected field from Lean producer: {', '.join(unexpected)}"
             )
@@ -533,6 +541,20 @@ def produce(source: Path, output: Path, report: dict[str, Any]) -> None:
             omitted_ap = len(native_aplist) - len(supported_ap)
             if omitted_ap <= 0:
                 raise ValueError("Expected a strict aplist subset")
+        if "local_invariants" in evidence:
+            generated_rows = [
+                object_value(row, "Lean local evidence row")
+                for row in list_value(
+                    evidence.pop("local_invariants"), "Lean local evidence"
+                )
+            ]
+            original_rows = [
+                {key: value for key, value in row.items() if key != "tamagawa_type_iii"}
+                for row in generated_rows
+            ]
+            if not same_value(original_rows, witness.get("local_invariants")):
+                raise ValueError("Lean producer changed the submitted local claims")
+            witness["local_invariants"] = generated_rows
         witness.update(evidence)
         data = (json.dumps(witness, indent=2, allow_nan=False) + "\n").encode("utf-8")
         (work / "witness.json").write_bytes(data)

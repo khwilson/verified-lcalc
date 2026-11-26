@@ -71,6 +71,8 @@ the source revision, schema, and Artistic License 2.0 attribution documented
 in `data/lmfdb/README.md` and `data/lmfdb/raw/ECDATA-LICENSE`. The producer
 joined projection retains the curve identity and its single local row; the
 gated replay checks the accepted factor and rejects a corrupted value.
+The checked JSON stores the producer's exact unit-scale change
+`(r, s, t) = (2, 0, 6)` in its `tamagawa_type_iii` field.
 
 The Lean consumer checks the finite theorems and checks the modularity dependency
 on conductor and root-number theorems. The matrix inputs contain no rank data. Its consumer also reuses the separate, already

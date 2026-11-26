@@ -197,7 +197,9 @@ class KernelReplay(unittest.TestCase):
             self.assertEqual(field["status"], "checked")
             self.assertEqual(field["sources"], ["ec_localdata[17].tamagawa_number"])
             witness = json.loads(output.read_text(encoding="utf-8"))
-            self.assertEqual(witness["local_invariants"][0]["tamagawa_number"], 2)
+            local = witness["local_invariants"][0]
+            self.assertEqual(local["tamagawa_number"], 2)
+            self.assertNotIn("tamagawa_type_iii", local)
 
             previous = output.read_bytes()
             rows(data, "ec_localdata")[0]["tamagawa_number"] = 1
@@ -218,7 +220,12 @@ class KernelReplay(unittest.TestCase):
             self.assertEqual(field["status"], "checked")
             self.assertEqual(field["sources"], ["ec_localdata[7].tamagawa_number"])
             witness = json.loads(output.read_text(encoding="utf-8"))
-            self.assertEqual(witness["local_invariants"][0]["tamagawa_number"], 2)
+            local = witness["local_invariants"][0]
+            self.assertEqual(local["tamagawa_number"], 2)
+            self.assertEqual(
+                {key: int(value) for key, value in local["tamagawa_type_iii"].items()},
+                {"r": 2, "s": 0, "t": 6},
+            )
 
             previous = output.read_bytes()
             rows(data, "ec_localdata")[0]["tamagawa_number"] = 1

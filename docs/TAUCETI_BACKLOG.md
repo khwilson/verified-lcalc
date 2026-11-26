@@ -204,9 +204,10 @@ to the relevant `IsTateTerminal` and residue-polynomial hypotheses.
 [Terminal comparison](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Local.lean#L144-L162)
 · [Split and nonsplit indices](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/LocalIndex.lean#L469-L486)
 
-For tame type III, the checker now constructs a unit-scale translation at
-rational primes `p > 3` and checks its terminal divisibilities. The rational
-adapter transports them to the completion and proves the factor is two.
+For tame type III, the producer proposes a unit-scale change at rational
+primes `p > 3`. The checker takes its exact submitted coordinates and tests
+the terminal divisibilities. The rational adapter transports them to the
+completion and proves the factor is two.
 It reuses the installed
 [`isTateTerminal_III`](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/Terminal.lean#L147-L151)
 and [`tateLocalIndex_III`](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/LocalIndex.lean#L199-L200).

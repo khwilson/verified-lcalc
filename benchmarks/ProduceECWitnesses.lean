@@ -9,6 +9,8 @@ import VerifiedLcalc.EllipticCurve.TorsionBound
 import VerifiedLcalc.EllipticCurve.TwoFactorTorsion
 import VerifiedLcalc.Verification.CurveData
 import VerifiedLcalc.Verification.AbcQuality
+import VerifiedLcalc.EllipticCurve.Tate.TamagawaSpecs
+import Mathlib.Data.Int.GCD
 
 /-! Explicit benchmark-only witness search. Its JSON output is untrusted input
 for `certify_ec`; no theorem or certificate is produced by this executable.
@@ -133,6 +135,24 @@ private def proposeTorsion (e : WeierstrassCurve ℤ) (hne : e.Δ ≠ 0) (j : Js
     (if present "intrinsic_torsion" && !trivial then ["intrinsic_torsion_inconclusive"] else [])
   return (boundEvidence ++ orderEvidence, obligations)
 
+private def attachTypeIIIShift (e : WeierstrassCurve ℤ) (j : Json) : Except String Json := do
+  let row ← CurveDataJson.localReductionClaim j
+  let p := row.prime
+  if p ≤ 3 || row.tamagawaNumber.isNone || (tamagawaExpected? e p).isSome then
+    return j
+  let r := (-e.b₂ * Nat.gcdA 12 p) % (p : ℤ)
+  let t := (-(e.a₃ + r * e.a₁) * Nat.gcdA 2 p) % (p : ℤ)
+  if checkTameTypeIII e p ⟨r, 0, t⟩ then
+    return j.setObjVal! "tamagawa_type_iii" (Json.mkObj
+      [("r", number r), ("s", number 0), ("t", number t)])
+  return j
+
+private def proposeTamagawa (e : WeierstrassCurve ℤ) (j : Json) :
+    Except String (List (String × Json)) := do
+  let .ok rows := j.getObjValAs? (Array Json) "local_invariants" | return []
+  let updated ← rows.mapM (attachTypeIIIShift e)
+  return if updated == rows then [] else [("local_invariants", .arr updated)]
+
 private def proposeArithmetic (j : Json) : Except String Json := do
   let ainvs ← j.getObjVal? "ainvs"
   let e ← CurveDataJson.equationOfAinvs (← CurveDataJson.ainvs ainvs)
@@ -152,8 +172,10 @@ private def proposeArithmetic (j : Json) : Except String Json := do
     | none => ([], [])
   let (abcQuality, abcObligations) ← proposeAbcQuality e j
   let (torsion, torsionObligations) := proposeTorsion e h j
+  let tamagawa ← proposeTamagawa e j
   return Json.mkObj [
-    ("evidence", Json.mkObj (minimality ++ localData ++ coefficients ++ abcQuality ++ torsion)),
+    ("evidence", Json.mkObj
+      (minimality ++ localData ++ coefficients ++ abcQuality ++ torsion ++ tamagawa)),
     ("obligations", toJson
       (minimalityObligations ++ localObligations ++ coefficientObligations ++ abcObligations ++
         torsionObligations))]

@@ -10,5 +10,6 @@
   "reduction_type": 0,
   "kodaira_symbol": 3,
   "tamagawa_number": 2,
+  "tamagawa_type_iii": {"r": 2, "s": 0, "t": 6},
   "root_number": -1
 }

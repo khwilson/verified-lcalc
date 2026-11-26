@@ -336,10 +336,13 @@ level. The reduction codes are 0 for additive, 1 for split multiplicative, and �
 multiplicative reduction. Certificates cover each supplied row individually.
 
 `tamagawa_number` verifies one at good or `I₁` reduction and two at `I₂`
-reduction. Both splitting cases at `I₂` have local index two. For a prime above three,
-the checker also tests the exact type III terminal divisibilities on a
-unit-scale translate of the equation. A verified terminal III model gives
-factor two. The equality concerns TauCeti's
+reduction. Both splitting cases at `I₂` have local index two. For a rational prime p > 3, a
+`tamagawa_type_iii` object in the same local row supplies the exact integers
+`r`, `s`, and `t` of a change of variables with scale 1. The producer proposes
+these coordinates. The checker applies the submitted change to the original
+equation, tests the terminal III divisibilities, and checks the claimed factor
+two. A submitted change that fails its tests is rejected. Rows without the
+change can use the good, I₁, and I₂ routes. The equality concerns TauCeti's
 `tamagawaNumberAt` over the completed field. The checker needs no global
 minimality witness for this field. A claim outside this scope is reported
 as unverified. [Completed Tamagawa factor](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Product.lean#L47-L87)

@@ -143,6 +143,16 @@ structure TorsionBoundWitness where
 
 /-! ## Finite-prime rows and Tate transcripts -/
 
+/-- Exact integral coordinates of a unit-scale change of variables for a type III witness. -/
+structure TamagawaTypeIIIShift where
+  /-- Change in the x-coordinate. -/
+  r : Int
+  /-- Slope of the change in the y-coordinate. -/
+  s : Int
+  /-- Translation in the y-coordinate. -/
+  t : Int
+  deriving Repr, DecidableEq
+
 /-- Optional claims from an LMFDB local row. The reduction codes are 0 for
 additive, 1 for split multiplicative and -1 for nonsplit multiplicative. -/
 structure LocalReductionClaim where
@@ -162,6 +172,8 @@ structure LocalReductionClaim where
   kodairaSymbol : Option Int := none
   /-- Claimed arithmetic local sign at this prime. -/
   rootNumber : Option Int := none
+  /-- Submitted unit-scale change for the intrinsic tame type III local factor. -/
+  tamagawaTypeIIIShift : Option TamagawaTypeIIIShift := none
   deriving Repr, DecidableEq
 
 end VerifiedLcalc

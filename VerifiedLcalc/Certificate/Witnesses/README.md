@@ -31,7 +31,10 @@ check it and prove the supported equality. [`checkedTamagawaFacts`](../Arithmeti
 keeps the checked rows as
 `Name.certificate.arithmetic.tamagawa : List (LocalTamagawaFact Name.curve)`.
 Each [`LocalTamagawaFact.correct`](FinitePrimes.lean) proves equality
-with TauCeti's `tamagawaNumberAt` at that row's prime.
+with TauCeti's `tamagawaNumberAt` at that row's prime. The tame type III
+route also takes the optional `LocalReductionClaim.tamagawaTypeIIIShift`.
+JSON spells it `tamagawa_type_iii` with exact integer `r`, `s`, and `t`.
+The producer proposes the change and the checker tests the submitted coordinates.
 [Imported 179.a1 consumer](../../../tests/consumers/LmfdbCI.lean).
 
 The certificate-level `LocalReductionClaim.TamagawaSpec`, `KodairaSpec`

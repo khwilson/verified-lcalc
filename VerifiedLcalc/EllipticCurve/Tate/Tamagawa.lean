@@ -264,7 +264,7 @@ theorem tamagawaNumberAt_eq_two_of_typeIII_shift (e : WeierstrassCurve ℤ)
           rw [map_mul, map_pow, hcast]
           simp only [ValuationSubring.algebraMap_apply]
         exact hleft.symm.trans (hx'.trans hright)
-      have hxbound : Valued.v (x : F) ≤ 1 := x.2
+      have hxbound : Valued.v (x : F) ≤ 1 := x.property
       have hupper : Valued.v ((A.b₈ : ℤ) : F) ≤ WithZero.exp (-3 : ℤ) := by
         rw [hxF, map_mul, map_pow, hpval]
         calc
@@ -349,32 +349,35 @@ theorem supportsTamagawaOne_correct (e : WeierstrassCurve ℤ) (p : ℕ)
 /-- Every non-`none` result of the supported Tamagawa computation is the
 intrinsic local Tamagawa number at the completed place. -/
 theorem tamagawaExpected_correct (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
-    [(e.baseChange ℚ).IsElliptic] {value : ℕ}
-    (h : tamagawaExpected? e p = some value) :
+    [(e.baseChange ℚ).IsElliptic] {shift : Option TamagawaTypeIIIShift} {value : ℕ}
+    (h : tamagawaExpected? e p shift = some value) :
     (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = value := by
-  by_cases hs : supportsTamagawaOne e p = true
-  · rw [tamagawaExpected?, ite_eq_left hs] at h
-    cases h
-    exact supportsTamagawaOne_correct e p hs
-  · by_cases hm : multiplicativeIndexTwo e p = true
-    · rw [tamagawaExpected?, ite_eq_right hs, ite_eq_left hm] at h
+  cases shift with
+  | none =>
+    by_cases hs : supportsTamagawaOne e p = true
+    · rw [tamagawaExpected?, ite_eq_left hs] at h
       cases h
-      have hm' : (p : ℤ) ^ 2 ∣ e.Δ ∧ ¬ (p : ℤ) ^ 3 ∣ e.Δ ∧ ¬ (p : ℤ) ∣ e.c₄ := by
-        simpa [multiplicativeIndexTwo] using hm
-      exact tamagawaNumberAt_eq_two_of_multiplicative_index_two e p
-        hm'.1 hm'.2.1 hm'.2.2
-    · by_cases ht : checkTameTypeIII e p = true
-      · rw [tamagawaExpected?, ite_eq_right hs, ite_eq_right hm, ite_eq_left ht] at h
+      exact supportsTamagawaOne_correct e p hs
+    · by_cases hm : multiplicativeIndexTwo e p = true
+      · rw [tamagawaExpected?, ite_eq_right hs, ite_eq_left hm] at h
         cases h
-        have ht' : 3 < p ∧ (p : ℤ) ∣ (tameTypeIIIShift e p • e).b₂ ∧
-            (p : ℤ) ∣ (tameTypeIIIShift e p • e).a₃ ∧
-            (p : ℤ) ∣ (tameTypeIIIShift e p • e).a₄ ∧
-            (p : ℤ) ^ 2 ∣ (tameTypeIIIShift e p • e).a₆ ∧
-            ¬ (p : ℤ) ^ 3 ∣ (tameTypeIIIShift e p • e).b₈ := by
-          simpa [checkTameTypeIII] using ht
-        exact tamagawaNumberAt_eq_two_of_typeIII_shift e p (tameTypeIIIShift e p)
-          ht'.2.1 ht'.2.2.1 ht'.2.2.2.1 ht'.2.2.2.2.1 ht'.2.2.2.2.2
-      · simp [tamagawaExpected?, hs, hm, ht] at h
+        have hm' : (p : ℤ) ^ 2 ∣ e.Δ ∧ ¬ (p : ℤ) ^ 3 ∣ e.Δ ∧ ¬ (p : ℤ) ∣ e.c₄ := by
+          simpa [multiplicativeIndexTwo] using hm
+        exact tamagawaNumberAt_eq_two_of_multiplicative_index_two e p hm'.1 hm'.2.1 hm'.2.2
+      · simp [tamagawaExpected?, hs, hm] at h
+  | some shift =>
+    by_cases ht : checkTameTypeIII e p shift = true
+    · rw [tamagawaExpected?, ite_eq_left ht] at h
+      cases h
+      have ht' : 3 < p ∧ (p : ℤ) ∣ (typeIIIChange shift • e).b₂ ∧
+          (p : ℤ) ∣ (typeIIIChange shift • e).a₃ ∧
+          (p : ℤ) ∣ (typeIIIChange shift • e).a₄ ∧
+          (p : ℤ) ^ 2 ∣ (typeIIIChange shift • e).a₆ ∧
+          ¬ (p : ℤ) ^ 3 ∣ (typeIIIChange shift • e).b₈ := by
+        simpa [checkTameTypeIII] using ht
+      exact tamagawaNumberAt_eq_two_of_typeIII_shift e p (typeIIIChange shift)
+        ht'.2.1 ht'.2.2.1 ht'.2.2.2.1 ht'.2.2.2.2.1 ht'.2.2.2.2.2
+    · simp [tamagawaExpected?, ht] at h
 
 set_option backward.isDefEq.respectTransparency.types false in
 private theorem integerPlaceValuation_eq (v : HeightOneSpectrum ℤ) (p k : ℕ) (n : ℤ)

@@ -1365,7 +1365,7 @@
     },
     {
       "checker_scopes": [
-        "Exact intrinsic factor at good, I₁, I₂ or supported tame III reduction."
+        "Exact intrinsic factor at good, I₁, I₂ or tame III reduction with a submitted unit-scale change satisfying the terminal conditions."
       ],
       "evidence": [
         {
