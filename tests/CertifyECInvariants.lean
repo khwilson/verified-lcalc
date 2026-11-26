@@ -171,6 +171,18 @@ certify_ec GoodTamagawa from
   { equation := ⟨0, 0, 8, -16, 0⟩,
     localInvariants := some [{ prime := 3, tamagawaNumber := some 1 }] }
 
+certify_ec RawTamagawaProduct from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"minimality":[37],"tamagawa_product":1}"#
+
+example : RawTamagawaProduct.certificate.tamagawaProduct.isSome = true := by decide +kernel
+
+/-
+error: certify_ec stopped: a generated declaration failed to check
+-/
+#guard_msgs in
+certify_ec RawWrongTamagawaProduct from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"minimality":[37],"tamagawa_product":2}"#
+
 example : (GoodTamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 3) = 1 := by
   obtain ⟨_, h⟩ := GoodTamagawa.tamagawa_numbers { prime := 3, tamagawaNumber := some 1 }
     (by decide +kernel) 1 rfl

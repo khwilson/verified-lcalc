@@ -42,6 +42,16 @@ PROOFS = {
     "torsion_generators": "torsion_generators.points_on_curve",
     "xcoord_integral_points": "integral_y_fiber_complete",
     "integral_points": "points_on_curve",
+    "torsion": "torsion",
+    "torsion_structure": "torsion_structure",
+    "torsion_primes": "torsion_primes_exact",
+    "intrinsic_torsion": "intrinsic_torsion",
+    "abc_quality": "abc_quality",
+    "analytic_rank": "catalogue_analytic_rank",
+    "special_value": "special_value_valid",
+    "num_int_pts": "num_int_pts",
+    "serre_invariants": "serre_invariants",
+    "tamagawa_product": "tamagawa_product_report_matches",
 }
 LOCAL_PROOFS = {
     "prime": "local_invariants",
@@ -62,6 +72,8 @@ TABLE_FIELDS = {
         "ngens",
         "torsion_generators",
         "xcoord_integral_points",
+        "special_value",
+        "tamagawa_product",
         "conductor",
     },
 }
@@ -72,6 +84,14 @@ TABLE_FIELDS["ec_curvedata"] = (
     - {"integral_points"}
 ) | {"conductor"}
 EVIDENCE_PROOFS = {"minimality": "global_minimal", "local_data": "local_data_valid"}
+GENERATED_EVIDENCE = EVIDENCE_PROOFS.keys() | {
+    "ap",
+    "abc_quality_evidence",
+    "torsion_bound",
+    "torsion_generator_orders",
+    "analytic_witness",
+    "special_value_evidence",
+}
 
 
 def unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -190,7 +210,7 @@ def build_input(
     fields = {}
     sources: dict[str, list[str]] = {}
     for table, row in rows:
-        if table == "input" and EVIDENCE_PROOFS.keys() & row.keys():
+        if table == "input" and GENERATED_EVIDENCE & row.keys():
             raise ValueError(
                 "Supply only curve claims; the producer computes minimality and local_data"
             )
@@ -348,7 +368,12 @@ def checked_status(field: str, value: Any) -> dict[str, str]:
         )
     if field == "ainvs":
         return result("checked", "Given integral equation is nonsingular")
-    if field in {"conductor", "global_root_number", "conductor_valuation"}:
+    if field in {
+        "conductor",
+        "global_root_number",
+        "conductor_valuation",
+        "analytic_rank",
+    }:
         return result(
             "checked", "Kernel-checked using the explicit ellipticModularity assumption"
         )
@@ -358,15 +383,59 @@ def checked_status(field: str, value: Any) -> dict[str, str]:
 
 
 def report_fields(
-    witness: dict[str, Any], fields: dict[str, dict[str, Any]], flags: dict[str, bool]
+    witness: dict[str, Any],
+    fields: dict[str, dict[str, Any]],
+    flags: dict[str, bool],
+    evidence: dict[str, Any],
+    obligations: list[str],
 ) -> None:
     for field, proof in (PROOFS | EVIDENCE_PROOFS).items():
         if field in witness:
-            fields[field] = (
-                checked_status(field, witness[field])
-                if flags.get(f"WitnessCheck.{proof}")
-                else result("unsupported", "Missing evidence for the exact claim")
+            theorem_checked = flags.get(f"WitnessCheck.{proof}", False)
+            listed_lower_bound = (
+                field == "num_int_pts"
+                and flags.get("WitnessCheck.listed_integral_count_lower_bound", False)
+                and (
+                    witness.get("integral_points")
+                    or witness.get("xcoord_integral_points")
+                )
             )
+            if not theorem_checked and listed_lower_bound:
+                status = result(
+                    "partial",
+                    "Checked supplied points or fibers give a lower bound; completeness is unproved",
+                )
+            elif not theorem_checked:
+                status = result("unsupported", "Missing evidence for the exact claim")
+            elif (
+                field == "special_value"
+                and "special_value_precision_inconclusive" in obligations
+            ):
+                status = result(
+                    "partial",
+                    "Reported value is enclosed with the computed error radius",
+                )
+            elif field == "serre_invariants":
+                status = result(
+                    "partial",
+                    "Complete arithmetic recipe is checked; the full residual representation remains",
+                )
+            elif field == "torsion_generators":
+                if flags.get(
+                    "WitnessCheck.torsion_generators.generates_torsion", False
+                ):
+                    status = result("checked", "Generation proved")
+                else:
+                    status = result(
+                        "partial", "Point membership or order evidence only"
+                    )
+            else:
+                status = checked_status(field, witness[field])
+            if field == "special_value" and "special_value_evidence" in evidence:
+                status["radius"] = evidence["special_value_evidence"].get("error")
+            if field == "abc_quality" and "abc_quality_evidence" in evidence:
+                status["radius"] = evidence["abc_quality_evidence"].get("error")
+            fields[field] = status
     for row in witness.get("local_invariants", []):
         prime = row["prime"]
         for field, value in row.items():
@@ -407,7 +476,10 @@ def produce(source: Path, output: Path, report: dict[str, Any]) -> None:
     with source.open(encoding="utf-8") as stream:
         native = object_value(
             json.load(
-                stream, object_pairs_hook=unique_object, parse_constant=invalid_constant
+                stream,
+                object_pairs_hook=unique_object,
+                parse_constant=invalid_constant,
+                parse_float=str,
             ),
             "input",
         )
@@ -438,8 +510,11 @@ def produce(source: Path, output: Path, report: dict[str, Any]) -> None:
             "Lean producer result",
         )
         evidence = object_value(produced["evidence"], "Lean evidence")
-        if evidence.keys() - (EVIDENCE_PROOFS.keys() | {"ap"}):
-            raise ValueError("Unexpected field from Lean producer")
+        if evidence.keys() - GENERATED_EVIDENCE:
+            unexpected = sorted(evidence.keys() - GENERATED_EVIDENCE)
+            raise ValueError(
+                f"Unexpected field from Lean producer: {', '.join(unexpected)}"
+            )
         obligations = list_value(produced["obligations"], "Lean obligations")
         if not all(isinstance(obligation, str) for obligation in obligations):
             raise ValueError("Expected string obligations from the Lean producer")
@@ -463,6 +538,10 @@ def produce(source: Path, output: Path, report: dict[str, Any]) -> None:
             set(PROOFS.values())
             | set(LOCAL_PROOFS.values())
             | set(EVIDENCE_PROOFS.values())
+            | {
+                "torsion_generators.generates_torsion",
+                "listed_integral_count_lower_bound",
+            }
         )
         tamagawa = [
             row["prime"]
@@ -486,7 +565,7 @@ def produce(source: Path, output: Path, report: dict[str, Any]) -> None:
         if len(lines) != 1:
             raise ValueError("Lean did not emit the checked field report")
         flags = object_value(json.loads(lines[0]), "Lean proof report")
-        report_fields(witness, fields, flags)
+        report_fields(witness, fields, flags, evidence, obligations)
         if omitted_ap:
             subset_checked = witness["ap"] and flags.get("WitnessCheck.ap_correct")
             fields["aplist"] = result(

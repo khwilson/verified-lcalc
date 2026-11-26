@@ -7,6 +7,7 @@ module
 
 public import VerifiedLcalc.Tactic.CertifyECCommon
 public import VerifiedLcalc.Certificate.Analytic.BSDQuotient
+import VerifiedLcalc.Verification.StoredInvariants
 
 /-! Check raw period and BSD quotient reports against proofs for the same equation. -/
 
@@ -46,15 +47,29 @@ private def certifyRealPeriod (base : Name) (curve : Ident)
 private def certifyTamagawaProduct (base : Name) (curve : Ident)
     (attachment : Option Ident) : CommandElabM Unit := do
   let report ← optionalInput (base ++ `witness) `tamagawaProduct
-  let some fact ← attachedFact attachment `tamagawaProduct |
-    if report.isSome then
-      logInfo m!"Unverified {base} Tamagawa product: supply a proved product"
-    return
+  let attached ← attachedFact attachment `tamagawaProduct
+  let fact ← if let some fact := attached then pure fact else do
+    unless report.isSome do return
+    unless (← getEnv).contains (base ++ `minimality_valid) do
+      logInfo m!"Unverified {base} Tamagawa product: supply checked minimality or a proved product"
+      return
+    let m := rootIdent (base ++ `minimality)
+    let hm := rootIdent (base ++ `minimality_valid)
+    let support ← `(($m).primes.all (EllipticCurve.supportsTamagawaOne $curve))
+    unless ← hasOptionalProof (← `(if $support then some () else none)) `tamagawaProduct do
+      logInfo m!"Unverified {base} Tamagawa product: some bad factor requires a proved value"
+      return
+    let check := base ++ `tamagawa_product_one_valid
+    checked check (← `($support = true)) (← `(by decide +kernel))
+    `((⟨1, EllipticCurve.tamagawaProduct_eq_one_of_supported_primes $curve ($m).primes
+      (fun p hp hd => (Certification.minimal_prime_mem_iff $curve $m $hm p).mpr ⟨hp, hd⟩)
+      $(rootIdent check)⟩ : TamagawaProductFact $curve))
   if let some value := report then
     checked (base ++ `tamagawa_product_report_matches)
       (← `((($fact).value : Nat) = $value)) (← `(by first | rfl | decide +kernel))
   let name := rootIdent (← catalogueFactName base `tamagawaProduct)
   emit (← `(def $name : TamagawaProductFact $curve := $fact))
+  if attached.isNone then auditAxioms name.getId
 
 private def validateShaReports (base : Name)
     (report value primes : Option (TSyntax `term)) :

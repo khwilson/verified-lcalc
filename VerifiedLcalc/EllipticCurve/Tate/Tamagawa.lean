@@ -169,4 +169,66 @@ theorem supportsTamagawaOne_correct (e : WeierstrassCurve ℤ) (p : ℕ)
   · exact tamagawaNumberAt_eq_one_of_good_prime e p hd
   · exact tamagawaNumberAt_eq_one_of_multiplicative_index_one e p hd hd₂ hc
 
+set_option backward.isDefEq.respectTransparency.types false in
+private theorem integerPlaceValuation_eq (v : HeightOneSpectrum ℤ) (p k : ℕ) (n : ℤ)
+    (hp : v.asIdeal = Ideal.span {(p : ℤ)}) (h : (p : ℤ) ^ k ∣ n)
+    (hnext : ¬ (p : ℤ) ^ (k + 1) ∣ n) :
+    Valued.v (n : v.adicCompletion ℚ) = WithZero.exp (-(k : ℤ)) := by
+  have hpow (j : ℕ) : v.intValuation n ≤ WithZero.exp (-(j : ℤ)) ↔ (p : ℤ) ^ j ∣ n := by
+    rw [v.intValuation_le_pow_iff_mem, hp, Ideal.span_singleton_pow, Ideal.mem_span_singleton]
+  have hlo : WithZero.exp (-((k + 1 : ℕ) : ℤ)) < v.intValuation n :=
+    lt_of_not_ge fun ht => hnext ((hpow (k + 1)).mp ht)
+  have hhi := (hpow k).mpr h
+  have hne : v.intValuation n ≠ 0 := by
+    intro hz
+    rw [hz] at hlo
+    exact not_lt_zero hlo
+  have hv : Valued.v (n : v.adicCompletion ℚ) = v.intValuation n := by
+    have he := v.valuedAdicCompletion_eq_valuation' (K := ℚ) (n : ℚ)
+    have hf := v.valuation_of_algebraMap (K := ℚ) n
+    change v.valuation ℚ (algebraMap ℤ ℚ n) = _ at hf
+    have hi : algebraMap ℤ ℚ n = (n : ℚ) := by
+      rw [algebraMap_int_eq]
+      rfl
+    rw [hi] at hf
+    have hc := congrFun (v.algebraMap_adicCompletion (K := ℚ) (S := ℚ)) (n : ℚ)
+    simp only [Function.comp_apply, Algebra.algebraMap_self_apply] at hc
+    have hcast (f : ℚ →+* v.adicCompletion ℚ) : f (n : ℚ) = (n : v.adicCompletion ℚ) :=
+      map_intCast f n
+    rw [hcast] at hc
+    exact (congrArg (fun x : v.adicCompletion ℚ => Valued.v x) hc).trans (he.trans hf)
+  rw [hv, ← WithZero.exp_log hne]
+  rw [← WithZero.exp_log hne] at hlo hhi
+  have hlow := WithZero.exp_lt_exp.mp hlo
+  have hhigh := WithZero.exp_le_exp.mp hhi
+  congr 1
+  omega
+
+
+/-- The intrinsic Tamagawa product is one when an exhaustive discriminant-prime
+list passes the good-or-`I₁` local support test. -/
+theorem tamagawaProduct_eq_one_of_supported_primes (e : WeierstrassCurve ℤ)
+    [(e.baseChange ℚ).IsElliptic] (primes : List ℕ)
+    (covers : ∀ p : ℕ, p.Prime → (p : ℤ) ∣ e.Δ → p ∈ primes)
+    (supported : primes.all (supportsTamagawaOne e) = true) :
+    (e.baseChange ℚ).tamagawaProduct (R := ℤ) = 1 := by
+  rw [WeierstrassCurve.tamagawaProduct_eq_prod _ ∅]
+  · simp
+  · intro v _
+    let p := v.asIdeal.absNorm
+    have hp : p.Prime := (Int.prime_absNorm v.asIdeal).mpr
+      ((Ideal.prime_iff_isPrime v.ne_bot).mpr v.isPrime)
+    have hspan : v.asIdeal = Ideal.span {(p : ℤ)} := (Int.ideal_span_absNorm_eq_self _).symm
+    have localSupport : supportsTamagawaOne e p = true := by
+      by_cases hd : (p : ℤ) ∣ e.Δ
+      · exact List.all_eq_true.mp supported p (covers p hp hd)
+      · simp [supportsTamagawaOne, hd]
+    simp only [supportsTamagawaOne, Bool.or_eq_true, decide_eq_true_eq] at localSupport
+    rcases localSupport with hd | ⟨hd, hd₂, hc⟩
+    · apply tamagawaNumberAt_eq_one_of_unit_discriminant
+      simpa using integerPlaceValuation_eq v p 0 e.Δ hspan (by simp) (by simpa using hd)
+    · apply tamagawaNumberAt_eq_one_of_valuation_I_one
+      · simpa using integerPlaceValuation_eq v p 1 e.Δ hspan (by simpa using hd) hd₂
+      · simpa using integerPlaceValuation_eq v p 0 e.c₄ hspan (by simp) (by simpa using hc)
+
 end VerifiedLcalc.EllipticCurve
