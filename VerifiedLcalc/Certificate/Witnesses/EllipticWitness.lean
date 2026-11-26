@@ -104,6 +104,8 @@ structure EllipticWitness where
   modifiedSzpiroRatio : Option DecimalEnclosureClaim := none
   /-- The field and degree from one torsion growth row. -/
   torsionGrowthField : Option TorsionGrowthFieldClaim := none
+  /-- Reported invariant factors over the field in `torsionGrowthField`. -/
+  torsionGrowthFactors : Option (List ℕ) := none
   /-- Reported canonical heights in the order of `generatorCoordinates`. -/
   canonicalHeights : Option CanonicalHeightsClaim := none
   /-- Stored regulator value and any explicit error evidence. -/

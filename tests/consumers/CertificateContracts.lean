@@ -81,6 +81,14 @@ open VerifiedLcalc Lean Elab Command
 #check EllipticCertificate.torsionGrowthField
 #check AlgebraicFacts.heights
 #check TorsionGrowthFieldFact.growth
+#check EllipticWitness.torsionGrowthFactors
+#check IntegralCurveProofs.torsionGrowth
+#check EllipticCertificate.torsionGrowth
+#check StoredTorsionGrowthFact.polynomial_eq
+#check StoredTorsionGrowthFact.degree_eq
+#check StoredTorsionGrowthFact.factors_eq
+#check StoredTorsionGrowthFact.equivalence
+#check TorsionGrowthFacts.equivalence
 #check CanonicalHeightFacts.within_error
 #check Box
 #check PrecisionPolicy

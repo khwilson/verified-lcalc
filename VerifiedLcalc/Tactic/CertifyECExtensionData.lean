@@ -9,7 +9,7 @@ public import VerifiedLcalc.Tactic.CertifyECCommon
 public import VerifiedLcalc.Certificate.Support.ExtensionData
 import Mathlib.Data.List.OfFn
 
-/-! Check number-field presentations and ordered height enclosures with Lean evidence. -/
+/-! Check number-field presentations, extension torsion and ordered height enclosures. -/
 
 public meta section
 
@@ -17,10 +17,35 @@ namespace VerifiedLcalc.CertifyEC
 
 open Lean Elab Command
 
+private def certifyTorsionGrowthFactors (base : Name) (curve report factors : Ident)
+    (full : TSyntax `term) : CommandElabM Unit := do
+  let equal := rootIdent (base ++ `torsion_growth_polynomial_matches)
+  let factorsEq := rootIdent (base ++ `torsion_growth_factors_match)
+  checked (base ++ `torsion_growth_factors_match)
+    (← `(List.ofFn ($full).factor = $factors)) (← `(by first | rfl | decide +kernel))
+  let output ← catalogueFactName base `torsionGrowthFactors
+  let degreeEq := rootIdent (base ++ `torsion_growth_degree_matches)
+  emit (← `(def $(rootIdent output) : StoredTorsionGrowthFact $curve where
+    field := $report
+    factors := $factors
+    presentation := $full
+    polynomial_eq := $equal
+    degree_eq := $degreeEq
+    factors_eq := $factorsEq))
+  auditAxioms output
+
 private def certifyTorsionGrowthField (base : Name) (proofs : Option Ident) :
     CommandElabM Unit := do
+  let factors ← bindStored base `torsionGrowthFactors `torsion_growth_factors (← `(List ℕ))
   let some report ← bindStored base `torsionGrowthField `torsion_growth_field
-      (← `(TorsionGrowthFieldClaim)) | return
+      (← `(TorsionGrowthFieldClaim)) | do
+    if factors.isSome then
+      throwError "torsion growth invariant factors require a field and degree"
+    return
+  if let some factors := factors then
+    checked (base ++ `torsion_growth_factors_shape)
+      (← `((∀ a ∈ $factors, 2 ≤ a) ∧ List.Pairwise (· ∣ ·) $factors))
+      (← `(by decide +kernel))
   let shape := rootIdent (base ++ `torsion_growth_field_shape)
   checked (base ++ `torsion_growth_field_shape)
     (← `(($report).coefficients.length = ($report).degree + 1 ∧
@@ -33,7 +58,13 @@ private def certifyTorsionGrowthField (base : Name) (proofs : Option Ident) :
   checked (base ++ `torsion_growth_finrank)
     (← `(Module.finrank ℚ (AdjoinRoot ($report).polynomial) = ($report).degree))
     (← `(finrank_quotient_span_eq_natDegree.trans $degree))
-  let some evidence ← attachedFact proofs `torsionGrowthField |
+  let full ← if factors.isSome then attachedFact proofs `torsionGrowth else pure none
+  let fieldProof ← match full with
+    | some full => some <$> `(($full).toTorsionGrowthFieldFact)
+    | none => attachedFact proofs `torsionGrowthField
+  if factors.isSome && full.isNone then
+    logInfo m!"Unverified {base} torsion_growth.torsion: supply the full torsion equivalence"
+  let some evidence := fieldProof |
     logInfo m!"Unverified {base} torsion growth field: supply a proof of strict torsion growth"
     return
   let curve := rootIdent (base ++ `curve)
@@ -45,6 +76,8 @@ private def certifyTorsionGrowthField (base : Name) (proofs : Option Ident) :
   checked (base ++ `torsion_growth_degree_matches)
     (← `(($fact).degree = ($report).degree))
     (← `((congrArg Polynomial.natDegree $equal).trans $degree))
+  if let (some full, some factors) := (full, factors) then
+    certifyTorsionGrowthFactors base curve report factors full
 
 private def certifyCanonicalHeights (base : Name) (proofs : Option Ident) : CommandElabM Unit := do
   let some report ← bindStored base `canonicalHeights `heights
