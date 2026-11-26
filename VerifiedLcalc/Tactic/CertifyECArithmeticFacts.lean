@@ -122,7 +122,11 @@ def arithmeticFactsTerm (base : Name) (curve : Ident) : CommandElabM (TSyntax `t
   let ap ← if (← optionalInput (base ++ `witness) `primeCoefficients).isSome then
     `(some ⟨($witness).primeCoefficients.getD [], $(rootIdent (base ++ `ap_correct))⟩)
   else `(none)
-  let an ← simpleArithmeticFact base `claimed_dirichlet_coefficients `dirichlet_coefficients
+  let an ← if env.contains (base ++ `l_function_coefficients) &&
+      !env.contains (base ++ `dirichlet_coefficients) then
+    `(some ⟨($(rootIdent (base ++ `result))).coefficients,
+      $(rootIdent (base ++ `l_function_coefficients))⟩)
+  else simpleArithmeticFact base `claimed_dirichlet_coefficients `dirichlet_coefficients
   let modular ← modularFactsTerm base curve
   `(({
     minimalModel := $minimalModel

@@ -366,7 +366,7 @@ def test_replay_rejects_catalog_or_archive_tampering(
         catalog["witness_archive"]["sha256"] = exporter.sha256(archive)
     elif change == "rank":
         catalog["curves"][0]["facts"][0]["value"] = 1
-    elif change in exporter.THEOREMS:
+    elif change in exporter.THEOREMS or change == "l_function_coefficients":
         fact = next(f for f in catalog["curves"][0]["facts"] if f["field"] == change)
         fact["value"] = [2] if isinstance(fact["value"], list) else 42
     elif change == "missing_factorization":
@@ -439,7 +439,7 @@ def test_replay_calls_lean_on_exact_source_and_consumer(
         for theorem in exporter.THEOREMS.values():
             assert f"Run123Attempt2Curve0000.{theorem}" in consumer
         assert "let values : List ℤ := [1, -1, 0]" in consumer
-        assert "coefficients_of_minimal_witness" in consumer
+        assert ":= Run123Attempt2Curve0000.l_function_coefficients" in consumer
         assert ".localData = 285 :=" in consumer
         assert ".localData = 1 :=" in consumer
         assert "⟨[3, 5, 19, 19]⟩ Run123Attempt2Curve0000.curve" in consumer

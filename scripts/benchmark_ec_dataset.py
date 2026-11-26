@@ -101,14 +101,11 @@ def catalog_import_examples(
             f"{prefix}.localData = {sign} := {prefix}.root_number_valid\n"
         )
         values = ", ".join(map(str, map(int, arithmetic["l_function_coefficients"])))
-        projection = ".2.2.1" if rank == 0 else ".2.2.2.1"
         examples += (
             f"example : let values : List ℤ := [{values}]; "
             f"(List.range values.length).map (fun n => "
             f"({prefix}.curve.baseChange ℚ).LFunction (n + 1)) = values := "
-            f"VerifiedLcalc.Certification.coefficients_of_minimal_witness "
-            f"{prefix}.curve {prefix}.nonsingular {prefix}.minimality {prefix}.minimality_valid "
-            f"_ ({prefix}.payload_correct{projection}).symm\n"
+            f"{prefix}.l_function_coefficients\n"
         )
         if "discriminant_prime_factorization" in arithmetic:
             primes = ", ".join(

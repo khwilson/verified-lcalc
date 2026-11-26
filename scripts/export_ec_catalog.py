@@ -31,7 +31,6 @@ ASSUMPTIONS = {
 THEOREMS = {
     "arithmetic_conductor": "conductor_valid",
     "arithmetic_root_number": "root_number_valid",
-    "l_function_coefficients": "payload_correct",
     "discriminant_prime_factorization": "minimality_valid",
 }
 SIDECARS = (".olean.private", ".olean.server", ".ir", ".ir.sig", ".ilean")
