@@ -194,8 +194,7 @@ private def certifySerreInvariants (base : Name) (curve : Ident)
     goodAtTwo := by decide +kernel
     rows := $report
     exactRows := by
-      cbv
-      first
+      cbv <;> first
       | simp <;> cbv <;> simp <;> done
       | simp [List.orderedInsert_cons] <;> cbv <;> simp <;> done))
   auditAxioms outputName

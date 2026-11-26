@@ -146,6 +146,19 @@ class KernelReplay(unittest.TestCase):
             self.assertEqual(report["status"], "rejected")
             self.assertEqual(output.read_bytes(), previous)
 
+        # 37.a1 has affine points modulo two, so an empty x-coordinate claim
+        # cannot trigger exact completeness; the ordinary fallback stays partial.
+        with tempfile.TemporaryDirectory() as d:
+            data = {
+                "ainvs": [0, 0, 1, -1, 0],
+                "xcoord_integral_points": [],
+                "num_int_pts": 1,
+            }
+            result, report, _ = produce(data, Path(d), timeout=600)
+            self.assertEqual(result.returncode, 0, (report, result.stderr))
+            self.assertEqual(report["status"], "checked")
+            self.assertEqual(report["fields"]["num_int_pts"]["status"], "unsupported")
+
     def test_torsion_structure_and_trivial_intrinsic_torsion(self) -> None:
         fixture = ROOT / "tests/fixtures/torsion/120.b4.json"
         data = json.loads(fixture.read_text())
@@ -262,6 +275,16 @@ class KernelReplay(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertEqual(report["status"], "rejected")
             self.assertIn("catalogue_rank_value_eq", report["error"])
+            self.assertEqual(output.read_bytes(), previous)
+
+            rows(data, "ec_curvedata")[0]["analytic_rank"] = 1
+            rows(data, "ec_mwbsd")[0]["special_value"]["data"] = "20.0000"
+            result, report, output = produce(data, directory, timeout=600)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn(
+                "special_value_disagrees_with_enclosure", report["obligations"]
+            )
+            self.assertIn("special_value_valid", report["error"])
             self.assertEqual(output.read_bytes(), previous)
 
     def test_native_join_and_importable_typed_facts(self) -> None:

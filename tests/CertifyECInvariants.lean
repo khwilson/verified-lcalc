@@ -176,12 +176,10 @@ certify_ec RawTamagawaProduct from_json_string
 
 example : RawTamagawaProduct.certificate.tamagawaProduct.isSome = true := by decide +kernel
 
-/-
-error: certify_ec stopped: a generated declaration failed to check
--/
-#guard_msgs in
-certify_ec RawWrongTamagawaProduct from_json_string
-  r#"{"ainvs":[0,0,1,-1,0],"minimality":[37],"tamagawa_product":2}"#
+certify_ec RawAdditiveTamagawaProduct from_json_string
+  r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],"tamagawa_product":5}"#
+
+example : RawAdditiveTamagawaProduct.certificate.tamagawaProduct.isNone = true := by decide +kernel
 
 example : (GoodTamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 3) = 1 := by
   obtain ⟨_, h⟩ := GoodTamagawa.tamagawa_numbers { prime := 3, tamagawaNumber := some 1 }
@@ -381,6 +379,9 @@ run_cmd do
     (← `(certify_ec IncompatibleTamagawaRowsReversed from_json_string
       r#"{"ainvs":[0,0,8,-16,0],"prime":2,"tamagawa_number":2,
           "local_invariants":[{"prime":2,"tamagawa_number":1}]}"#))
+  invariantRejected `RawWrongTamagawaProduct
+    (← `(certify_ec RawWrongTamagawaProduct from_json_string
+      r#"{"ainvs":[0,0,1,-1,0],"minimality":[37],"tamagawa_product":2}"#))
   invariantRejected `WrongTamagawa (← `(certify_ec WrongTamagawa from
     { GoodTamagawa.witness with
       localInvariants := some [{ prime := 3, tamagawaNumber := some 2 }] }))
