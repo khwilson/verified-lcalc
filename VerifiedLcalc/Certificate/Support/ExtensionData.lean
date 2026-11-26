@@ -6,7 +6,6 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Certificate.Witnesses.Algebraic
-public import Mathlib.Algebra.Polynomial.OfFn
 import Mathlib.Data.List.OfFn
 
 /-! ## Field presentations and ordered height witnesses -/
@@ -16,10 +15,6 @@ import Mathlib.Data.List.OfFn
 namespace VerifiedLcalc
 
 open Polynomial
-
-/-- Read ascending integral coefficients as a polynomial over ℚ. -/
-def TorsionGrowthFieldClaim.polynomial (claim : TorsionGrowthFieldClaim) : Polynomial ℚ :=
-  ofFn claim.coefficients.length fun i => (claim.coefficients[i] : ℚ)
 
 /-- If the coefficient list ends in a nonzero coefficient at the claimed index,
 the decoded polynomial has the claimed degree. -/
@@ -47,6 +42,29 @@ theorem TorsionGrowthFieldFact.degree_eq {curve : WeierstrassCurve ℤ}
     (fact : TorsionGrowthFieldFact curve) :
     Module.finrank ℚ (AdjoinRoot fact.polynomial) = fact.degree :=
   finrank_quotient_span_eq_natDegree
+
+/-- The full torsion equivalence in the indices and field presented by the submitted row. -/
+noncomputable def StoredTorsionGrowthFact.equivalence {curve : WeierstrassCurve ℤ}
+    (fact : StoredTorsionGrowthFact curve) :
+    letI : Fact (Irreducible fact.field.polynomial) :=
+      ⟨fact.polynomial_eq ▸ fact.presentation.irreducible⟩
+    (∀ i : Fin fact.factors.length, ZMod (fact.factors.get i)) ≃+
+      AddCommGroup.torsion
+        (curve.baseChange (AdjoinRoot fact.field.polynomial)).toAffine.Point := by
+  have alignFactors : (⟨fact.presentation.factorCount, fact.presentation.factor⟩ :
+      Σ n : ℕ, Fin n → ℕ) = ⟨fact.factors.length, fact.factors.get⟩ :=
+    List.ofFn_inj'.mp (fact.factors_eq.trans (List.ofFn_get fact.factors).symm)
+  let transport (p : Polynomial ℚ) (hp : Irreducible p)
+      (equal : fact.presentation.polynomial = p) (idx : Σ n : ℕ, Fin n → ℕ)
+      (align : ⟨fact.presentation.factorCount, fact.presentation.factor⟩ = idx) :
+      letI : Fact (Irreducible p) := ⟨hp⟩
+      (∀ i, ZMod (idx.2 i)) ≃+ AddCommGroup.torsion
+        (curve.baseChange (AdjoinRoot p)).toAffine.Point := by
+    subst p
+    subst idx
+    exact fact.presentation.equivalence
+  exact transport _ (fact.polynomial_eq ▸ fact.presentation.irreducible)
+    fact.polynomial_eq _ alignFactors
 
 /-- The affine coordinates of a rational point, with `none` for the point at infinity. -/
 def CanonicalHeightFacts.pointCoordinates {curve : WeierstrassCurve ℚ}

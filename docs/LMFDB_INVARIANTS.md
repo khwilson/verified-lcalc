@@ -29,7 +29,7 @@ curve's JSON export can omit columns. [LMFDB schemas](https://www.lmfdb.org/Elli
 | `ec_localdata` | 10 | Checked local arithmetic facts are indexed by prime. Exact Kodaira and Tamagawa outputs depend on the reduction case. |
 | `ec_galrep` | 7 | The generator field is checked at the reported finite modulus in a proved torsion basis. Supported residual labels identify exact images up to conjugacy. Partial adelic labels carry exact level, index and genus with a separate simultaneous image proof. |
 | `ec_padic` | 5 | The native rank-one singleton-class ball is checked at a good ordinary prime above three with independent sigma evidence. The separate rank-zero display encoding uses the curve-level empty determinant. |
-| `ec_torsion_growth` | 4 | The checked field and degree include evidence of strict torsion growth. G2 specifies the full group and primitive growth. |
+| `ec_torsion_growth` | 4 | A supplied proof checks strict growth and can identify the full torsion group over the presented field. G2 tracks primitive growth. |
 | `ec_iwasawa` | 3 | Checked selected prime rows and a universal good-prime vanishing bound, with normalized interpolation evidence. |
 
 The command covers **85 of 85 distinct LMFDB column names** with the evidence
@@ -38,8 +38,7 @@ has a checker gives 51 in `ec_curvedata`, 4 in `ec_classdata`, 11 in
 `ec_mwbsd`, 8 in `ec_localdata`, 4 in `ec_galrep`, 4 in `ec_padic`,
 1 in `ec_torsion_growth`, and 2 in `ec_iwasawa`. Shared names such as
 `class_size` count once. Counting table-qualified interpretations separately
-gives **100 of 101** with a supported check. The extension torsion
-invariant factors in `ec_torsion_growth.torsion` remain a separate proof target.
+gives **101 of 101** with a supported check under the corresponding evidence requirements.
 The four stored p-adic coordinates enter this tally through the proof-parametric
 rank-one checker. The curve-level rank-zero display and project-specific keys
 are outside the stored-column count.
@@ -97,10 +96,11 @@ as a checklist for additional curves.
 Count coverage by the mathematical assertion and the evidence a consumer can
 project. For example, `ec_curvedata.torsion` is a cardinality over ℚ, while
 `ec_torsion_growth.torsion` gives invariant factors over a specified extension.
-The former can be proved through `certificate.torsion.cardinality`. The latter
-has its own roadmap target. The public contract index lists the canonical Lean
-modules as the migration proceeds. [Contract index](CERTIFICATE_CONTRACT_LAYOUT.md)
-· [Roadmap targets](roadmaps/LMFDB_Q_CERTIFICATION.md)
+The rational cardinality is available through `certificate.torsion.cardinality`.
+The extension presentation is available through `certificate.torsionGrowth`
+when the caller supplies the full additive equivalence with `with_proofs`.
+The row lists factors of order at least two in divisibility order. The empty
+list denotes the trivial group, which cannot witness strict growth.
 
 ## Arithmetic trace fingerprint
 
@@ -142,6 +142,7 @@ reviewed LMFDB ordering and base-26 encoding.
 | --- | --- | --- |
 | `heights` | `canonicalHeights` | `certificate.algebraic.heights` bounds the actual canonical heights of the ordered `gens` points using supplied Lean enclosures. |
 | `torsion_growth.field`, `torsion_growth.degree` | `torsionGrowthField` | `certificate.torsionGrowthField` gives an irreducible polynomial, absolute degree, and a new torsion point over that field for this curve. |
+| `torsion_growth.torsion` | `torsionGrowthFactors` | `certificate.torsionGrowth` links the exact factor list and defining polynomial to an additive equivalence onto the full torsion subgroup. Supply `IntegralCurveProofs.torsionGrowth` through `with_proofs`. |
 | `ainvs` | `equation` | Actual Mathlib `WeierstrassCurve ℤ`; nonsingularity is checked. |
 | `binvs`, `cinvs` | `bInvariants`, `cInvariants` | Equalities with Mathlib's b₂,b₄,b₆,b₈ and c₄,c₆. These are optional equation-data extensions. |
 | `discriminant` | `discriminant` | Equality with this supplied equation's Mathlib Δ; does not assert minimality. |
@@ -518,7 +519,7 @@ verifier currently requires from the caller.
 | CM and minimum twist evidence production | A geometric endomorphism-ring classifier and a general minimum-conductor twist algorithm. Native ordering among equally good twists is a separate open obligation. |
 | Heights, periods, regulator, Faltings data, special values | Verified numerical enclosures tied to the actual mathematical definitions. Stored real literals are not exact rational equalities. |
 | Algebraic Sha | A separate cohomological/descent proof of finiteness, cardinality, or a primary component. |
-| Additional Galois-image cases, Serre data beyond the supported semistable case, and full extension torsion | The relevant representations, fields, group images, and completeness proofs. |
+| Additional Galois-image cases, Serre data beyond the supported semistable case, and extension torsion proof production | The relevant representations, group images, and constructions of full torsion presentations over the reported extensions. |
 | Catalogue labels, orderings and hashes | Produce the complete rosters, compatible curve models and verified coefficient lists required by the corresponding checkers. |
 
 Mazur's classification restricts rational elliptic-curve torsion over `ℚ` to

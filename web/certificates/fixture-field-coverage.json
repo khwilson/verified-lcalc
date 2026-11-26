@@ -43,7 +43,7 @@
           "curve": "112.a2",
           "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 129,
+          "proof_line": 145,
           "scope": "Absolute error enclosure for the specified decimal.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "|(LMFDB.C112a2.curve.baseChange ℚ).abcQuality LMFDB.C112a2.abc_quality_defined -\n      10348177494302118 / 10000000000000000| ≤\n  1 / 1000000000000000",
@@ -150,7 +150,7 @@
           "project_axioms": [
             "VerifiedLcalc.Assumptions.ellipticModularity"
           ],
-          "proof_line": 165,
+          "proof_line": 184,
           "scope": "Exact order at 1 of the modular realization.",
           "source": "data/witnesses/112a2.json",
           "statement": "analyticOrderAt\n    (Modularity.modularWitness LMFDB.C112a2.curve\n        LMFDB.C112a2.nonsingular).formL\n    1 =\n  1",
@@ -162,7 +162,7 @@
           "curve": "37.a1",
           "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 172,
+          "proof_line": 191,
           "scope": "Exact order at 1 for an explicitly supplied modular realization.",
           "source": "data/witnesses/37a1.json",
           "statement": "∀ (model : Modularity.ArithmeticModularRealization Curve37.curve),\n  analyticOrderAt model.formL 1 = 1",
@@ -845,7 +845,7 @@
           "curve": "112.a2",
           "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 147,
+          "proof_line": 166,
           "scope": "Exact rational torsion cardinality.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "Nat.card\n    ↥(AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =\n  2",
@@ -864,11 +864,24 @@
       "checker_scopes": [
         "Exact ascending distinct prime support of the proved full rational torsion order."
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "curve": "112.a2",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 137,
+          "scope": "Exact prime support [2] of the full rational torsion order.",
+          "source": "tests/fixtures/lmfdb/112.a2.json",
+          "statement": "∀ (p : ℕ),\n  p ∈ [2] ↔\n    Nat.Prime p ∧\n      p ∣\n        Nat.card\n          ↥(AddCommGroup.torsion\n              (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point)",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.torsionPrimeSupport112",
+          "value_origin": "fixture_claim"
+        }
+      ],
       "field": "torsion_primes",
       "metadata_scopes": [],
       "report_only_scopes": [],
-      "status": "pending_review",
+      "status": "sampled",
       "table": "ec_curvedata"
     },
     {
@@ -880,7 +893,7 @@
           "curve": "112.a2",
           "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 152,
+          "proof_line": 171,
           "scope": "Full rational cyclic group with the submitted generator.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∃ e, ↑(e 1) = LMFDB.C112a2.torsion_generators.point ⟨0, ⋯⟩",
@@ -902,12 +915,12 @@
       "evidence": [
         {
           "curve": "112.a2",
-          "extent": "partial",
+          "extent": "complete_for_sample",
           "project_axioms": [],
           "proof_line": 123,
-          "scope": "Coefficients a₁ through a₈, after a₀.",
+          "scope": "All 20 stored coefficients for the 112.a2 equation after a₀.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
-          "statement": "List.map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1))\n    (List.range 8) =\n  [1, 0, -2, 0, -4, 0, -1, 0]",
+          "statement": "List.map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1))\n    (List.range 20) =\n  [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0]",
           "status": "unconditional",
           "theorem": "FixtureFieldCoverage.dirichlet112",
           "value_origin": "fixture_claim"
@@ -923,11 +936,24 @@
       "checker_scopes": [
         "Prime coefficients of the curve with checked local minimality at the given indices."
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "curve": "112.a2",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 129,
+          "scope": "All 25 stored prime-indexed coefficients for the 112.a2 equation.",
+          "source": "tests/fixtures/lmfdb/112.a2.json",
+          "statement": "have facts := LMFDB.C112a2.certificate.arithmetic.primeCoefficients.get ⋯;\n(↑facts).length = 25 ∧\n  ∀ (p : ℕ) (a : ℤ),\n    (p, a) ∈ ↑facts → (LMFDB.C112a2.curve.baseChange ℚ).LFunction p = a",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.primeCoefficients112",
+          "value_origin": "fixture_claim"
+        }
+      ],
       "field": "aplist",
       "metadata_scopes": [],
       "report_only_scopes": [],
-      "status": "pending_review",
+      "status": "sampled",
       "table": "ec_classdata"
     },
     {
@@ -972,7 +998,7 @@
           "curve": "112.a2",
           "extent": "partial",
           "project_axioms": [],
-          "proof_line": 135,
+          "proof_line": 151,
           "scope": "Membership of the supplied point.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "(LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation 0 2",
@@ -1007,7 +1033,7 @@
           "curve": "112.a2",
           "extent": "partial",
           "project_axioms": [],
-          "proof_line": 139,
+          "proof_line": 155,
           "scope": "Length of the checked point list.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "LMFDB.C112a2.generators.coordinates.length = 1",
@@ -1084,12 +1110,12 @@
       "evidence": [
         {
           "curve": "112.a2",
-          "extent": "partial",
+          "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 143,
-          "scope": "Membership of the supplied point.",
+          "proof_line": 159,
+          "scope": "The list [(-2, 0)] generates the full rational torsion subgroup.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
-          "statement": "(LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation (-2) 0",
+          "statement": "LMFDB.C112a2.torsion_generators.coordinates = [(-2, 0)] ∧\n  AddSubgroup.closure (Set.range LMFDB.C112a2.torsion_generators.point) =\n    AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point",
           "status": "unconditional",
           "theorem": "FixtureFieldCoverage.torsionGenerator112",
           "value_origin": "fixture_claim"
@@ -1110,7 +1136,7 @@
           "curve": "112.a2",
           "extent": "partial",
           "project_axioms": [],
-          "proof_line": 159,
+          "proof_line": 178,
           "scope": "Complete integral fiber at x = -2.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∀ (y : ℤ),\n  y ∈ LMFDB.C112a2.integral_y_fiber ⟨0, ⋯⟩ ↔\n    LMFDB.C112a2.curve.toAffine.Equation (-2) y",
@@ -1480,14 +1506,14 @@
       "table": "ec_galrep"
     },
     {
-      "checker_scopes": [],
+      "checker_scopes": [
+        "Exact invariant factors of the full torsion subgroup over the row's field."
+      ],
       "evidence": [],
       "field": "torsion",
       "metadata_scopes": [],
-      "report_only_scopes": [
-        "Full invariant factors over the stated extension. The command has no checker."
-      ],
-      "status": "missing_checker",
+      "report_only_scopes": [],
+      "status": "pending_review",
       "table": "ec_torsion_growth"
     }
   ],

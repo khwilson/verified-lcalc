@@ -11,11 +11,31 @@ valuations. The fixtures include prime and composite conductors, both discrimina
 signs, and j-invariants 0 and 1728. The 197.a1 and 288.a1 cases explicitly request
 nonintegral and integral j-invariant certificates, respectively.
 
-The conductor is copied from the snapshot. For 112.a2 the local row also requests the
-conductor exponent 4 stored at the prime 2. The global root number is the negative product of its
-finite local root numbers. The 2-adic transcript and first eight coefficients for 112.a2 come
-from [the existing witness](../../../data/witnesses/112a2.json). The wild transcripts for 243.a1
+The conductor is copied from the snapshot. The global root number is the negative product of its
+finite local root numbers. The 2-adic transcript for 112.a2 comes from
+[the existing witness](../../../data/witnesses/112a2.json). The wild transcripts for 243.a1
 and 288.a1 were computed with Lean's `wildData?` before being supplied to the verifier.
+
+The [112.a2 joined LMFDB capture](https://www.lmfdb.org/EllipticCurve/Q/data/112.a2?_format=json)
+records timestamp `2026-11-26T01:59:10.892609`. The captured response has SHA-256
+`a7631a589136e92ffed788998da29e801cc6683dc8c87c0bb4d7f04913181171`.
+The LMFDB Collaboration supplies these data under CC BY-SA. The fixture uses the full
+`ec_classdata.anlist` and `ec_classdata.aplist` for 112.a, `ec_curvedata.torsion_primes`,
+`ec_curvedata.potential_good_reduction` and `ec_curvedata.semistable` for 112.a2, and
+the selected fields from both `ec_localdata` rows for 112.a2. The `anlist` decoder requires
+a leading zero and checks coefficients 1 through 20 via the arithmetic L-function.
+The `aplist` covers the first 25 primes, ending at 97, including the bad primes 2 and 7.
+Both coefficient proofs concern the represented integral equation of 112.a2.
+Transport to another member of 112.a requires independent isogeny or curve
+identification evidence. Lean checks the failure of discriminant squarefreeness
+from the equation. The joined capture does not include that field.
+
+The 112.a2 local rows check additive reduction at 2, nonsplit multiplicative reduction at 7,
+the discriminant and j-denominator valuations, and both arithmetic local signs.
+At 7 the fixture also checks the canonical `I₁` symbol and the intrinsic Tamagawa factor 1.
+The exact additive symbol and Tamagawa factor at 2 are outside this fixture's proofs.
+The modular conductor comparison gives exponents 4 at 2 and 1 at 7 under the existing
+modularity assumption.
 The 179.a1 and 243.a1 fixtures also supply semistability, squarefreeness, and the local
 discriminant valuation, j-denominator valuation, and reduction code from the snapshot.
 The consumer checks the split multiplicative row at 179 and the additive row at 3.
@@ -33,6 +53,8 @@ The fixture also requests exact additive order 2 for the supplied torsion point.
 The counts at the supplied good primes 3 and 5 verify a divisor of 2, which
 proves the stored order and cyclic structure.
 The consumer checks membership in the rational curve for points from both lists.
+It checks the full rational torsion subgroup's prime support `[2]` and the cyclic
+presentation sending the standard generator to the literal affine point `(-2, 0)`.
 
 The 112.a2 fixture copies the published abc-quality decimal from the
 [LMFDB curve page](https://www.lmfdb.org/EllipticCurve/Q/112/a/2#invariants).
