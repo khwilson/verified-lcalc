@@ -31,7 +31,10 @@ check it and prove the supported equality. [`checkedTamagawaFacts`](../Arithmeti
 keeps the checked rows as
 `Name.certificate.arithmetic.tamagawa : List (LocalTamagawaFact Name.curve)`.
 Each [`LocalTamagawaFact.correct`](FinitePrimes.lean) proves equality
-with TauCeti's `tamagawaNumberAt` at that row's prime.
+with TauCeti's `tamagawaNumberAt` at that row's prime. The tame type III
+route also takes the optional `LocalReductionClaim.tamagawaTypeIIIShift`.
+JSON spells it `tamagawa_type_iii` with exact integer `r`, `s`, and `t`.
+The producer proposes the change and the checker tests the submitted coordinates.
 [Imported 179.a1 consumer](../../../tests/consumers/LmfdbCI.lean).
 
 The certificate-level `LocalReductionClaim.TamagawaSpec`, `KodairaSpec`
@@ -131,7 +134,7 @@ module can import `VerifiedLcalc.Verification.StoredInvariants`.
 | `prime` | `localdata`, `galrep` | Mixed | [`MinimalModelArithmeticFacts.localRows`](FinitePrimes.lean) proves primality for a checked local row. In `galrep`, [`PrimeGaloisImageClaim.prime`](FinitePrimes.lean) indexes a prime-specific report and [`AdelicGaloisImageClaim`](FinitePrimes.lean) represents the adelic sentinel 0. |
 | `reduction_type` | `localdata` | Checked | [`MinimalModelArithmeticFacts.localRows`](FinitePrimes.lean) checks [`LocalReductionClaim.reductionType`](InputData.lean). On a bad-prime row the code distinguishes additive (0), split multiplicative (1), and nonsplit multiplicative (−1) reduction and agrees with the Frobenius trace. |
 | `root_number` | `localdata` | Exact arithmetic formula | [`LocalReductionClaim.rootNumber`](InputData.lean) and [`LocalRootNumberFact.correct`](FinitePrimes.lean). With checked minimality and finite transcripts, the command exports the local sign through `certificate.arithmetic.minimalModel` in `localRootNumbers`. Comparison with the intrinsic local epsilon factor remains open. |
-| `tamagawa_number` | `localdata` | Checked | [`LocalTamagawaFact.correct`](FinitePrimes.lean). The record accepts a proof of any intrinsic local factor. The command verifies one at good or I₁ reduction and two at I₂ reduction. |
+| `tamagawa_number` | `localdata` | Checked | [`LocalTamagawaFact.correct`](FinitePrimes.lean). The record accepts a proof of any intrinsic local factor. The command verifies one at good or I₁ reduction and two at I₂ or supported tame III reduction. |
 
 ## Galois representations (`ec_galrep`)
 

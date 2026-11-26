@@ -80,6 +80,21 @@ example :
     (LMFDB.C17a2.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 17) = 2 := by
   exact (LMFDB.C17a2.certificate.arithmetic.tamagawa[0]'(by decide +kernel)).correct
 
+example : (LMFDB.C49a4.certificate.arithmetic.tamagawa.map fun fact =>
+    ((fact.prime : ℕ), fact.value)) = [(7, 2)] := by decide +kernel
+
+example :
+    letI : Fact (Nat.Prime 7) := ⟨by decide +kernel⟩
+    (LMFDB.C49a4.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 7) = 2 := by
+  let fact := LMFDB.C49a4.certificate.arithmetic.tamagawa[0]'(by decide +kernel)
+  have hp : fact.prime = ⟨7, by decide +kernel⟩ := Subtype.ext (by decide +kernel)
+  have hv : fact.value = 2 := by decide +kernel
+  obtain ⟨prime, value, correct⟩ := fact
+  change prime = _ at hp
+  change value = 2 at hv
+  subst prime value
+  exact correct
+
 example : (LMFDB.C112a2.certificate.arithmetic.tamagawa.map fun fact =>
     ((fact.prime : ℕ), fact.value)) = [(7, 1)] := by decide +kernel
 

@@ -476,10 +476,10 @@ modularity. [TauCeti backlog TC-17](../TAUCETI_BACKLOG.md#tc-17--geometric-cm-an
 ## L2 exact evidence production
 
 This section specifies the evidence boundary for each local Kodaira family.
-“Installed” means present on `main` at inspected revision
-[`6f67160`](https://github.com/khwilson/verified-lcalc/commit/6f671604d0162f5cf5ff14f75b42846e08a0802b); a draft, open PR,
-example calculation, PARI label, or producer output alone is not installed
-mathematical support. The verifier consumes supplied evidence, validates it in
+The installed baseline is `main` at inspected revision
+[`6f67160`](https://github.com/khwilson/verified-lcalc/commit/6f671604d0162f5cf5ff14f75b42846e08a0802b). This table also records the type III
+checker implemented in this checkout. Planned rows describe future evidence
+contracts. The verifier consumes supplied evidence, validates it in
 Lean, and rejects a supplied local factor when its evidence is malformed or
 contradicts the curve. Omitting evidence leaves that factor unavailable.
 
@@ -516,15 +516,15 @@ enumerates residue elements to discover a root or infer nonexistence. It
 checks that supplied root-count or factorization data is complete for the
 particular TauCeti formula.
 
-| Terminal symbol | TauCeti local-index result | Planned producer payload | Installed verifier support | Fixture coverage |
+| Terminal symbol | TauCeti local-index result | Producer payload | Verifier support | Fixture coverage |
 | --- | --- | --- | --- | --- |
 | `I₀` (good) | `1` | Current route needs curve and prime with `¬ p ∣ Δ`; no separate model or Kodaira field. A transcript route may supply the `I₀` terminal check. | Good reduction is installed in the current good / `I₁` / `I₂` checker. | `GoodTamagawa` exercises the good-prime factor. |
 | `I₁` | `1`, regardless of tangent splitting | Current route checks discriminant valuation one and unit `c₄`; no duplicated terminal model is required. | Installed. | `179.a1`, p=179. |
 | `I₂` | `2` in either splitting case | Current route checks `p² ∣ Δ`, `p³ ∤ Δ`, and `p ∤ c₄`. | Installed. | `17.a2`, p=17. |
 | `Iₙ`, `n ≥ 3` | `n` if split; `gcd(2,n)` if nonsplit | Terminal exponent and checked tangent-root evidence: a supplied root, or a no-root certificate for the tangent quadratic. | Planned. TauCeti's formula is available; rational normalization and residue transport are incomplete. | No checked factor fixture. |
 | `II` | `1` | Supplied model satisfying all five terminal `II` conditions, including `ϖ² ∤ a₆`. | Planned. | No checked factor fixture. |
-| `III` | `2` | Pending p>3 transcript route supplies `r,s,t`; the checker derives its model tuple and checks terminal `III` divisibilities. | Pending [PR #109](https://github.com/khwilson/verified-lcalc/pull/109); not installed until merged. | 49.a4 is the pending PR's fixture, not installed coverage. |
-| `IV` | `3` when the terminal residue quadratic has a root; otherwise `1` | Persist the exact unit-scale change and either a specific root or checked nonsplit Euler-power certificate. No verifier-side normalization or root search. | Planned; no Type IV support is installed. | 50.a3 / 50.a1 are candidate source rows only; no checked fixture. |
+| `III` | `2` | For `p > 3`, the producer saves the exact integers `r`, `s`, `t` in `tamagawa_type_iii`. The checker applies the scale-one change to the original equation and checks terminal `III` divisibilities. | Implemented for the intrinsic local factor. The separate additive Kodaira field still checks only the additive family. | `49.a4`, p=7. |
+| `IV` | `3` when the terminal residue quadratic has a root; otherwise `1` | Persist the exact unit-scale change and a specific root or an independently checkable no-root certificate. Use the odd-characteristic Euler test for the tame quadratic and the checked Bézout alternative where appropriate, including characteristic 2. | Planned; no Type IV support is installed. | 50.a3 / 50.a1 are candidate source rows only; no checked fixture. |
 | `I₀*` | `1 + card(tateCubicRoots)` | Complete root/factorization evidence for the normalized residue cubic `X³ + (a₂/p)X² + (a₄/p²)X + a₆/p³` derived from the checked terminal model; the terminal predicate also checks the cubic discriminant valuation. | Planned. | No checked factor fixture. |
 | `Iₙ*`, `n = 2k+1` | `4` when `HasTateYRoot ϖ (k+2)`, otherwise `2` | Complete odd-stage transcript, terminal exponent, and a checked root or no-root certificate for that level's quadratic. | Planned. | No checked factor fixture. |
 | `Iₙ*`, `n = 2k+2` | `4` when `HasTateXRoot ϖ (k+2)`, otherwise `2` | Complete even-stage transcript, terminal exponent, and a checked root or no-root certificate for that level's quadratic. | Planned. | No checked factor fixture. |

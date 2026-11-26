@@ -186,8 +186,45 @@ example : (GoodTamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 3)
     (by decide +kernel) 1 rfl
   exact h (by decide +kernel)
 
+certify_ec TypeIII49a4 from_json "fixtures/lmfdb/49.a4-tamagawa.json"
+
+example :
+    letI : Fact (Nat.Prime 7) := ⟨by decide +kernel⟩
+    (TypeIII49a4.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 7) = 2 := by
+  let fact := TypeIII49a4.certificate.arithmetic.tamagawa[0]'(by decide +kernel)
+  have hp : fact.prime = ⟨7, by decide +kernel⟩ := Subtype.ext (by decide +kernel)
+  have hv : fact.value = 2 := by decide +kernel
+  obtain ⟨prime, value, correct⟩ := fact
+  change prime = _ at hp
+  change value = 2 at hv
+  subst prime value
+  exact correct
+
+certify_ec TypeIIIAlternative from
+  { equation := ⟨1, -1, 0, -2, -1⟩
+    localInvariants := some [{
+      prime := 7, tamagawaNumber := some 2
+      tamagawaTypeIIIShift := some ⟨9, 0, 6⟩ }] }
+
+example : (TypeIIIAlternative.certificate.arithmetic.tamagawa.map (·.value)) = [2] := by
+  decide +kernel
+
+certify_ec TypeIIIAbsent from_json_string
+  r#"{"ainvs":[1,-1,0,-2,-1],"prime":7,"tamagawa_number":2}"#
+
+example : TypeIIIAbsent.certificate.arithmetic.tamagawa.isEmpty = true := by decide +kernel
+
+certify_ec OtherAdditive98a5 from_json_string
+  r#"{"ainvs":[1,1,0,-25,-111],"minimality":[2,2,7,7,7,7,7,7,7],
+      "prime":7,"conductor_valuation":2,"discriminant_valuation":7,
+      "j_denominator_valuation":1,"reduction_type":0,"kodaira_symbol":-5,
+      "tamagawa_number":2}"#
+
+example : OtherAdditive98a5.certificate.arithmetic.tamagawa.isEmpty = true := by
+  decide +kernel
+
 /--
-info: TamagawaOutsideScope: Tamagawa claims outside good, I₁ or I₂ reduction are unverified.
+info: TamagawaOutsideScope: Tamagawa claims outside good, I₁, I₂ or supported tame III reduction are unverified.
 ---
 info: Certified TamagawaOutsideScope.ap_correct and TamagawaOutsideScope.point_integral
 for the supplied lists
@@ -393,6 +430,23 @@ run_cmd do
     r#"{"ainvs":[1,-1,1,-6,-4],"minimality":[17,17],"prime":17,
         "discriminant_valuation":2,"reduction_type":1,"kodaira_symbol":6,
         "tamagawa_number":3}"#))
+  invariantRejected `WrongTypeIIITamagawaOne
+    (← `(certify_ec WrongTypeIIITamagawaOne from_json_string
+      r#"{"ainvs":[1,-1,0,-2,-1],"minimality":[7,7,7],"prime":7,
+          "discriminant_valuation":3,"reduction_type":0,"kodaira_symbol":3,
+          "tamagawa_number":1,"tamagawa_type_iii":{"r":2,"s":0,"t":6}}"#))
+  invariantRejected `WrongTypeIIITamagawaThree
+    (← `(certify_ec WrongTypeIIITamagawaThree from_json_string
+      r#"{"ainvs":[1,-1,0,-2,-1],"minimality":[7,7,7],"prime":7,
+          "discriminant_valuation":3,"reduction_type":0,"kodaira_symbol":3,
+          "tamagawa_number":3,"tamagawa_type_iii":{"r":2,"s":0,"t":6}}"#))
+  invariantRejected `WrongTypeIIIShift
+    (← `(certify_ec WrongTypeIIIShift from_json_string
+      r#"{"ainvs":[1,-1,0,-2,-1],"prime":7,"tamagawa_number":2,
+          "tamagawa_type_iii":{"r":0,"s":0,"t":0}}"#))
+  invariantRejected `UnpairedTypeIIIShift
+    (← `(certify_ec UnpairedTypeIIIShift from_json_string
+      r#"{"ainvs":[1,-1,0,-2,-1],"prime":7,"tamagawa_type_iii":{"r":2,"s":0,"t":6}}"#))
   invariantRejected `IncompatibleAdditiveRows (← `(certify_ec IncompatibleAdditiveRows
     from_json_string
     r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],
@@ -705,7 +759,9 @@ run_cmd do
   cover ``AdelicGeneratorsClaim #[`modulus, `rows]
   cover ``IsogenyEdgeClaim #[`target, `degree, `kernelX]
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
-    `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol, `rootNumber]
+    `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol, `rootNumber,
+    `tamagawaTypeIIIShift]
+  cover ``TamagawaTypeIIIShift #[`r, `s, `t]
   cover ``AbcQualityClaim #[`reported, `error, `factors]
   cover ``RegulatorClaim #[`reported, `error]
   cover ``PadicRegulatorClaim #[`p, `prec, `val, `unit]

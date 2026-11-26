@@ -63,6 +63,17 @@ local arithmetic data only; it does not use the reference analytic rank.
 `17.a2-tamagawa-joined.json` retains the producer-facing two-table projection
 of the same row for the conditional kernel-replay test.
 
+The 49.a4 Tamagawa fixture projects row 119 of that pinned `ecdata` snapshot
+(Cremona label 49a1). Its p=7 row has type III (PARI code 3), discriminant
+valuation 3, and Tamagawa factor 2. The 98.a5 p=7 row has a different additive
+type (PARI code -5) and remains outside the checked Tamagawa scope. Both use
+the source revision, schema, and Artistic License 2.0 attribution documented
+in `data/lmfdb/README.md` and `data/lmfdb/raw/ECDATA-LICENSE`. The producer
+joined projection retains the curve identity and its single local row; the
+gated replay checks the accepted factor and rejects a corrupted value.
+The checked JSON stores the producer's exact unit-scale change
+`(r, s, t) = (2, 0, 6)` in its `tamagawa_type_iii` field.
+
 The Lean consumer checks the finite theorems and checks the modularity dependency
 on conductor and root-number theorems. The matrix inputs contain no rank data. Its consumer also reuses the separate, already
 checked analytic-rank-one witness for 112.a2 on the same integral equation.

@@ -525,10 +525,14 @@ private def stored : List Route :=
       [arith, minimalModel, vl[`MinimalModelArithmeticFacts.kodaira], vl[`LocalKodairaFact.correct]]
       "Exact good and multiplicative codes. Additive codes exclude all multiplicative symbols only."
       [vl[`EllipticWitness.minimality]] vl[`LocalReductionClaim.kodaira_correct],
-    localRow "tamagawa_number" vl[`LocalReductionClaim.tamagawaNumber] `tamagawa_numbers
-      [arith, vl[`ArithmeticFacts.tamagawa], vl[`LocalTamagawaFact.correct]]
-      "Exact intrinsic factor at good, I₁ or I₂ reduction." []
-      vl[`LocalReductionClaim.tamagawa_correct],
+    ⟨["localdata"], "tamagawa_number", aliases
+      (checkedPath ["tamagawa_number"]
+        [vl[`EllipticWitness.localInvariants], vl[`LocalReductionClaim.tamagawaNumber],
+          vl[`LocalReductionClaim.tamagawaTypeIIIShift]]
+        `tamagawa_numbers [arith, vl[`ArithmeticFacts.tamagawa], vl[`LocalTamagawaFact.correct]]
+        ("Exact intrinsic factor at good, I₁, I₂ or tame III reduction with a submitted " ++
+          "unit-scale change satisfying the terminal conditions.") []
+        vl[`LocalReductionClaim.tamagawa_correct]) "local_invariants"⟩,
     localRow "root_number" vl[`LocalReductionClaim.rootNumber] `local_root_numbers
       [arith, minimalModel, vl[`MinimalModelArithmeticFacts.localRootNumbers],
         vl[`LocalRootNumberFact.correct]]

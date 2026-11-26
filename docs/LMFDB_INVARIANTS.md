@@ -163,7 +163,7 @@ reviewed LMFDB ordering and base-26 encoding.
 | `semistable` | `semistable` | Equivalence with TauCeti's `WeierstrassCurve.IsSemistable` over the ring of integers of ℚ, using the checked `minimality`. |
 | `squarefree_disc` | `squarefreeDiscriminant` | Equivalence with Mathlib's `Squarefree` on the absolute minimal discriminant, using the checked `minimality`. |
 | `local_invariants` or a top-level local row | `localInvariants` | Checks each supplied prime and any supplied `discriminant_valuation`, `j_denominator_valuation` or `reduction_type` against the minimal equation, using the checked `minimality`. |
-| `tamagawa_number` | `localInvariants` row field `tamagawaNumber` | Exact intrinsic Tamagawa number at a prime of good, `I₁`, or `I₂` reduction. A local test proves minimality at that prime. |
+| `tamagawa_number` | `localInvariants` row field `tamagawaNumber` | Exact intrinsic Tamagawa number at a prime of good, multiplicative `I₁` or `I₂`, or supported tame III reduction. A local test proves minimality at that prime. |
 | `kodaira_symbol` | `localInvariants` row field `kodairaSymbol` | Canonical TauCeti `Iₙ` equality for good or multiplicative reduction. For additive codes the theorem excludes every `Iₙ`. Requires `minimality`. |
 | `root_number` | `localInvariants` row field `rootNumber` | Arithmetic local sign at the row's prime. Requires checked `minimality` and `local_data`. |
 | `ap` / `aplist` | `primeCoefficients` | Actual `LFunction p` coefficients with proved sufficient local minimality checks. |
@@ -336,8 +336,13 @@ level. The reduction codes are 0 for additive, 1 for split multiplicative, and �
 multiplicative reduction. Certificates cover each supplied row individually.
 
 `tamagawa_number` verifies one at good or `I₁` reduction and two at `I₂`
-reduction. Both splitting cases at `I₂` have local index two. The equality
-concerns TauCeti's
+reduction. Both splitting cases at `I₂` have local index two. For a rational prime p > 3, a
+`tamagawa_type_iii` object in the same local row supplies the exact integers
+`r`, `s`, and `t` of a change of variables with scale 1. The producer proposes
+these coordinates. The checker applies the submitted change to the original
+equation, tests the terminal III divisibilities, and checks the claimed factor
+two. A submitted change that fails its tests is rejected. Rows without the
+change can use the good, I₁, and I₂ routes. The equality concerns TauCeti's
 `tamagawaNumberAt` over the completed field. The checker needs no global
 minimality witness for this field. A claim outside this scope is reported
 as unverified. [Completed Tamagawa factor](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Product.lean#L47-L87)

@@ -100,6 +100,19 @@ theorem tamagawa17a2 :
     (LMFDB.C17a2.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 17) = 2 := by
   exact (LMFDB.C17a2.certificate.arithmetic.tamagawa[0]'(by decide +kernel)).correct
 
+/-- The imported 49.a4 fixture certifies its type III Tamagawa factor at 7. -/
+theorem tamagawa49a4 :
+    letI : Fact (Nat.Prime 7) := ⟨by decide +kernel⟩
+    (LMFDB.C49a4.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 7) = 2 := by
+  let fact := LMFDB.C49a4.certificate.arithmetic.tamagawa[0]'(by decide +kernel)
+  have hp : fact.prime = ⟨7, by decide +kernel⟩ := Subtype.ext (by decide +kernel)
+  have hv : fact.value = 2 := by decide +kernel
+  obtain ⟨prime, value, correct⟩ := fact
+  change prime = _ at hp
+  change value = 2 at hv
+  subst prime value
+  exact correct
+
 /-- The imported 179.a1 has Kodaira symbol I₁ at 179. -/
 theorem kodaira179 :
     letI : Fact (Nat.Prime 179) := ⟨localPrime179⟩
@@ -247,6 +260,8 @@ private def samples : List Sample :=
       .unconditional, false⟩,
    ⟨"ec_localdata", "tamagawa_number", "17.a2", ``tamagawa17a2,
       "Intrinsic local I₂ factor at 17.", .unconditional, false⟩,
+   ⟨"ec_localdata", "tamagawa_number", "49.a4", ``tamagawa49a4,
+      "Intrinsic local type III factor at 7.", .unconditional, false⟩,
    ⟨"ec_localdata", "kodaira_symbol", "179.a1", ``kodaira179, "Exact I₁ symbol at 179.",
       .unconditional, false⟩,
    ⟨"ec_localdata", "root_number", "179.a1", ``rootNumber179,
@@ -297,6 +312,7 @@ private def auditSample (sample : Sample) : CommandElabM Json := do
   let source := if sample.proof == ``rank37 then "data/witnesses/37a1.json"
     else if sample.proof == ``rank112 then "data/witnesses/112a2.json"
     else if sample.curve == "17.a2" then "tests/fixtures/lmfdb/17.a2-tamagawa.json"
+    else if sample.curve == "49.a4" then "tests/fixtures/lmfdb/49.a4-tamagawa.json"
     else s!"tests/fixtures/lmfdb/{sample.curve}.json"
   let origin := if sample.field == "squarefree_disc" then "computed_from_equation"
     else if sample.field == "analytic_rank" then "certified_numerical_witness"

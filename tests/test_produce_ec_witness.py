@@ -19,6 +19,7 @@ CAPTURE = ROOT / "scripts/capture_lmfdb_fixture.py"
 NATIVE = ROOT / "tests/fixtures/lmfdb/112.a2-native.json"
 NATIVE_MANIFEST = NATIVE.with_suffix(".provenance.json")
 TAMAGAWA_17A2 = ROOT / "tests/fixtures/lmfdb/17.a2-tamagawa-joined.json"
+TAMAGAWA_TYPE_III_49A4 = ROOT / "tests/fixtures/lmfdb/49.a4-tamagawa-joined.json"
 LEAN = ["lake", "-f", "lakefile.certificates.lean", "env", "lean"]
 
 
@@ -50,6 +51,62 @@ def produce(
 
 
 class JoinChecks(unittest.TestCase):
+    def test_out_of_scope_additive_tamagawa_is_reported_unverified(self) -> None:
+        # Genuine 98.a5 arithmetic: this p=7 additive row has Kodaira code -5,
+        # outside the implemented good/I₁/I₂/tame-III Tamagawa routes.
+        source = {
+            "tables": ["ec_curvedata", "ec_localdata"],
+            "labels": ["98.a5", "98.a5"],
+            "label_cols": ["lmfdb_label", "lmfdb_label"],
+            "totals": [1, 1],
+            "data": [
+                [
+                    {
+                        "lmfdb_label": "98.a5",
+                        "lmfdb_iso": "98.a",
+                        "ainvs": [1, 1, 0, -25, -111],
+                        "conductor": 98,
+                    }
+                ],
+                [
+                    {
+                        "lmfdb_label": "98.a5",
+                        "conductor": 98,
+                        "prime": 7,
+                        "tamagawa_number": 2,
+                        "kodaira_symbol": -5,
+                        "reduction_type": 0,
+                        "conductor_valuation": 2,
+                        "discriminant_valuation": 7,
+                        "j_denominator_valuation": 1,
+                    }
+                ],
+            ],
+        }
+        witness, fields, sources = build_input(source)
+        self.assertEqual(witness["local_invariants"][0]["tamagawa_number"], 2)
+        self.assertEqual(
+            sources["local_invariants.7.tamagawa_number"],
+            ["ec_localdata[7].tamagawa_number"],
+        )
+
+        # The per-row local claim can be checked while the exact Tamagawa route
+        # remains unsupported for this additive type.
+        report_fields(
+            witness,
+            fields,
+            {"WitnessCheck.tamagawa_numbers": True},
+            {},
+            [],
+        )
+        self.assertEqual(
+            fields["local_invariants.7.tamagawa_number"],
+            {
+                "status": "unsupported",
+                "reason": "Exact Tamagawa checker supports good, I₁, I₂ or supported tame III reduction",
+            },
+        )
+
     def test_integral_count_status_requires_exact_or_checked_lower_bound(self) -> None:
         witness = {"num_int_pts": 1, "integral_points": [[0, 0]]}
         fields: dict[str, dict[str, Any]] = {}
@@ -140,7 +197,35 @@ class KernelReplay(unittest.TestCase):
             self.assertEqual(field["status"], "checked")
             self.assertEqual(field["sources"], ["ec_localdata[17].tamagawa_number"])
             witness = json.loads(output.read_text(encoding="utf-8"))
-            self.assertEqual(witness["local_invariants"][0]["tamagawa_number"], 2)
+            local = witness["local_invariants"][0]
+            self.assertEqual(local["tamagawa_number"], 2)
+            self.assertNotIn("tamagawa_type_iii", local)
+
+            previous = output.read_bytes()
+            rows(data, "ec_localdata")[0]["tamagawa_number"] = 1
+            result, report, output = produce(data, directory, timeout=600)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(report["status"], "rejected")
+            self.assertIn("tamagawa_values_valid", report["error"])
+            self.assertEqual(output.read_bytes(), previous)
+
+    def test_tame_type_iii_tamagawa_projection_and_corruption(self) -> None:
+        data = json.loads(TAMAGAWA_TYPE_III_49A4.read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as d:
+            directory = Path(d)
+            result, report, output = produce(data, directory, timeout=600)
+            self.assertEqual(result.returncode, 0, (report, result.stderr))
+            self.assertEqual(report["status"], "checked")
+            field = report["fields"]["local_invariants.7.tamagawa_number"]
+            self.assertEqual(field["status"], "checked")
+            self.assertEqual(field["sources"], ["ec_localdata[7].tamagawa_number"])
+            witness = json.loads(output.read_text(encoding="utf-8"))
+            local = witness["local_invariants"][0]
+            self.assertEqual(local["tamagawa_number"], 2)
+            self.assertEqual(
+                {key: int(value) for key, value in local["tamagawa_type_iii"].items()},
+                {"r": 2, "s": 0, "t": 6},
+            )
 
             previous = output.read_bytes()
             rows(data, "ec_localdata")[0]["tamagawa_number"] = 1

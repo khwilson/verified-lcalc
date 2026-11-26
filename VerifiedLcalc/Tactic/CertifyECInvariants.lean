@@ -253,9 +253,10 @@ private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
         exact LocalReductionClaim.tamagawa_correct row $curve (List.all_eq_true.mp $hTam row hrow)))
     let unsupported := mkApp2 (mkConst ``hasUnsupportedTamagawaClaim) (mkConst (base ++ `curve))
       (mkConst (base ++ `claimed_local_invariants))
-    let unsupported ← liftTermElabM <| whnf unsupported
+    let unsupported ← liftTermElabM <| withTransparency .all <| whnf unsupported
     if unsupported.isConstOf ``Bool.true then
-      logInfo m!"{base}: Tamagawa claims outside good, I₁ or I₂ reduction are unverified."
+      logInfo m!"{base}: Tamagawa claims outside good, I₁, I₂ or supported \
+        tame III reduction are unverified."
     if hasMinimality then
       let hv := rootIdent (base ++ `local_invariants_value_valid)
       checked (base ++ `local_invariants_value_valid)
