@@ -27,10 +27,52 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.benchmark_certify_ec import LAKE, ROOT, digest, mathlib_revision
 
-CATALOG_FACT_FIELDS = ["analytic_rank", "nonsingular", "global_minimal"]
+LEGACY_FACT_FIELDS = ("analytic_rank", "nonsingular", "global_minimal")
+CATALOG_FACT_FIELDS = (
+    *LEGACY_FACT_FIELDS,
+    "arithmetic_conductor",
+    "arithmetic_root_number",
+    "l_function_coefficients",
+    "discriminant_prime_factorization",
+)
 
 
-def catalog_import_examples(row: dict[str, Any], subject: dict[str, Any]) -> str:
+def arithmetic_catalog_values(witness: dict[str, Any]) -> dict[str, Any]:
+    """Read the exact candidate literals that the Lean import must verify."""
+    rank = witness["rank"]
+    conductor = witness["subject"]["conductor"]
+    primes = witness["arithmetic"]["minimality"]
+    coefficients = witness["coefficients"]
+    if (
+        witness["schema"] != "lcalc.ec-rank.v1"
+        or rank not in ("0", "1")
+        or not isinstance(conductor, str)
+        or not re.fullmatch(r"[1-9][0-9]*", conductor)
+        or not isinstance(primes, list)
+        or not all(
+            isinstance(p, str) and re.fullmatch(r"[1-9][0-9]*", p) for p in primes
+        )
+        or not isinstance(coefficients, list)
+        or not coefficients
+        or not all(
+            isinstance(c, str) and re.fullmatch(r"0|-?[1-9][0-9]*", c)
+            for c in coefficients
+        )
+    ):
+        raise ValueError("Invalid arithmetic literals in rank witness")
+    values = {
+        "arithmetic_conductor": int(conductor),
+        "arithmetic_root_number": 1 if rank == "0" else -1,
+        "l_function_coefficients": list(map(int, coefficients)),
+    }
+    if primes:
+        values["discriminant_prime_factorization"] = list(map(int, primes))
+    return values
+
+
+def catalog_import_examples(
+    row: dict[str, Any], subject: dict[str, Any], arithmetic: dict[str, Any]
+) -> str:
     """Bind the published facts and their subject to literal values in a fresh Lean import."""
     prefix = row["declaration_prefix"]
     if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", prefix):
@@ -38,7 +80,7 @@ def catalog_import_examples(row: dict[str, Any], subject: dict[str, Any]) -> str
     coefficients = ", ".join(str(int(value)) for value in subject["ainvs"])
     conductor = int(subject["conductor"])
     rank = int(row["rank"])
-    return (
+    examples = (
         f"example : {prefix}.curve = (⟨{coefficients}⟩ : WeierstrassCurve ℤ) := rfl\n"
         f"example : {prefix}.result.conductor = {conductor} := rfl\n"
         f"example : {prefix}.curve.Δ ≠ 0 := {prefix}.nonsingular\n"
@@ -48,6 +90,35 @@ def catalog_import_examples(row: dict[str, Any], subject: dict[str, Any]) -> str
         f"(VerifiedLcalc.Modularity.modularWitness {prefix}.curve {prefix}.nonsingular).formL "
         f"(1 : ℂ) = {rank} := {prefix}.analytic_rank\n"
     )
+
+    if arithmetic:
+        level = int(arithmetic["arithmetic_conductor"])
+        sign = int(arithmetic["arithmetic_root_number"])
+        examples += (
+            f"example : VerifiedLcalc.EllipticCurve.wildLevelFast {prefix}.curve "
+            f"{prefix}.localData = {level} := {prefix}.conductor_valid\n"
+            f"example : VerifiedLcalc.EllipticCurve.wildSignFast {prefix}.curve "
+            f"{prefix}.localData = {sign} := {prefix}.root_number_valid\n"
+        )
+        values = ", ".join(map(str, map(int, arithmetic["l_function_coefficients"])))
+        projection = ".2.2.1" if rank == 0 else ".2.2.2.1"
+        examples += (
+            f"example : let values : List ℤ := [{values}]; "
+            f"(List.range values.length).map (fun n => "
+            f"({prefix}.curve.baseChange ℚ).LFunction (n + 1)) = values := "
+            f"VerifiedLcalc.Certification.coefficients_of_minimal_witness "
+            f"{prefix}.curve {prefix}.nonsingular {prefix}.minimality {prefix}.minimality_valid "
+            f"_ ({prefix}.payload_correct{projection}).symm\n"
+        )
+        if "discriminant_prime_factorization" in arithmetic:
+            primes = ", ".join(
+                map(str, map(int, arithmetic["discriminant_prime_factorization"]))
+            )
+            examples += (
+                f"example : VerifiedLcalc.EllipticCurve.MinimalityWitness.Valid "
+                f"⟨[{primes}]⟩ {prefix}.curve := {prefix}.minimality_valid\n"
+            )
+    return examples
 
 
 def captured(args: list[str]) -> str:
@@ -661,6 +732,13 @@ def run_benchmark(
         )
         save()
     checked_rows = [r for r in report["curves"] if r["status"] == "checked"]
+    for row in checked_rows:
+        path = work / "witnesses" / row["file"]
+        raw = path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != row["witness_sha256"]:
+            raise RuntimeError(f"Witness bytes changed for {row['label']}")
+        row["arithmetic_catalog"] = arithmetic_catalog_values(json.loads(raw))
+
     modules = sorted({r["module"] for r in checked_rows})
     reuse_groups = []
     for start in range(0, len(modules), args.consumer_modules):
@@ -671,7 +749,8 @@ def run_benchmark(
             + "".join(f"import {m}\n" for m in group_modules)
             + "\n"
             + "".join(
-                catalog_import_examples(r, inputs[r["index"]]) for r in group_rows
+                catalog_import_examples(r, inputs[r["index"]], r["arithmetic_catalog"])
+                for r in group_rows
             )
         )
         name = f"{args.module_prefix}Consumer{start // args.consumer_modules:04d}"

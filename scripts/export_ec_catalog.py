@@ -7,11 +7,15 @@ import json
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 from collections import Counter
 from pathlib import Path
 from typing import Any
 from zipfile import ZIP_DEFLATED, ZipFile
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scripts.benchmark_ec_dataset import CATALOG_FACT_FIELDS, arithmetic_catalog_values
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = Path("data/lmfdb/sql-10000/inputs.json")
@@ -19,6 +23,16 @@ ASSUMPTIONS = {
     "analytic_rank": ["VerifiedLcalc.Assumptions.ellipticModularity"],
     "nonsingular": [],
     "global_minimal": [],
+    "arithmetic_conductor": [],
+    "arithmetic_root_number": [],
+    "l_function_coefficients": [],
+    "discriminant_prime_factorization": [],
+}
+THEOREMS = {
+    "arithmetic_conductor": "conductor_valid",
+    "arithmetic_root_number": "root_number_valid",
+    "l_function_coefficients": "payload_correct",
+    "discriminant_prime_factorization": "minimality_valid",
 }
 SIDECARS = (".olean.private", ".olean.server", ".ir", ".ir.sig", ".ilean")
 WITNESS_ARCHIVE = "witnesses.jsonl.gz"
@@ -83,7 +97,8 @@ def selection(report: dict[str, Any], root: Path) -> tuple[Path, list[dict[str, 
     )
     fields = report["catalog_fact_fields"]
     require(
-        len(fields) == len(ASSUMPTIONS) and set(fields) == set(ASSUMPTIONS),
+        len(fields) == len(CATALOG_FACT_FIELDS)
+        and set(fields) == set(CATALOG_FACT_FIELDS),
         "Benchmark did not import and check the supported catalogue facts",
     )
     identity = report["identity"]
@@ -241,15 +256,26 @@ def catalog_rows(
             entry["witness_sha256"] = row["witness_sha256"]
             module = row["module"]
             checked[label] = module
+            arithmetic = arithmetic_catalog_values(witness)
+            require(
+                row["arithmetic_catalog"] == arithmetic,
+                f"Witness does not bind the imported arithmetic facts to {label}",
+            )
+            values = {
+                "analytic_rank": int(witness["rank"]),
+                "nonsingular": True,
+                "global_minimal": True,
+                **arithmetic,
+            }
             entry["facts"] = [
                 {
                     "field": field,
-                    "value": int(witness["rank"]) if field == "analytic_rank" else True,
-                    "theorem": f"{prefix}.{field}",
+                    "value": value,
+                    "theorem": f"{prefix}.{THEOREMS.get(field, field)}",
                     "module": module,
-                    "assumptions": assumptions,
+                    "assumptions": ASSUMPTIONS[field],
                 }
-                for field, assumptions in ASSUMPTIONS.items()
+                for field, value in values.items()
             ]
         else:
             require(
@@ -385,7 +411,7 @@ def export_catalog(
                     bundle_sha256=hashes[bundle],
                 )
         catalog = {
-            "schema": 1,
+            "schema": 2,
             "batch": batch,
             "module_prefix": identity["module_prefix"],
             "witness_archive": {
