@@ -15,6 +15,9 @@ from scripts.produce_ec_witness import build_input, report_fields
 ROOT = Path(__file__).resolve().parents[1]
 JOINED = ROOT / "tests/fixtures/lmfdb/112.a2-joined.json"
 PRODUCER = ROOT / "scripts/produce_ec_witness.py"
+CAPTURE = ROOT / "scripts/capture_lmfdb_fixture.py"
+NATIVE = ROOT / "tests/fixtures/lmfdb/112.a2-native.json"
+NATIVE_MANIFEST = NATIVE.with_suffix(".provenance.json")
 LEAN = ["lake", "-f", "lakefile.certificates.lean", "env", "lean"]
 
 
@@ -290,7 +293,26 @@ class KernelReplay(unittest.TestCase):
     def test_native_join_and_importable_typed_facts(self) -> None:
         with tempfile.TemporaryDirectory() as d:
             directory = Path(d)
-            data = joined()
+            projection = directory / "projection.json"
+            replay = subprocess.run(
+                [
+                    sys.executable,
+                    str(CAPTURE),
+                    "replay",
+                    str(NATIVE),
+                    "--manifest",
+                    str(NATIVE_MANIFEST),
+                    "--output",
+                    str(projection),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+            )
+            self.assertEqual(replay.returncode, 0, replay.stdout + replay.stderr)
+            data = json.loads(projection.read_text(encoding="utf-8"), parse_float=str)
             # The separate algebraic rank report supplies no input to the analytic proof.
             rows(data, "ec_curvedata")[0]["rank"] = 99
             rows(data, "ec_mwbsd")[0]["rank_bounds"] = [99, 99]
