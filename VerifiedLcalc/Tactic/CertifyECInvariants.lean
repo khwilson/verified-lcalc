@@ -194,8 +194,7 @@ private def certifySerreInvariants (base : Name) (curve : Ident)
     goodAtTwo := by decide +kernel
     rows := $report
     exactRows := by
-      cbv
-      first
+      cbv <;> first
       | simp <;> cbv <;> simp <;> done
       | simp [List.orderedInsert_cons] <;> cbv <;> simp <;> done))
   auditAxioms outputName
@@ -256,7 +255,7 @@ private def certifyReductionInvariants (base : Name) (curve hn m hm : Ident)
       (mkConst (base ++ `claimed_local_invariants))
     let unsupported ← liftTermElabM <| whnf unsupported
     if unsupported.isConstOf ``Bool.true then
-      logInfo m!"{base}: Tamagawa claims outside good or I₁ reduction are unverified."
+      logInfo m!"{base}: Tamagawa claims outside good, I₁ or I₂ reduction are unverified."
     if hasMinimality then
       let hv := rootIdent (base ++ `local_invariants_value_valid)
       checked (base ++ `local_invariants_value_valid)

@@ -1,0 +1,210 @@
+{
+  "format": "verified-lcalc-lmfdb-native-v1",
+  "label": "112.a2",
+  "provenance": {
+    "source": "https://www.lmfdb.org/EllipticCurve/Q/data/112.a2?_format=json",
+    "source_revision": null,
+    "captured_at": "2026-11-26T01:59:10.892609",
+    "sha256": "a7631a589136e92ffed788998da29e801cc6683dc8c87c0bb4d7f04913181171",
+    "license": "CC BY-SA",
+    "attribution": "The LMFDB Collaboration",
+    "payload_sha256_scope": "exact response bytes"
+  },
+  "tables": [
+    {
+      "name": "ec_curvedata",
+      "join_key": "lmfdb_label",
+      "join_value": "112.a2",
+      "status": "present",
+      "row_keys": [
+        "112.a2"
+      ]
+    },
+    {
+      "name": "ec_classdata",
+      "join_key": "lmfdb_iso",
+      "join_value": "112.a",
+      "status": "present",
+      "row_keys": [
+        "112.a"
+      ]
+    },
+    {
+      "name": "ec_mwbsd",
+      "join_key": "lmfdb_label",
+      "join_value": "112.a2",
+      "status": "present",
+      "row_keys": [
+        "112.a2"
+      ]
+    },
+    {
+      "name": "ec_localdata",
+      "join_key": "lmfdb_label",
+      "join_value": "112.a2",
+      "status": "present",
+      "row_keys": [
+        2,
+        7
+      ]
+    },
+    {
+      "name": "ec_galrep",
+      "join_key": "lmfdb_label",
+      "join_value": "112.a2",
+      "status": "present",
+      "row_keys": [
+        0,
+        2
+      ]
+    },
+    {
+      "name": "ec_torsion_growth",
+      "join_key": "lmfdb_label",
+      "join_value": "112.a2",
+      "status": "present",
+      "row_keys": [
+        [
+          2,
+          [
+            2,
+            -1,
+            1
+          ]
+        ],
+        [
+          4,
+          [
+            -2,
+            -4,
+            -2,
+            0,
+            1
+          ]
+        ],
+        [
+          8,
+          [
+            -12,
+            0,
+            20,
+            0,
+            -12,
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        [
+          8,
+          [
+            1,
+            0,
+            -3,
+            0,
+            6,
+            0,
+            -3,
+            0,
+            1
+          ]
+        ],
+        [
+          8,
+          [
+            1,
+            0,
+            2,
+            0,
+            10,
+            0,
+            2,
+            0,
+            1
+          ]
+        ],
+        [
+          16,
+          [
+            -28,
+            32,
+            320,
+            224,
+            -72,
+            48,
+            208,
+            384,
+            464,
+            256,
+            48,
+            16,
+            12,
+            -8,
+            -8,
+            0,
+            1
+          ]
+        ],
+        [
+          16,
+          [
+            144,
+            0,
+            -816,
+            0,
+            1192,
+            0,
+            864,
+            0,
+            141,
+            0,
+            40,
+            0,
+            18,
+            0,
+            0,
+            0,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "ec_iwasawa",
+      "join_key": "lmfdb_label",
+      "join_value": "112.a2",
+      "status": "present",
+      "row_keys": [
+        "112.a2"
+      ]
+    },
+    {
+      "name": "ec_padic",
+      "join_key": "lmfdb_iso",
+      "join_value": "112.a",
+      "status": "present",
+      "row_keys": [
+        5,
+        17,
+        19,
+        23,
+        29,
+        31,
+        37,
+        41,
+        43,
+        47,
+        53,
+        59,
+        61,
+        67,
+        73,
+        79,
+        83,
+        89,
+        97
+      ]
+    }
+  ]
+}

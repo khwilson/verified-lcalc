@@ -32,15 +32,39 @@ def certifyCompleteIntegralPoints (base : Name) (support count : Option (TSyntax
         (($witness).integralCoordinates.getD []).toFinset))
     checked (base ++ `listed_integral_count_lower_bound)
       (← `(($observed).card ≤ $claimed)) (← `(by decide +kernel))
-  let some input := support |
-    if count.isSome then
-      logInfo m!"Unverified {base} num_int_pts: supply exhaustive abscissa support"
-    return
+  let curve := rootIdent (base ++ `curve)
+  let witness := rootIdent (base ++ `witness)
+  let input ← match support with
+    | some input => pure input
+    | none =>
+      let rootsInput ← optionalInput (base ++ `witness) `integralFiberRoots
+      let candidate ← `( (($witness).integralFiberRoots.map List.isEmpty).getD false &&
+        EllipticCurve.computePointCount $curve 2 == 1)
+      if !count.isSome || !rootsInput.isSome then
+        if count.isSome then
+          logInfo m!"Unverified {base} num_int_pts: supply exhaustive abscissa support"
+        return
+      if ← hasOptionalProof (← `(if $candidate then some () else none)) `num_int_pts then
+        let noModTwo ← `(∀ x y : ZMod 2,
+          ¬ (($curve).baseChange (ZMod 2)).toAffine.Equation x y)
+        let noModTwoProof ← `(by
+          simp only [WeierstrassCurve.Affine.equation_iff]
+          decide +kernel)
+        let noModName := rootIdent (base ++ `integral_points_no_mod_two)
+        checked (base ++ `integral_points_no_mod_two) (← `($noModTwo)) noModTwoProof
+        let emptyRootsProof ← `(by decide +kernel)
+        let support ← `(IntegralXSupport.ofNoAffinePointsMod $noModName)
+        checked (base ++ `integral_points_empty_native_xcoords)
+          (← `(($witness).integralFiberRoots = some [])) emptyRootsProof
+        pure support
+      else
+        if count.isSome then
+          logInfo m!"Unverified {base} num_int_pts: supply exhaustive abscissa support"
+        return
   let validName := base ++ `integral_fiber_roots_valid
   unless (← getEnv).contains validName do
     logInfo m!"Unverified {base} num_int_pts: supply the checked integral fiber roots"
     return
-  let curve := rootIdent (base ++ `curve)
   let evidence := rootIdent (base ++ `integral_x_support)
   let roots := rootIdent (base ++ `integral_fiber_roots)
   let valid := rootIdent validName
