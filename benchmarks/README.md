@@ -12,6 +12,26 @@ You can also dispatch a batch from the repository checkout.
 gh workflow run certificate-batch.yml --ref main -f offset=1000 -f count=1000
 ```
 
+Set `through_batch` to an inclusive, one-based stopping point to run sequential
+1,000-curve slices on `main`. For example, this starts at batch 2 (offset 1000)
+and continues through batch 10.
+
+```sh
+gh workflow run certificate-batch.yml --ref main -f offset=1000 -f through_batch=10
+```
+
+Each run starts the next slice after a successful Pages deployment. GitHub
+continues the chain without a local process. The run summaries link to the
+preceding and following runs, and the chain keeps the initial `publish_modules`
+setting. The default `through_batch=0` runs a single slice. A chain needs an
+offset divisible by 1000 and a starting batch at or before `through_batch`.
+
+If a run fails before dispatching, rerun the failed jobs to resume. If dispatch
+failed or was interrupted, check the run list for a child with the requested
+offset and parent run ID. If the child exists, continue from it. If no child
+was created, dispatch that offset manually with the same batch limit and
+`publish_modules` setting.
+
 The Actions summary counts certificates, inconclusive inputs and failures. It
 reports timings by checked rank, plus elapsed time for the benchmark as a whole.
 The job duration in Actions also includes runner setup and dependency downloads.
