@@ -1,3 +1,5 @@
+import {batchLabel} from "./batch-display.mjs";
+
 const repository = "https://github.com/khwilson/verified-lcalc";
 const labelPattern = /^(\d+)\.([a-z]+)(\d+)$/;
 const cataloguePattern = /^ec-certificates-\d+-\d+\.json$/;
@@ -53,7 +55,10 @@ function definition(list, title, content) {
 }
 
 function metadata(list, catalogue) {
-  const {git_revision: revision, toolchain, mathlib_revision, tauceti_revision} = catalogue;
+  const {git_revision: revision, lean_version, toolchain, mathlib_revision, tauceti_revision} = catalogue;
+  const batch = batchLabel(catalogue);
+  if (batch) definition(list, "Batch", node("code", batch));
+  if (lean_version) definition(list, "Lean version", node("code", lean_version));
   if (revision) {
     definition(list, "Git revision", /^[0-9a-f]{7,40}$/.test(revision)
       ? link(revision, `${repository}/tree/${revision}`)
