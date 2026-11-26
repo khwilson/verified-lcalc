@@ -171,13 +171,23 @@ certify_ec GoodTamagawa from
   { equation := ⟨0, 0, 8, -16, 0⟩,
     localInvariants := some [{ prime := 3, tamagawaNumber := some 1 }] }
 
+certify_ec RawTamagawaProduct from_json_string
+  r#"{"ainvs":[0,0,1,-1,0],"minimality":[37],"tamagawa_product":1}"#
+
+example : RawTamagawaProduct.certificate.tamagawaProduct.isSome = true := by decide +kernel
+
+certify_ec RawAdditiveTamagawaProduct from_json_string
+  r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],"tamagawa_product":5}"#
+
+example : RawAdditiveTamagawaProduct.certificate.tamagawaProduct.isNone = true := by decide +kernel
+
 example : (GoodTamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 3) = 1 := by
   obtain ⟨_, h⟩ := GoodTamagawa.tamagawa_numbers { prime := 3, tamagawaNumber := some 1 }
     (by decide +kernel) 1 rfl
   exact h (by decide +kernel)
 
 /--
-info: TamagawaOutsideScope: Tamagawa claims outside good or I₁ reduction are unverified.
+info: TamagawaOutsideScope: Tamagawa claims outside good, I₁ or I₂ reduction are unverified.
 ---
 info: Certified TamagawaOutsideScope.ap_correct and TamagawaOutsideScope.point_integral
 for the supplied lists
@@ -369,9 +379,20 @@ run_cmd do
     (← `(certify_ec IncompatibleTamagawaRowsReversed from_json_string
       r#"{"ainvs":[0,0,8,-16,0],"prime":2,"tamagawa_number":2,
           "local_invariants":[{"prime":2,"tamagawa_number":1}]}"#))
+  invariantRejected `RawWrongTamagawaProduct
+    (← `(certify_ec RawWrongTamagawaProduct from_json_string
+      r#"{"ainvs":[0,0,1,-1,0],"minimality":[37],"tamagawa_product":2}"#))
   invariantRejected `WrongTamagawa (← `(certify_ec WrongTamagawa from
     { GoodTamagawa.witness with
       localInvariants := some [{ prime := 3, tamagawaNumber := some 2 }] }))
+  invariantRejected `WrongI2TamagawaOne (← `(certify_ec WrongI2TamagawaOne from_json_string
+    r#"{"ainvs":[1,-1,1,-6,-4],"minimality":[17,17],"prime":17,
+        "discriminant_valuation":2,"reduction_type":1,"kodaira_symbol":6,
+        "tamagawa_number":1}"#))
+  invariantRejected `WrongI2TamagawaThree (← `(certify_ec WrongI2TamagawaThree from_json_string
+    r#"{"ainvs":[1,-1,1,-6,-4],"minimality":[17,17],"prime":17,
+        "discriminant_valuation":2,"reduction_type":1,"kodaira_symbol":6,
+        "tamagawa_number":3}"#))
   invariantRejected `IncompatibleAdditiveRows (← `(certify_ec IncompatibleAdditiveRows
     from_json_string
     r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],

@@ -9,6 +9,8 @@ Check the exported theorem types and audit their dependencies after importing th
 
 open Lean Elab Command VerifiedLcalc VerifiedLcalc.EllipticCurve
 
+example : LMFDB.C112a2.curve = (⟨0, 1, 0, 0, 4⟩ : WeierstrassCurve ℤ) := rfl
+
 example : (LMFDB.C112a2.curve.baseChange ℚ).j = -4 / 7 :=
   LMFDB.C112a2.j_invariant
 example : LMFDB.C112a2.curve.Δ = -7168 := LMFDB.C112a2.discriminant
@@ -67,6 +69,19 @@ example :
 example : ((LMFDB.C179a1.certificate.arithmetic.minimalModel.get
     (by decide +kernel)).kodaira.map fun fact => ((fact.prime : ℕ), fact.index)) =
     [(179, some 1)] := by decide +kernel
+
+example : (LMFDB.C17a2.curve : WeierstrassCurve ℤ) = ⟨1, -1, 1, -6, -4⟩ := rfl
+
+example : (LMFDB.C17a2.certificate.arithmetic.tamagawa.map fun fact =>
+    ((fact.prime : ℕ), fact.value)) = [(17, 2)] := by decide +kernel
+
+example :
+    letI : Fact (Nat.Prime 17) := ⟨by decide +kernel⟩
+    (LMFDB.C17a2.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 17) = 2 := by
+  exact (LMFDB.C17a2.certificate.arithmetic.tamagawa[0]'(by decide +kernel)).correct
+
+example : (LMFDB.C112a2.certificate.arithmetic.tamagawa.map fun fact =>
+    ((fact.prime : ℕ), fact.value)) = [(7, 1)] := by decide +kernel
 
 example :
     (((LMFDB.C179a1.certificate.arithmetic.minimalModel.get
@@ -160,10 +175,43 @@ example : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point :=
 example : LMFDB.C243a1.curve.toAffine.Equation 1 0 :=
   LMFDB.C243a1.points_on_curve 1 0 (by decide +kernel)
 
-example :
+/-- The complete stored coefficient prefix begins at one after decoding the zero sentinel. -/
+theorem imported_112a2_anlist :
+    (List.range 20).map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1)) =
+      [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0] :=
+  (LMFDB.C112a2.certificate.arithmetic.dirichletCoefficients.get (by rfl)).property
+
+/-- Taking the first eight entries recovers the shorter coefficient prefix. -/
+theorem imported_112a2_anlist_first_eight :
     (List.range 8).map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1)) =
-      [1, 0, -2, 0, -4, 0, -1, 0] :=
-  LMFDB.C112a2.dirichlet_coefficients
+      [1, 0, -2, 0, -4, 0, -1, 0] := by
+  have h := congrArg (List.take 8) imported_112a2_anlist
+  rw [← List.map_take, List.take_range] at h
+  exact h
+
+run_cmd do
+  let input ← IO.ofExcept <| Json.parse
+    r#"{"ainvs":[0,1,0,0,4],"anlist":[1,1]}"#
+  match CurveDataJson.decode input with
+  | .ok _ => throwError "Expected rejection of a nonzero leading anlist entry"
+  | .error message =>
+    unless message == "LMFDB anlist must start with a_0 = 0" do
+      throwError "Unexpected anlist decoding error: {message}"
+
+private def primeCoefficients112a2 : List (ℕ × ℤ) :=
+  [(2, 0), (3, -2), (5, -4), (7, -1), (11, 0), (13, 0), (17, -2), (19, 2), (23, -8), (29, 2),
+    (31, -4), (37, -6), (41, -2), (43, -8), (47, 4), (53, -10), (59, -6), (61, 4), (67, 12),
+    (71, 0), (73, -14), (79, 8), (83, -6), (89, 10), (97, -2)]
+
+/-- The decoded list contains exactly the stored prime-indexed entries in their source order. -/
+theorem imported_112a2_aplist_values :
+    LMFDB.C112a2.certificate.arithmetic.primeCoefficients.map Subtype.val =
+      some primeCoefficients112a2 := rfl
+
+/-- Every coefficient in the stored prime-indexed list agrees with the curve's L-function. -/
+theorem imported_112a2_aplist (p : ℕ) (a : ℤ) (h : (p, a) ∈ primeCoefficients112a2) :
+    (LMFDB.C112a2.curve.baseChange ℚ).LFunction p = a :=
+  (LMFDB.C112a2.certificate.arithmetic.primeCoefficients.get (by rfl)).property p a h
 
 example :
     analyticOrderAt
@@ -174,10 +222,12 @@ example :
 example : addOrderOf (LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩) = 2 :=
   LMFDB.C112a2.torsion_generators.exact_order _
 
-example :
-    (Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level.factorization 2 =
-      4 :=
-  (LMFDB.C112a2.conductor_valuation (2, 4) (by decide +kernel)).2
+/-- The stored conductor exponents agree with the level of the modular realization. -/
+theorem imported_112a2_conductor_exponents (row : ℕ × ℕ)
+    (h : row ∈ ([(2, 4), (7, 1)] : List (ℕ × ℕ))) :
+    (Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level.factorization
+      row.1 = row.2 :=
+  (LMFDB.C112a2.conductor_valuation row h).2
 
 example :
     Nat.card (AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) = 2 :=
@@ -187,6 +237,99 @@ example : ∃ e : ZMod 2 ≃+ AddCommGroup.torsion (LMFDB.C112a2.curve.baseChang
     (e 1 : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =
       LMFDB.C112a2.torsion_generators.point ⟨0, by decide⟩ :=
   LMFDB.C112a2.torsion_structure.2
+
+/-- The stored list is exactly the distinct prime support of rational torsion on 112.a2. -/
+theorem imported_112a2_torsion_primes (p : ℕ) :
+    p ∈ ([2] : List ℕ) ↔ p.Prime ∧
+      p ∣ Nat.card (AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) := by
+  let support := LMFDB.C112a2.certificate.torsion.primeSupport.get (by rfl)
+  have hprimes : support.primes = [2] := by decide +kernel
+  simpa only [hprimes] using support.exact_support p
+
+/-- The complete stored torsion generator family consists of the literal point `(-2, 0)`. -/
+theorem imported_112a2_torsion_generator_list :
+    LMFDB.C112a2.certificate.torsion.generators.map (fun family => List.ofFn family.2) =
+      some [.mk (LMFDB.C112a2.torsion_generators.points_on_curve (-2) 0
+        (by decide +kernel))] := rfl
+
+/-- The literal affine point `(-2, 0)` generates the full rational torsion subgroup. -/
+theorem imported_112a2_torsion_generator :
+    ∃ e : ZMod 2 ≃+ AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point,
+      (e 1 : (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =
+        .mk (LMFDB.C112a2.torsion_generators.points_on_curve (-2) 0 (by decide +kernel)) :=
+  LMFDB.C112a2.torsion_structure.2
+
+/-- The checked generation proof identifies the subgroup generated by the literal point. -/
+theorem imported_112a2_torsion_generation :
+    AddSubgroup.closure
+      ({.mk (LMFDB.C112a2.torsion_generators.points_on_curve (-2) 0 (by decide +kernel))} :
+        Set (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =
+      AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point := by
+  have h := (LMFDB.C112a2.certificate.torsion.generation.get (by rfl)).down
+  change AddSubgroup.closure (Set.range
+    (fun i : Fin 1 => LMFDB.C112a2.torsion_generators.point ⟨i.val, i.isLt⟩)) = _ at h
+  have hzero : (default : Fin 1) = 0 := Subsingleton.elim _ _
+  simp only [Set.range_unique, hzero] at h
+  exact h
+
+example : ¬ EllipticCurve.HasEverywherePotentialGoodReduction
+    (LMFDB.C112a2.curve.baseChange ℚ) :=
+  fun h => Bool.false_ne_true (LMFDB.C112a2.potential_good_reduction.mp h)
+
+example : ¬ WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)
+    (LMFDB.C112a2.curve.baseChange ℚ) :=
+  fun h => Bool.false_ne_true (LMFDB.C112a2.semistable.mp h)
+
+example : ¬ Squarefree LMFDB.C112a2.curve.Δ.natAbs :=
+  fun h => Bool.false_ne_true (LMFDB.C112a2.squarefree_discriminant.mp h)
+
+private def localRow112a2Two : LocalReductionClaim :=
+  { prime := 2, conductorValuation := some 4, discriminantValuation := some 10,
+    jDenominatorValuation := some 0, reductionType := some 0, rootNumber := some 1 }
+
+private def localRow112a2Seven : LocalReductionClaim :=
+  { prime := 7, conductorValuation := some 1, discriminantValuation := some 1,
+    jDenominatorValuation := some 1, reductionType := some (-1), kodairaSymbol := some 5,
+    tamagawaNumber := some 1, rootNumber := some 1 }
+
+/-- The wild row gives the supported exact discriminant, denominator, and reduction data. -/
+theorem imported_112a2_local_two : localRow112a2Two.Spec LMFDB.C112a2.curve :=
+  LMFDB.C112a2.local_invariants _ (by decide +kernel)
+
+/-- The tame row gives the supported exact discriminant, denominator, and reduction data. -/
+theorem imported_112a2_local_seven : localRow112a2Seven.Spec LMFDB.C112a2.curve :=
+  LMFDB.C112a2.local_invariants _ (by decide +kernel)
+
+example :
+    letI : Fact (Nat.Prime 7) := ⟨by decide +kernel⟩
+    (LMFDB.C112a2.curve.baseChange ℚ).reductionSymbol (RationalLocalRing 7) = .I 1 := by
+  obtain ⟨_, h⟩ := LMFDB.C112a2.kodaira_symbols localRow112a2Seven (by decide +kernel)
+  exact h 5 rfl
+
+example :
+    letI : Fact (Nat.Prime 7) := ⟨by decide +kernel⟩
+    (LMFDB.C112a2.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 7) = 1 := by
+  let fact := LMFDB.C112a2.certificate.arithmetic.tamagawa[0]'(by decide +kernel)
+  exact fact.correct
+
+/-- The local arithmetic sign is positive at both primes of bad reduction. -/
+theorem imported_112a2_local_sign (p : ℕ) [Fact p.Prime] (h : p = 2 ∨ p = 7) :
+    wildLocalRootSpec LMFDB.C112a2.curve LMFDB.C112a2.localData p = 1 := by
+  let signs := (LMFDB.C112a2.certificate.arithmetic.minimalModel.get (by rfl)).localRootNumbers
+  rcases h with rfl | rfl
+  · exact (signs[0]'(by decide +kernel)).correct
+  · exact (signs[1]'(by decide +kernel)).correct
+
+run_cmd do
+  for fact in [``imported_112a2_anlist, ``imported_112a2_anlist_first_eight,
+      ``imported_112a2_aplist_values, ``imported_112a2_aplist,
+      ``imported_112a2_torsion_primes,
+      ``imported_112a2_torsion_generator_list, ``imported_112a2_torsion_generator,
+      ``imported_112a2_torsion_generation,
+      ``imported_112a2_local_two, ``imported_112a2_local_seven, ``imported_112a2_local_sign] do
+    for axiomName in ← liftTermElabM (Lean.collectAxioms fact) do
+      unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+        throwError "Unexpected axiom in {fact}: {axiomName}"
 
 private def wildLocalSign : LocalRootNumberFact LMFDB.C243a1.curve :=
   (LMFDB.C243a1.certificate.arithmetic.minimalModel.get (by decide +kernel)).localRootNumbers[0]
@@ -234,6 +377,7 @@ run_cmd do
   check `LMFDB.C112a2 `torsion_generators.exact_order false
   check `LMFDB.C112a2 `torsion false
   check `LMFDB.C112a2 `torsion_structure false
+  check `LMFDB.C112a2 `torsion_primes_value_valid false
   check `LMFDB.C112a2 `dirichlet_coefficients false
   check `LMFDB.C197a1 `j_integral false
   check `LMFDB.C288a1 `j_integral false

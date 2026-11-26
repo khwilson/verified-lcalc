@@ -5,6 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
+public import VerifiedLcalc.Certificate.Support.ExtensionData
 public import VerifiedLcalc.Certificate.Support.Isogenies
 public import VerifiedLcalc.Certificate.Witnesses.Algebraic
 public import VerifiedLcalc.Certificate.Support.Torsion

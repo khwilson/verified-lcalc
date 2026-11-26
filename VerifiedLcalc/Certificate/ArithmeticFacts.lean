@@ -25,10 +25,11 @@ open EllipticCurve NumberField WeierstrassCurve
     (rows : List LocalReductionClaim)
     (h : ∀ row ∈ rows, row.TamagawaSpec curve) : List (LocalTamagawaFact curve) :=
   rows.attach.filterMap fun row =>
-    match hc : row.val.tamagawaNumber, hs : supportsTamagawaOne curve row.val.prime with
-    | some value, true =>
+    match hc : row.val.tamagawaNumber, hs : tamagawaExpected? curve row.val.prime with
+    | some value, some _ =>
       let proof := h row.val row.property value hc
-      some ⟨⟨row.val.prime, Classical.choose proof⟩, value, Classical.choose_spec proof hs⟩
+      some ⟨⟨row.val.prime, Classical.choose proof⟩, value,
+        Classical.choose_spec proof (by simp [hs])⟩
     | _, _ => none
 
 /-- Retain only checked symbols or additive-family information from the supplied rows. -/

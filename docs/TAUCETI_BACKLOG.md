@@ -176,9 +176,10 @@ torsion specialization.
 
 The pinned release defines `tamagawaNumberAt` on the completed field and
 compares it with `tateLocalIndex` on a checked terminal model. Good reduction
-and `I₁` both contribute one. For larger multiplicative indices, the terminal
-comparison gives `n` in the split case and `gcd(2,n)` in the nonsplit case.
-The rational witness adapter still needs to transport its verified splitting
+and `I₁` both contribute one. For `I₂`, both terminal index formulas give
+two, which the rational checker now verifies. At higher multiplicative
+indices, the terminal comparison gives `n` in the split case and `gcd(2,n)`
+in the nonsplit case. The rational witness adapter still needs to transport its verified splitting
 through the residue-field identification and then through the normalized
 terminal model. For specific additive factors, connect finite row evidence
 to the relevant `IsTateTerminal` and residue-polynomial hypotheses.
@@ -194,6 +195,15 @@ lemma would transport `tamagawaNumberAt` under a valuation-preserving
 factorization checker reuse already verified local values. The good and
 index-one proofs now apply directly to either base ring from the normalized
 discriminant and c₄ valuations.
+
+For integral equations over `ℤ`, the downstream certificate also proves a
+global product of one when every prime divisor of the discriminant is checked
+to have good reduction or multiplicative index one. This uses TauCeti's
+`WeierstrassCurve.tamagawaProduct_eq_prod` together with the pinned local
+completed-factor theorems; no new general Tamagawa API is needed for this
+case. Extending the global product checker to use exact `I₂` values or
+other factors still requires assembling the checked finite local factors
+and proving completeness of the prime roster.
 
 ## TC-11 — explicit zero-y Vélu quotient equation
 
@@ -791,3 +801,28 @@ arithmetic indexing.
 [Serre, Proposition 5 and §§4.1.11–12](https://doi.org/10.1215/S0012-7094-87-05413-5)
 · [Pinned ramification infrastructure](https://github.com/TauCetiProject/TauCeti/tree/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/NumberTheory/LocalField/Herbrand)
 · [Pinned factorization](https://github.com/leanprover-community/mathlib4/blob/31ce06eaadf4a200c0e1407c5f10953cf606b8f8/Mathlib/Data/Nat/Factorization/Defs.lean)
+
+## TC-32 — full torsion over presented number fields
+
+**Hypotheses.** An elliptic curve over a number field with a checked presentation,
+chosen good-reduction primes of its ring of integers with explicit residue maps
+and degrees, and either suitable ramification bounds or complementary primes
+for prime-to-residue-characteristic tests.
+
+**Target.** Specialize TauCeti’s
+[`card_torsion_dvd_card_reduction`](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Point/TorsionReduction.lean)
+to checked number-field residue data. Given independent exact-order torsion
+generators whose product of orders attains the bound, construct the additive
+equivalence onto Mathlib’s full torsion subgroup. G2 already accepts such an
+equivalence as supplied evidence.
+
+## TC-33 — modular obstructions for integral-point completeness
+
+**Hypotheses.** A Weierstrass curve over `ℤ` and a finite residue ring map.
+
+**Target.** Mathlib already provides
+`WeierstrassCurve.Affine.Equation.map`. Consider upstreaming the optional
+packaging constructor that turns a proof of no affine solutions over a finite
+residue ring into empty abscissa support over `ℤ`. This project uses that
+generic construction for the mod-two obstruction. Finite search and exact
+count packaging remain downstream verifier responsibilities.

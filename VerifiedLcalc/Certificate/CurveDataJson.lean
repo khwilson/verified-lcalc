@@ -316,10 +316,7 @@ def specialLValueClaim (j : Json) : Except String (Option SpecialLValueClaim) :=
 def abcQualityClaim (j : Json) : Except String (Option AbcQualityClaim) := do
   let key ← nativeKey `abcQuality
   let some evidence := optionalData j (key ++ "_evidence") | return none
-  let number ← (← j.getObjVal? key).getNum?
-  unless number.exponent ≤ 512 && (toString number.mantissa).length ≤ 512 do
-    throw "Oversized abc_quality decimal"
-  let reported : Rat := (number.mantissa : Rat) / 10 ^ number.exponent
+  let reported ← exactReportedDecimal (← j.getObjVal? key)
   let error ← rationalValue (← evidence.getObjVal? "error")
   let rows ← array (← evidence.getObjVal? "factors") 4096
   let factors ← rows.toList.mapM nonnegativeInteger
@@ -502,6 +499,9 @@ def decode (j : Json) : Except String EllipticWitness := do
   let minimumTwistDiscriminant ← optionalClaim j `minimumTwistDiscriminant integer
   let modifiedSzpiroRatio ← decimalEnclosureClaim j (← nativeKey `modifiedSzpiroRatio)
   let torsionGrowthField ← optionalValue j "torsion_growth" torsionGrowthFieldClaim
+  let torsionGrowthFactors ← ((optionalData j "torsion_growth").bind fun row =>
+    optionalData row "torsion").mapM fun value => do
+      (← array value 256).toList.mapM nonnegativeInteger
   let canonicalHeights ← canonicalHeightsClaim j
   let regulator ← regulatorClaim j
   let modularDegree ← optionalClaim j `modularDegree nonnegativeInteger
@@ -602,6 +602,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     minimumTwistDiscriminant
     modifiedSzpiroRatio
     torsionGrowthField
+    torsionGrowthFactors
     canonicalHeights
     regulator
     modularDegree

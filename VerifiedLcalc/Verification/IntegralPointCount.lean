@@ -8,6 +8,7 @@ module
 public import VerifiedLcalc.Certificate.Witnesses.Algebraic
 public import VerifiedLcalc.Verification.CurveData
 public import Mathlib.Data.Finset.Union
+public import Mathlib.Data.ZMod.Basic
 
 /-! # Complete integral-point counts from supplied abscissa support -/
 
@@ -16,6 +17,13 @@ public section
 namespace VerifiedLcalc
 
 open EllipticWitness WeierstrassCurve
+
+/-- Construct empty integral abscissa support from an affine reduction obstruction. -/
+def IntegralXSupport.ofNoAffinePointsMod {curve : WeierstrassCurve ℤ} {m : ℕ}
+    (h : ∀ x y : ZMod m, ¬ (curve.baseChange (ZMod m)).toAffine.Equation x y) :
+    IntegralXSupport curve where
+  xs := []
+  covers _ _ hy := False.elim (h _ _ (hy.map (Int.castRingHom (ZMod m))))
 
 /-- All candidate pairs in the fibers of the supplied seeds, with duplicates removed. -/
 @[expose] def integralFiberSolutions (curve : WeierstrassCurve ℤ) (seeds : List (ℤ × ℤ)) :

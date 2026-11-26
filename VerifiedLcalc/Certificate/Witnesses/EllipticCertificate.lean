@@ -79,6 +79,8 @@ structure IntegralCurveProofs (curve : WeierstrassCurve ℤ)
   modifiedSzpiroRatio : Option (ModifiedSzpiroRatioEvidence curve) := none
   /-- Evidence of strict torsion growth in the field presented by the submitted polynomial. -/
   torsionGrowthField : Option (TorsionGrowthFieldFact curve) := none
+  /-- An exact presentation of the full torsion group over the reported growth field. -/
+  torsionGrowth : Option (TorsionGrowthFacts curve) := none
   /-- A proved height enclosure indexed by its ordered rational point list. -/
   canonicalHeights : Option (Σ points : (Σ n : ℕ,
     Fin n → (curve.baseChange ℚ).toAffine.Point), CanonicalHeightFacts points.2) := none
@@ -120,6 +122,8 @@ structure EllipticCertificate (curve : WeierstrassCurve ℤ)
   intrinsicTorsion : Option (IntrinsicTorsionFact curve) := none
   /-- The checked field presentation and absolute degree for one torsion growth row. -/
   torsionGrowthField : Option (TorsionGrowthFieldFact curve) := none
+  /-- The full torsion subgroup with its invariant factors linked to one submitted row. -/
+  torsionGrowth : Option (StoredTorsionGrowthFact curve) := none
   /-- A checked oriented rational isogeny edge and its integral target. -/
   isogeny : Option (Σ target : WeierstrassCurve ℤ, DegreeTwoIsogenyFact curve target) := none
   /-- The complete isogeny class with derived summaries and optional native LMFDB ordering. -/

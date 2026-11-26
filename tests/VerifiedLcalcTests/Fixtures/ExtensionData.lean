@@ -90,4 +90,37 @@ certify_ec Growth64 from_json_string
     "torsion_growth":{"degree":2,"field":[1,0,1],"torsion":[2,2],"lmfdb_label":"64.a4"}}"#
   with_proofs ({ torsionGrowthField := some growthEvidence } : IntegralCurveProofs growthModel)
 
+/-- Explicit input to the full-presentation dispatch regression. -/
+class Growth64Equivalence where
+  /-- The entire torsion subgroup over the submitted polynomial's root field. -/
+  full : (Fin 2 → ZMod 2) ≃+ AddCommGroup.torsion (growthModel.baseChange K).toAffine.Point
+
+/-- Supply a full presentation when the caller has proved the corresponding equivalence. -/
+def fullEvidence (evidence : Growth64Equivalence) : TorsionGrowthFacts growthModel where
+  toTorsionGrowthFieldFact := growthEvidence
+  elliptic := ⟨by
+    change IsUnit (growthModel.baseChange K).Δ
+    exact isUnit_iff_ne_zero.mpr (by
+      norm_num [growthModel, baseChange, map_Δ, Δ, b₂, b₄, b₆, b₈])⟩
+  factorCount := 2
+  factor := fun _ => 2
+  factors_nontrivial := fun _ => le_rfl
+  factors_divide := fun _ _ _ => dvd_rfl
+  equivalence := evidence.full
+
+section
+
+variable [Growth64Equivalence]
+
+-- The fixed equation's finite checks do not use the caller's equivalence.
+set_option linter.unusedSectionVars false in
+set_option linter.concreteInstances false in
+certify_ec FullGrowth64 from_json_string
+  r#"{"ainvs":[0,0,0,1,0],"degree":4,"torsion":2,"discriminant":-64,
+    "torsion_growth":{"degree":2,"field":[1,0,1],"torsion":[2,2],"lmfdb_label":"64.a4"}}"#
+  with_proofs
+    ({ torsionGrowth := some (fullEvidence inferInstance) } : IntegralCurveProofs growthModel)
+
+end
+
 end ExtensionDataFixture
