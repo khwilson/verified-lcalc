@@ -74,6 +74,7 @@ def main() -> None:
                 "VerifiedLcalc.Certificates",
                 "VerifiedLcalcTests",
                 "VerifiedLcalc.Verification.Precision",
+                "VerifiedLcalcTests.Fixtures.LmfdbCI",
                 "VerifiedLcalcTests.Fixtures.TwoFactorTorsion",
             ]
         )
@@ -106,6 +107,7 @@ def main() -> None:
         "tests/OrderCheckGenerality.lean",
         "tests/consumers/CertifiedECConsumer.lean",
         "tests/consumers/CatalogueAnalyticRank.lean",
+        "tests/consumers/FixtureFieldCoverage.lean",
         "tests/consumers/CertifiedECDataConsumer.lean",
         "tests/consumers/CertifiedECPointsConsumer.lean",
         "tests/consumers/CertifiedECInvariantsConsumer.lean",
