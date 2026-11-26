@@ -1,0 +1,1497 @@
+{
+  "distinct_names": 85,
+  "fields": [
+    {
+      "checker_scopes": [
+        "Complete singleton conductor roster in the published range."
+      ],
+      "evidence": [],
+      "field": "Ciso",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Complete singleton conductor roster and singleton isogeny class in the published range."
+      ],
+      "evidence": [],
+      "field": "Clabel",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Complete singleton isogeny class in the published range."
+      ],
+      "evidence": [],
+      "field": "Cnumber",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Explicit radius and complete factorization, with j distinct from 0 and 1728."
+      ],
+      "evidence": [
+        {
+          "curve": "112.a2",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 129,
+          "scope": "Absolute error enclosure for the specified decimal.",
+          "source": "tests/fixtures/lmfdb/112.a2.json",
+          "statement": "|(LMFDB.C112a2.curve.baseChange ℚ).abcQuality LMFDB.C112a2.abc_quality_defined -\n      10348177494302118 / 10000000000000000| ≤\n  1 / 1000000000000000",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.abcQuality112",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "abc_quality",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Absolute discriminant of the checked globally minimal equation."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 32,
+          "scope": "Global minimality and absolute discriminant.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "WeierstrassCurve.IsGlobalMinimal (NumberField.RingOfIntegers ℚ)\n    (LMFDB.C179a1.curve.baseChange ℚ) ∧\n  LMFDB.C179a1.curve.Δ.natAbs = 179",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.minDiscriminant179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "absD",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Euler characteristic of the effective compactified quotient of the exact simultaneous image."
+      ],
+      "evidence": [],
+      "field": "adelic_genus",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Index in the full integral adelic matrix group."
+      ],
+      "evidence": [],
+      "field": "adelic_index",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Least positive modulus with full kernel containment."
+      ],
+      "evidence": [],
+      "field": "adelic_level",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Integral equation indexing the certificate and its nonzero discriminant proof."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 22,
+          "scope": "Integral equation and nonsingularity.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "LMFDB.C179a1.curve = { a₁ := 0, a₂ := 0, a₃ := 1, a₄ := -1, a₆ := -1 } ∧\n  LMFDB.C179a1.curve.Δ ≠ 0",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.equation179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "ainvs",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Requires independently checked numerical evidence of exact order zero or one."
+      ],
+      "evidence": [
+        {
+          "curve": "112.a2",
+          "extent": "complete_for_sample",
+          "project_axioms": [
+            "VerifiedLcalc.Assumptions.ellipticModularity"
+          ],
+          "proof_line": 165,
+          "scope": "Exact order at 1 of the modular realization.",
+          "source": "data/witnesses/112a2.json",
+          "statement": "analyticOrderAt\n    (Modularity.modularWitness LMFDB.C112a2.curve\n        LMFDB.C112a2.nonsingular).formL\n    1 =\n  1",
+          "status": "assumption_backed",
+          "theorem": "FixtureFieldCoverage.rank112",
+          "value_origin": "certified_numerical_witness"
+        },
+        {
+          "curve": "37.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 172,
+          "scope": "Exact order at 1 for an explicitly supplied modular realization.",
+          "source": "data/witnesses/37a1.json",
+          "statement": "∀ (model : Modularity.ArithmeticModularRealization Curve37.curve),\n  analyticOrderAt model.formL 1 = 1",
+          "status": "conditional_fixture",
+          "theorem": "FixtureFieldCoverage.rank37",
+          "value_origin": "certified_numerical_witness"
+        }
+      ],
+      "field": "analytic_rank",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Complete distinct primes of bad reduction of the minimal model."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 42,
+          "scope": "Complete bad prime support.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "∀ (p : ℕ) [inst : Fact (Nat.Prime p)],\n  p ∈ [179] ↔ ¬(LMFDB.C179a1.curve.baseChange (ZMod p)).IsElliptic",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.badPrimes179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "bad_primes",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Maximum of the complete matrix of minimum degrees."
+      ],
+      "evidence": [],
+      "field": "class_deg",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Maximum of the complete matrix of minimum degrees."
+      ],
+      "evidence": [],
+      "field": "class_deg",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_classdata"
+    },
+    {
+      "checker_scopes": [
+        "Exact number of rational isomorphism types with exhaustive class evidence."
+      ],
+      "evidence": [],
+      "field": "class_size",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Exact number of rational isomorphism types with exhaustive class evidence."
+      ],
+      "evidence": [],
+      "field": "class_size",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_classdata"
+    },
+    {
+      "checker_scopes": [
+        "Geometric endomorphism ring as an order of given discriminant, or the integers for zero."
+      ],
+      "evidence": [],
+      "field": "cm",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Level of an arithmetic modular realization. The standalone theorem uses modularity."
+      ],
+      "evidence": [
+        {
+          "curve": "112.a2",
+          "extent": "complete_for_sample",
+          "project_axioms": [
+            "VerifiedLcalc.Assumptions.ellipticModularity"
+          ],
+          "proof_line": 112,
+          "scope": "Level of the modular realization.",
+          "source": "tests/fixtures/lmfdb/112.a2.json",
+          "statement": "(Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level =\n  112",
+          "status": "assumption_backed",
+          "theorem": "FixtureFieldCoverage.conductor112",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "conductor",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Level of an arithmetic modular realization. The standalone theorem uses modularity."
+      ],
+      "evidence": [],
+      "field": "conductor",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_classdata"
+    },
+    {
+      "checker_scopes": [
+        "Level of an arithmetic modular realization. The standalone theorem uses modularity."
+      ],
+      "evidence": [],
+      "field": "conductor",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_mwbsd"
+    },
+    {
+      "checker_scopes": [
+        "Level of an arithmetic modular realization. The standalone theorem uses modularity."
+      ],
+      "evidence": [],
+      "field": "conductor",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_localdata"
+    },
+    {
+      "checker_scopes": [
+        "Level of an arithmetic modular realization. The standalone theorem uses modularity."
+      ],
+      "evidence": [],
+      "field": "conductor",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_galrep"
+    },
+    {
+      "checker_scopes": [
+        "Least degree of the rational modular parametrization at the actual conductor."
+      ],
+      "evidence": [],
+      "field": "degree",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Listed exact integral Tate-module images, with separate optional exhaustive support."
+      ],
+      "evidence": [],
+      "field": "elladic_images",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Enclosure of the Faltings height on the verified globally minimal model."
+      ],
+      "evidence": [],
+      "field": "faltings_height",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Exact predecessor count on the complete class, with ties in native order."
+      ],
+      "evidence": [],
+      "field": "faltings_index",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Exact ratio of the attained maximal area to the input area in the complete class."
+      ],
+      "evidence": [],
+      "field": "faltings_ratio",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "The cardinality is one when the entire rational torsion subgroup is trivial."
+      ],
+      "evidence": [],
+      "field": "intrinsic_torsion",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Zero-based isogeny-class index in the ordered conductor roster."
+      ],
+      "evidence": [],
+      "field": "iso_nlabel",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Set of minimum isogeny degrees from the subject to the complete class."
+      ],
+      "evidence": [],
+      "field": "isogeny_degrees",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Exact rational j-invariant."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 28,
+          "scope": "Exact rational j-invariant.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "(LMFDB.C179a1.curve.baseChange ℚ).j = -110592 / 179",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.j179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "jinv",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Class label from the conductor and the ordered roster."
+      ],
+      "evidence": [],
+      "field": "lmfdb_iso",
+      "metadata_scopes": [
+        "Fixture/source identifiers serve as provenance until tied to a checked catalogue ordering."
+      ],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Class label from the conductor and the ordered roster."
+      ],
+      "evidence": [],
+      "field": "lmfdb_iso",
+      "metadata_scopes": [
+        "Fixture/source identifiers serve as provenance until tied to a checked catalogue ordering."
+      ],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_classdata"
+    },
+    {
+      "checker_scopes": [
+        "Curve label from the ordered conductor roster and complete canonical curve order."
+      ],
+      "evidence": [],
+      "field": "lmfdb_label",
+      "metadata_scopes": [
+        "Fixture/source identifiers serve as provenance until tied to a checked catalogue ordering."
+      ],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Curve label from the ordered conductor roster and complete canonical curve order."
+      ],
+      "evidence": [],
+      "field": "lmfdb_label",
+      "metadata_scopes": [
+        "Fixture/source identifiers serve as provenance until tied to a checked catalogue ordering."
+      ],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_mwbsd"
+    },
+    {
+      "checker_scopes": [
+        "Curve label from the ordered conductor roster and complete canonical curve order."
+      ],
+      "evidence": [],
+      "field": "lmfdb_label",
+      "metadata_scopes": [
+        "Fixture/source identifiers serve as provenance until tied to a checked catalogue ordering."
+      ],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_iwasawa"
+    },
+    {
+      "checker_scopes": [
+        "Curve label from the ordered conductor roster and complete canonical curve order."
+      ],
+      "evidence": [],
+      "field": "lmfdb_label",
+      "metadata_scopes": [
+        "Fixture/source identifiers serve as provenance until tied to a checked catalogue ordering."
+      ],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_torsion_growth"
+    },
+    {
+      "checker_scopes": [
+        "Curve label from the ordered conductor roster and complete canonical curve order."
+      ],
+      "evidence": [],
+      "field": "lmfdb_label",
+      "metadata_scopes": [
+        "Fixture/source identifiers serve as provenance until tied to a checked catalogue ordering."
+      ],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_localdata"
+    },
+    {
+      "checker_scopes": [
+        "Curve label from the ordered conductor roster and complete canonical curve order."
+      ],
+      "evidence": [],
+      "field": "lmfdb_label",
+      "metadata_scopes": [
+        "Fixture/source identifiers serve as provenance until tied to a checked catalogue ordering."
+      ],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_galrep"
+    },
+    {
+      "checker_scopes": [
+        "One-based position in the complete reduced minimal equation order."
+      ],
+      "evidence": [],
+      "field": "lmfdb_number",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Positive scaling of the minimal Néron differential under a minimum-degree map."
+      ],
+      "evidence": [],
+      "field": "manin_constant",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Minimal model of a least-conductor twist. Producer ties need separate evidence."
+      ],
+      "evidence": [],
+      "field": "min_quad_twist_ainvs",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Fundamental discriminant of a minimum-conductor twist."
+      ],
+      "evidence": [],
+      "field": "min_quad_twist_disc",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Exact conjugacy classes for listed residual images. Optional exhaustive non-CM support."
+      ],
+      "evidence": [],
+      "field": "modell_images",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Ordered sublist of finite images, with level, index and genus for supported prefixes."
+      ],
+      "evidence": [],
+      "field": "modm_images",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Complete exceptional support of integral images for non-CM curves."
+      ],
+      "evidence": [],
+      "field": "nonmax_primes",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Exact product over the proved exceptional support."
+      ],
+      "evidence": [],
+      "field": "nonmax_rad",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Number of distinct prime divisors of the minimal discriminant."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 47,
+          "scope": "Number of distinct bad primes.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "LMFDB.C179a1.curve.Δ.natAbs.primeFactors.card = 1",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.badPrimeCount179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "num_bad_primes",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Exact count given exhaustive abscissa support. Otherwise checks a lower bound."
+      ],
+      "evidence": [],
+      "field": "num_int_pts",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Binary codes compare the full integral period image. Larger codes are reports."
+      ],
+      "evidence": [],
+      "field": "optimality",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Boolean equivalence with potential good reduction at every prime."
+      ],
+      "evidence": [],
+      "field": "potential_good_reduction",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Exact algebraic rank from a singleton proved interval."
+      ],
+      "evidence": [],
+      "field": "rank",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Enclosure of the actual regulator when algebraic rank is proved zero."
+      ],
+      "evidence": [],
+      "field": "regulator",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Boolean equivalence with semistable reduction."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 51,
+          "scope": "Semistable at every finite prime.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "WeierstrassCurve.IsSemistable (NumberField.RingOfIntegers ℚ)\n  (LMFDB.C179a1.curve.baseChange ℚ)",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.semistable179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "semistable",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Serre's exact exceptional triples for semistable curves with good reduction at two."
+      ],
+      "evidence": [],
+      "field": "serre_invariants",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Analytic quotient strictly inside the rounding cell of a positive integer."
+      ],
+      "evidence": [],
+      "field": "sha",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Complete distinct prime support of the checked rounded analytic quotient."
+      ],
+      "evidence": [],
+      "field": "sha_primes",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Sign of the discriminant of the supplied equation."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 38,
+          "scope": "Exact discriminant sign.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "LMFDB.C179a1.curve.Δ.sign = -1",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.discriminantSign179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "signD",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Boolean equivalence with squarefree absolute minimal discriminant."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 56,
+          "scope": "Squarefree absolute discriminant.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "Squarefree LMFDB.C179a1.curve.Δ.natAbs",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.squarefree179",
+          "value_origin": "computed_from_equation"
+        }
+      ],
+      "field": "squarefree_disc",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Enclosure of the Faltings height with the stable-height logarithmic correction."
+      ],
+      "evidence": [],
+      "field": "stable_faltings_height",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Logarithmic enclosure on the minimal equation with proved algorithmic conductor norm."
+      ],
+      "evidence": [],
+      "field": "szpiro_ratio",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Exact order of rational torsion when proved. Larger bounds alone give divisibility."
+      ],
+      "evidence": [
+        {
+          "curve": "112.a2",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 147,
+          "scope": "Exact rational torsion cardinality.",
+          "source": "tests/fixtures/lmfdb/112.a2.json",
+          "statement": "Nat.card\n    ↥(AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =\n  2",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.torsion112",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "torsion",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Exact ascending distinct prime support of the proved full rational torsion order."
+      ],
+      "evidence": [],
+      "field": "torsion_primes",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Full cyclic or two-factor presentation with identified submitted generators."
+      ],
+      "evidence": [
+        {
+          "curve": "112.a2",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 152,
+          "scope": "Full rational cyclic group with the submitted generator.",
+          "source": "tests/fixtures/lmfdb/112.a2.json",
+          "statement": "∃ e, ↑(e 1) = LMFDB.C112a2.torsion_generators.point ⟨0, ⋯⟩",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.torsionStructure112",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "torsion_structure",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_curvedata"
+    },
+    {
+      "checker_scopes": [
+        "Consecutive actual coefficients from a₁ after checking and removing native a₀."
+      ],
+      "evidence": [
+        {
+          "curve": "112.a2",
+          "extent": "partial",
+          "project_axioms": [],
+          "proof_line": 123,
+          "scope": "Coefficients a₁ through a₈, after a₀.",
+          "source": "tests/fixtures/lmfdb/112.a2.json",
+          "statement": "List.map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1))\n    (List.range 8) =\n  [1, 0, -2, 0, -4, 0, -1, 0]",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.dirichlet112",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "anlist",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_classdata"
+    },
+    {
+      "checker_scopes": [
+        "Prime coefficients of the curve with checked local minimality at the given indices."
+      ],
+      "evidence": [],
+      "field": "aplist",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_classdata"
+    },
+    {
+      "checker_scopes": [
+        "Complete matrix of minimum degrees in canonical LMFDB order."
+      ],
+      "evidence": [],
+      "field": "isogeny_matrix",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_classdata"
+    },
+    {
+      "checker_scopes": [
+        "Weighted residue from the complete prescribed prime coefficient list."
+      ],
+      "evidence": [],
+      "field": "trace_hash",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_classdata"
+    },
+    {
+      "checker_scopes": [
+        "Enclosure of the Euclidean covolume of the minimal normalized complex period lattice."
+      ],
+      "evidence": [],
+      "field": "area",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_mwbsd"
+    },
+    {
+      "checker_scopes": [
+        "Ordered rational affine points with curve membership."
+      ],
+      "evidence": [
+        {
+          "curve": "112.a2",
+          "extent": "partial",
+          "project_axioms": [],
+          "proof_line": 135,
+          "scope": "Membership of the supplied point.",
+          "source": "tests/fixtures/lmfdb/112.a2.json",
+          "statement": "(LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation 0 2",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.generator112",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "gens",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_mwbsd"
+    },
+    {
+      "checker_scopes": [
+        "Canonical height enclosures for the actual submitted generators in order."
+      ],
+      "evidence": [],
+      "field": "heights",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_mwbsd"
+    },
+    {
+      "checker_scopes": [
+        "Length of the checked rational generator list."
+      ],
+      "evidence": [
+        {
+          "curve": "112.a2",
+          "extent": "partial",
+          "project_axioms": [],
+          "proof_line": 139,
+          "scope": "Length of the checked point list.",
+          "source": "tests/fixtures/lmfdb/112.a2.json",
+          "statement": "LMFDB.C112a2.generators.coordinates.length = 1",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.generatorCount112",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "ngens",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_mwbsd"
+    },
+    {
+      "checker_scopes": [
+        "Both endpoints bound the Mordell–Weil rank."
+      ],
+      "evidence": [],
+      "field": "rank_bounds",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_mwbsd"
+    },
+    {
+      "checker_scopes": [
+        "Enclosure for the full minimal real period including every real component."
+      ],
+      "evidence": [],
+      "field": "real_period",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_mwbsd"
+    },
+    {
+      "checker_scopes": [
+        "Enclosure of the analytic BSD quotient with exact order and positive denominator."
+      ],
+      "evidence": [],
+      "field": "sha_an",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_mwbsd"
+    },
+    {
+      "checker_scopes": [
+        "Enclosure of the Taylor leading coefficient at a proved exact order zero or one."
+      ],
+      "evidence": [],
+      "field": "special_value",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_mwbsd"
+    },
+    {
+      "checker_scopes": [
+        "Exact product of intrinsic finite-local Tamagawa factors."
+      ],
+      "evidence": [],
+      "field": "tamagawa_product",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_mwbsd"
+    },
+    {
+      "checker_scopes": [
+        "Ordered rational points, with exact torsion orders when separately verified."
+      ],
+      "evidence": [
+        {
+          "curve": "112.a2",
+          "extent": "partial",
+          "project_axioms": [],
+          "proof_line": 143,
+          "scope": "Membership of the supplied point.",
+          "source": "tests/fixtures/lmfdb/112.a2.json",
+          "statement": "(LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation (-2) 0",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.torsionGenerator112",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "torsion_generators",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_mwbsd"
+    },
+    {
+      "checker_scopes": [
+        "Complete integral y-fiber at each listed abscissa."
+      ],
+      "evidence": [
+        {
+          "curve": "112.a2",
+          "extent": "partial",
+          "project_axioms": [],
+          "proof_line": 159,
+          "scope": "Complete integral fiber at x = -2.",
+          "source": "tests/fixtures/lmfdb/112.a2.json",
+          "statement": "∀ (y : ℤ),\n  y ∈ LMFDB.C112a2.integral_y_fiber ⟨0, ⋯⟩ ↔\n    LMFDB.C112a2.curve.toAffine.Equation (-2) y",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.integralFiber112",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "xcoord_integral_points",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_mwbsd"
+    },
+    {
+      "checker_scopes": [
+        "Generators of the exact geometric torsion image at the reported modulus."
+      ],
+      "evidence": [],
+      "field": "adelic_gens",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_galrep"
+    },
+    {
+      "checker_scopes": [
+        "Prime-zero partial label with proved level, index and genus, leaving the suffix unspecified."
+      ],
+      "evidence": [],
+      "field": "adelic_image",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_galrep"
+    },
+    {
+      "checker_scopes": [
+        "Full integral Tate-module image for the supported local subgroup label."
+      ],
+      "evidence": [],
+      "field": "elladic_image",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_galrep"
+    },
+    {
+      "checker_scopes": [
+        "Exact residual image up to conjugacy for the supported subgroup label."
+      ],
+      "evidence": [],
+      "field": "modell_image",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_galrep"
+    },
+    {
+      "checker_scopes": [
+        "Selected ordinary, signed, or additive evidence. Unknown rows stay as reports."
+      ],
+      "evidence": [],
+      "field": "iwdata",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_iwasawa"
+    },
+    {
+      "checker_scopes": [
+        "Checked positive threshold for all good primes at or above it. Zero stays a sentinel."
+      ],
+      "evidence": [],
+      "field": "iwp0",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_iwasawa"
+    },
+    {
+      "checker_scopes": [
+        "Primality for a checked local row."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 74,
+          "scope": "Primality of the checked local row.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "Nat.Prime 179",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.localPrime179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "prime",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_localdata"
+    },
+    {
+      "checker_scopes": [
+        "Exact valuation of the absolute minimal discriminant."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 79,
+          "scope": "Discriminant valuation of the checked minimal equation at 179.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "LMFDB.C179a1.curve.Δ.natAbs.factorization 179 = 1",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.discriminantValuation179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "discriminant_valuation",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_localdata"
+    },
+    {
+      "checker_scopes": [
+        "Exact valuation of the reduced rational j-denominator."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 84,
+          "scope": "Valuation of the denominator of j at 179.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "(LMFDB.C179a1.curve.baseChange ℚ).j.den.factorization 179 = 1",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.jDenominatorValuation179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "j_denominator_valuation",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_localdata"
+    },
+    {
+      "checker_scopes": [
+        "Arithmetic additive, split or nonsplit code."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 65,
+          "scope": "Code 1 gives split multiplicative reduction and the corresponding trace.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "{ prime := 179, discriminantValuation := some 1,\n      jDenominatorValuation := some 1, reductionType := some 1,\n      tamagawaNumber := some 1, kodairaSymbol := some 5,\n      rootNumber := some (-1) }.Spec\n  LMFDB.C179a1.curve",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.reduction179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "reduction_type",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_localdata"
+    },
+    {
+      "checker_scopes": [
+        "Prime exponent in the checked arithmetic realization's level."
+      ],
+      "evidence": [
+        {
+          "curve": "112.a2",
+          "extent": "complete_for_sample",
+          "project_axioms": [
+            "VerifiedLcalc.Assumptions.ellipticModularity"
+          ],
+          "proof_line": 117,
+          "scope": "Exponent of 2 in the level of the modular realization.",
+          "source": "tests/fixtures/lmfdb/112.a2.json",
+          "statement": "(Modularity.modularWitness LMFDB.C112a2.curve\n          LMFDB.C112a2.nonsingular).level.factorization\n    2 =\n  4",
+          "status": "assumption_backed",
+          "theorem": "FixtureFieldCoverage.conductorValuation112",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "conductor_valuation",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_localdata"
+    },
+    {
+      "checker_scopes": [
+        "Exact good and multiplicative codes. Additive codes exclude all multiplicative symbols only."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 98,
+          "scope": "Exact I₁ symbol at 179.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "WeierstrassCurve.reductionSymbol (RationalLocalRing 179)\n    (LMFDB.C179a1.curve.baseChange ℚ) =\n  TauCeti.ReductionSymbol.I 1",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.kodaira179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "kodaira_symbol",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_localdata"
+    },
+    {
+      "checker_scopes": [
+        "Exact intrinsic factor one at good or I₁ reduction."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 90,
+          "scope": "Intrinsic local factor at 179.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "(LMFDB.C179a1.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 179) = 1",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.tamagawa179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "tamagawa_number",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_localdata"
+    },
+    {
+      "checker_scopes": [
+        "Exact local arithmetic sign on a minimal model with the needed transcripts."
+      ],
+      "evidence": [
+        {
+          "curve": "179.a1",
+          "extent": "partial",
+          "project_axioms": [],
+          "proof_line": 105,
+          "scope": "Exact local arithmetic formula at 179.",
+          "source": "tests/fixtures/lmfdb/179.a1.json",
+          "statement": "wildLocalRootSpec LMFDB.C179a1.curve LMFDB.C179a1.localData 179 = -1",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.rootNumber179",
+          "value_origin": "fixture_claim"
+        }
+      ],
+      "field": "root_number",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "sampled",
+      "table": "ec_localdata"
+    },
+    {
+      "checker_scopes": [
+        "Ordered singleton isogeny class and reduced minimal representative."
+      ],
+      "evidence": [],
+      "field": "lmfdb_iso",
+      "metadata_scopes": [
+        "Fixture/source identifiers serve as provenance until tied to a checked catalogue ordering."
+      ],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_padic"
+    },
+    {
+      "checker_scopes": [
+        "Prime above three with good ordinary reduction and rank-one sigma evidence."
+      ],
+      "evidence": [],
+      "field": "p",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_padic"
+    },
+    {
+      "checker_scopes": [
+        "Absolute precision of the ball containing the rank-one regulator."
+      ],
+      "evidence": [],
+      "field": "prec",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_padic"
+    },
+    {
+      "checker_scopes": [
+        "Exact valuation of the nonzero normalized rank-one height."
+      ],
+      "evidence": [],
+      "field": "val",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_padic"
+    },
+    {
+      "checker_scopes": [
+        "Canonical unit residue in the stated ball."
+      ],
+      "evidence": [],
+      "field": "unit",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_padic"
+    },
+    {
+      "checker_scopes": [
+        "Irreducible polynomial and a new torsion point over its field."
+      ],
+      "evidence": [],
+      "field": "field",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_torsion_growth"
+    },
+    {
+      "checker_scopes": [
+        "Absolute degree of the field with a proved new torsion point."
+      ],
+      "evidence": [],
+      "field": "degree",
+      "metadata_scopes": [],
+      "report_only_scopes": [],
+      "status": "pending_review",
+      "table": "ec_torsion_growth"
+    },
+    {
+      "checker_scopes": [
+        "Primality for a residual image row.",
+        "Primality for a prime-adic image row.",
+        "The adelic row uses the sentinel zero."
+      ],
+      "evidence": [],
+      "field": "prime",
+      "metadata_scopes": [],
+      "report_only_scopes": [
+        "An isolated prime report has no image proof."
+      ],
+      "status": "pending_review",
+      "table": "ec_galrep"
+    },
+    {
+      "checker_scopes": [],
+      "evidence": [],
+      "field": "torsion",
+      "metadata_scopes": [],
+      "report_only_scopes": [
+        "Full invariant factors over the stated extension. The command has no checker."
+      ],
+      "status": "missing_checker",
+      "table": "ec_torsion_growth"
+    }
+  ],
+  "proof_source": "tests/consumers/FixtureFieldCoverage.lean",
+  "schema": "lcalc.fixture-field-coverage.v1",
+  "table_qualified_fields": 101
+}
