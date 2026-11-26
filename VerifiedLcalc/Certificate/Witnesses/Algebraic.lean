@@ -5,7 +5,7 @@ Authors: Kevin Wilson
 -/
 module
 
-public import VerifiedLcalc.Certificate.Witnesses.InputData
+public import VerifiedLcalc.Certificate.Support.TorsionGrowthField
 public import VerifiedLcalc.Certificate.PeriodGeometrySpecs
 public import VerifiedLcalc.EllipticCurve.LmfdbLabel
 public import VerifiedLcalc.EllipticCurve.Modularity.ParametrizationSpecs
@@ -520,6 +520,23 @@ structure TorsionGrowthFacts (curve : WeierstrassCurve ℤ)
     letI : Fact (Irreducible polynomial) := ⟨irreducible⟩
     (∀ i, ZMod (factor i)) ≃+
       AddCommGroup.torsion (curve.baseChange (AdjoinRoot polynomial)).toAffine.Point
+
+/-- Exact full torsion evidence matched to the defining polynomial and invariant factors
+from the same stored row. The empty list represents the trivial product and unit factors are
+omitted. A growth row also carries a point certifying strict growth. -/
+structure StoredTorsionGrowthFact (curve : WeierstrassCurve ℤ) where
+  /-- The submitted field presentation. -/
+  field : TorsionGrowthFieldClaim
+  /-- The submitted list of nontrivial factors in divisibility order. -/
+  factors : List ℕ
+  /-- The full torsion presentation, including strict growth over the same field. -/
+  presentation : TorsionGrowthFacts curve
+  /-- The polynomial used by the proof equals the polynomial represented by the row. -/
+  polynomial_eq : presentation.polynomial = field.polynomial
+  /-- The degree of the defining polynomial agrees with the stored degree. -/
+  degree_eq : presentation.polynomial.natDegree = field.degree
+  /-- The product in the additive equivalence has exactly the listed factors, in order. -/
+  factors_eq : List.ofFn presentation.factor = factors
 
 /-- Rational enclosures for the actual heights of the supplied rational points, in
 TauCeti's logarithmic x-coordinate height normalization. The point indexing tracks list

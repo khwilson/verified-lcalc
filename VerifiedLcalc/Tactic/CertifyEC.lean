@@ -51,6 +51,8 @@ The Galois fields `nonmax_primes` and `nonmax_rad` use complete non-CM
 `IntegralCurveProofs.adelicGenerators` at the reported finite modulus. The fields
 `adelic_level`, `adelic_index`, `adelic_genus` and partial `adelic_image` labels use the
 simultaneous all-prime image in `IntegralCurveProofs.adelicImage`.
+A scoped `torsion_growth` row uses `IntegralCurveProofs.torsionGrowth` for its
+full additive torsion presentation over the field specified by that row.
 The residual fields `modell_image` and `modell_images` use the corresponding
 `modPrimeImage` and `modPrimeImages` evidence for exact Sutherland conjugacy classes.
 On globally minimal semistable equations with good reduction at two,
@@ -364,9 +366,6 @@ def certifyJson (name : Name) (text : String)
         else some key
       unless skipped.isEmpty do
         logInfo m!"Unverified metadata (no claim emitted): {skipped}"
-      if ((CurveDataJson.optionalData j "torsion_growth").bind fun row =>
-          CurveDataJson.optionalData row "torsion").isSome then
-        logInfo m!"Unverified {base} torsion_growth.torsion: extension invariant factors"
 
 private def readJsonWitnessFile (file : TSyntax `str) : CommandElabM String := do
   let source := System.FilePath.mk (← read).fileName

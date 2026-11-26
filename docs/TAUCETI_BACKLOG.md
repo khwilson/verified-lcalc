@@ -791,3 +791,17 @@ arithmetic indexing.
 [Serre, Proposition 5 and §§4.1.11–12](https://doi.org/10.1215/S0012-7094-87-05413-5)
 · [Pinned ramification infrastructure](https://github.com/TauCetiProject/TauCeti/tree/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/NumberTheory/LocalField/Herbrand)
 · [Pinned factorization](https://github.com/leanprover-community/mathlib4/blob/31ce06eaadf4a200c0e1407c5f10953cf606b8f8/Mathlib/Data/Nat/Factorization/Defs.lean)
+
+## TC-32 — full torsion over presented number fields
+
+**Hypotheses.** An elliptic curve over a number field with a checked presentation,
+chosen good-reduction primes of its ring of integers with explicit residue maps
+and degrees, and either suitable ramification bounds or complementary primes
+for prime-to-residue-characteristic tests.
+
+**Target.** Specialize TauCeti’s
+[`card_torsion_dvd_card_reduction`](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Affine/Point/TorsionReduction.lean)
+to checked number-field residue data. Given independent exact-order torsion
+generators whose product of orders attains the bound, construct the additive
+equivalence onto Mathlib’s full torsion subgroup. G2 already accepts such an
+equivalence as supplied evidence.

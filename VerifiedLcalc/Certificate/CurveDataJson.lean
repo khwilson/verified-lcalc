@@ -502,6 +502,9 @@ def decode (j : Json) : Except String EllipticWitness := do
   let minimumTwistDiscriminant ← optionalClaim j `minimumTwistDiscriminant integer
   let modifiedSzpiroRatio ← decimalEnclosureClaim j (← nativeKey `modifiedSzpiroRatio)
   let torsionGrowthField ← optionalValue j "torsion_growth" torsionGrowthFieldClaim
+  let torsionGrowthFactors ← ((optionalData j "torsion_growth").bind fun row =>
+    optionalData row "torsion").mapM fun value => do
+      (← array value 256).toList.mapM nonnegativeInteger
   let canonicalHeights ← canonicalHeightsClaim j
   let regulator ← regulatorClaim j
   let modularDegree ← optionalClaim j `modularDegree nonnegativeInteger
@@ -602,6 +605,7 @@ def decode (j : Json) : Except String EllipticWitness := do
     minimumTwistDiscriminant
     modifiedSzpiroRatio
     torsionGrowthField
+    torsionGrowthFactors
     canonicalHeights
     regulator
     modularDegree
