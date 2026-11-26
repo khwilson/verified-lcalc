@@ -70,6 +70,13 @@ td:last-child { text-align: right; }
 .detail dd { margin: 0; overflow-wrap: anywhere; }
 .detail ul { margin: 0; padding-left: 1.1rem; }
 .artifact-links { display: flex; flex-wrap: wrap; gap: .5rem 1.15rem; }
+.fixture-table th, .fixture-table td { text-align: left; vertical-align: top; }
+.fixture-table th[scope="row"] { overflow-wrap: anywhere; }
+.fixture-table td { width: 72%; min-width: 17rem; }
+.fixture-table details + details { margin-top: .45rem; }
+.fixture-table summary { cursor: pointer; }
+.fixture-table pre { padding: .75rem; white-space: pre-wrap; overflow-wrap: anywhere; background: #f2f6fc; }
+.fixture-table .artifact-links { overflow-wrap: anywhere; }
 
 .pagination { display: flex; gap: .8rem; justify-content: end; align-items: center; margin-top: 1rem; color: var(--muted); font-size: .9rem; }
 footer { border-top: 1px solid var(--line); margin-top: 2.65rem; padding: .75rem 0 2rem; color: var(--muted); font-size: .88rem; line-height: 1.5; }
