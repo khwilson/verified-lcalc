@@ -82,12 +82,13 @@ theorem tamagawaNumberAt_eq_one_of_unit_discriminant (e : WeierstrassCurve ℤ)
 local instance (v : HeightOneSpectrum R) : Finite (R ⧸ v.asIdeal) :=
   Ring.HasFiniteQuotients.finiteQuotient v.ne_bot
 
-private theorem completedSymbol_eq_I_one (e : WeierstrassCurve ℤ) (v : HeightOneSpectrum R)
+private theorem completedSymbol_eq_I (e : WeierstrassCurve ℤ) (v : HeightOneSpectrum R)
     [(e.baseChange ℚ).IsElliptic]
-    (hd : Valued.v (e.Δ : v.adicCompletion ℚ) = WithZero.exp (-1 : ℤ))
+    (n : ℕ) (hn : 0 < n)
+    (hd : Valued.v (e.Δ : v.adicCompletion ℚ) = WithZero.exp (-(n : ℤ)))
     (hc : Valued.v (e.c₄ : v.adicCompletion ℚ) = 1) :
     ((e.baseChange ℚ).baseChange (v.adicCompletion ℚ)).reductionSymbol
-      (v.adicCompletionIntegers ℚ) = .I 1 := by
+      (v.adicCompletionIntegers ℚ) = .I n := by
   let F := v.adicCompletion ℚ
   let S := v.adicCompletionIntegers ℚ
   let W := (e.baseChange ℚ).baseChange F
@@ -102,13 +103,13 @@ private theorem completedSymbol_eq_I_one (e : WeierstrassCurve ℤ) (v : HeightO
   have hmul : W.HasMultiplicativeReduction S := by
     refine ⟨?_, hcval⟩
     rw [v.valuation_maximalIdeal_adicCompletionIntegers, hΔ, hd, ← WithZero.exp_zero]
-    exact WithZero.exp_lt_exp.mpr (by decide)
+    exact WithZero.exp_lt_exp.mpr (by omega)
   have hminval := W.valuation_Δ_eq_exp_neg_of_isMinimal_smul S 1 (one_smul _ _)
   rw [v.valuation_maximalIdeal_adicCompletionIntegers, hΔ, hd] at hminval
-  have hn : W.localMinimalDiscriminantValuation S = 1 := by
+  have hval : W.localMinimalDiscriminantValuation S = n := by
     exact_mod_cast neg_injective (WithZero.exp_injective hminval.symm)
-  change W.reductionSymbol S = .I 1
-  rw [W.reductionSymbol_eq_I_of_hasMultiplicativeReduction (R := S), hn]
+  change W.reductionSymbol S = .I n
+  rw [W.reductionSymbol_eq_I_of_hasMultiplicativeReduction (R := S), hval]
 
 /-- Discriminant valuation one and unit c₄ give Tamagawa factor one at the completed place. -/
 theorem tamagawaNumberAt_eq_one_of_valuation_I_one (e : WeierstrassCurve ℤ)
@@ -126,7 +127,7 @@ theorem tamagawaNumberAt_eq_one_of_valuation_I_one (e : WeierstrassCurve ℤ)
   let : Finite (IsLocalRing.ResidueField S) := by
     change Finite (IsLocalRing.ResidueField (v.adicCompletionIntegers ℚ))
     infer_instance
-  have hsymbol : W.reductionSymbol S = .I 1 := completedSymbol_eq_I_one e v hd hc
+  have hsymbol : W.reductionSymbol S = .I 1 := completedSymbol_eq_I e v 1 (by decide) hd hc
   obtain ⟨C, D, ϖ, _, hD, hϖ, hterminal⟩ := (W.reductionSymbol_eq_iff (R := S)).mp hsymbol
   have hspan : IsLocalRing.maximalIdeal S = Ideal.span {ϖ} :=
     (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).mp hϖ
@@ -139,6 +140,40 @@ theorem tamagawaNumberAt_eq_one_of_valuation_I_one (e : WeierstrassCurve ℤ)
     tateLocalIndex_I_one]
 
 end Place
+
+/-- At multiplicative reduction with discriminant valuation two, the intrinsic
+Tamagawa number is two in both splitting cases. -/
+theorem tamagawaNumberAt_eq_two_of_valuation_I_two (e : WeierstrassCurve ℤ)
+    (p : ℕ) [Fact p.Prime] [(e.baseChange ℚ).IsElliptic]
+    (hd : Valued.v (e.Δ : (rationalPlace p).adicCompletion ℚ) = WithZero.exp (-2 : ℤ))
+    (hc : Valued.v (e.c₄ : (rationalPlace p).adicCompletion ℚ) = 1) :
+    (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = 2 := by
+  let v := rationalPlace p
+  let F := v.adicCompletion ℚ
+  let V : Valuation F (WithZero (Multiplicative ℤ)) := Valued.v
+  let S := V.valuationSubring
+  let W := (e.baseChange ℚ).baseChange F
+  let : IsAdicComplete (IsLocalRing.maximalIdeal S) S :=
+    (v.isAdic_maximalIdeal_adicCompletionIntegers (K := ℚ)).isAdicComplete_iff.mpr
+      ⟨inferInstance, inferInstance⟩
+  let : Finite (IsLocalRing.ResidueField S) := by
+    change Finite (IsLocalRing.ResidueField (v.adicCompletionIntegers ℚ))
+    infer_instance
+  have hsymbol : W.reductionSymbol S = .I 2 := completedSymbol_eq_I e v 2 (by decide) hd hc
+  obtain ⟨C, D, ϖ, _, hD, hϖ, hterminal⟩ := (W.reductionSymbol_eq_iff (R := S)).mp hsymbol
+  have hspan : IsLocalRing.maximalIdeal S = Ideal.span {ϖ} :=
+    (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).mp hϖ
+  let : (C.baseChange F).IsElliptic := hD ▸ inferInstanceAs (D • W).IsElliptic
+  have hlocal := (C.baseChange F).tamagawaNumber_eq_tateLocalIndex V hspan
+    (by simpa only [integralModel_baseChange_self] using hterminal)
+  have hindex : C.tateLocalIndex ϖ (.I 2) = 2 := by
+    by_cases hroot : C.HasTateTangentRoot ϖ
+    · simpa using (tateLocalIndex_I_add_one_of_hasTateTangentRoot hroot 1)
+    · simpa using (tateLocalIndex_I_add_one_of_not_hasTateTangentRoot hroot 1)
+  rw [tamagawaNumberAt_adicValued]
+  change W.tamagawaNumber V = 2
+  rw [← W.tamagawaNumber_smul V D, hD, hlocal, integralModel_baseChange_self,
+    hindex]
 
 /-- The intrinsic local Tamagawa number is one at a good prime of the
 checked model. The point-group index is taken over the completion. -/
@@ -159,6 +194,17 @@ theorem tamagawaNumberAt_eq_one_of_multiplicative_index_one (e : WeierstrassCurv
     (by simpa using completion_intCast_valuation_eq p 1 e.Δ (by simpa using hd) hd₂)
     (completion_valuation_of_not_dvd p e.c₄ hc)
 
+/-- Discriminant valuation two and unit c₄ give multiplicative reduction of
+type `I₂`, whose local index is two in either splitting case. -/
+theorem tamagawaNumberAt_eq_two_of_multiplicative_index_two (e : WeierstrassCurve ℤ)
+    (p : ℕ) [Fact p.Prime] [(e.baseChange ℚ).IsElliptic]
+    (hd₂ : (p : ℤ) ^ 2 ∣ e.Δ) (hd₃ : ¬ (p : ℤ) ^ 3 ∣ e.Δ)
+    (hc : ¬ (p : ℤ) ∣ e.c₄) :
+    (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = 2 :=
+  tamagawaNumberAt_eq_two_of_valuation_I_two e p
+    (by simpa using completion_intCast_valuation_eq p 2 e.Δ (by simpa using hd₂) hd₃)
+    (completion_valuation_of_not_dvd p e.c₄ hc)
+
 /-- The finite support test implies that the intrinsic Tamagawa factor is one. -/
 theorem supportsTamagawaOne_correct (e : WeierstrassCurve ℤ) (p : ℕ)
     [Fact p.Prime] [(e.baseChange ℚ).IsElliptic]
@@ -168,6 +214,25 @@ theorem supportsTamagawaOne_correct (e : WeierstrassCurve ℤ) (p : ℕ)
   rcases h with hd | ⟨hd, hd₂, hc⟩
   · exact tamagawaNumberAt_eq_one_of_good_prime e p hd
   · exact tamagawaNumberAt_eq_one_of_multiplicative_index_one e p hd hd₂ hc
+
+/-- Every non-`none` result of the supported Tamagawa computation is the
+intrinsic local Tamagawa number at the completed place. -/
+theorem tamagawaExpected_correct (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
+    [(e.baseChange ℚ).IsElliptic] {value : ℕ}
+    (h : tamagawaExpected? e p = some value) :
+    (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = value := by
+  by_cases hs : supportsTamagawaOne e p = true
+  · simp [tamagawaExpected?, hs] at h
+    subst value
+    exact supportsTamagawaOne_correct e p hs
+  · by_cases hm : multiplicativeIndexTwo e p = true
+    · simp [tamagawaExpected?, hs, hm] at h
+      subst value
+      have hm' : (p : ℤ) ^ 2 ∣ e.Δ ∧ ¬ (p : ℤ) ^ 3 ∣ e.Δ ∧ ¬ (p : ℤ) ∣ e.c₄ := by
+        simpa [multiplicativeIndexTwo] using hm
+      exact tamagawaNumberAt_eq_two_of_multiplicative_index_two e p
+        hm'.1 hm'.2.1 hm'.2.2
+    · simp [tamagawaExpected?, hs, hm] at h
 
 set_option backward.isDefEq.respectTransparency.types false in
 private theorem integerPlaceValuation_eq (v : HeightOneSpectrum ℤ) (p k : ℕ) (n : ℤ)

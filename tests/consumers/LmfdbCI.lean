@@ -70,6 +70,19 @@ example : ((LMFDB.C179a1.certificate.arithmetic.minimalModel.get
     (by decide +kernel)).kodaira.map fun fact => ((fact.prime : ℕ), fact.index)) =
     [(179, some 1)] := by decide +kernel
 
+example : (LMFDB.C17a2.curve : WeierstrassCurve ℤ) = ⟨1, -1, 1, -6, -4⟩ := rfl
+
+example : (LMFDB.C17a2.certificate.arithmetic.tamagawa.map fun fact =>
+    ((fact.prime : ℕ), fact.value)) = [(17, 2)] := by decide +kernel
+
+example :
+    letI : Fact (Nat.Prime 17) := ⟨by decide +kernel⟩
+    (LMFDB.C17a2.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 17) = 2 := by
+  exact (LMFDB.C17a2.certificate.arithmetic.tamagawa[0]'(by decide +kernel)).correct
+
+example : (LMFDB.C112a2.certificate.arithmetic.tamagawa.map fun fact =>
+    ((fact.prime : ℕ), fact.value)) = [(7, 1)] := by decide +kernel
+
 example :
     (((LMFDB.C179a1.certificate.arithmetic.minimalModel.get
       (by decide +kernel)).localRows.get (by decide +kernel)).val.map fun row =>

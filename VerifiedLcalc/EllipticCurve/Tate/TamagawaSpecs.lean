@@ -7,7 +7,7 @@ module
 
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass
 
-/-! # Pure support condition for the exact Tamagawa-one computation -/
+/-! # Executable support conditions for intrinsic local Tamagawa factors -/
 
 @[expose] public section
 namespace VerifiedLcalc.EllipticCurve
@@ -17,5 +17,15 @@ multiplicative reduction of index one. -/
 def supportsTamagawaOne (e : WeierstrassCurve ℤ) (p : ℕ) : Bool :=
   decide (¬ (p : ℤ) ∣ e.Δ) ||
     decide ((p : ℤ) ∣ e.Δ ∧ ¬ (p : ℤ) ^ 2 ∣ e.Δ ∧ ¬ (p : ℤ) ∣ e.c₄)
+
+/-- The integral model has discriminant valuation two and unit c₄ at the given prime. -/
+def multiplicativeIndexTwo (e : WeierstrassCurve ℤ) (p : ℕ) : Bool :=
+  decide ((p : ℤ) ^ 2 ∣ e.Δ ∧ ¬ (p : ℤ) ^ 3 ∣ e.Δ ∧ ¬ (p : ℤ) ∣ e.c₄)
+
+/-- The checked Tamagawa factor for good reduction or multiplicative index one or two. -/
+def tamagawaExpected? (e : WeierstrassCurve ℤ) (p : ℕ) : Option ℕ :=
+  if supportsTamagawaOne e p then some 1
+  else if multiplicativeIndexTwo e p then some 2
+  else none
 
 end VerifiedLcalc.EllipticCurve

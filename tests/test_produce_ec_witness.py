@@ -18,6 +18,7 @@ PRODUCER = ROOT / "scripts/produce_ec_witness.py"
 CAPTURE = ROOT / "scripts/capture_lmfdb_fixture.py"
 NATIVE = ROOT / "tests/fixtures/lmfdb/112.a2-native.json"
 NATIVE_MANIFEST = NATIVE.with_suffix(".provenance.json")
+TAMAGAWA_17A2 = ROOT / "tests/fixtures/lmfdb/17.a2-tamagawa-joined.json"
 LEAN = ["lake", "-f", "lakefile.certificates.lean", "env", "lean"]
 
 
@@ -128,6 +129,27 @@ class JoinChecks(unittest.TestCase):
     os.environ.get("VERIFIED_LCALC_PRODUCER_LEAN") == "1", "Lean CI only"
 )
 class KernelReplay(unittest.TestCase):
+    def test_native_i2_tamagawa_projection_and_corruption(self) -> None:
+        data = json.loads(TAMAGAWA_17A2.read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as d:
+            directory = Path(d)
+            result, report, output = produce(data, directory, timeout=600)
+            self.assertEqual(result.returncode, 0, (report, result.stderr))
+            self.assertEqual(report["status"], "checked")
+            field = report["fields"]["local_invariants.17.tamagawa_number"]
+            self.assertEqual(field["status"], "checked")
+            self.assertEqual(field["sources"], ["ec_localdata[17].tamagawa_number"])
+            witness = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(witness["local_invariants"][0]["tamagawa_number"], 2)
+
+            previous = output.read_bytes()
+            rows(data, "ec_localdata")[0]["tamagawa_number"] = 1
+            result, report, output = produce(data, directory, timeout=600)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(report["status"], "rejected")
+            self.assertIn("tamagawa_values_valid", report["error"])
+            self.assertEqual(output.read_bytes(), previous)
+
     def test_mod_two_obstruction_checks_empty_integral_count(self) -> None:
         # LMFDB 179.a1 has no points modulo two and no integral x-coordinates.
         with tempfile.TemporaryDirectory() as d:
