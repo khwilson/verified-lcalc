@@ -256,7 +256,8 @@ theorem imported_112a2_torsion_generation :
   change AddSubgroup.closure (Set.range
     (fun i : Fin 1 => LMFDB.C112a2.torsion_generators.point ⟨i.val, i.isLt⟩)) = _ at h
   have hzero : (default : Fin 1) = 0 := Subsingleton.elim _ _
-  simpa only [Set.range_unique, hzero] using h
+  simp only [Set.range_unique, hzero] at h
+  exact h
 
 example : ¬ EllipticCurve.HasEverywherePotentialGoodReduction
     (LMFDB.C112a2.curve.baseChange ℚ) :=
