@@ -5,6 +5,7 @@ Authors: Kevin Wilson
 -/
 import CertifiedCurves.Json
 import VerifiedLcalc.Certificate.FieldCatalogue
+import VerifiedLcalcTests.Fixtures.ExtensionData
 import VerifiedLcalcTests.Fixtures.LmfdbCI
 import Lean
 
@@ -198,6 +199,41 @@ theorem rank37 (model : Modularity.ArithmeticModularRealization Curve37.curve) :
     analyticOrderAt model.formL 1 = 1 :=
   Curve37.catalogue_analytic_rank model
 
+private noncomputable def growth64 :=
+  ExtensionDataFixture.FullGrowth64.certificate.torsionGrowth.get (by rfl)
+
+open ExtensionDataFixture in
+/-- The literal quadratic field gives strict torsion growth for the imported equation. -/
+theorem torsionGrowthField64 :
+    let F := (TorsionGrowthFieldClaim.mk [1, 0, 1] 2).polynomial
+    letI : Fact (Irreducible F) := ⟨f_irreducible⟩
+    let K := AdjoinRoot F
+    letI : DecidableEq K := Classical.decEq K
+    FullGrowth64.curve = (⟨0, 0, 0, 1, 0⟩ : WeierstrassCurve ℤ) ∧
+      Irreducible F ∧
+      ∃ P : (FullGrowth64.curve.baseChange K).toAffine.Point, IsOfFinAddOrder P ∧
+        ∀ Q : (FullGrowth64.curve.baseChange ℚ).toAffine.Point,
+          WeierstrassCurve.Affine.Point.map (Algebra.ofId ℚ K) Q ≠ P :=
+  ⟨rfl, growth64.presentation.irreducible, growth64.presentation.growth⟩
+
+/-- The field with coefficients `[1, 0, 1]` in the imported row has absolute degree two. -/
+theorem torsionGrowthDegree64 :
+    let F := (TorsionGrowthFieldClaim.mk [1, 0, 1] 2).polynomial
+    Module.finrank ℚ (AdjoinRoot F) = 2 :=
+  growth64.presentation.toTorsionGrowthFieldFact.degree_eq.trans growth64.degree_eq
+
+open ExtensionDataFixture in
+/-- The exact factors `[2, 2]` present the whole subgroup over the imported row's field. -/
+theorem torsionGrowthFactors64 :
+    let F := (TorsionGrowthFieldClaim.mk [1, 0, 1] 2).polynomial
+    let factors : List ℕ := [2, 2]
+    letI : Fact (Irreducible F) := ⟨f_irreducible⟩
+    let K := AdjoinRoot F
+    letI : DecidableEq K := Classical.decEq K
+    Nonempty ((∀ i : Fin factors.length, ZMod (factors.get i)) ≃+
+      AddCommGroup.torsion (FullGrowth64.curve.baseChange K).toAffine.Point) :=
+  ⟨growth64.equivalence⟩
+
 private inductive ProofKind
   | unconditional
   | modularity
@@ -278,6 +314,15 @@ private def samples : List Sample :=
       "Complete integral fiber at x = -2.", .unconditional, true⟩,
    ⟨"ec_curvedata", "analytic_rank", "112.a2", ``rank112,
       "Exact order at 1 of the modular realization.", .modularity, false⟩,
+   ⟨"ec_torsion_growth", "field", "64.a4", ``torsionGrowthField64,
+      "Strict growth in row 2263 over the field with coefficients [1, 0, 1].",
+      .unconditional, false⟩,
+   ⟨"ec_torsion_growth", "degree", "64.a4", ``torsionGrowthDegree64,
+      "Absolute degree two in row 2263 for the field with coefficients [1, 0, 1].",
+      .unconditional, false⟩,
+   ⟨"ec_torsion_growth", "torsion", "64.a4", ``torsionGrowthFactors64,
+      "Full invariant factors [2, 2] in row 2263 over the field with coefficients [1, 0, 1].",
+      .unconditional, false⟩,
    ⟨"ec_curvedata", "analytic_rank", "37.a1", ``rank37,
       "Exact order at 1 for an explicitly supplied modular realization.", .conditional, false⟩]
 
@@ -296,6 +341,8 @@ private def auditSample (sample : Sample) : CommandElabM Json := do
     throwError "Unexpected axioms for {sample.proof}: {dependencies}"
   let source := if sample.proof == ``rank37 then "data/witnesses/37a1.json"
     else if sample.proof == ``rank112 then "data/witnesses/112a2.json"
+    else if sample.table == "ec_torsion_growth" && sample.curve == "64.a4" then
+      "tests/VerifiedLcalcTests/Fixtures/ExtensionData.lean"
     else if sample.curve == "17.a2" then "tests/fixtures/lmfdb/17.a2-tamagawa.json"
     else s!"tests/fixtures/lmfdb/{sample.curve}.json"
   let origin := if sample.field == "squarefree_disc" then "computed_from_equation"

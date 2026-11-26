@@ -101,6 +101,9 @@ The extension presentation is available through `certificate.torsionGrowth`
 when the caller supplies the full additive equivalence with `with_proofs`.
 The row lists factors of order at least two in divisibility order. The empty
 list denotes the trivial group, which cannot witness strict growth.
+The [64.a4 fixture](../tests/VerifiedLcalcTests/Fixtures/ExtensionData.lean)
+constructs the evidence over ℚ(i) from two independent order-two points and
+the exact divisor bound of four from good reduction at the prime `(2 - i)`.
 
 ## Arithmetic trace fingerprint
 

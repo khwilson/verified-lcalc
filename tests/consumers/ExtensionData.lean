@@ -37,9 +37,6 @@ example : Growth64.certificate.torsion.cardinality.isNone = true := rfl
 
 section
 
-set_option linter.concreteInstances false
-
-variable [Growth64Equivalence]
 local instance : Fact (Irreducible f) := ⟨f_irreducible⟩
 noncomputable local instance : DecidableEq K := Classical.decEq _
 
@@ -159,24 +156,21 @@ run_cmd do
   expectRejected `WrongLength "heights_shape" (← `(certify_ec WrongLength from_json_string
     r#"{"ainvs":[0,0,1,-1,0],"gens":[[0,0,1]],"heights":[]}"#))
 
-section
+noncomputable section
 
-variable [Growth64Equivalence]
-
-set_option linter.unusedSectionVars false in
-set_option linter.concreteInstances false in
 run_cmd do
   expectRejected `WrongFactors "torsion_growth_factors_match" (← `(certify_ec WrongFactors from
     { equation := ExtensionDataFixture.growthModel
       torsionGrowthField := some ⟨[1, 0, 1], 2⟩
       torsionGrowthFactors := some [4] }
-    with_proofs { torsionGrowth := some (ExtensionDataFixture.fullEvidence inferInstance) }))
+    with_proofs { torsionGrowth := some ExtensionDataFixture.fullEvidence }))
 
 end
 
 run_cmd do
   for name in [`ExtensionDataFixture.Growth64.certificate, `Height37.Height.certificate,
-      `ExtensionDataFixture.FullGrowth64.certificate, `imported_growth_degree,
+      `ExtensionDataFixture.FullGrowth64.certificate, `ExtensionDataFixture.gaussianTorsion,
+      `imported_growth_degree,
       `imported_growth, `imported_growth_factors, `imported_growth_equivalence,
       `imported_height] do
     CertifyEC.auditAxioms name

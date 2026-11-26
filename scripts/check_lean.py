@@ -75,6 +75,7 @@ def main() -> None:
                 "VerifiedLcalcTests",
                 "VerifiedLcalc.Verification.Precision",
                 "VerifiedLcalcTests.Fixtures.LmfdbCI",
+                "VerifiedLcalcTests.Fixtures.ExtensionData",
                 "VerifiedLcalcTests.Fixtures.TwoFactorTorsion",
             ]
         )
