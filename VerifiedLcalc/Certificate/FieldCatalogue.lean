@@ -581,9 +581,14 @@ private def stored : List Route :=
       reportPath ["prime"] [vl[`PrimeGaloisImageClaim.prime]]
         "An isolated prime report has no image proof."]⟩,
     ⟨["torsion_growth"], "torsion", [
-      reportPath ["torsion_growth", "torsion"] [vl[`TorsionGrowthFacts.factor],
-        vl[`TorsionGrowthFacts.equivalence]]
-        "Full invariant factors over the stated extension. The command has no checker."]⟩ ]
+      checkedPath ["torsion_growth", "torsion"]
+        [vl[`EllipticWitness.torsionGrowthFactors], vl[`EllipticWitness.torsionGrowthField]]
+        `torsion_growth_factors_match
+        [vl[`EllipticCertificate.torsionGrowth], vl[`StoredTorsionGrowthFact.polynomial_eq],
+          vl[`StoredTorsionGrowthFact.factors_eq], vl[`StoredTorsionGrowthFact.equivalence]]
+        "Exact invariant factors of the full torsion subgroup over the row's field."
+        [vl[`IntegralCurveProofs.torsionGrowth]]
+        (verify := vl[`CertifyEC.certifyExtensionData]) (fact := some `torsion_growth_fact)]⟩ ]
 
 private def enclosureEvidence : List Path :=
   let members := [

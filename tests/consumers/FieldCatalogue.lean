@@ -63,13 +63,8 @@ run_cmd do
       unless path.json.getLast? == some column.field do
         throwError "{location} routes to a different stored source: {path.json}"
       resolve location path
-    if (column.table, column.field) == ("ec_torsion_growth", "torsion") then
-      unless column.paths.all (fun path =>
-          path.verify.isNone && path.check.isNone && path.output.isEmpty) do
-        throwError "{location} must record the missing extension torsion checker"
-    else
-      unless column.paths.any (fun path => path.verify.isSome && !path.output.isEmpty) do
-        throwError "{location} must specify a verifier and its checked output"
+    unless column.paths.any (fun path => path.verify.isSome && !path.output.isEmpty) do
+      throwError "{location} must specify a verifier and its checked output"
 
 -- The same database column name can be the input to different mathematical checks.
 run_cmd do
@@ -90,7 +85,12 @@ run_cmd do
       extensionDegree.check == some `torsion_growth_degree_matches do
     throwError "Extension degree must describe the checked field of strict torsion growth"
   let torsion ← requirePath "ec_curvedata" "torsion" ["torsion"]
-  let _ ← requirePath "ec_torsion_growth" "torsion" ["torsion_growth", "torsion"]
+  let extensionTorsion ← requirePath "ec_torsion_growth" "torsion" ["torsion_growth", "torsion"]
+  unless extensionTorsion.claim.contains ``VerifiedLcalc.EllipticWitness.torsionGrowthFactors &&
+      extensionTorsion.output.contains ``VerifiedLcalc.EllipticCertificate.torsionGrowth &&
+      extensionTorsion.output.contains ``VerifiedLcalc.StoredTorsionGrowthFact.equivalence &&
+      extensionTorsion.check == some `torsion_growth_factors_match do
+    throwError "Extension torsion must describe the full group over the stated field"
   unless torsion.claim.contains ``VerifiedLcalc.EllipticWitness.torsion &&
       torsion.output.contains ``VerifiedLcalc.EllipticCertificate.torsion &&
       torsion.check == some `torsion do
