@@ -164,9 +164,10 @@ section
 variable [Growth64Equivalence]
 
 run_cmd do
-  expectRejected `WrongFactors "torsion_growth_factors_match" (← `(certify_ec WrongFactors
-    from { equation := ExtensionDataFixture.growthModel,
-      torsionGrowthField := some ⟨[1, 0, 1], 2⟩, torsionGrowthFactors := some [4] }
+  expectRejected `WrongFactors "torsion_growth_factors_match" (← `(certify_ec WrongFactors from
+    { equation := ExtensionDataFixture.growthModel
+      torsionGrowthField := some ⟨[1, 0, 1], 2⟩
+      torsionGrowthFactors := some [4] }
     with_proofs { torsionGrowth := some (ExtensionDataFixture.fullEvidence inferInstance) }))
 
 end
