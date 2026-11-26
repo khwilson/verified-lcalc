@@ -105,6 +105,10 @@ With a complete candidate the command additionally checks `conductor_valid`
 and `root_number_valid`, then exports `analytic_rank`, `curve_analytic_rank`,
 and the proof-carrying `certifiedRank`. They assert exact order zero or one at
 `1` for `(Modularity.modularWitness Name.curve Name.nonsingular).formL`.
+The same candidate exports `l_function_coefficients`, the exact coefficient
+prefix of the curve's arithmetic L-function, with its proof also available in
+`certificate.arithmetic.dirichletCoefficients` when there is no explicit checked
+coefficient-list claim.
 These analytic facts retain the explicit `ellipticModularity` assumption;
 arithmetic and numeric checks allow only standard Lean axioms.
 
@@ -184,6 +188,16 @@ def certifyAnalytic (base : Name) (central : Bool) (input : TSyntax `term) : Com
     return
   let m := rootIdent (base ++ `minimality)
   let hm := rootIdent (base ++ `minimality_valid)
+  let coefficients ← if central then `(($hp).2.2.1) else `(($hp).2.2.2.1)
+  checked (base ++ `l_function_coefficients)
+    (← `((List.range ($r).coefficients.length).map
+      (fun n => (($curve).baseChange ℚ).LFunction (n + 1)) = ($r).coefficients))
+    (← `(by
+      have h := (minimal_prefix $curve $hn (minimal_of_witness $curve $m $hm)
+        ($r).termLimit).symm.trans ($coefficients).symm
+      have hlength : ($r).termLimit = ($r).coefficients.length := by
+        simpa using congrArg List.length h
+      simpa only [← hlength] using h))
   let d := rootIdent (base ++ `localData)
   let hd := rootIdent (base ++ `local_data_valid)
   let hN := rootIdent (base ++ `conductor_valid)

@@ -263,7 +263,17 @@ def test_dataset_report_checkpoints_and_exit_status(
                 status, returncode = "timeout", None
             else:
                 (log.parent / "witnesses").mkdir()
-                (log.parent / "witnesses/1.json").write_text("{}")
+                (log.parent / "witnesses/1.json").write_text(
+                    json.dumps(
+                        {
+                            "schema": "lcalc.ec-rank.v1",
+                            "rank": "1",
+                            "subject": {"conductor": "37"},
+                            "arithmetic": {"minimality": ["37"]},
+                            "coefficients": ["1", "-2"],
+                        }
+                    )
+                )
                 rows.append(
                     {
                         "index": 1,

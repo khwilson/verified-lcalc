@@ -43,9 +43,12 @@ include its current derivative quadrature.
 On `main`, a successful run publishes its signed catalog and exact witnesses
 to the [curve certificate companion](https://khwilson.github.io/verified-lcalc/).
 Enable `publish_modules` to include compiled modules for immediate import.
-The job checks nonsingularity, global minimality and the exact analytic rank
-against their expected types in a fresh import before publishing. Each batch
-release supplies SHA-256 checksums and records the dependency revisions.
+Before publishing, the job checks nonsingularity, global minimality, exact
+analytic rank, the arithmetic conductor and global root number formulas, and
+the L-function coefficient prefix, and the discriminant prime factorization
+in a fresh import. Each batch release
+supplies SHA-256 checksums and records the dependency revisions.
+[Catalog fields and replay](../docs/CERTIFIED_ARTIFACTS.md)
 
 ## Run locally
 
