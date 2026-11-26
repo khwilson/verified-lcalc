@@ -476,7 +476,8 @@ modularity. [TauCeti backlog TC-17](../TAUCETI_BACKLOG.md#tc-17--geometric-cm-an
 ## L2 exact evidence production
 
 This section specifies the evidence boundary for each local Kodaira family.
-“Installed” means present on `main` at this roadmap revision; a draft, open PR,
+“Installed” means present on `main` at inspected revision
+[`6f67160`](https://github.com/khwilson/verified-lcalc/commit/6f671604d0162f5cf5ff14f75b42846e08a0802b); a draft, open PR,
 example calculation, PARI label, or producer output alone is not installed
 mathematical support. The verifier consumes supplied evidence, validates it in
 Lean, and rejects a supplied local factor when its evidence is malformed or
@@ -498,18 +499,22 @@ result is then transported to the completion and the exact corresponding
 `tateLocalIndex_*` formula proves the factor through
 `tamagawaNumber_eq_tateLocalIndex`.
 
-Whenever a formula branches on residue-field roots, the producer records the
-actual polynomial and either a concrete root (or complete factorization) or a
-separate, independently checkable no-root certificate. A root is checked by
-substitution. A no-root claim cannot be accepted as a Boolean assertion: the
-verifier checks a finite-field certificate such as a discriminant Euler
-criterion equal to `−1` modulo an odd prime for a quadratic, or a checked
-Bézout identity `A f + B (X^q − X) = 1` for a no-root polynomial `f` over the
-residue field of size `q`. Characteristic two uses a separate checked
-criterion. Each certificate is tied to the polynomial derived from the
-supplied terminal model. The verifier never enumerates residue elements to
-discover a root or infer nonexistence. It checks that supplied root counts or
-factorization data are complete for the particular TauCeti formula.
+Whenever a formula branches on residue-field roots, the producer records
+evidence for the residue polynomial derived from its submitted model: a
+concrete root or a separate, independently checkable no-root certificate. A
+root is checked by substitution. A no-root claim cannot be accepted as a
+Boolean assertion: the verifier derives the residue polynomial from the
+submitted model and checks the root, factorization, or no-root evidence
+against it. The payload need not
+duplicate that polynomial; if coefficients are supplied, the verifier checks
+them against the model. A quadratic with nonzero leading coefficient over an
+odd prime field can use the discriminant Euler criterion equal to `−1`.
+Otherwise, including characteristic two when applicable, a no-root certificate
+can be a checked Bézout identity `A f + B (X^q − X) = 1` for the derived
+polynomial `f` over the residue field of size `q`. The verifier never
+enumerates residue elements to discover a root or infer nonexistence. It
+checks that supplied root-count or factorization data is complete for the
+particular TauCeti formula.
 
 | Terminal symbol | TauCeti local-index result | Planned producer payload | Installed verifier support | Fixture coverage |
 | --- | --- | --- | --- | --- |
@@ -518,7 +523,7 @@ factorization data are complete for the particular TauCeti formula.
 | `I₂` | `2` in either splitting case | Current route checks `p² ∣ Δ`, `p³ ∤ Δ`, and `p ∤ c₄`. | Installed. | `17.a2`, p=17. |
 | `Iₙ`, `n ≥ 3` | `n` if split; `gcd(2,n)` if nonsplit | Terminal exponent and checked tangent-root evidence: a supplied root, or a no-root certificate for the tangent quadratic. | Planned. TauCeti's formula is available; rational normalization and residue transport are incomplete. | No checked factor fixture. |
 | `II` | `1` | Supplied model satisfying all five terminal `II` conditions, including `ϖ² ∤ a₆`. | Planned. | No checked factor fixture. |
-| `III` | `2` | Pending transcript route supplies `r,s,t`; the checker derives its model tuple and checks terminal `III` divisibilities. | Pending PR #109; not installed until merged. | 49.a4 is the pending PR's fixture, not installed coverage. |
+| `III` | `2` | Pending p>3 transcript route supplies `r,s,t`; the checker derives its model tuple and checks terminal `III` divisibilities. | Pending [PR #109](https://github.com/khwilson/verified-lcalc/pull/109); not installed until merged. | 49.a4 is the pending PR's fixture, not installed coverage. |
 | `IV` | `3` when the terminal residue quadratic has a root; otherwise `1` | Persist the exact unit-scale change and either a specific root or checked nonsplit Euler-power certificate. No verifier-side normalization or root search. | Planned; no Type IV support is installed. | 50.a3 / 50.a1 are candidate source rows only; no checked fixture. |
 | `I₀*` | `1 + card(tateCubicRoots)` | Complete root/factorization evidence for the normalized residue cubic `X³ + (a₂/p)X² + (a₄/p²)X + a₆/p³` derived from the checked terminal model; the terminal predicate also checks the cubic discriminant valuation. | Planned. | No checked factor fixture. |
 | `Iₙ*`, `n = 2k+1` | `4` when `HasTateYRoot ϖ (k+2)`, otherwise `2` | Complete odd-stage transcript, terminal exponent, and a checked root or no-root certificate for that level's quadratic. | Planned. | No checked factor fixture. |
@@ -526,7 +531,7 @@ factorization data are complete for the particular TauCeti formula.
 | `IV*` | `3` when `HasTateYRoot ϖ 2`, otherwise `1` | Supplied terminal model and level-two quadratic root or no-root certificate. | Planned. | No checked factor fixture. |
 | `III*` | `2` | Supplied model satisfying the exact terminal `III*` conditions. | Planned. | No checked factor fixture. |
 | `II*` | `1` | Supplied model satisfying the exact terminal `II*` conditions. | Planned. | No checked factor fixture. |
-| Wild primes `2` and `3` | Use the local-index theorem for a validated terminal symbol; no generic shortcut is claimed. | Full producer-supplied Tate stage transcript, each needed variable change, exact terminal checks, and characteristic-appropriate residue evidence. Conductor/root-number compatibility remains a separate assumption boundary. | Planned; no general wild producer or verifier path is installed. | 112.a2 has local row metadata at 2, but no checked additive Tamagawa factor. |
+| Wild primes `2` and `3` | Use the local-index theorem for a validated terminal symbol; no generic shortcut is claimed. | A supplied terminal model and certified changes may suffice when they prove the exact terminal predicate; replay the full Tate stages when needed. Include characteristic-appropriate residue evidence. Conductor/root-number compatibility remains a separate assumption boundary. | Planned; no general wild producer or verifier path is installed. | 112.a2 has local row metadata at 2, but no checked additive Tamagawa factor. |
 
 The formulas above are the pinned TauCeti definitions, not values inferred
 from the LMFDB Kodaira code. In particular, an `I₀*` count and a star-family
@@ -548,7 +553,7 @@ bridge is TauCeti's
 ### Evidence rejection and coverage policy
 
 The JSON route must decode exactly the same evidence record consumed by the
-Lean route. Wrong roots, incomplete or reducible no-root certificates,
+Lean route. Wrong roots, invalid or incomplete no-root evidence,
 conflicting normalized coefficients, a terminal mismatch, or a factor that
 disagrees with the pinned local-index formula rejects the supplied certificate.
 The no-evidence case remains `none` for that family and cannot create a
