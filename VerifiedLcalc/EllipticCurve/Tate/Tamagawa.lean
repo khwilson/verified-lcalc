@@ -222,12 +222,12 @@ theorem tamagawaExpected_correct (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Pr
     (h : tamagawaExpected? e p = some value) :
     (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = value := by
   by_cases hs : supportsTamagawaOne e p = true
-  · simp [tamagawaExpected?, hs] at h
-    subst value
+  · rw [tamagawaExpected?, ite_eq_left hs] at h
+    cases h
     exact supportsTamagawaOne_correct e p hs
   · by_cases hm : multiplicativeIndexTwo e p = true
-    · simp [tamagawaExpected?, hs, hm] at h
-      subst value
+    · rw [tamagawaExpected?, ite_eq_right hs, ite_eq_left hm] at h
+      cases h
       have hm' : (p : ℤ) ^ 2 ∣ e.Δ ∧ ¬ (p : ℤ) ^ 3 ∣ e.Δ ∧ ¬ (p : ℤ) ∣ e.c₄ := by
         simpa [multiplicativeIndexTwo] using hm
       exact tamagawaNumberAt_eq_two_of_multiplicative_index_two e p
