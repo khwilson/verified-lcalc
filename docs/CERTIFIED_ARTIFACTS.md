@@ -43,6 +43,28 @@ deps="$(lake -f lakefile.certificates.lean env printenv LEAN_PATH)"
 LEAN_PATH="/absolute/path/to/extracted-module:$deps" lean UseCertificate.lean
 ```
 
+## Inspect field dependencies
+
+Open the [dependency roadmap](https://khwilson.github.io/verified-lcalc/roadmap.html)
+to trace a table-qualified LMFDB field from its mathematical prerequisites
+through its Lean witness and producer. Select a node to follow its inputs or
+outputs. Search by table, field, or evidence, and use the filters to find
+missing components. Alternative routes apply under their own hypotheses.
+The fixture samples correspond to their displayed curves and proof scopes.
+
+When editing the catalogue or producer, regenerate the Lean contract and
+single-curve replay snapshots after building the verifier.
+
+```sh
+python3 scripts/check_lmfdb_dependency_contracts.py --write
+python3 scripts/check_lmfdb_producer_example.py --write
+python3 scripts/build_lmfdb_dependency_roadmap.py --write
+```
+
+The existing
+**Refresh certificate companion** Pages workflow assembles the roadmap,
+fixture audit, and published curve catalogues together from `main`.
+
 ## Verify and replay a signed release
 
 New releases contain `catalog.json` and `witnesses.jsonl.gz`, both signed by
