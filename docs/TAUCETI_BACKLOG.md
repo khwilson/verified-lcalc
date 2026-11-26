@@ -595,6 +595,14 @@ and a tensor-valued evaluation.
   `Isogeny.LFunction_eq`. Mathlib `31ce06ea` supplies integer remainders and
   the decidable prime predicate. The existing `primeCoefficientsValid_sound`
   theorem can justify individual entries when its finite checks succeed.
+  For good primes, `pointOrderTraceCheck_sound` gives an alternative when
+  a point order isolates a multiple in the Hasse interval. It reuses
+  `WeierstrassCurve.hasse_bound` at TauCeti `e0e414ce` and Mathlib's affine
+  binary scalar multiplication and `addOrderOf_dvd_natCard` at `31ce06ea`.
+  The 37.a1 fixture uses this route for all its prescribed primes.
+  Reusable construction still needs a proved strategy for choosing points
+  or combining their orders when no single point isolates the count, as
+  well as a checked fallback for bad primes.
   [LMFDB producer and weights](https://github.com/LMFDB/lmfdb/blob/28f9f0e38f2f027b13edcb2facece1bb45b47170/lmfdb/utils/trace_hash.py)
 
 ## TC-27 — historical Cremona ordering
