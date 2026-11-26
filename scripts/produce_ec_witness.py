@@ -320,7 +320,7 @@ run_cmd do
   let names : List Name := [{names}]
   let mut facts := names.map fun n => (n.toString, toJson (env.contains n))
   for p in ([{primes}] : List Nat) do
-    let support ← liftTermElabM <| Lean.Meta.whnf
+    let support ← liftTermElabM <| Lean.Meta.withTransparency .all <| Lean.Meta.whnf
       (mkApp2 (mkConst ``VerifiedLcalc.EllipticCurve.tamagawaExpected?)
         (mkConst ``WitnessCheck.curve) (mkNatLit p))
     unless support.isAppOf ``Option.some || support.isAppOf ``Option.none do
