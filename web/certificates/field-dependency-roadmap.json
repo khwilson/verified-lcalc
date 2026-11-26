@@ -379,7 +379,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "dependencies": [],
       "dependency_layer": 0,
@@ -409,7 +409,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-26 · Complete trace fingerprint inputs",
-        "line": 622
+        "line": 625
       },
       "dependencies": [],
       "dependency_layer": 0,
@@ -427,7 +427,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-31 · Intrinsic Serre invariants",
-        "line": 817
+        "line": 820
       },
       "dependencies": [
         "milestone:G1"
@@ -890,7 +890,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "dependencies": [],
       "dependency_layer": 0,
@@ -920,7 +920,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-26 · Complete trace fingerprint inputs",
-        "line": 622
+        "line": 625
       },
       "dependencies": [],
       "dependency_layer": 0,
@@ -938,7 +938,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-31 · Intrinsic Serre invariants",
-        "line": 817
+        "line": 820
       },
       "dependencies": [
         "milestone:G1"
@@ -2538,7 +2538,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "stages": {
         "roadmap": {
@@ -2546,7 +2546,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 550
+            "line": 553
           }
         },
         "lean": {
@@ -2762,7 +2762,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-26 · Complete trace fingerprint inputs",
-        "line": 622
+        "line": 625
       },
       "stages": {
         "roadmap": {
@@ -2770,7 +2770,7 @@
           "scope": "TC-26 · Complete trace fingerprint inputs",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 622
+            "line": 625
           }
         },
         "lean": {
@@ -2986,7 +2986,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "stages": {
         "roadmap": {
@@ -2994,7 +2994,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 550
+            "line": 553
           }
         },
         "lean": {
@@ -3210,7 +3210,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "stages": {
         "roadmap": {
@@ -3218,7 +3218,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 550
+            "line": 553
           }
         },
         "lean": {
@@ -3434,7 +3434,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "stages": {
         "roadmap": {
@@ -3442,7 +3442,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 550
+            "line": 553
           }
         },
         "lean": {
@@ -8062,7 +8062,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "stages": {
         "roadmap": {
@@ -8070,7 +8070,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 550
+            "line": 553
           }
         },
         "lean": {
@@ -8731,7 +8731,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "stages": {
         "roadmap": {
@@ -8739,7 +8739,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 550
+            "line": 553
           }
         },
         "lean": {
@@ -8955,7 +8955,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "stages": {
         "roadmap": {
@@ -8963,7 +8963,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 550
+            "line": 553
           }
         },
         "lean": {
@@ -9198,7 +9198,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "stages": {
         "roadmap": {
@@ -9206,7 +9206,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 550
+            "line": 553
           }
         },
         "lean": {
@@ -12736,7 +12736,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-31 · Intrinsic Serre invariants",
-        "line": 817
+        "line": 820
       },
       "stages": {
         "roadmap": {
@@ -12744,7 +12744,7 @@
           "scope": "TC-31 · Intrinsic Serre invariants",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 817
+            "line": 820
           }
         },
         "lean": {
@@ -16122,7 +16122,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "stages": {
         "roadmap": {
@@ -16130,7 +16130,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 550
+            "line": 553
           }
         },
         "lean": {
@@ -17571,7 +17571,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "stages": {
         "roadmap": {
@@ -17579,7 +17579,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 550
+            "line": 553
           }
         },
         "lean": {
@@ -19764,7 +19764,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "stages": {
         "roadmap": {
@@ -19772,7 +19772,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 550
+            "line": 553
           }
         },
         "lean": {
@@ -22607,7 +22607,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "stages": {
         "roadmap": {
@@ -22615,7 +22615,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 550
+            "line": 553
           }
         },
         "lean": {
@@ -29079,7 +29079,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 550
+        "line": 553
       },
       "stages": {
         "roadmap": {
@@ -29087,7 +29087,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 550
+            "line": 553
           }
         },
         "lean": {

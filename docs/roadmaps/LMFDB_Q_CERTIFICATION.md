@@ -104,7 +104,7 @@ its reduced rational denominator equals one.
 Accept tests for both truth values, good/split/nonsplit reduction, additive
 types at 2 and 3, and a semistable curve with nonsquarefree minimal discriminant.
 
-**L2 · Tamagawa numbers and local signs.** Given a validated terminal model
+**L2 · Tamagawa numbers and local signs.** [Exact evidence production by Kodaira type](#l2-exact-evidence-production). Given a validated terminal model
 over ℚₚ, prove its checked finite index equals
 `E.tamagawaNumber` at p, using TauCeti's
 `tamagawaNumber_eq_tateLocalIndex`; use `tamagawaProduct_eq_prod` after
@@ -472,3 +472,93 @@ its proved algorithmic conductor norm and an explicit rational error bound.
 For 37.a1 the tests prove that the conductor norm is 37, give its trivial
 twist as a global minimum and verify a numerical enclosure independently of
 modularity. [TauCeti backlog TC-17](../TAUCETI_BACKLOG.md#tc-17--geometric-cm-and-minimum-conductor-quadratic-twists)
+
+## L2 exact evidence production
+
+This section specifies the evidence boundary for each local Kodaira family.
+The installed baseline is `main` at inspected revision
+[`6f67160`](https://github.com/khwilson/verified-lcalc/commit/6f671604d0162f5cf5ff14f75b42846e08a0802b). This table also records the type III
+checker implemented in this checkout. Planned rows describe future evidence
+contracts. The verifier consumes supplied evidence, validates it in
+Lean, and rejects a supplied local factor when its evidence is malformed or
+contradicts the curve. Omitting evidence leaves that factor unavailable.
+
+### Common producer payload and verifier checks
+
+The evidence is route-specific. The installed good, `I₁` and `I₂` routes take
+the supplied curve, prime and factor and check the corresponding discriminant
+and `c₄` conditions directly; they do not require a duplicate normalized
+coefficient tuple or a Kodaira claim. For a transcript route, the producer
+supplies the terminal symbol and every needed model change. The verifier
+derives the changed coefficients and checks each change equation, any local
+unit condition, and every divisibility/nondivisibility condition in TauCeti's
+`isTateTerminal_*` characterization. It does not search for a normalization.
+If the input is not minimal, the transcript must also supply a checked
+minimization/scaling step before its terminal translations. The terminal
+result is then transported to the completion and the exact corresponding
+`tateLocalIndex_*` formula proves the factor through
+`tamagawaNumber_eq_tateLocalIndex`.
+
+Whenever a formula branches on residue-field roots, the producer records
+evidence for the residue polynomial derived from its submitted model: a
+concrete root or a separate, independently checkable no-root certificate. A
+root is checked by substitution. A no-root claim cannot be accepted as a
+Boolean assertion: the verifier derives the residue polynomial from the
+submitted model and checks the root, factorization, or no-root evidence
+against it. The payload need not
+duplicate that polynomial; if coefficients are supplied, the verifier checks
+them against the model. A quadratic with nonzero leading coefficient over an
+odd prime field can use the discriminant Euler criterion equal to `−1`.
+Otherwise, including characteristic two when applicable, a no-root certificate
+can be a checked Bézout identity `A f + B (X^q − X) = 1` for the derived
+polynomial `f` over the residue field of size `q`. The verifier never
+enumerates residue elements to discover a root or infer nonexistence. It
+checks that supplied root-count or factorization data is complete for the
+particular TauCeti formula.
+
+| Terminal symbol | TauCeti local-index result | Producer payload | Verifier support | Fixture coverage |
+| --- | --- | --- | --- | --- |
+| `I₀` (good) | `1` | Current route needs curve and prime with `¬ p ∣ Δ`; no separate model or Kodaira field. A transcript route may supply the `I₀` terminal check. | Good reduction is installed in the current good / `I₁` / `I₂` checker. | `GoodTamagawa` exercises the good-prime factor. |
+| `I₁` | `1`, regardless of tangent splitting | Current route checks discriminant valuation one and unit `c₄`; no duplicated terminal model is required. | Installed. | `179.a1`, p=179. |
+| `I₂` | `2` in either splitting case | Current route checks `p² ∣ Δ`, `p³ ∤ Δ`, and `p ∤ c₄`. | Installed. | `17.a2`, p=17. |
+| `Iₙ`, `n ≥ 3` | `n` if split; `gcd(2,n)` if nonsplit | Terminal exponent and checked tangent-root evidence: a supplied root, or a no-root certificate for the tangent quadratic. | Planned. TauCeti's formula is available; rational normalization and residue transport are incomplete. | No checked factor fixture. |
+| `II` | `1` | Supplied model satisfying all five terminal `II` conditions, including `ϖ² ∤ a₆`. | Planned. | No checked factor fixture. |
+| `III` | `2` | For `p > 3`, the producer saves the exact integers `r`, `s`, `t` in `tamagawa_type_iii`. The checker applies the scale-one change to the original equation and checks terminal `III` divisibilities. | Implemented for the intrinsic local factor. The separate additive Kodaira field still checks only the additive family. | `49.a4`, p=7. |
+| `IV` | `3` when the terminal residue quadratic has a root; otherwise `1` | Persist the exact unit-scale change and a specific root or an independently checkable no-root certificate. Use the odd-characteristic Euler test for the tame quadratic and the checked Bézout alternative where appropriate, including characteristic 2. | Planned; no Type IV support is installed. | 50.a3 / 50.a1 are candidate source rows only; no checked fixture. |
+| `I₀*` | `1 + card(tateCubicRoots)` | Complete root/factorization evidence for the normalized residue cubic `X³ + (a₂/p)X² + (a₄/p²)X + a₆/p³` derived from the checked terminal model; the terminal predicate also checks the cubic discriminant valuation. | Planned. | No checked factor fixture. |
+| `Iₙ*`, `n = 2k+1` | `4` when `HasTateYRoot ϖ (k+2)`, otherwise `2` | Complete odd-stage transcript, terminal exponent, and a checked root or no-root certificate for that level's quadratic. | Planned. | No checked factor fixture. |
+| `Iₙ*`, `n = 2k+2` | `4` when `HasTateXRoot ϖ (k+2)`, otherwise `2` | Complete even-stage transcript, terminal exponent, and a checked root or no-root certificate for that level's quadratic. | Planned. | No checked factor fixture. |
+| `IV*` | `3` when `HasTateYRoot ϖ 2`, otherwise `1` | Supplied terminal model and level-two quadratic root or no-root certificate. | Planned. | No checked factor fixture. |
+| `III*` | `2` | Supplied model satisfying the exact terminal `III*` conditions. | Planned. | No checked factor fixture. |
+| `II*` | `1` | Supplied model satisfying the exact terminal `II*` conditions. | Planned. | No checked factor fixture. |
+| Wild primes `2` and `3` | Use the local-index theorem for a validated terminal symbol; no generic shortcut is claimed. | A supplied terminal model and certified changes may suffice when they prove the exact terminal predicate; replay the full Tate stages when needed. Include characteristic-appropriate residue evidence. Conductor/root-number compatibility remains a separate assumption boundary. | Planned; no general wild producer or verifier path is installed. | 112.a2 has local row metadata at 2, but no checked additive Tamagawa factor. |
+
+The formulas above are the pinned TauCeti definitions, not values inferred
+from the LMFDB Kodaira code. In particular, an `I₀*` count and a star-family
+quadratic test are rational component-group indices, not geometric component
+counts. The canonical source is TauCeti commit
+[`e0e414ce`](https://github.com/TauCetiProject/TauCeti/tree/e0e414ce57522ba17560057ad0d7f2edab91bf0c):
+[`Terminal.lean`](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/Terminal.lean)
+defines the stopping predicates, and
+[`LocalIndex.lean`](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/LocalIndex.lean)
+contains `tateLocalIndex_I_one`, `tateLocalIndex_I_add_one_of_hasTateTangentRoot`,
+`tateLocalIndex_I_add_one_of_not_hasTateTangentRoot`, `tateLocalIndex_II`,
+`tateLocalIndex_III`, both `tateLocalIndex_IV_*` results,
+`tateLocalIndex_IStar_zero`, `tateLocalIndex_IStar_odd`,
+`tateLocalIndex_IStar_even`, both `tateLocalIndex_IVStar_*` results,
+`tateLocalIndex_IIIStar`, and `tateLocalIndex_IIStar`. The completed-field
+bridge is TauCeti's
+[`Tamagawa/Local.lean`](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Local.lean#L144-L162).
+
+### Evidence rejection and coverage policy
+
+The JSON route must decode exactly the same evidence record consumed by the
+Lean route. Wrong roots, invalid or incomplete no-root evidence,
+conflicting normalized coefficients, a terminal mismatch, or a factor that
+disagrees with the pinned local-index formula rejects the supplied certificate.
+The no-evidence case remains `none` for that family and cannot create a
+`LocalTamagawaFact`. A fixture matching the catalogue's factor is a regression
+example only; it does not widen producer support to other curves, primes, or
+residue characteristics. Implementation PRs should test a genuine positive
+row, a corrupted normalization, wrong root/no-root data, a wrong factor, and
+the absent-evidence case, then audit imported consumers and axioms separately.

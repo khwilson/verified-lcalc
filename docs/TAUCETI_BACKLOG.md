@@ -201,6 +201,9 @@ in the nonsplit case. The rational witness adapter still needs to transport its 
 through the residue-field identification and then through the normalized
 terminal model. For specific additive factors, connect finite row evidence
 to the relevant `IsTateTerminal` and residue-polynomial hypotheses.
+The full family-by-family payload, exact pinned formulas, and implemented
+versus planned boundary are tracked in the
+[L2 evidence-production roadmap](roadmaps/LMFDB_Q_CERTIFICATION.md#l2-exact-evidence-production).
 [Terminal comparison](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Local.lean#L144-L162)
 · [Split and nonsplit indices](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/LocalIndex.lean#L469-L486)
 
