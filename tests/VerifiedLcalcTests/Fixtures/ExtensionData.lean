@@ -115,11 +115,11 @@ variable [Growth64Equivalence]
 -- The fixed equation's finite checks do not use the caller's equivalence.
 set_option linter.unusedSectionVars false in
 set_option linter.concreteInstances false in
-
 certify_ec FullGrowth64 from_json_string
   r#"{"ainvs":[0,0,0,1,0],"degree":4,"torsion":2,"discriminant":-64,
     "torsion_growth":{"degree":2,"field":[1,0,1],"torsion":[2,2],"lmfdb_label":"64.a4"}}"#
-  with_proofs ({ torsionGrowth := some (fullEvidence inferInstance) } : IntegralCurveProofs growthModel)
+  with_proofs
+    ({ torsionGrowth := some (fullEvidence inferInstance) } : IntegralCurveProofs growthModel)
 
 end
 
