@@ -1,0 +1,22 @@
+{
+  "ainvs": [1, -1, 1, -6, -4],
+  "signD": 1,
+  "absD": 289,
+  "bad_primes": [17],
+  "num_bad_primes": 1,
+  "semistable": true,
+  "squarefree_disc": false,
+  "minimality": [17, 17],
+  "discriminant": 289,
+  "conductor": 17,
+  "local_invariants": [
+    {
+      "prime": 17,
+      "discriminant_valuation": 2,
+      "reduction_type": 1,
+      "kodaira_symbol": 6,
+      "tamagawa_number": 2,
+      "root_number": -1
+    }
+  ]
+}

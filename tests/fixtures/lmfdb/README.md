@@ -52,6 +52,17 @@ The 179.a1 row also supplies the local Tamagawa factor 1 from the snapshot.
 The compiled consumer checks the intrinsic factor in the completed field.
 The 179.a1 row also supplies PARI Kodaira code 5 from the snapshot.
 The consumer checks its canonical `I₁` symbol.
+
+The 17.a2 Tamagawa fixture is a documented projection of row 19 of the pinned
+John Cremona `ecdata` snapshot in `data/lmfdb/raw/curvedata-first-1200.txt`.
+Its local arrays report prime 17, discriminant valuation 2, PARI Kodaira code 6
+(I₂), and Tamagawa factor 2. The source snapshot revision, parser schema, and
+Artistic License 2.0 attribution are recorded in `data/lmfdb/README.md` and
+`data/lmfdb/raw/ECDATA-LICENSE`. This fixture requests the exact equation and
+local arithmetic data only; it does not use the reference analytic rank.
+`17.a2-tamagawa-joined.json` retains the producer-facing two-table projection
+of the same row for the conditional kernel-replay test.
+
 The Lean consumer checks the finite theorems and checks the modularity dependency
 on conductor and root-number theorems. The matrix inputs contain no rank data. Its consumer also reuses the separate, already
 checked analytic-rank-one witness for 112.a2 on the same integral equation.

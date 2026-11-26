@@ -176,9 +176,10 @@ torsion specialization.
 
 The pinned release defines `tamagawaNumberAt` on the completed field and
 compares it with `tateLocalIndex` on a checked terminal model. Good reduction
-and `I₁` both contribute one. For larger multiplicative indices, the terminal
-comparison gives `n` in the split case and `gcd(2,n)` in the nonsplit case.
-The rational witness adapter still needs to transport its verified splitting
+and `I₁` both contribute one. For `I₂`, both terminal index formulas give
+two, which the rational checker now verifies. At higher multiplicative
+indices, the terminal comparison gives `n` in the split case and `gcd(2,n)`
+in the nonsplit case. The rational witness adapter still needs to transport its verified splitting
 through the residue-field identification and then through the normalized
 terminal model. For specific additive factors, connect finite row evidence
 to the relevant `IsTateTerminal` and residue-polynomial hypotheses.
@@ -200,8 +201,9 @@ global product of one when every prime divisor of the discriminant is checked
 to have good reduction or multiplicative index one. This uses TauCeti's
 `WeierstrassCurve.tamagawaProduct_eq_prod` together with the pinned local
 completed-factor theorems; no new general Tamagawa API is needed for this
-case. The remaining roadmap item is transport and explicit support for factors
-above one, especially additive reduction.
+case. Extending the global product checker to use exact `I₂` values or
+other factors still requires assembling the checked finite local factors
+and proving completeness of the prime roster.
 
 ## TC-11 — explicit zero-y Vélu quotient equation
 

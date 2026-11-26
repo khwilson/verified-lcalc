@@ -187,7 +187,7 @@ example : (GoodTamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 3)
   exact h (by decide +kernel)
 
 /--
-info: TamagawaOutsideScope: Tamagawa claims outside good or I₁ reduction are unverified.
+info: TamagawaOutsideScope: Tamagawa claims outside good, I₁ or I₂ reduction are unverified.
 ---
 info: Certified TamagawaOutsideScope.ap_correct and TamagawaOutsideScope.point_integral
 for the supplied lists
@@ -385,6 +385,14 @@ run_cmd do
   invariantRejected `WrongTamagawa (← `(certify_ec WrongTamagawa from
     { GoodTamagawa.witness with
       localInvariants := some [{ prime := 3, tamagawaNumber := some 2 }] }))
+  invariantRejected `WrongI2TamagawaOne (← `(certify_ec WrongI2TamagawaOne from_json_string
+    r#"{"ainvs":[1,-1,1,-6,-4],"minimality":[17,17],"prime":17,
+        "discriminant_valuation":2,"reduction_type":1,"kodaira_symbol":6,
+        "tamagawa_number":1}"#))
+  invariantRejected `WrongI2TamagawaThree (← `(certify_ec WrongI2TamagawaThree from_json_string
+    r#"{"ainvs":[1,-1,1,-6,-4],"minimality":[17,17],"prime":17,
+        "discriminant_valuation":2,"reduction_type":1,"kodaira_symbol":6,
+        "tamagawa_number":3}"#))
   invariantRejected `IncompatibleAdditiveRows (← `(certify_ec IncompatibleAdditiveRows
     from_json_string
     r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],

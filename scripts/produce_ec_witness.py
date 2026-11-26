@@ -321,11 +321,11 @@ run_cmd do
   let mut facts := names.map fun n => (n.toString, toJson (env.contains n))
   for p in ([{primes}] : List Nat) do
     let support ← liftTermElabM <| Lean.Meta.whnf
-      (mkApp2 (mkConst ``VerifiedLcalc.EllipticCurve.supportsTamagawaOne)
+      (mkApp2 (mkConst ``VerifiedLcalc.EllipticCurve.tamagawaExpected?)
         (mkConst ``WitnessCheck.curve) (mkNatLit p))
-    unless support.isConstOf ``Bool.true || support.isConstOf ``Bool.false do
+    unless support.isAppOf ``Option.some || support.isAppOf ``Option.none do
       throwError "Could not reduce Tamagawa support"
-    facts := facts ++ [("tamagawa." ++ toString p, toJson (support.isConstOf ``Bool.true))]
+    facts := facts ++ [("tamagawa." ++ toString p, toJson (support.isAppOf ``Option.some))]
   for (p, code) in ([{codes}] : List (Nat × Int)) do
     let index ← liftTermElabM <| Lean.Meta.whnf
       (mkApp (mkConst ``VerifiedLcalc.EllipticCurve.kodairaIIndex) (toExpr code))
@@ -448,7 +448,7 @@ def report_fields(
             elif field == "tamagawa_number" and not flags.get(f"tamagawa.{prime}"):
                 fields[key] = result(
                     "unsupported",
-                    "Exact Tamagawa checker requires good or I₁ reduction",
+                    "Exact Tamagawa checker supports good, I₁ or I₂ reduction",
                 )
             elif field == "kodaira_symbol" and not flags.get(f"kodaira.{prime}"):
                 fields[key] = result(
