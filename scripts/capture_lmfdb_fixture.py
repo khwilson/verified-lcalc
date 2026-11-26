@@ -5,7 +5,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
+import tempfile
 import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
@@ -307,6 +309,79 @@ def _inject_provenance(
     return body[:-1] + b',"provenance":' + encoded_provenance + b"}" + suffix
 
 
+def _stage_bytes(destination: Path, content: bytes) -> Path:
+    """Write and fsync a temporary file beside its final destination."""
+    descriptor, name = tempfile.mkstemp(
+        prefix=f".{destination.name}.", suffix=".stage", dir=destination.parent
+    )
+    staged = Path(name)
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            stream.write(content)
+            stream.flush()
+            os.fsync(stream.fileno())
+    except BaseException:
+        staged.unlink(missing_ok=True)
+        raise
+    return staged
+
+
+def _install_pair_no_clobber(
+    outputs: tuple[tuple[Path, bytes], tuple[Path, bytes]],
+) -> None:
+    """Install a raw/manifest pair without replacing existing files."""
+    destinations = [path for path, _ in outputs]
+    if len({path.resolve() for path in destinations}) != 2:
+        raise ValueError("Raw capture and manifest outputs must be different files")
+    if any(os.path.lexists(path) for path in destinations):
+        raise FileExistsError(
+            "Capture output pair already exists; refusing to overwrite either file"
+        )
+    for path in destinations:
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+    staged: list[Path] = []
+    installed: list[tuple[Path, tuple[int, int]]] = []
+    try:
+        for destination, content in outputs:
+            staged.append(_stage_bytes(destination, content))
+        for temporary, destination in zip(staged, destinations, strict=True):
+            # link() creates the destination only if it does not exist, including
+            # when another process wins the race after the preflight check.
+            stat = os.stat(temporary, follow_symlinks=False)
+            os.link(temporary, destination)
+            installed.append((destination, (stat.st_dev, stat.st_ino)))
+    except BaseException as error:
+        cleanup_errors = []
+        for destination, identity in reversed(installed):
+            try:
+                stat = os.lstat(destination)
+                if (stat.st_dev, stat.st_ino) == identity:
+                    os.unlink(destination)
+            except FileNotFoundError:
+                pass
+            except OSError as cleanup_error:
+                cleanup_errors.append(cleanup_error)
+        if cleanup_errors:
+            raise OSError(
+                f"Capture pair install failed and rollback was incomplete: {cleanup_errors}"
+            ) from error
+        raise
+    finally:
+        for temporary in staged:
+            temporary.unlink(missing_ok=True)
+
+
+def _atomic_replace(destination: Path, content: bytes) -> None:
+    """Replace one output atomically after its complete contents are staged."""
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    staged = _stage_bytes(destination, content)
+    try:
+        os.replace(staged, destination)
+    finally:
+        staged.unlink(missing_ok=True)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subs = parser.add_subparsers(dest="command", required=True)
@@ -338,15 +413,11 @@ def main() -> int:
                 manifest = _manifest(raw)
             else:
                 raw, manifest = capture_label(args.subject)
-            if args.output.resolve() == args.manifest_output.resolve():
-                raise ValueError(
-                    "Raw capture and manifest outputs must be different files"
-                )
-            args.output.parent.mkdir(parents=True, exist_ok=True)
-            args.output.write_bytes(raw)
-            args.manifest_output.parent.mkdir(parents=True, exist_ok=True)
-            args.manifest_output.write_text(
+            manifest_bytes = (
                 json.dumps(manifest, ensure_ascii=False, indent=2) + "\n"
+            ).encode()
+            _install_pair_no_clobber(
+                ((args.output, raw), (args.manifest_output, manifest_bytes))
             )
         else:
             raw = args.capture.read_bytes()
@@ -368,9 +439,8 @@ def main() -> int:
                 )
             source = _decode(raw, "raw response")
             projection = replay_capture(source, manifest)
-            args.output.parent.mkdir(parents=True, exist_ok=True)
-            args.output.write_bytes(
-                _inject_provenance(raw, source, projection["provenance"])
+            _atomic_replace(
+                args.output, _inject_provenance(raw, source, projection["provenance"])
             )
     except (OSError, ValueError) as error:
         parser.error(str(error))

@@ -9,8 +9,10 @@ import tempfile
 import unittest
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import scripts.capture_lmfdb_fixture as capture_module  # noqa: E402
 from scripts.capture_lmfdb_fixture import replay_capture
 from scripts.produce_ec_witness import build_input
 
@@ -237,6 +239,172 @@ class NativeCaptureReplay(unittest.TestCase):
             )
             self.assertEqual(replay.returncode, 0, replay.stderr)
             self.assertIn(exact_decimal, decimal_output.read_bytes())
+
+    def test_capture_does_not_clobber_existing_pair_and_pair_remains_replayable(
+        self,
+    ) -> None:
+        script = ROOT / "scripts/capture_lmfdb_fixture.py"
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            raw_output = base / "captured.json"
+            manifest_output = base / "captured.provenance.json"
+            raw_output.write_bytes(NATIVE.read_bytes())
+            manifest_output.write_bytes(MANIFEST.read_bytes())
+            before_raw = raw_output.read_bytes()
+            before_manifest = manifest_output.read_bytes()
+
+            capture = subprocess.run(
+                [
+                    sys.executable,
+                    str(script),
+                    "capture",
+                    str(NATIVE),
+                    "--output",
+                    str(raw_output),
+                    "--manifest-output",
+                    str(manifest_output),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertNotEqual(capture.returncode, 0)
+            self.assertEqual(raw_output.read_bytes(), before_raw)
+            self.assertEqual(manifest_output.read_bytes(), before_manifest)
+
+            replay_output = base / "replayed.json"
+            replay = subprocess.run(
+                [
+                    sys.executable,
+                    str(script),
+                    "replay",
+                    str(raw_output),
+                    "--manifest",
+                    str(manifest_output),
+                    "--output",
+                    str(replay_output),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(replay.returncode, 0, replay.stderr)
+            self.assertTrue(replay_output.is_file())
+
+    def test_second_capture_destination_failure_leaves_no_partial_pair(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            raw_output = base / "new-capture.json"
+            manifest_output = base / "new-manifest.json"
+            real_link = capture_module.os.link
+            link_count = 0
+
+            def fail_second_link(source: Path, destination: Path) -> None:
+                nonlocal link_count
+                link_count += 1
+                if link_count == 2:
+                    raise OSError("simulated second destination failure")
+                real_link(source, destination)
+
+            with patch.object(capture_module.os, "link", side_effect=fail_second_link):
+                with self.assertRaisesRegex(OSError, "second destination"):
+                    capture_module._install_pair_no_clobber(
+                        (
+                            (raw_output, NATIVE.read_bytes()),
+                            (manifest_output, MANIFEST.read_bytes()),
+                        )
+                    )
+            self.assertEqual(link_count, 2)
+            self.assertFalse(raw_output.exists())
+            self.assertFalse(manifest_output.exists())
+            self.assertEqual(list(base.glob(".*.stage")), [])
+
+            replay_output = base / "source-remains-usable.json"
+            script = ROOT / "scripts/capture_lmfdb_fixture.py"
+            replay = subprocess.run(
+                [
+                    sys.executable,
+                    str(script),
+                    "replay",
+                    str(NATIVE),
+                    "--manifest",
+                    str(MANIFEST),
+                    "--output",
+                    str(replay_output),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(replay.returncode, 0, replay.stderr)
+            self.assertTrue(replay_output.is_file())
+
+    def test_replay_replace_failure_preserves_existing_output(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "existing-replay.json"
+            output.write_bytes(b"keep previous replay")
+            original = output.read_bytes()
+
+            def fail_replace(source: Path, destination: Path) -> None:
+                raise OSError("simulated replay replace failure")
+
+            with patch.object(capture_module.os, "replace", side_effect=fail_replace):
+                with self.assertRaisesRegex(OSError, "replay replace"):
+                    capture_module._atomic_replace(output, b"new replay")
+            self.assertEqual(output.read_bytes(), original)
+            self.assertEqual(list(Path(directory).glob(".*.stage")), [])
+
+    def test_replay_output_write_failure_preserves_source_pair(self) -> None:
+        script = ROOT / "scripts/capture_lmfdb_fixture.py"
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            blocked_parent = base / "output-parent"
+            blocked_parent.write_text("not a directory")
+            output = blocked_parent / "replay.json"
+            before_raw = NATIVE.read_bytes()
+            before_manifest = MANIFEST.read_bytes()
+            replay = subprocess.run(
+                [
+                    sys.executable,
+                    str(script),
+                    "replay",
+                    str(NATIVE),
+                    "--manifest",
+                    str(MANIFEST),
+                    "--output",
+                    str(output),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertNotEqual(replay.returncode, 0)
+            self.assertEqual(NATIVE.read_bytes(), before_raw)
+            self.assertEqual(MANIFEST.read_bytes(), before_manifest)
+
+            usable_output = base / "usable-replay.json"
+            retry = subprocess.run(
+                [
+                    sys.executable,
+                    str(script),
+                    "replay",
+                    str(NATIVE),
+                    "--manifest",
+                    str(MANIFEST),
+                    "--output",
+                    str(usable_output),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(retry.returncode, 0, retry.stderr)
+            self.assertTrue(usable_output.is_file())
 
     def test_rejects_wrong_label_and_conflicting_duplicate_rows(self) -> None:
         capture = read_json(NATIVE)

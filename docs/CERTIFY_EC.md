@@ -33,8 +33,11 @@ the rows. It carries all eight source tables, including class-indexed p-adic
 rows and extension-indexed torsion growth rows. An explicitly empty row list
 records a zero-row query. An omitted table has unknown coverage. A present row
 can independently contain empty arrays, nulls or source-specific sentinels.
-Replay preserves the original field encodings. Keep the native response and
-manifest for provenance and use the generated witness for Lean verification.
+Replay preserves the original field encodings. Capture requires unused
+destination names for both the response and the manifest. Use a new pair of
+paths for another snapshot. Replay replaces its output atomically after
+validation. Keep the native response and manifest for provenance and use the
+generated witness for Lean verification.
 
 The producer also accepts the legacy projection
 `tests/fixtures/lmfdb/112.a2-joined.json`.
