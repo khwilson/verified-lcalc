@@ -163,6 +163,8 @@ section
 
 variable [Growth64Equivalence]
 
+set_option linter.unusedSectionVars false in
+set_option linter.concreteInstances false in
 run_cmd do
   expectRejected `WrongFactors "torsion_growth_factors_match" (← `(certify_ec WrongFactors from
     { equation := ExtensionDataFixture.growthModel
