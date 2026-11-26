@@ -9,6 +9,8 @@ Check the exported theorem types and audit their dependencies after importing th
 
 open Lean Elab Command VerifiedLcalc VerifiedLcalc.EllipticCurve
 
+example : LMFDB.C112a2.curve = (⟨0, 1, 0, 0, 4⟩ : WeierstrassCurve ℤ) := rfl
+
 example : (LMFDB.C112a2.curve.baseChange ℚ).j = -4 / 7 :=
   LMFDB.C112a2.j_invariant
 example : LMFDB.C112a2.curve.Δ = -7168 := LMFDB.C112a2.discriminant
@@ -166,6 +168,14 @@ theorem imported_112a2_anlist :
       [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0] :=
   (LMFDB.C112a2.certificate.arithmetic.dirichletCoefficients.get (by rfl)).property
 
+/-- Taking the first eight entries recovers the shorter coefficient prefix. -/
+theorem imported_112a2_anlist_first_eight :
+    (List.range 8).map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1)) =
+      [1, 0, -2, 0, -4, 0, -1, 0] := by
+  have h := congrArg (List.take 8) imported_112a2_anlist
+  rw [← List.map_take, List.take_range] at h
+  exact h
+
 run_cmd do
   let input ← IO.ofExcept <| Json.parse
     r#"{"ainvs":[0,1,0,0,4],"anlist":[1,1]}"#
@@ -294,7 +304,8 @@ theorem imported_112a2_local_sign (p : ℕ) [Fact p.Prime] (h : p = 2 ∨ p = 7)
   · exact (signs[1]'(by decide +kernel)).correct
 
 run_cmd do
-  for fact in [``imported_112a2_anlist, ``imported_112a2_aplist_values, ``imported_112a2_aplist,
+  for fact in [``imported_112a2_anlist, ``imported_112a2_anlist_first_eight,
+      ``imported_112a2_aplist_values, ``imported_112a2_aplist,
       ``imported_112a2_torsion_primes,
       ``imported_112a2_torsion_generator_list, ``imported_112a2_torsion_generator,
       ``imported_112a2_torsion_generation,
