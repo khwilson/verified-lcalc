@@ -8,6 +8,9 @@
   },
   "signD": -1,
   "absD": 7168,
+  "potential_good_reduction": false,
+  "semistable": false,
+  "squarefree_disc": false,
   "bad_primes": [2, 7],
   "num_bad_primes": 2,
   "minimality": [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7],
@@ -18,12 +21,32 @@
   "torsion_generators": [[-2, 0, 1]],
   "torsion_generator_orders": [2],
   "torsion": 2,
+  "torsion_primes": [2],
   "torsion_structure": [2],
   "torsion_bound": {"first_prime": 3, "second_prime": 5, "bound": 2},
-  "anlist": [0, 1, 0, -2, 0, -4, 0, -1, 0],
+  "anlist": [0, 1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0],
+  "aplist": [0, -2, -4, -1, 0, 0, -2, 2, -8, 2, -4, -6, -2, -8, 4, -10, -6, 4, 12, 0, -14, 8, -6, 10, -2],
   "conductor": 112,
-  "prime": 2,
-  "conductor_valuation": 4,
+  "local_invariants": [
+    {
+      "prime": 2,
+      "conductor_valuation": 4,
+      "discriminant_valuation": 10,
+      "j_denominator_valuation": 0,
+      "reduction_type": 0,
+      "root_number": 1
+    },
+    {
+      "prime": 7,
+      "conductor_valuation": 1,
+      "discriminant_valuation": 1,
+      "j_denominator_valuation": 1,
+      "reduction_type": -1,
+      "root_number": 1,
+      "kodaira_symbol": 5,
+      "tamagawa_number": 1
+    }
+  ],
   "global_root_number": -1,
   "local_data": {"at_two": {"r": "0", "s": "1", "t": "0", "starT": "1", "cubicRoot": "1", "quadraticRoot": "0", "chain": ["0"], "kodaira": "-6"}, "at_three": null}
 }
