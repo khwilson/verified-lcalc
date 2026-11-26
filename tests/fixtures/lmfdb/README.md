@@ -25,6 +25,10 @@ The LMFDB Collaboration supplies these data under CC BY-SA. The fixture uses the
 the selected fields from both `ec_localdata` rows for 112.a2. The `anlist` decoder requires
 a leading zero and checks coefficients 1 through 20 via the arithmetic L-function.
 The `aplist` covers the first 25 primes, ending at 97, including the bad primes 2 and 7.
+Both coefficient proofs concern the represented integral equation of 112.a2.
+Transport to another member of 112.a requires independent isogeny or curve
+identification evidence. Lean checks the failure of discriminant squarefreeness
+from the equation. The joined capture does not include that field.
 
 The 112.a2 local rows check additive reduction at 2, nonsplit multiplicative reduction at 7,
 the discriminant and j-denominator valuations, and both arithmetic local signs.
