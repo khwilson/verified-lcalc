@@ -353,10 +353,12 @@ example where prime-wise images lose information.
 **G2 · Torsion growth.** The command proves the polynomial degree and
 root-adjoining dimension, and checks supplied irreducibility and a new
 finite-order point outside the image of rational base change. It exports
-these results for the one presented number field. The full-group target
-requires an isomorphism between the full torsion of $E_K$ and the given
-finite product of cyclic groups. Generalize M1 using reduction at good places with checked residue
-degrees. A complete growth assertion over a prescribed degree set requires
+these results for the one presented number field. A supplied additive
+equivalence between the full torsion of $E_K$ and the stated product of
+cyclic groups checks the row’s invariant factors over the same field.
+Proof production can generalize M1 using reduction at good places with checked
+residue degrees. See [TauCeti backlog TC-32](../TAUCETI_BACKLOG.md#tc-32--full-torsion-over-presented-number-fields).
+A complete growth assertion over a prescribed degree set requires
 a proved order bound, classification of the relevant torsion-field stabilizers
 from G1, a check that no proper subfield has the same growth, and identification of the represented fields up to the stated
 equivalence. Accept strict growth, another field of the same degree without
