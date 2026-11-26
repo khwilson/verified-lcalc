@@ -106,12 +106,23 @@ class KernelReplay(unittest.TestCase):
                 self.subTest(coefficient=coefficient),
                 tempfile.TemporaryDirectory() as d,
             ):
-                data = {"ainvs": [0, 0, 8, -16, 0], "aplist": [0, coefficient]}
+                data = {
+                    "ainvs": [0, 0, 8, -16, 0],
+                    "aplist": [0, coefficient],
+                    "integral_points": [[0, 0]],
+                }
                 result, report, output = produce(data, Path(d), timeout=600)
                 if coefficient == -3:
                     self.assertEqual(result.returncode, 0, (report, result.stderr))
                     self.assertEqual(report["status"], "checked")
                     self.assertEqual(report["fields"]["aplist"]["status"], "partial")
+                    integral = report["fields"]["integral_points"]
+                    self.assertEqual(integral["status"], "partial")
+                    self.assertIn(
+                        "All supplied integral pairs lie on the curve",
+                        integral["reason"],
+                    )
+                    self.assertIn("completeness needs evidence", integral["reason"])
                     self.assertIn(
                         "aplist_minimality_inconclusive", report["obligations"]
                     )

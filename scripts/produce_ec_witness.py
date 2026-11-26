@@ -322,6 +322,11 @@ def checked_status(field: str, value: Any) -> dict[str, str]:
         return result(
             "partial", "Point membership only; full generation requires evidence"
         )
+    if field == "integral_points":
+        return result(
+            "partial",
+            "All supplied integral pairs lie on the curve; completeness needs evidence",
+        )
     if field == "xcoord_integral_points" and not value:
         return result(
             "partial", "No integral abscissas supplied; exhaustivity needs evidence"
