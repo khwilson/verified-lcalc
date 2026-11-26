@@ -13,6 +13,56 @@ open VerifiedLcalc VerifiedLcalc.Examples.Curve27a3 Lean Elab Command
 theorem imported_complete_integer_count : Nat.card Checked.curve.integralPoints = 2 :=
   (Checked.certificate.algebraic.completeIntegralPoints.get (by decide +kernel)).integralPoints_card
 
+/-- The native free-generator family is empty and the checked count is zero. -/
+theorem imported_native_generator_count :
+    NativeRankZero.generators.coordinates.length = 0 :=
+  NativeRankZero.generators.count_valid
+
+/-- The exact submitted family gives a basis of rational points modulo their full torsion. -/
+theorem imported_native_free_basis :
+    let family := NativeRankZero.certificate.algebraic.generators.get (by rfl)
+    ∃ b : Module.Basis (Fin family.1) ℤ
+        (NativeRankZero.curve.baseChange ℚ).toAffine.PointModTorsion,
+      ∀ i, b i = Submodule.Quotient.mk (family.2 i) := by
+  have hquot : Module.finrank ℤ
+      (NativeRankZero.curve.baseChange ℚ).toAffine.PointModTorsion = 0 := by
+    rw [finrank_quotient_eq_of_le_torsion le_rfl]
+    exact (NativeRankZero.certificate.algebraic.rank.get (by rfl)).property
+  exact ⟨Module.finBasisOfFinrankEq ℤ _ hquot, fun i => Fin.elim0 i⟩
+
+/-- The exact native height list is indexed by the verified empty free-generator family. -/
+theorem imported_native_empty_heights :
+    List.ofFn (NativeRankZero.certificate.algebraic.heights.get (by rfl)).reported =
+      ([] : List ℚ) := rfl
+
+/-- The separate native torsion generator is the image of one in the full cyclic subgroup. -/
+theorem imported_native_torsion :
+    ∃ e : ZMod 3 ≃+ AddCommGroup.torsion (NativeRankZero.curve.baseChange ℚ).toAffine.Point,
+      (e 1 : (NativeRankZero.curve.baseChange ℚ).toAffine.Point) =
+        .mk (NativeRankZero.torsion_generators.points_on_curve 3 4 (by decide +kernel)) :=
+  NativeRankZero.torsion_structure.2
+
+/-- The singleton native list contains exactly the abscissas of all affine integral points. -/
+theorem imported_native_integral_abscissas (x : ℤ) :
+    (∃ y : ℤ, NativeRankZero.curve.toAffine.Equation x y) ↔ x ∈ ([3] : List ℤ) := by
+  constructor
+  · rintro ⟨y, h⟩
+    exact (NativeRankZero.certificate.algebraic.completeIntegralPoints.get
+      (by rfl)).support.covers x y h
+  · intro h
+    rw [List.mem_singleton.mp h]
+    exact ⟨4, by
+      rw [WeierstrassCurve.Affine.equation_iff]
+      decide +kernel⟩
+
+run_cmd do
+  for fact in [``imported_native_generator_count, ``imported_native_free_basis,
+      ``imported_native_empty_heights, ``imported_native_torsion,
+      ``imported_native_integral_abscissas] do
+    for axiomName in ← liftTermElabM <| Lean.collectAxioms fact do
+      unless [``propext, ``Classical.choice, ``Quot.sound].contains axiomName do
+        throwError "Unexpected native rank-zero axiom in {fact}: {axiomName}"
+
 example : Checked.certificate.algebraic.completeIntegralPoints.isSome = true := by rfl
 example : Checked.certificate.algebraic.regulator.isSome = true := by rfl
 example :

@@ -118,4 +118,29 @@ certify_ec ApproxRegulator from_json_string
   }"#
   with_proofs proofs
 
+/-- Attach the rank, exhaustive abscissas, and empty indexed height family from the native row. -/
+def nativeProofs : IntegralCurveProofs curve :=
+  { proofs with
+    canonicalHeights := some ⟨⟨0, Fin.elim0⟩, {
+      reported := Fin.elim0
+      error := Fin.elim0
+      error_nonneg := fun i => Fin.elim0 i
+      within_error := fun i => Fin.elim0 i }⟩ }
+
+/- The CC BY-SA joined LMFDB capture records the native lists:
+   https://www.lmfdb.org/EllipticCurve/Q/data/27.a3?_format=json
+   Timestamp 2026-11-26T02:43:49.519441,
+   SHA-256 6b85c950a41922049ad7414113097b4f4ffd03e1ff4ca7b01e2b68d5e1262d09.
+   The torsion-order witness and good primes 5 and 7 are supplied for kernel checking. -/
+certify_ec NativeRankZero from_json_string
+  r#"{
+    "ainvs":[0,0,1,0,-7],"rank":0,
+    "gens":[],"ngens":0,"heights":[],
+    "torsion_generators":[[3,4,1]],"torsion_generator_orders":[3],
+    "torsion":3,"torsion_structure":[3],
+    "torsion_bound":{"first_prime":5,"second_prime":7,"bound":3},
+    "xcoord_integral_points":[3],"num_int_pts":2
+  }"#
+  with_proofs nativeProofs
+
 end VerifiedLcalc.Examples.Curve27a3
