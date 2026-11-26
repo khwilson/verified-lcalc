@@ -1,9 +1,16 @@
+/-
+Copyright (c) 2026 Kevin Wilson. All rights reserved.
+Part of verified-lcalc.
+Authors: Kevin Wilson
+-/
 import VerifiedLcalc.Certificate.Json
-
-open Lean VerifiedLcalc VerifiedLcalc.EllipticCurve
+import VerifiedLcalc.Certificate.CurveDataJson
 
 /-! Explicit benchmark-only witness search. Its JSON output is untrusted input
-for `certify_ec`; no theorem or certificate is produced by this executable. -/
+for `certify_ec`; no theorem or certificate is produced by this executable.
+The `--arithmetic` mode proposes evidence for one equation on stdout. -/
+
+open Lean VerifiedLcalc VerifiedLcalc.EllipticCurve
 
 private def number (n : Int) : Json := .str (toString n)
 private def natural (n : Nat) : Json := .str (toString n)
@@ -17,6 +24,48 @@ private def tateJson : Option TateWitness → Json
       ("starT", number w.starT), ("cubicRoot", number w.cubicRoot),
       ("quadraticRoot", number w.quadraticRoot), ("chain", toJson (w.chain.map number)),
       ("kodaira", number w.kodaira)]
+
+-- The witness checker verifies the full discriminant product for every candidate list.
+private def proposeMinimality (e : WeierstrassCurve ℤ) (j : Json) : Option MinimalityWitness :=
+  let badPrimes := (do
+    let values ← j.getObjValAs? (Array Json) "bad_primes"
+    values.toList.mapM CurveDataJson.nonnegativeInteger).toOption
+  let hinted := badPrimes.bind fun ps => minimalityWitness? e ((ps.filter (1 < ·)).eraseDups)
+  hinted.orElse fun _ =>
+    let conductor := (j.getObjVal? "conductor" >>= CurveDataJson.nonnegativeInteger).toOption
+    let hinted := conductor.bind fun n =>
+      if n > 0 then minimalityWitness? e n.primeFactorsList.eraseDups else none
+    hinted.orElse fun _ => minimalityWitness? e e.Δ.natAbs.primeFactorsList.eraseDups
+
+-- Preserve every supported value so that the verifier still rejects a wrong coefficient.
+private def partialNativeAp (e : WeierstrassCurve ℤ) (ainvs j : Json) : Option Json := do
+  let values ← (j.getObjVal? "aplist").toOption
+  let w ← (CurveDataJson.decode (Json.mkObj [("ainvs", ainvs), ("aplist", values)])).toOption
+  let entries ← w.primeCoefficients
+  let supported := entries.filter fun pa => modelMinimalAt e pa.1
+  if supported.length == entries.length then none
+  else some (toJson (supported.map fun (p, a) => [natural p, number a]))
+
+private def proposeArithmetic (j : Json) : Except String Json := do
+  let ainvs ← j.getObjVal? "ainvs"
+  let e ← CurveDataJson.equationOfAinvs (← CurveDataJson.ainvs ainvs)
+  if e.Δ = 0 then throw "singular_input"
+  let m := proposeMinimality e j
+  let (minimality, minimalityObligations) := match m with
+    | some m => ([("minimality", toJson (m.primes.map natural))], ([] : List String))
+    | none => ([], ["minimality_inconclusive"])
+  let (localData, localObligations) := match wildData? e with
+    | some d => ([("local_data", Json.mkObj
+        [("at_two", tateJson d.atTwo), ("at_three", tateJson d.atThree)])],
+        ([] : List String))
+    | none => ([], ["wild_reduction_inconclusive"])
+  let partialAp := if m.isNone then partialNativeAp e ainvs j else none
+  let (coefficients, coefficientObligations) := match partialAp with
+    | some ap => ([("ap", ap)], ["aplist_minimality_inconclusive"])
+    | none => ([], [])
+  return Json.mkObj [
+    ("evidence", Json.mkObj (minimality ++ localData ++ coefficients)),
+    ("obligations", toJson (minimalityObligations ++ localObligations ++ coefficientObligations))]
 
 private def encodeWitness (w : EllipticWitness) : Except String Json := do
   let some m := w.minimality | throw "Missing minimality data"
@@ -46,7 +95,8 @@ private def encodeWitness (w : EllipticWitness) : Except String Json := do
       ("at_two", tateJson d.atTwo), ("at_three", tateJson d.atThree)]),
     ("enclosure", Json.mkObj [
       ("real", interval (box.reLo, box.reHi)), ("imag", interval (box.imLo, box.imHi))]),
-    ("evaluator", Json.mkObj ([("alpha", interval (al, ah)), ("tail", rational tail)] ++ evaluator))]
+    ("evaluator", Json.mkObj
+      ([("alpha", interval (al, ah)), ("tail", rational tail)] ++ evaluator))]
 
 private def propose (e : WeierstrassCurve ℤ) (N : Nat) : Except String EllipticWitness := do
   if e.Δ = 0 then throw "singular_input"
@@ -75,8 +125,15 @@ private def parseInput (j : Json) : Except String (String × WeierstrassCurve �
   unless a.size == 5 do throw "Expected five Weierstrass coefficients"
   return (label, ⟨a[0]!, a[1]!, a[2]!, a[3]!, a[4]!⟩, N)
 
+/-- Propose arithmetic evidence on stdout or write rank benchmark witnesses to a directory. -/
 def main (args : List String) : IO UInt32 := do
-  let [input, output] := args | throw (IO.userError "Usage: INPUT.json OUTPUT_DIR")
+  if let ["--arithmetic", input] := args then
+    let raw ← IO.FS.readFile input
+    let evidence ← IO.ofExcept ((Json.parse raw).bind proposeArithmetic)
+    IO.println evidence.compress
+    return 0
+  let [input, output] := args |
+    throw (IO.userError "Usage: INPUT.json OUTPUT_DIR | --arithmetic INPUT.json")
   IO.FS.createDirAll output
   let raw ← IO.FS.readFile input
   let entries ← IO.ofExcept do

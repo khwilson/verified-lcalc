@@ -1,0 +1,211 @@
+{
+  "labels": [
+    "112.a2",
+    "112.a",
+    "112.a2",
+    "112.a2",
+    "112.a2"
+  ],
+  "tables": [
+    "ec_curvedata",
+    "ec_classdata",
+    "ec_mwbsd",
+    "ec_localdata",
+    "ec_galrep"
+  ],
+  "label_cols": [
+    "lmfdb_label",
+    "lmfdb_iso",
+    "lmfdb_label",
+    "lmfdb_label",
+    "lmfdb_label"
+  ],
+  "totals": [
+    1,
+    1,
+    1,
+    2,
+    2
+  ],
+  "timestamp": "2026-11-26T01:59:10.892609",
+  "limit": 100,
+  "data": [
+    [
+      {
+        "id": 339,
+        "lmfdb_label": "112.a2",
+        "lmfdb_iso": "112.a",
+        "ainvs": [
+          0,
+          1,
+          0,
+          0,
+          4
+        ],
+        "conductor": 112,
+        "absD": 7168,
+        "signD": -1,
+        "jinv": [
+          -4,
+          7
+        ],
+        "bad_primes": [
+          2,
+          7
+        ],
+        "num_bad_primes": 2,
+        "semistable": false,
+        "potential_good_reduction": false,
+        "torsion": 2,
+        "torsion_primes": [
+          2
+        ],
+        "torsion_structure": [
+          2
+        ],
+        "analytic_rank": 1,
+        "rank": 1
+      }
+    ],
+    [
+      {
+        "id": 108,
+        "lmfdb_iso": "112.a",
+        "conductor": 112,
+        "aplist": [
+          0,
+          -2,
+          -4,
+          -1,
+          0,
+          0,
+          -2,
+          2,
+          -8,
+          2,
+          -4,
+          -6,
+          -2,
+          -8,
+          4,
+          -10,
+          -6,
+          4,
+          12,
+          0,
+          -14,
+          8,
+          -6,
+          10,
+          -2
+        ],
+        "anlist": [
+          0,
+          1,
+          0,
+          -2,
+          0,
+          -4,
+          0,
+          -1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          8,
+          0,
+          -2,
+          0,
+          2,
+          0
+        ]
+      }
+    ],
+    [
+      {
+        "id": 339,
+        "lmfdb_label": "112.a2",
+        "conductor": 112,
+        "gens": [
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "ngens": 1,
+        "torsion_generators": [
+          [
+            -2,
+            0,
+            1
+          ]
+        ],
+        "xcoord_integral_points": [
+          -2,
+          -1,
+          0,
+          2,
+          6,
+          16
+        ],
+        "rank_bounds": [
+          1,
+          1
+        ]
+      }
+    ],
+    [
+      {
+        "id": 713,
+        "lmfdb_label": "112.a2",
+        "conductor": 112,
+        "prime": 2,
+        "conductor_valuation": 4,
+        "discriminant_valuation": 10,
+        "j_denominator_valuation": 0,
+        "reduction_type": 0,
+        "root_number": 1,
+        "kodaira_symbol": -6,
+        "tamagawa_number": 4
+      },
+      {
+        "id": 714,
+        "lmfdb_label": "112.a2",
+        "conductor": 112,
+        "prime": 7,
+        "conductor_valuation": 1,
+        "discriminant_valuation": 1,
+        "j_denominator_valuation": 1,
+        "reduction_type": -1,
+        "root_number": 1,
+        "kodaira_symbol": 5,
+        "tamagawa_number": 1
+      }
+    ],
+    [
+      {
+        "id": 1666206,
+        "prime": 0,
+        "lmfdb_label": "112.a2",
+        "conductor": 112
+      },
+      {
+        "id": 389,
+        "prime": 2,
+        "lmfdb_label": "112.a2",
+        "conductor": 112
+      }
+    ]
+  ],
+  "provenance": {
+    "source": "https://www.lmfdb.org/EllipticCurve/Q/data/112.a2?_format=json",
+    "source_sha256": "a7631a589136e92ffed788998da29e801cc6683dc8c87c0bb4d7f04913181171",
+    "attribution": "The LMFDB Collaboration",
+    "license": "CC BY-SA",
+    "selection": "Selected columns from the curve, class, Mordell–Weil, both local rows, and both Galois rows. The Galois rows supply join identifiers and conductor only. Original join identifiers and displayed values retained."
+  }
+}

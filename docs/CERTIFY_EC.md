@@ -8,7 +8,38 @@ mathematical algorithms remain the existing proof-backed Lean implementation.
 The old Python registry, browser volunteer application, service dependencies,
 and generated batch certificate corpora/installers are removed. Git baseline `fcdc4f2` preserves their source. Existing ignored
 local state and database volumes were not deleted; stop any old API/worker
-processes yourself. The remaining Python scripts only download/benchmark data.
+processes yourself.
+
+## Produce an arithmetic witness from joined LMFDB data
+
+Build the existing Lean verifier, then pass a single curve's joined LMFDB
+data export to the witness producer.
+
+```sh
+lake build VerifiedLcalc.Tactic.CertifyEC
+python3 scripts/produce_ec_witness.py tests/fixtures/lmfdb/112.a2-joined.json --output witness.json
+```
+
+The producer checks the curve, class, Mordell–Weil, local and Galois row joins.
+The Galois rows contribute repeated conductor values. The producer
+prepares arithmetic witness data, invokes `certify_ec` in Lean, and writes
+the output only after verification succeeds. The JSON report on stdout
+gives a status, reason and source receipts for each field. Local statuses
+are indexed by prime. The report carries supplied provenance as metadata
+under `input_provenance`. A rejected claim leaves the destination untouched.
+
+The 112.a2 example checks equation invariants, the conductor with the
+existing modularity assumption, the submitted coefficient lists, rational
+point membership for both submitted families, and supported local facts.
+Its row at prime 7 has an exact Kodaira symbol and Tamagawa factor.
+At prime 2, the Kodaira
+check establishes additive reduction and the Tamagawa factor is unsupported.
+The generator check proves that the submitted points lie on the rational
+curve. A basis or saturation theorem requires additional evidence. Analytic
+and algebraic rank reports are outside this arithmetic run.
+
+The result can be checked again with `certify_ec MyCurve from_json "witness.json"`
+from a Lean file adjacent to the output.
 
 ## Three input forms
 
