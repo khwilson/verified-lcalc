@@ -1,0 +1,754 @@
+{
+  "labels": [
+    "112.a2",
+    "112.a",
+    "112.a2",
+    "112.a2",
+    "112.a2",
+    "112.a2",
+    "112.a2",
+    "112.a"
+  ],
+  "tables": [
+    "ec_curvedata",
+    "ec_classdata",
+    "ec_mwbsd",
+    "ec_iwasawa",
+    "ec_torsion_growth",
+    "ec_localdata",
+    "ec_galrep",
+    "ec_padic"
+  ],
+  "label_cols": [
+    "lmfdb_label",
+    "lmfdb_iso",
+    "lmfdb_label",
+    "lmfdb_label",
+    "lmfdb_label",
+    "lmfdb_label",
+    "lmfdb_label",
+    "lmfdb_iso"
+  ],
+  "timestamp": "2026-11-26T01:59:10.892609",
+  "data": [
+    [
+      {
+        "id": 339,
+        "Ciso": "112a",
+        "Clabel": "112a1",
+        "Cnumber": 1,
+        "abc_quality": 1.0348177494302118,
+        "absD": 7168,
+        "adelic_genus": 0,
+        "adelic_index": 12,
+        "adelic_level": 56,
+        "ainvs": [
+          0,
+          1,
+          0,
+          0,
+          4
+        ],
+        "analytic_rank": 1,
+        "bad_primes": [
+          2,
+          7
+        ],
+        "class_deg": 2,
+        "class_size": 2,
+        "cm": 0,
+        "conductor": 112,
+        "degree": 8,
+        "elladic_images": [
+          "8.6.0.1"
+        ],
+        "faltings_height": {
+          "__RealLiteral__": 0,
+          "data": "-0.58124242584011530341994090013",
+          "prec": 97
+        },
+        "faltings_index": 0,
+        "faltings_ratio": 1,
+        "intrinsic_torsion": 1,
+        "iso_nlabel": 0,
+        "isogeny_degrees": [
+          1,
+          2
+        ],
+        "jinv": [
+          -4,
+          7
+        ],
+        "lmfdb_iso": "112.a",
+        "lmfdb_label": "112.a2",
+        "lmfdb_number": 2,
+        "manin_constant": 1,
+        "min_quad_twist_ainvs": [
+          0,
+          -1,
+          0,
+          0,
+          -4
+        ],
+        "min_quad_twist_disc": -4,
+        "modell_images": [
+          "2B"
+        ],
+        "modm_images": [
+          "2.3.0.a.1",
+          "8.6.0.c.1",
+          "14.6.0.b.1",
+          "56.12.0.n.1"
+        ],
+        "nonmax_primes": [
+          2
+        ],
+        "nonmax_rad": 2,
+        "num_bad_primes": 2,
+        "num_int_pts": 11,
+        "optimality": 1,
+        "potential_good_reduction": false,
+        "rank": 1,
+        "regulator": {
+          "__RealLiteral__": 0,
+          "data": "0.23991989872520257601163977125",
+          "prec": 97
+        },
+        "semistable": false,
+        "serre_invariants": [
+          [
+            2,
+            2,
+            7
+          ],
+          [
+            7,
+            8,
+            16
+          ]
+        ],
+        "sha": 1,
+        "sha_primes": [],
+        "signD": -1,
+        "stable_faltings_height": {
+          "__RealLiteral__": 0,
+          "data": "-1.1588650763067363946009676680",
+          "prec": 97
+        },
+        "szpiro_ratio": 3.461361967583028,
+        "torsion": 2,
+        "torsion_primes": [
+          2
+        ],
+        "torsion_structure": [
+          2
+        ]
+      }
+    ],
+    [
+      {
+        "id": 108,
+        "anlist": [
+          0,
+          1,
+          0,
+          -2,
+          0,
+          -4,
+          0,
+          -1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          8,
+          0,
+          -2,
+          0,
+          2,
+          0
+        ],
+        "aplist": [
+          0,
+          -2,
+          -4,
+          -1,
+          0,
+          0,
+          -2,
+          2,
+          -8,
+          2,
+          -4,
+          -6,
+          -2,
+          -8,
+          4,
+          -10,
+          -6,
+          4,
+          12,
+          0,
+          -14,
+          8,
+          -6,
+          10,
+          -2
+        ],
+        "class_deg": 2,
+        "class_size": 2,
+        "conductor": 112,
+        "isogeny_matrix": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "lmfdb_iso": "112.a",
+        "trace_hash": 1890724171953078067
+      }
+    ],
+    [
+      {
+        "id": 339,
+        "area": {
+          "__RealLiteral__": 0,
+          "data": "3.1978696434414237922514865009",
+          "prec": 97
+        },
+        "conductor": 112,
+        "gens": [
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "heights": [
+          {
+            "__RealLiteral__": 0,
+            "data": "0.23991989872520257601163977125",
+            "prec": 97
+          }
+        ],
+        "lmfdb_label": "112.a2",
+        "ngens": 1,
+        "rank_bounds": [
+          1,
+          1
+        ],
+        "real_period": {
+          "__RealLiteral__": 0,
+          "data": "3.3732121966451230056953422145",
+          "prec": 97
+        },
+        "sha_an": {
+          "__RealLiteral__": 0,
+          "data": "1.0000000000000000000000000000",
+          "prec": 97
+        },
+        "special_value": {
+          "__RealLiteral__": 0,
+          "data": "0.80930072859771602816480510307397366295",
+          "prec": 127
+        },
+        "tamagawa_product": 4,
+        "torsion_generators": [
+          [
+            -2,
+            0,
+            1
+          ]
+        ],
+        "xcoord_integral_points": [
+          -2,
+          -1,
+          0,
+          2,
+          6,
+          16
+        ]
+      }
+    ],
+    [
+      {
+        "id": 339,
+        "iwdata": {
+          "2": "a",
+          "3": [
+            1,
+            0
+          ],
+          "5": [
+            1,
+            0
+          ],
+          "7": [
+            1,
+            0
+          ],
+          "11": [
+            1,
+            1,
+            0
+          ],
+          "13": [
+            1,
+            1,
+            0
+          ],
+          "17": [
+            1,
+            0
+          ],
+          "19": [
+            1,
+            0
+          ],
+          "23": [
+            1,
+            0
+          ],
+          "29": [
+            1,
+            0
+          ],
+          "31": [
+            1,
+            0
+          ],
+          "37": [
+            1,
+            0
+          ],
+          "41": [
+            1,
+            0
+          ],
+          "43": [
+            1,
+            0
+          ],
+          "47": [
+            1,
+            0
+          ]
+        },
+        "iwp0": 0,
+        "lmfdb_label": "112.a2"
+      }
+    ],
+    [
+      {
+        "id": 4067,
+        "degree": 2,
+        "field": [
+          2,
+          -1,
+          1
+        ],
+        "lmfdb_label": "112.a2",
+        "torsion": [
+          2,
+          2
+        ]
+      },
+      {
+        "id": 4068,
+        "degree": 4,
+        "field": [
+          -2,
+          -4,
+          -2,
+          0,
+          1
+        ],
+        "lmfdb_label": "112.a2",
+        "torsion": [
+          4
+        ]
+      },
+      {
+        "id": 4071,
+        "degree": 8,
+        "field": [
+          -12,
+          0,
+          20,
+          0,
+          -12,
+          0,
+          0,
+          0,
+          1
+        ],
+        "lmfdb_label": "112.a2",
+        "torsion": [
+          6
+        ]
+      },
+      {
+        "id": 4070,
+        "degree": 8,
+        "field": [
+          1,
+          0,
+          -3,
+          0,
+          6,
+          0,
+          -3,
+          0,
+          1
+        ],
+        "lmfdb_label": "112.a2",
+        "torsion": [
+          2,
+          4
+        ]
+      },
+      {
+        "id": 4069,
+        "degree": 8,
+        "field": [
+          1,
+          0,
+          2,
+          0,
+          10,
+          0,
+          2,
+          0,
+          1
+        ],
+        "lmfdb_label": "112.a2",
+        "torsion": [
+          2,
+          4
+        ]
+      },
+      {
+        "id": 4072,
+        "degree": 16,
+        "field": [
+          -28,
+          32,
+          320,
+          224,
+          -72,
+          48,
+          208,
+          384,
+          464,
+          256,
+          48,
+          16,
+          12,
+          -8,
+          -8,
+          0,
+          1
+        ],
+        "lmfdb_label": "112.a2",
+        "torsion": [
+          8
+        ]
+      },
+      {
+        "id": 4073,
+        "degree": 16,
+        "field": [
+          144,
+          0,
+          -816,
+          0,
+          1192,
+          0,
+          864,
+          0,
+          141,
+          0,
+          40,
+          0,
+          18,
+          0,
+          0,
+          0,
+          1
+        ],
+        "lmfdb_label": "112.a2",
+        "torsion": [
+          2,
+          6
+        ]
+      }
+    ],
+    [
+      {
+        "id": 713,
+        "conductor": 112,
+        "conductor_valuation": 4,
+        "discriminant_valuation": 10,
+        "j_denominator_valuation": 0,
+        "kodaira_symbol": -6,
+        "lmfdb_label": "112.a2",
+        "prime": 2,
+        "reduction_type": 0,
+        "root_number": 1,
+        "tamagawa_number": 4
+      },
+      {
+        "id": 714,
+        "conductor": 112,
+        "conductor_valuation": 1,
+        "discriminant_valuation": 1,
+        "j_denominator_valuation": 1,
+        "kodaira_symbol": 5,
+        "lmfdb_label": "112.a2",
+        "prime": 7,
+        "reduction_type": -1,
+        "root_number": 1,
+        "tamagawa_number": 1
+      }
+    ],
+    [
+      {
+        "id": 1666206,
+        "adelic_gens": [
+          [
+            1,
+            2,
+            2,
+            5
+          ],
+          [
+            29,
+            4,
+            2,
+            9
+          ],
+          [
+            3,
+            4,
+            8,
+            11
+          ],
+          [
+            9,
+            50,
+            48,
+            7
+          ],
+          [
+            34,
+            1,
+            39,
+            0
+          ],
+          [
+            53,
+            4,
+            52,
+            5
+          ],
+          [
+            1,
+            4,
+            0,
+            1
+          ],
+          [
+            1,
+            0,
+            4,
+            1
+          ]
+        ],
+        "adelic_image": "56.12.0.?",
+        "conductor": 112,
+        "lmfdb_label": "112.a2",
+        "prime": 0
+      },
+      {
+        "id": 389,
+        "conductor": 112,
+        "elladic_image": "8.6.0.1",
+        "lmfdb_label": "112.a2",
+        "modell_image": "2B",
+        "prime": 2
+      }
+    ],
+    [
+      {
+        "id": 424,
+        "lmfdb_iso": "112.a",
+        "p": 5,
+        "prec": 20,
+        "unit": 37984477193428,
+        "val": -1
+      },
+      {
+        "id": 430,
+        "lmfdb_iso": "112.a",
+        "p": 17,
+        "prec": 20,
+        "unit": 174194067478295759127009,
+        "val": 1
+      },
+      {
+        "id": 421,
+        "lmfdb_iso": "112.a",
+        "p": 19,
+        "prec": 20,
+        "unit": 661137538917056726171375,
+        "val": 1
+      },
+      {
+        "id": 435,
+        "lmfdb_iso": "112.a",
+        "p": 23,
+        "prec": 20,
+        "unit": 11273122144536742889458787,
+        "val": 1
+      },
+      {
+        "id": 428,
+        "lmfdb_iso": "112.a",
+        "p": 29,
+        "prec": 20,
+        "unit": 2104205731165485349719225571,
+        "val": 1
+      },
+      {
+        "id": 425,
+        "lmfdb_iso": "112.a",
+        "p": 31,
+        "prec": 20,
+        "unit": 21539105763621372855048830204,
+        "val": 1
+      },
+      {
+        "id": 439,
+        "lmfdb_iso": "112.a",
+        "p": 37,
+        "prec": 20,
+        "unit": 183931524006167284789695217952,
+        "val": 1
+      },
+      {
+        "id": 426,
+        "lmfdb_iso": "112.a",
+        "p": 41,
+        "prec": 20,
+        "unit": 3727808753051774469353718092828,
+        "val": 1
+      },
+      {
+        "id": 427,
+        "lmfdb_iso": "112.a",
+        "p": 43,
+        "prec": 20,
+        "unit": 7226144661833657218892077113266,
+        "val": 1
+      },
+      {
+        "id": 437,
+        "lmfdb_iso": "112.a",
+        "p": 47,
+        "prec": 20,
+        "unit": 22576996644190223215881338971243,
+        "val": 1
+      },
+      {
+        "id": 432,
+        "lmfdb_iso": "112.a",
+        "p": 53,
+        "prec": 20,
+        "unit": 427914532617135257590057206087736,
+        "val": 1
+      },
+      {
+        "id": 433,
+        "lmfdb_iso": "112.a",
+        "p": 59,
+        "prec": 20,
+        "unit": 4209595933282475053680835937886440,
+        "val": 1
+      },
+      {
+        "id": 438,
+        "lmfdb_iso": "112.a",
+        "p": 61,
+        "prec": 20,
+        "unit": 5862896775772134412249953163865009,
+        "val": 1
+      },
+      {
+        "id": 423,
+        "lmfdb_iso": "112.a",
+        "p": 67,
+        "prec": 20,
+        "unit": 9629541596736810524005537894048584,
+        "val": 1
+      },
+      {
+        "id": 434,
+        "lmfdb_iso": "112.a",
+        "p": 73,
+        "prec": 20,
+        "unit": 47551353958149397435539534717352861,
+        "val": 1
+      },
+      {
+        "id": 429,
+        "lmfdb_iso": "112.a",
+        "p": 79,
+        "prec": 20,
+        "unit": 759802745789135532747809665530975317,
+        "val": 1
+      },
+      {
+        "id": 431,
+        "lmfdb_iso": "112.a",
+        "p": 83,
+        "prec": 20,
+        "unit": 2125323855775877756639063933567428913,
+        "val": 1
+      },
+      {
+        "id": 436,
+        "lmfdb_iso": "112.a",
+        "p": 89,
+        "prec": 20,
+        "unit": 9481833404202089192629834543744402399,
+        "val": 1
+      },
+      {
+        "id": 422,
+        "lmfdb_iso": "112.a",
+        "p": 97,
+        "prec": 20,
+        "unit": 2770876994275904301377131288465769243,
+        "val": 1
+      }
+    ]
+  ],
+  "totals": [
+    1,
+    1,
+    1,
+    1,
+    7,
+    2,
+    2,
+    19
+  ],
+  "limit": 100
+}

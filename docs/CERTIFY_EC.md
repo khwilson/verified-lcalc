@@ -12,14 +12,35 @@ processes yourself.
 
 ## Produce a single-curve witness from joined LMFDB data
 
-Build the Lean verifier and download the joined export for a curve label.
-For an offline example, use `tests/fixtures/lmfdb/112.a2-joined.json` as the input.
+Download the native LMFDB response for a curve label, then replay it into the
+joined format accepted by the producer.
 
 ```sh
+python3 scripts/capture_lmfdb_fixture.py capture 112.a2 \
+  --output 112.a2-native.json --manifest-output 112.a2-native.provenance.json
+python3 scripts/capture_lmfdb_fixture.py replay 112.a2-native.json \
+  --manifest 112.a2-native.provenance.json --output 112.a2-replayed.json
 lake build VerifiedLcalc.Tactic.CertifyEC
-curl -L --fail --output 37.a1.json 'https://www.lmfdb.org/EllipticCurve/Q/data/37.a1?_format=json'
-python3 scripts/produce_ec_witness.py 37.a1.json --output witness.json
+python3 scripts/produce_ec_witness.py 112.a2-replayed.json --output witness.json
 ```
+
+For offline replay, skip the capture command and use
+`tests/fixtures/lmfdb/112.a2-native.json` and its accompanying
+`112.a2-native.provenance.json`. The manifest records the source URL, capture
+timestamp, SHA-256, license, and table and row identities. Replay with the
+manifest verifies the response checksum and table identities before projecting
+the rows. It carries all eight source tables, including class-indexed p-adic
+rows and extension-indexed torsion growth rows. An explicitly empty row list
+records a zero-row query. An omitted table has unknown coverage. A present row
+can independently contain empty arrays, nulls or source-specific sentinels.
+Replay preserves the original field encodings. Capture requires unused
+destination names for both the response and the manifest. Use a new pair of
+paths for another snapshot. Replay replaces its output atomically after
+validation. Keep the native response and manifest for provenance and use the
+generated witness for Lean verification.
+
+The producer also accepts the legacy projection
+`tests/fixtures/lmfdb/112.a2-joined.json`.
 
 The producer checks the curve, class, Mordell–Weil, local and Galois row joins.
 The Galois rows contribute repeated conductor values. The producer

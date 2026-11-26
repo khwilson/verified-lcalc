@@ -19,7 +19,16 @@ and 288.a1 were computed with Lean's `wildData?` before being supplied to the ve
 The [112.a2 joined LMFDB capture](https://www.lmfdb.org/EllipticCurve/Q/data/112.a2?_format=json)
 records timestamp `2026-11-26T01:59:10.892609`. The captured response has SHA-256
 `a7631a589136e92ffed788998da29e801cc6683dc8c87c0bb4d7f04913181171`.
-The LMFDB Collaboration supplies these data under CC BY-SA. The fixture uses the full
+The LMFDB Collaboration supplies these data under CC BY-SA.
+[`112.a2-native.json`](112.a2-native.json) preserves the response bytes.
+Its [provenance manifest](112.a2-native.provenance.json) records the curve,
+class, prime and extension-field row keys across all eight tables. The native
+capture contains 7 torsion-growth rows, one Iwasawa row and 19 p-adic rows
+for the isogeny class, in addition to the five tables in
+[`112.a2-joined.json`](112.a2-joined.json). The latter is the legacy selected
+projection.
+
+The arithmetic fixture uses the full
 `ec_classdata.anlist` and `ec_classdata.aplist` for 112.a, `ec_curvedata.torsion_primes`,
 `ec_curvedata.potential_good_reduction` and `ec_curvedata.semistable` for 112.a2, and
 the selected fields from both `ec_localdata` rows for 112.a2. The `anlist` decoder requires
