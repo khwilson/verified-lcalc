@@ -1480,14 +1480,14 @@
       "table": "ec_galrep"
     },
     {
-      "checker_scopes": [],
+      "checker_scopes": [
+        "Exact invariant factors of the full torsion subgroup over the row's field."
+      ],
       "evidence": [],
       "field": "torsion",
       "metadata_scopes": [],
-      "report_only_scopes": [
-        "Full invariant factors over the stated extension. The command has no checker."
-      ],
-      "status": "missing_checker",
+      "report_only_scopes": [],
+      "status": "pending_review",
       "table": "ec_torsion_growth"
     }
   ],
