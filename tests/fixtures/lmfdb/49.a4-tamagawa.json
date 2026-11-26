@@ -1,0 +1,14 @@
+{
+  "ainvs": [1, -1, 0, -2, -1],
+  "signD": -1,
+  "absD": 343,
+  "minimality": [7, 7, 7],
+  "prime": 7,
+  "conductor_valuation": 2,
+  "discriminant_valuation": 3,
+  "j_denominator_valuation": 0,
+  "reduction_type": 0,
+  "kodaira_symbol": 3,
+  "tamagawa_number": 2,
+  "root_number": -1
+}

@@ -527,7 +527,7 @@ private def stored : List Route :=
       [vl[`EllipticWitness.minimality]] vl[`LocalReductionClaim.kodaira_correct],
     localRow "tamagawa_number" vl[`LocalReductionClaim.tamagawaNumber] `tamagawa_numbers
       [arith, vl[`ArithmeticFacts.tamagawa], vl[`LocalTamagawaFact.correct]]
-      "Exact intrinsic factor at good, I₁ or I₂ reduction." []
+      "Exact intrinsic factor at good, I₁, I₂ or supported tame III reduction." []
       vl[`LocalReductionClaim.tamagawa_correct],
     localRow "root_number" vl[`LocalReductionClaim.rootNumber] `local_root_numbers
       [arith, minimalModel, vl[`MinimalModelArithmeticFacts.localRootNumbers],

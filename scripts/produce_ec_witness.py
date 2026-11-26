@@ -448,7 +448,7 @@ def report_fields(
             elif field == "tamagawa_number" and not flags.get(f"tamagawa.{prime}"):
                 fields[key] = result(
                     "unsupported",
-                    "Exact Tamagawa checker supports good, I₁ or I₂ reduction",
+                    "Exact Tamagawa checker supports good, I₁, I₂ or supported tame III reduction",
                 )
             elif field == "kodaira_symbol" and not flags.get(f"kodaira.{prime}"):
                 fields[key] = result(

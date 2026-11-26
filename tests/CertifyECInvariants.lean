@@ -186,8 +186,22 @@ example : (GoodTamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 3)
     (by decide +kernel) 1 rfl
   exact h (by decide +kernel)
 
+certify_ec TypeIII49a4 from_json "fixtures/lmfdb/49.a4-tamagawa.json"
+
+example : (TypeIII49a4.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 7) = 2 := by
+  exact (TypeIII49a4.certificate.arithmetic.tamagawa[0]'(by decide +kernel)).correct
+
+certify_ec OtherAdditive98a5 from_json_string
+  r#"{"ainvs":[1,1,0,-25,-111],"minimality":[2,2,7,7,7,7,7,7,7],
+      "prime":7,"conductor_valuation":2,"discriminant_valuation":7,
+      "j_denominator_valuation":1,"reduction_type":0,"kodaira_symbol":-5,
+      "tamagawa_number":2}"#
+
+example : OtherAdditive98a5.certificate.arithmetic.tamagawa.isEmpty = true := by
+  decide +kernel
+
 /--
-info: TamagawaOutsideScope: Tamagawa claims outside good, I₁ or I₂ reduction are unverified.
+info: TamagawaOutsideScope: Tamagawa claims outside good, I₁, I₂ or supported tame III reduction are unverified.
 ---
 info: Certified TamagawaOutsideScope.ap_correct and TamagawaOutsideScope.point_integral
 for the supplied lists
@@ -393,6 +407,16 @@ run_cmd do
     r#"{"ainvs":[1,-1,1,-6,-4],"minimality":[17,17],"prime":17,
         "discriminant_valuation":2,"reduction_type":1,"kodaira_symbol":6,
         "tamagawa_number":3}"#))
+  invariantRejected `WrongTypeIIITamagawaOne
+    (← `(certify_ec WrongTypeIIITamagawaOne from_json_string
+      r#"{"ainvs":[1,-1,0,-2,-1],"minimality":[7,7,7],"prime":7,
+          "discriminant_valuation":3,"reduction_type":0,"kodaira_symbol":3,
+          "tamagawa_number":1}"#))
+  invariantRejected `WrongTypeIIITamagawaThree
+    (← `(certify_ec WrongTypeIIITamagawaThree from_json_string
+      r#"{"ainvs":[1,-1,0,-2,-1],"minimality":[7,7,7],"prime":7,
+          "discriminant_valuation":3,"reduction_type":0,"kodaira_symbol":3,
+          "tamagawa_number":3}"#))
   invariantRejected `IncompatibleAdditiveRows (← `(certify_ec IncompatibleAdditiveRows
     from_json_string
     r#"{"ainvs":[0,0,0,0,1],"minimality":[2,2,2,2,3,3,3],

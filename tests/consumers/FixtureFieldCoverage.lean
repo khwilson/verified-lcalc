@@ -100,6 +100,12 @@ theorem tamagawa17a2 :
     (LMFDB.C17a2.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 17) = 2 := by
   exact (LMFDB.C17a2.certificate.arithmetic.tamagawa[0]'(by decide +kernel)).correct
 
+/-- The imported 49.a4 fixture certifies its type III Tamagawa factor at 7. -/
+theorem tamagawa49a4 :
+    letI : Fact (Nat.Prime 7) := ⟨by decide +kernel⟩
+    (LMFDB.C49a4.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 7) = 2 := by
+  exact (LMFDB.C49a4.certificate.arithmetic.tamagawa[0]'(by decide +kernel)).correct
+
 /-- The imported 179.a1 has Kodaira symbol I₁ at 179. -/
 theorem kodaira179 :
     letI : Fact (Nat.Prime 179) := ⟨localPrime179⟩
@@ -247,6 +253,8 @@ private def samples : List Sample :=
       .unconditional, false⟩,
    ⟨"ec_localdata", "tamagawa_number", "17.a2", ``tamagawa17a2,
       "Intrinsic local I₂ factor at 17.", .unconditional, false⟩,
+   ⟨"ec_localdata", "tamagawa_number", "49.a4", ``tamagawa49a4,
+      "Intrinsic local type III factor at 7.", .unconditional, false⟩,
    ⟨"ec_localdata", "kodaira_symbol", "179.a1", ``kodaira179, "Exact I₁ symbol at 179.",
       .unconditional, false⟩,
    ⟨"ec_localdata", "root_number", "179.a1", ``rootNumber179,
