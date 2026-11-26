@@ -274,8 +274,12 @@ private def samples : List Sample :=
       "Exact order at 1 for an explicitly supplied modular realization.", .conditional, false⟩]
 
 private def auditSample (sample : Sample) : CommandElabM Json := do
-  let some (.thmInfo _) := (← getEnv).find? sample.proof
+  let some (.thmInfo theoremInfo) := (← getEnv).find? sample.proof
     | throwError "Fixture sample must name a theorem: {sample.proof}"
+  let some proofRange ← findDeclarationRanges? sample.proof
+    | throwError "Fixture sample has no source location: {sample.proof}"
+  let statement ← liftTermElabM do
+    return (← Meta.ppExpr theoremInfo.type).pretty 80
   let axioms ← liftTermElabM <| Lean.collectAxioms sample.proof
   let dependencies := axioms.filter fun axiomName =>
     !([``propext, ``Classical.choice, ``Quot.sound].contains axiomName)
@@ -290,6 +294,7 @@ private def auditSample (sample : Sample) : CommandElabM Json := do
     else "fixture_claim"
   return Json.mkObj [
     ("curve", toJson sample.curve), ("theorem", toJson sample.proof.toString),
+    ("statement", toJson statement), ("proof_line", toJson proofRange.selectionRange.pos.line),
     ("status", toJson sample.kind.status), ("scope", toJson sample.scope),
     ("source", toJson source), ("value_origin", toJson origin),
     ("extent", toJson (if sample.isPartial then "partial" else "complete_for_sample")),
@@ -327,6 +332,7 @@ run_cmd do
   if (← IO.getEnv "VERIFIED_LCALC_FIXTURE_COVERAGE") == some "1" then
     IO.println (Json.mkObj [
       ("schema", toJson "lcalc.fixture-field-coverage.v1"),
+      ("proof_source", toJson "tests/consumers/FixtureFieldCoverage.lean"),
       ("table_qualified_fields", toJson columns.length), ("distinct_names", toJson names.length),
       ("fields", toJson fields)]).compress
 

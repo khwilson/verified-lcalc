@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Inspect Lean proofs for table-qualified LMFDB fixture fields.">
+  <title>Fixture evidence · verified-lcalc</title>
+  <link rel="stylesheet" href="catalogue.css">
+  <script type="module" src="fixtures.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#fixtures">Skip to fixture evidence</a>
+  <header class="masthead">
+    <div class="container masthead-inner">
+      <a class="wordmark" href="index.html">verified-lcalc</a>
+      <nav aria-label="Sources">
+        <a href="index.html">Curve catalogue</a>
+        <a href="https://github.com/khwilson/verified-lcalc">Repository</a>
+      </nav>
+    </div>
+  </header>
+  <main id="fixtures" class="container" tabindex="-1">
+    <header class="intro">
+      <h1>Fixture evidence</h1>
+      <p>Inspect which LMFDB field values have Lean proofs in the imported fixtures, with their exact statements, conditions and scope.</p>
+    </header>
+    <p>Download the <a href="fixture-field-coverage.json">JSON field audit</a>.</p>
+    <fieldset id="fixture-filters" disabled>
+      <legend class="visually-hidden">Filter the fixture audit</legend>
+      <div class="filter">
+        <label for="fixture-search">Table, field or curve</label>
+        <input id="fixture-search" type="search" placeholder="e.g. 179.a1" spellcheck="false">
+      </div>
+      <div class="filter">
+        <label for="fixture-status">Field status</label>
+        <select id="fixture-status">
+          <option value="">All fields</option>
+          <option value="sampled" selected>With proof samples</option>
+          <option value="pending_review">Awaiting fixture review</option>
+          <option value="missing_checker">No checker</option>
+        </select>
+      </div>
+    </fieldset>
+    <p id="fixture-count" class="notice" role="status">Loading fixture evidence…</p>
+    <noscript><p>Open the JSON field audit to inspect the proofs and scopes.</p></noscript>
+    <div class="table-wrap" id="fixture-results" hidden>
+      <table class="fixture-table">
+        <caption class="visually-hidden">Table-qualified LMFDB fixture evidence</caption>
+        <thead><tr>
+          <th scope="col">Table and field</th>
+          <th scope="col">Evidence</th>
+        </tr></thead>
+        <tbody id="fixture-fields"></tbody>
+      </table>
+    </div>
+  </main>
+  <footer class="container">
+    <p>Curve data by <a href="https://www.lmfdb.org/citation">The LMFDB Collaboration</a>
+      (<a href="https://www.lmfdb.org/api/options">CC-BY-SA</a>).</p>
+  </footer>
+</body>
+</html>

@@ -59,6 +59,14 @@ Run the following after `make test-lmfdb-ci` to print a JSON report.
 VERIFIED_LCALC_FIXTURE_COVERAGE=1 lake -f lakefile.certificates.lean env lean tests/consumers/FixtureFieldCoverage.lean
 ```
 
+The companion's fixture view includes the Lean statements and their source
+locations. The CI comparison regenerates the [JSON index](../web/certificates/fixture-field-coverage.json)
+from the compiled fixtures and checks the displayed source links. After
+changing a sample, run `python3 scripts/check_fixture_coverage.py --write`
+to update the index. The **Refresh certificate companion** workflow deploys the
+fixture view alongside existing released curve catalogs and pins the source
+links to the deployed commit.
+
 Each `sampled` entry links a curve identifier and theorem name to the
 statement verified. The `unconditional` samples use only Lean's standard
 axioms, `assumption_backed` samples use the authorized elliptic modularity
