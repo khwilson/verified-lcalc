@@ -43,11 +43,11 @@ verify_replay_assets() {
 published_catalog_index() {
   local listed
   listed=$(releases) || return
-  jq -e --arg current "$1.json" '[
+  jq -e --arg current "$1" '[
     .[][] | select(.prerelease and (.draft | not))
     | select(.tag_name | test("^ec-certificates-[0-9]+-[0-9]+$"))
   ] | sort_by(.published_at, .id) | reverse | map(.tag_name + ".json")
-  | select(index($current) != null)' <<< "$listed"
+  | select($current == "" or index($current + ".json") != null)' <<< "$listed"
 }
 
 case "$1" in
@@ -102,6 +102,13 @@ case "$1" in
     site_dir=$3
     mkdir -p "$site_dir/catalogs"
     cp -R web/certificates/. "$site_dir/"
+    node --input-type=module -e '
+      import {readFileSync, writeFileSync} from "node:fs";
+      const [path, revision] = process.argv.slice(1);
+      if (!/^[0-9a-f]{40}$/.test(revision)) throw new Error("Invalid fixture source revision");
+      const report = JSON.parse(readFileSync(path, "utf8"));
+      writeFileSync(path, JSON.stringify({...report, git_revision: revision}, null, 2) + "\n");
+    ' "$site_dir/fixture-field-coverage.json" "$GITHUB_SHA"
     retry_read published_catalog_index "$tag" > "$site_dir/catalogs/index.json"
     basenames=$(jq -r '.[]' "$site_dir/catalogs/index.json")
     while IFS= read -r basename; do

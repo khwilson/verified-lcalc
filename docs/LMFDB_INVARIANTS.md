@@ -43,6 +43,56 @@ The four stored p-adic coordinates enter this tally through the proof-parametric
 rank-one checker. The curve-level rank-zero display and project-specific keys
 are outside the stored-column count.
 
+## Imported fixture evidence
+
+The [fixture audit](../tests/consumers/FixtureFieldCoverage.lean) tracks
+table-qualified examples separately from checker availability. Its denominator
+comes from the same [field catalogue](../VerifiedLcalc/Certificate/FieldCatalogue.lean)
+and includes all 101 table-qualified columns. The audit verifies that each
+listed example names a Lean theorem and checks its axiom dependencies. The
+propositions bind the values and their scope to compiled fixture equations.
+
+Run the following after `make test-lmfdb-ci` to print a JSON report.
+
+```sh
+VERIFIED_LCALC_FIXTURE_COVERAGE=1 lake -f lakefile.certificates.lean env lean tests/consumers/FixtureFieldCoverage.lean
+```
+
+The companion's fixture view includes the Lean statements and their source
+locations. The CI comparison regenerates the [JSON index](../web/certificates/fixture-field-coverage.json)
+from the compiled fixtures and checks the displayed source links. After
+changing a sample, run `python3 scripts/check_fixture_coverage.py --write`
+to update the index. The **Refresh certificate companion** workflow deploys the
+fixture view alongside existing released curve catalogs and pins the source
+links to the deployed commit.
+
+Each `sampled` entry links a curve identifier and theorem name to the
+statement verified. The `unconditional` samples use only Lean's standard
+axioms, `assumption_backed` samples use the authorized elliptic modularity
+axiom, and `conditional_fixture` samples name a theorem with an explicit
+mathematical input. Each sample states its source and whether its extent
+is partial or complete for the stated case. A partial proof can check a
+prefix of a list or a weaker mathematical assertion about the same data.
+The squarefreeness example is computed from the equation. A
+`pending_review` entry has a checker route and awaits
+a curated example in this audit. A `missing_checker` entry has only a report
+route. The `report_only_scopes` and `metadata_scopes` lists describe cases that
+are outside a checked mathematical claim. A single sampled field can have
+multiple kinds of evidence. For example, the 112.a2 example proves analytic
+order one with the modularity axiom, while the 37.a1 example is quantified
+over an explicit modular realization.
+
+The initial sample set uses the [arithmetic CI fixtures](../tests/fixtures/lmfdb/README.md)
+and the [compiled rank fixtures](../tests/consumers/CatalogueAnalyticRank.lean).
+For 179.a1 at 179, the audit identifies the intrinsic Tamagawa factor, the
+exact Kodaira symbol, and the arithmetic local-sign formula. For 112.a2,
+it identifies rational torsion cardinality and cyclic structure, point
+membership, a complete integral fiber at one specified abscissa, and
+conditional modular-level facts. These scopes matter when using the report
+as a checklist for additional curves.
+
+## Scope of checked coverage
+
 Count coverage by the mathematical assertion and the evidence a consumer can
 project. For example, `ec_curvedata.torsion` is a cardinality over ℚ, while
 `ec_torsion_growth.torsion` gives invariant factors over a specified extension.

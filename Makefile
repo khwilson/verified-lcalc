@@ -55,3 +55,4 @@ test-lean:
 test-lmfdb-ci:
 	lake -f lakefile.certificates.lean build CertifiedCurves.Json VerifiedLcalcTests.Fixtures.LmfdbCI
 	lake -f lakefile.certificates.lean env lean tests/consumers/LmfdbCI.lean
+	python3 scripts/check_fixture_coverage.py
