@@ -112,9 +112,7 @@ theorem coefficients_correct :
 def proofs : IntegralCurveProofs curve :=
   { traceHashCoefficients := some ⟨coefficients, coefficients_correct⟩ }
 
-certify_ec Checked from_json_string
-  r#"{"ainvs":[0,0,1,-1,0],"trace_hash":1127515239490717889,"conductor":37,
-    "minimality":[37],"local_data":{"at_two":null,"at_three":null}}"#
+certify_ec Checked from_json "../../fixtures/lmfdb/37.a1-trace-hash-source.json"
   with_proofs proofs
 
 end VerifiedLcalcTests.TraceHash37

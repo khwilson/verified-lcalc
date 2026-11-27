@@ -6,6 +6,7 @@ Authors: Kevin Wilson
 import CertifiedCurves.Json
 import VerifiedLcalc.Certificate.FieldCatalogue
 import VerifiedLcalcTests.Fixtures.LmfdbCI
+import VerifiedLcalcTests.Fixtures.TraceHash
 import Lean
 
 /-! # Table-qualified evidence from imported LMFDB fixtures
@@ -17,6 +18,12 @@ proved. The report joins these examples to the production field catalogue.
 open Lean Elab Command VerifiedLcalc VerifiedLcalc.EllipticCurve
 
 namespace FixtureFieldCoverage
+
+/-- The imported 37.a1 trace hash matches the native class-data claim. -/
+theorem traceHash37 :
+    lmfdbTraceHash
+      (VerifiedLcalcTests.TraceHash37.Checked.curve.baseChange ℚ) = 1127515239490717889 :=
+  (VerifiedLcalcTests.TraceHash37.Checked.certificate.traceHash.get (by rfl)).correct
 
 /-- The imported 179.a1 fixture has the listed integral equation and is nonsingular. -/
 theorem equation179 :
@@ -273,6 +280,9 @@ private def samples : List Sample :=
       "Exponent of 2 in the level of the modular realization.", .modularity, false⟩,
    ⟨"ec_classdata", "anlist", "112.a2", ``dirichlet112,
       "All 20 stored coefficients for the 112.a2 equation after a₀.", .unconditional, false⟩,
+   ⟨"ec_classdata", "trace_hash", "37.a1", ``traceHash37,
+      "Exact weighted trace hash verified from all 464 prescribed point orders.",
+      .unconditional, false⟩,
    ⟨"ec_classdata", "aplist", "112.a2", ``primeCoefficients112,
       "All 25 stored prime-indexed coefficients for the 112.a2 equation.", .unconditional, false⟩,
    ⟨"ec_curvedata", "torsion_primes", "112.a2", ``torsionPrimeSupport112,
@@ -311,6 +321,8 @@ private def auditSample (sample : Sample) : CommandElabM Json := do
     throwError "Unexpected axioms for {sample.proof}: {dependencies}"
   let source := if sample.proof == ``rank37 then "data/witnesses/37a1.json"
     else if sample.proof == ``rank112 then "data/witnesses/112a2.json"
+    else if sample.field == "trace_hash" && sample.curve == "37.a1" then
+      "tests/fixtures/lmfdb/37.a1-trace-hash-source.json"
     else if sample.curve == "17.a2" then "tests/fixtures/lmfdb/17.a2-tamagawa.json"
     else if sample.curve == "49.a4" then "tests/fixtures/lmfdb/49.a4-tamagawa.json"
     else s!"tests/fixtures/lmfdb/{sample.curve}.json"
