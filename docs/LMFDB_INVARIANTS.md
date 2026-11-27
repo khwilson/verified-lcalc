@@ -344,6 +344,11 @@ equation, tests the terminal III divisibilities, and checks the claimed factor
 two. A submitted change that fails its tests is rejected. Rows without the
 change can use the good, I₁, and I₂ routes.
 
+Tame type II at a rational prime p > 3 takes `tamagawa_type_ii` with
+the exact scale-one change. The checker tests all five terminal conditions
+on the changed equation, including the failure of p² divisibility for
+the new a₆. Successful evidence gives intrinsic factor one.
+
 Tame type IV at a rational prime p > 3 takes `tamagawa_type_iv` with
 the same exact change and one residue evidence key. The checker derives
 the terminal quadratic from the changed equation. A supplied `residue_root`
