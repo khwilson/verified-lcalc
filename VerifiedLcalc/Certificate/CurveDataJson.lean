@@ -204,7 +204,7 @@ def weightedCoordinates (j : Json) : Except String (List (Rat × Rat)) := do
 /-- Optional data fields that identify a top-level local reduction row. -/
 def localReductionFields : List String :=
   ["discriminant_valuation", "j_denominator_valuation", "reduction_type", "conductor_valuation",
-    "kodaira_symbol", "tamagawa_number", "root_number"]
+    "kodaira_symbol", "tamagawa_number", "tamagawa_type_iii", "root_number"]
 
 /-- Decode the supported exact fields from one local reduction row. -/
 def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
@@ -220,9 +220,14 @@ def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
     unless code != 0 do throw "Zero is not a PARI Kodaira code"
   let tamagawaNumber ← optionalValue j "tamagawa_number" nonnegativeInteger
   let rootNumber ← optionalValue j "root_number" integer
+  let tamagawaTypeIIIShift ← optionalValue j "tamagawa_type_iii" fun value => do
+    let r ← integer (← value.getObjVal? "r")
+    let s ← integer (← value.getObjVal? "s")
+    let t ← integer (← value.getObjVal? "t")
+    return ({ r, s, t } : TamagawaTypeIIIShift)
   return {
     prime, discriminantValuation, conductorValuation, jDenominatorValuation
-    reductionType, kodairaSymbol, tamagawaNumber, rootNumber }
+    reductionType, kodairaSymbol, tamagawaNumber, rootNumber, tamagawaTypeIIIShift }
 
 /-- Decode a local-row list and any top-level local claim. -/
 def localReductionClaims (j : Json) :
@@ -316,10 +321,7 @@ def specialLValueClaim (j : Json) : Except String (Option SpecialLValueClaim) :=
 def abcQualityClaim (j : Json) : Except String (Option AbcQualityClaim) := do
   let key ← nativeKey `abcQuality
   let some evidence := optionalData j (key ++ "_evidence") | return none
-  let number ← (← j.getObjVal? key).getNum?
-  unless number.exponent ≤ 512 && (toString number.mantissa).length ≤ 512 do
-    throw "Oversized abc_quality decimal"
-  let reported : Rat := (number.mantissa : Rat) / 10 ^ number.exponent
+  let reported ← exactReportedDecimal (← j.getObjVal? key)
   let error ← rationalValue (← evidence.getObjVal? "error")
   let rows ← array (← evidence.getObjVal? "factors") 4096
   let factors ← rows.toList.mapM nonnegativeInteger

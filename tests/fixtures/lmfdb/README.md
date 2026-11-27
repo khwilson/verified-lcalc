@@ -19,7 +19,16 @@ and 288.a1 were computed with Lean's `wildData?` before being supplied to the ve
 The [112.a2 joined LMFDB capture](https://www.lmfdb.org/EllipticCurve/Q/data/112.a2?_format=json)
 records timestamp `2026-11-26T01:59:10.892609`. The captured response has SHA-256
 `a7631a589136e92ffed788998da29e801cc6683dc8c87c0bb4d7f04913181171`.
-The LMFDB Collaboration supplies these data under CC BY-SA. The fixture uses the full
+The LMFDB Collaboration supplies these data under CC BY-SA.
+[`112.a2-native.json`](112.a2-native.json) preserves the response bytes.
+Its [provenance manifest](112.a2-native.provenance.json) records the curve,
+class, prime and extension-field row keys across all eight tables. The native
+capture contains 7 torsion-growth rows, one Iwasawa row and 19 p-adic rows
+for the isogeny class, in addition to the five tables in
+[`112.a2-joined.json`](112.a2-joined.json). The latter is the legacy selected
+projection.
+
+The arithmetic fixture uses the full
 `ec_classdata.anlist` and `ec_classdata.aplist` for 112.a, `ec_curvedata.torsion_primes`,
 `ec_curvedata.potential_good_reduction` and `ec_curvedata.semistable` for 112.a2, and
 the selected fields from both `ec_localdata` rows for 112.a2. The `anlist` decoder requires
@@ -43,6 +52,28 @@ The 179.a1 row also supplies the local Tamagawa factor 1 from the snapshot.
 The compiled consumer checks the intrinsic factor in the completed field.
 The 179.a1 row also supplies PARI Kodaira code 5 from the snapshot.
 The consumer checks its canonical `I₁` symbol.
+
+The 17.a2 Tamagawa fixture is a documented projection of row 19 of the pinned
+John Cremona `ecdata` snapshot in `data/lmfdb/raw/curvedata-first-1200.txt`.
+Its local arrays report prime 17, discriminant valuation 2, PARI Kodaira code 6
+(I₂), and Tamagawa factor 2. The source snapshot revision, parser schema, and
+Artistic License 2.0 attribution are recorded in `data/lmfdb/README.md` and
+`data/lmfdb/raw/ECDATA-LICENSE`. This fixture requests the exact equation and
+local arithmetic data only; it does not use the reference analytic rank.
+`17.a2-tamagawa-joined.json` retains the producer-facing two-table projection
+of the same row for the conditional kernel-replay test.
+
+The 49.a4 Tamagawa fixture projects row 119 of that pinned `ecdata` snapshot
+(Cremona label 49a1). Its p=7 row has type III (PARI code 3), discriminant
+valuation 3, and Tamagawa factor 2. The 98.a5 p=7 row has a different additive
+type (PARI code -5) and remains outside the checked Tamagawa scope. Both use
+the source revision, schema, and Artistic License 2.0 attribution documented
+in `data/lmfdb/README.md` and `data/lmfdb/raw/ECDATA-LICENSE`. The producer
+joined projection retains the curve identity and its single local row; the
+gated replay checks the accepted factor and rejects a corrupted value.
+The checked JSON stores the producer's exact unit-scale change
+`(r, s, t) = (2, 0, 6)` in its `tamagawa_type_iii` field.
+
 The Lean consumer checks the finite theorems and checks the modularity dependency
 on conductor and root-number theorems. The matrix inputs contain no rank data. Its consumer also reuses the separate, already
 checked analytic-rank-one witness for 112.a2 on the same integral equation.

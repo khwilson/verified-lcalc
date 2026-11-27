@@ -1,0 +1,27 @@
+{
+  "tables": ["ec_curvedata", "ec_localdata"],
+  "labels": ["17.a2", "17.a2"],
+  "label_cols": ["lmfdb_label", "lmfdb_label"],
+  "data": [
+    [
+      {
+        "lmfdb_label": "17.a2",
+        "lmfdb_iso": "17.a",
+        "ainvs": [1, -1, 1, -6, -4],
+        "conductor": 17
+      }
+    ],
+    [
+      {
+        "lmfdb_label": "17.a2",
+        "prime": 17,
+        "conductor": 17,
+        "discriminant_valuation": 2,
+        "reduction_type": 1,
+        "kodaira_symbol": 6,
+        "tamagawa_number": 2,
+        "root_number": -1
+      }
+    ]
+  ]
+}

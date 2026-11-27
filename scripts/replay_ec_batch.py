@@ -15,12 +15,19 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from scripts.benchmark_ec_dataset import LAKE, catalog_import_examples, selected_inputs
+from scripts.benchmark_ec_dataset import (
+    LAKE,
+    LEGACY_FACT_FIELDS,
+    arithmetic_catalog_values,
+    catalog_import_examples,
+    selected_inputs,
+)
 from scripts.export_ec_catalog import (
     ASSUMPTIONS,
     MAX_WITNESS_LINE,
     ROOT,
     SOURCE,
+    THEOREMS,
     WITNESS_ARCHIVE,
     batch_identity,
     read_json,
@@ -42,7 +49,7 @@ set_option maxHeartbeats 100000000
 
 def checked_rows(catalog: dict[str, Any], root: Path) -> dict[str, dict[str, Any]]:
     require(
-        type(catalog["schema"]) is int and catalog["schema"] == 1,
+        type(catalog["schema"]) is int and catalog["schema"] in (1, 2),
         "Unknown catalog schema",
     )
     require("witness_archive" in catalog, "Catalog has no replayable witness archive")
@@ -85,25 +92,67 @@ def checked_rows(catalog: dict[str, Any], root: Path) -> dict[str, dict[str, Any
         require(status == "checked", f"Unknown status for {label}")
         declaration = f"{prefix}Curve{index:04d}"
         facts = {fact["field"]: fact for fact in row["facts"]}
+        fields = set(LEGACY_FACT_FIELDS)
+        if catalog["schema"] == 2:
+            fields.update(
+                (
+                    "arithmetic_conductor",
+                    "arithmetic_root_number",
+                    "l_function_coefficients",
+                )
+            )
+            if "discriminant_prime_factorization" in facts:
+                fields.add("discriminant_prime_factorization")
         require(
-            facts.keys() == ASSUMPTIONS.keys() and len(row["facts"]) == len(facts),
+            facts.keys() == fields and len(row["facts"]) == len(facts),
             f"Catalog facts differ for {label}",
         )
         rank = facts["analytic_rank"]["value"]
         require(type(rank) is int and rank in (0, 1), f"Invalid rank for {label}")
-        for field, assumptions in ASSUMPTIONS.items():
+        for field in fields:
             fact = facts[field]
             require(
-                fact["theorem"] == f"{declaration}.{field}"
-                and fact["assumptions"] == assumptions
-                and (field == "analytic_rank" or fact["value"] is True),
+                fact["theorem"] == f"{declaration}.{THEOREMS.get(field, field)}"
+                and fact["assumptions"] == ASSUMPTIONS[field]
+                and (
+                    field not in ("nonsingular", "global_minimal")
+                    or fact["value"] is True
+                ),
                 f"Invalid {field} fact for {label}",
             )
+        arithmetic = {
+            field: facts[field]["value"] for field in fields - set(LEGACY_FACT_FIELDS)
+        }
+        if arithmetic:
+            level, sign = (
+                arithmetic["arithmetic_conductor"],
+                arithmetic["arithmetic_root_number"],
+            )
+            require(
+                type(level) is int and type(sign) is int,
+                f"Invalid arithmetic conductor or root number for {label}",
+            )
+            coefficients = arithmetic["l_function_coefficients"]
+            require(
+                isinstance(coefficients, list)
+                and coefficients
+                and all(type(c) is int for c in coefficients),
+                f"Invalid L-function coefficients for {label}",
+            )
+            if "discriminant_prime_factorization" in arithmetic:
+                primes = arithmetic["discriminant_prime_factorization"]
+                require(
+                    isinstance(primes, list)
+                    and primes
+                    and all(type(p) is int for p in primes),
+                    f"Invalid discriminant prime factorization for {label}",
+                )
         rows[label] = {
             **row,
             "index": index,
             "declaration_prefix": declaration,
             "rank": rank,
+            "arithmetic": arithmetic,
         }
 
     return rows
@@ -180,10 +229,16 @@ def extract_witnesses(
             hashlib.sha256(raw).hexdigest() == row["witness_sha256"],
             f"Witness hash differs for {label}",
         )
+        witness = json.loads(raw)
         require(
-            int(witness_rank(json.loads(raw), row)) == row["rank"],
+            int(witness_rank(witness, row)) == row["rank"],
             f"Witness rank differs from catalog for {label}",
         )
+        if catalog["schema"] == 2:
+            require(
+                arithmetic_catalog_values(witness) == row["arithmetic"],
+                f"Witness arithmetic differs from catalog for {label}",
+            )
         if label in selected:
             (work / f"{row['index']}.json").write_bytes(raw)
     require(not remaining, "Archive omits checked witnesses")
@@ -290,7 +345,9 @@ def verify(
             + "".join(f"import {module}\n" for module in available)
             + "\n"
             + "".join(
-                catalog_import_examples(rows[label], rows[label])
+                catalog_import_examples(
+                    rows[label], rows[label], rows[label]["arithmetic"]
+                )
                 for module in available
                 for label in modules[module]
                 if label in selected

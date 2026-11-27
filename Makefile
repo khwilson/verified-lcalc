@@ -4,6 +4,7 @@ check:
 	uv run --locked ruff check .
 	uv run --locked ruff format --check .
 	uv run --locked ty check --error-on-warning
+	uv run --locked python scripts/build_lmfdb_dependency_roadmap.py
 
 format:
 	uv run --locked ruff check --fix .
@@ -56,3 +57,6 @@ test-lmfdb-ci:
 	lake -f lakefile.certificates.lean build CertifiedCurves.Json VerifiedLcalcTests.Fixtures.LmfdbCI
 	lake -f lakefile.certificates.lean env lean tests/consumers/LmfdbCI.lean
 	python3 scripts/check_fixture_coverage.py
+	python3 scripts/check_lmfdb_dependency_contracts.py
+	python3 scripts/check_lmfdb_producer_example.py
+	VERIFIED_LCALC_PRODUCER_LEAN=1 python3 tests/test_produce_ec_witness.py

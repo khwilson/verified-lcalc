@@ -6,6 +6,24 @@ Source audit: TauCeti `d01c9825761c7e6168457c383458afa8668196a7`, Mathlib
 `3440367ed1804626334f13a3a534a9cbb3385a59`. This is a local backlog for upstream
 review; it does not claim external issues or pull requests were created.
 
+## Upstream reuse audit, 2026-11-26
+
+The project builds against [TauCeti e0e414ce](https://github.com/TauCetiProject/TauCeti/tree/e0e414ce57522ba17560057ad0d7f2edab91bf0c).
+This audit reads [upstream main 656ded1](https://github.com/TauCetiProject/TauCeti/tree/656ded174088660623ea049e74e99da5d637a376),
+which uses the same Lean 4.37.0-rc1 toolchain and Mathlib revision
+`31ce06eaadf4a200c0e1407c5f10953cf606b8f8`. These are source-level reuse
+findings. The companion records installed checker routes and actual producer
+replays from the project pin.
+
+| Roadmap target | Confirmed source and next adapter |
+| --- | --- |
+| TC-03 · finite coefficients | The odd-characteristic character sum counts points and gives traces, including on singular equations. The executable binary evaluator and characteristic-two path are still local. [CharacterSum](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/AlgebraicGeometry/EllipticCurve/CharacterSum.lean#L104-L118) |
+| TC-19 · heights and regulator | The Tate-limit bound is `C / ((d - 1) * d^n)` given an explicit one-step defect bound, and the limit theorem identifies the canonical height. A producer still needs an equation-specific `C` and certified Mordell–Weil basis evidence. [TateLimit](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/NumberTheory/Height/TateLimit.lean#L136-L145) · [CanonicalHeight/Limit](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/AlgebraicGeometry/EllipticCurve/CanonicalHeight/Limit.lean#L118-L124) |
+| L1 · good reduction | A prime avoiding the model discriminant gives intrinsic good reduction. The converse holds when its twelfth power also avoids the discriminant. [GoodPrimes](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/AlgebraicGeometry/EllipticCurve/MinimalModel/GoodPrimes.lean#L136-L154) |
+| TC-10 · multiplicative Tamagawa factors | For Henselian multiplicative reduction, a fraction-field root characterizes splitting. The downstream adapter must identify the relevant local and residue-field data. [SplitMultiplicative](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/AlgebraicGeometry/EllipticCurve/QuadraticTwist/SplitMultiplicative.lean#L281-L295) |
+| M1 · torsion | The short Nagell–Lutz result gives sharp coordinate divisibility for a short integral model. A producer needs a checked model change and point transport for the represented equation. [ShortNagellLutz](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/AlgebraicGeometry/EllipticCurve/DivisionPolynomial/ShortNagellLutz.lean#L178-L186) |
+| TC-31 · Serre data | The reduced-level theorem supplies the arithmetic level. Identification with the residual conductor remains a separate proof target. [ReducedLevel](https://github.com/TauCetiProject/TauCeti/blob/656ded174088660623ea049e74e99da5d637a376/TauCeti/AlgebraicGeometry/EllipticCurve/ReducedLevel.lean#L289-L295) |
+
 ## TC-01 — extracted generic minimality criteria
 
 Status: proved source, extracted into
@@ -176,14 +194,30 @@ torsion specialization.
 
 The pinned release defines `tamagawaNumberAt` on the completed field and
 compares it with `tateLocalIndex` on a checked terminal model. Good reduction
-and `I₁` both contribute one. For larger multiplicative indices, the terminal
-comparison gives `n` in the split case and `gcd(2,n)` in the nonsplit case.
-The rational witness adapter still needs to transport its verified splitting
+and `I₁` both contribute one. For `I₂`, both terminal index formulas give
+two, which the rational checker now verifies. At higher multiplicative
+indices, the terminal comparison gives `n` in the split case and `gcd(2,n)`
+in the nonsplit case. The rational witness adapter still needs to transport its verified splitting
 through the residue-field identification and then through the normalized
 terminal model. For specific additive factors, connect finite row evidence
 to the relevant `IsTateTerminal` and residue-polynomial hypotheses.
+The full family-by-family payload, exact pinned formulas, and implemented
+versus planned boundary are tracked in the
+[L2 evidence-production roadmap](roadmaps/LMFDB_Q_CERTIFICATION.md#l2-exact-evidence-production).
 [Terminal comparison](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Local.lean#L144-L162)
 · [Split and nonsplit indices](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/LocalIndex.lean#L469-L486)
+
+For tame type III, the producer proposes a unit-scale change at rational
+primes `p > 3`. The checker takes its exact submitted coordinates and tests
+the terminal divisibilities. The rational adapter transports them to the
+completion and proves the factor is two.
+It reuses the installed
+[`isTateTerminal_III`](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/Terminal.lean#L147-L151)
+and [`tateLocalIndex_III`](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/LocalIndex.lean#L199-L200).
+The remaining additive cases need certified terminal normalization and,
+where the index depends on splitting, a root-count certificate over the
+residue field. TauCeti [#43196](https://github.com/TauCetiProject/TauCeti/pull/43196)
+addresses local and global isogeny formulas.
 
 The A3 certificate uses the product indexed by `HeightOneSpectrum ℤ`,
 matching TauCeti's rational BSD quotient. For reuse across local arithmetic
@@ -194,6 +228,15 @@ lemma would transport `tamagawaNumberAt` under a valuation-preserving
 factorization checker reuse already verified local values. The good and
 index-one proofs now apply directly to either base ring from the normalized
 discriminant and c₄ valuations.
+
+For integral equations over `ℤ`, the downstream certificate also proves a
+global product of one when every prime divisor of the discriminant is checked
+to have good reduction or multiplicative index one. This uses TauCeti's
+`WeierstrassCurve.tamagawaProduct_eq_prod` together with the pinned local
+completed-factor theorems; no new general Tamagawa API is needed for this
+case. Extending the global product checker to use exact `I₂` values or
+other factors still requires assembling the checked finite local factors
+and proving completeness of the prime roster.
 
 ## TC-11 — explicit zero-y Vélu quotient equation
 
@@ -813,3 +856,14 @@ to checked number-field residue data. Given independent exact-order torsion
 generators whose product of orders attains the bound, construct the additive
 equivalence onto Mathlib’s full torsion subgroup. G2 already accepts such an
 equivalence as supplied evidence.
+
+## TC-33 — modular obstructions for integral-point completeness
+
+**Hypotheses.** A Weierstrass curve over `ℤ` and a finite residue ring map.
+
+**Target.** Mathlib already provides
+`WeierstrassCurve.Affine.Equation.map`. Consider upstreaming the optional
+packaging constructor that turns a proof of no affine solutions over a finite
+residue ring into empty abscissa support over `ℤ`. This project uses that
+generic construction for the mod-two obstruction. Finite search and exact
+count packaging remain downstream verifier responsibilities.

@@ -7,13 +7,26 @@ indexes successful manual benchmark runs published from `main`. Look up an
 LMFDB label to see the checked facts, their Lean names and project-specific
 assumptions. The link to LMFDB opens the corresponding curve record.
 
-The first three facts are nonsingularity of the supplied equation, global
-minimality of its integral model, and exact analytic rank. The rank theorem
-uses `VerifiedLcalc.Assumptions.ellipticModularity`. Each published value is
-checked by a fresh Lean process importing the compiled module. The same import
-checks the equation against the five input coefficients and the conductor in
-the numerical result against the selected input. Inconclusive rows carry no
-published facts. A label outside the published runs has no entry.
+Checked rows identify the nonsingular, globally minimal integral equation and
+give its exact analytic rank under `VerifiedLcalc.Assumptions.ellipticModularity`.
+Schema 2 catalogs also expose the existing arithmetic checks from the same rank
+witness.
+
+| Catalog field | Lean theorem | Checked statement |
+| --- | --- | --- |
+| `arithmetic_conductor` | `conductor_valid` | `wildLevelFast` on the equation and verified local transcripts equals the displayed level. |
+| `arithmetic_root_number` | `root_number_valid` | `wildSignFast` on the same data equals the displayed sign. |
+| `l_function_coefficients` | `l_function_coefficients` | An exact prefix of the arithmetic L-function coefficients starting at index 1. |
+| `discriminant_prime_factorization` | `minimality_valid` | The displayed primes, repeated with multiplicity, multiply to the absolute discriminant and pass the model minimality test at each prime. The catalog omits this entry if the list is empty. |
+
+These theorem statements use only the finite checks, with no project
+axioms. Geometric conductor and epsilon-factor compatibility used for the
+analytic rank remain part of the modularity assumption. Each published value
+is bound to the theorem's type by a fresh Lean process importing the compiled
+module. The same import checks the five input coefficients and the conductor
+used by the numerical result against the selected input. Replay repeats these
+value checks when compiling the archived witnesses. Existing schema 1 catalogs
+retain their original three fields. Inconclusive rows carry no facts.
 
 When a release includes compiled modules, each checked entry links to its
 batch's `.olean` and to a ZIP with the module's companion files. Several
@@ -29,6 +42,28 @@ Lean's search path as follows.
 deps="$(lake -f lakefile.certificates.lean env printenv LEAN_PATH)"
 LEAN_PATH="/absolute/path/to/extracted-module:$deps" lean UseCertificate.lean
 ```
+
+## Inspect field dependencies
+
+Open the [dependency roadmap](https://khwilson.github.io/verified-lcalc/roadmap.html)
+to trace a table-qualified LMFDB field from its mathematical prerequisites
+through its Lean witness and producer. Select a node to follow its inputs or
+outputs. Search by table, field, or evidence, and use the filters to find
+missing components. Alternative routes apply under their own hypotheses.
+The fixture samples correspond to their displayed curves and proof scopes.
+
+When editing the catalogue or producer, regenerate the Lean contract and
+single-curve replay snapshots after building the verifier.
+
+```sh
+python3 scripts/check_lmfdb_dependency_contracts.py --write
+python3 scripts/check_lmfdb_producer_example.py --write
+python3 scripts/build_lmfdb_dependency_roadmap.py --write
+```
+
+The existing
+**Refresh certificate companion** Pages workflow assembles the roadmap,
+fixture audit, and published curve catalogues together from `main`.
 
 ## Verify and replay a signed release
 

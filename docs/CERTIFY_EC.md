@@ -8,7 +8,93 @@ mathematical algorithms remain the existing proof-backed Lean implementation.
 The old Python registry, browser volunteer application, service dependencies,
 and generated batch certificate corpora/installers are removed. Git baseline `fcdc4f2` preserves their source. Existing ignored
 local state and database volumes were not deleted; stop any old API/worker
-processes yourself. The remaining Python scripts only download/benchmark data.
+processes yourself.
+
+## Produce a single-curve witness from joined LMFDB data
+
+Download the native LMFDB response for a curve label, then replay it into the
+joined format accepted by the producer.
+
+```sh
+python3 scripts/capture_lmfdb_fixture.py capture 112.a2 \
+  --output 112.a2-native.json --manifest-output 112.a2-native.provenance.json
+python3 scripts/capture_lmfdb_fixture.py replay 112.a2-native.json \
+  --manifest 112.a2-native.provenance.json --output 112.a2-replayed.json
+lake build VerifiedLcalc.Tactic.CertifyEC
+python3 scripts/produce_ec_witness.py 112.a2-replayed.json --output witness.json
+```
+
+For offline replay, skip the capture command and use
+`tests/fixtures/lmfdb/112.a2-native.json` and its accompanying
+`112.a2-native.provenance.json`. The manifest records the source URL, capture
+timestamp, SHA-256, license, and table and row identities. Replay with the
+manifest verifies the response checksum and table identities before projecting
+the rows. It carries all eight source tables, including class-indexed p-adic
+rows and extension-indexed torsion growth rows. An explicitly empty row list
+records a zero-row query. An omitted table has unknown coverage. A present row
+can independently contain empty arrays, nulls or source-specific sentinels.
+Replay preserves the original field encodings. Capture requires unused
+destination names for both the response and the manifest. Use a new pair of
+paths for another snapshot. Replay replaces its output atomically after
+validation. Keep the native response and manifest for provenance and use the
+generated witness for Lean verification.
+
+The producer also accepts the legacy projection
+`tests/fixtures/lmfdb/112.a2-joined.json`.
+
+The producer checks the curve, class, Mordell–Weil, local and Galois row joins.
+The Galois rows contribute repeated conductor values. The producer
+prepares evidence for supplied fields, invokes `certify_ec` in Lean, and writes
+the output only after verification succeeds. The JSON report on stdout
+gives a status, reason and source receipts for each field. Local statuses
+are indexed by prime. The report carries supplied provenance as metadata
+under `input_provenance`. A rejected claim leaves the destination untouched.
+
+| LMFDB fields | What the producer can certify |
+| --- | --- |
+| `torsion`, `torsion_structure`, `torsion_primes` | Two good reductions bound the order of the rational torsion subgroup. When checked point orders and the bound determine the group, Lean proves its order, invariant factors and prime support. For 112.a2 the submitted point generates a cyclic group of order two. |
+| `intrinsic_torsion` | When the full rational torsion group is proved trivial, the intrinsic torsion order is one. |
+| `abc_quality` | For j distinct from 0 and 1728 the producer factors the associated abc product. Lean bounds the error in the reported decimal by $10^{-12}$. Products above $10^{12}$ require a separately supplied factorization. |
+| `analytic_rank`, `special_value` | Lean checks a central-value or first-derivative enclosure. The rank search uses the equation and conductor independently of the reported rank. The exact analytic rank uses the project's modularity assumption. For the leading coefficient the report gives an absolute error and marks a result partial when it does not establish the last printed place. |
+| `serre_invariants` | For a globally minimal semistable model with good reduction at two, Lean checks the complete exceptional list in the arithmetic Serre recipe. Identification with intrinsic residual invariants requires additional evidence. |
+| `tamagawa_product` | Lean proves the global product is one when the complete discriminant-prime list passes the local factor-one check. This includes 37.a1. On 112.a2 the local factor at seven is one, while the additive place at two leaves the product open. |
+| `num_int_pts` | If the reduction modulo two has no affine solutions, there are no integral points. In other cases, listed points and checked fibers can supply a lower bound. Exact positive counts require an exhaustion proof. |
+
+The Mordell–Weil generator check continues to prove membership of the
+submitted rational points. A proof of a basis, saturation, or exact algebraic
+rank requires separate evidence.
+
+The result can be checked again with `certify_ec MyCurve from_json "witness.json"`
+from a Lean file adjacent to the output.
+
+## Inspect field coverage for a native capture
+
+Run the field ledger against the checked-in 112.a2 capture from the repository
+root.
+
+```sh
+python3 scripts/report_lmfdb_field_ledger.py
+```
+
+Use `--native` and `--manifest` for another response and its sidecar. To add
+the producer results for that response, save the producer's stdout report and
+pass it with `--producer`. The ledger checks the capture receipts and matches
+the producer's input SHA-256 against the exact bytes of the replay before
+joining outcomes. Use `--output` to save the ledger JSON.
+
+The ledger has one entry for each of the 101 table-qualified columns in the
+Lean field catalogue. Its native observations retain the class, prime and
+extension-field row keys where applicable. An unqueried table, a query with no
+rows, and an absent or null field carry separate statuses. An empty list in a
+present row remains a captured value. Producer outcomes retain their scope
+and reason. Audited consumer entries for the curve retain their theorem,
+statement, assumptions and extent. A native value, a successful producer run
+and an audited consumer proof each record a different milestone. Publication
+requires a separately verified artifact tied to the capture.
+
+The [next-step inventory](roadmaps/lmfdb-producer-next-steps.json) records the
+evidence needed for each supported field. The [EC/Q roadmap](roadmaps/LMFDB_Q_CERTIFICATION.md)
+describes the checker contracts.
 
 ## Three input forms
 

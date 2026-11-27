@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore prerequisites, proof routes, and missing components for table-qualified LMFDB certificate fields.">
+  <title>Certificate dependency roadmap · verified-lcalc</title>
+  <link rel="stylesheet" href="catalogue.css">
+  <link rel="stylesheet" href="roadmap.css">
+  <script type="module" src="roadmap.mjs"></script>
+</head>
+<body class="roadmap-page">
+  <a class="skip-link" href="#roadmap">Skip to dependency roadmap</a>
+  <header class="masthead">
+    <div class="container masthead-inner">
+      <a class="wordmark" href="index.html">verified-lcalc</a>
+      <nav aria-label="Certificate pages">
+        <a href="index.html">Curve catalogue</a>
+        <a href="fixtures.html">Fixture field audit</a>
+        <a href="https://github.com/khwilson/verified-lcalc">Repository</a>
+      </nav>
+    </div>
+  </header>
+  <main id="roadmap" class="container" tabindex="-1">
+    <header class="intro">
+      <p class="eyebrow">101 table-qualified fields · 85 distinct names</p>
+      <h1>Certificate dependency roadmap</h1>
+      <p>Select a work package or field to follow its proof prerequisites, Lean route, generator status, and missing components.</p>
+    </header>
+
+    <section id="wave-overview" class="wave-overview" aria-labelledby="wave-title" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2 id="wave-title">Proof work packages</h2>
+          <p>Layer numbers show the deepest recorded hard route. Arrows show package prerequisites.</p>
+        </div>
+        <button id="all-waves" type="button" aria-pressed="true">Show all packages</button>
+      </div>
+      <p class="schedule-note">Packages may contain routes that start at earlier layers. Layer numbers are dependency depth, not calendar scheduling.</p>
+      <div id="wave-dag" class="wave-dag" role="group" aria-label="Directed graph of work package prerequisites">
+        <svg id="wave-svg" class="graph-lines" aria-hidden="true" focusable="false"></svg>
+        <div id="wave-cards" class="wave-layers" aria-label="Selectable work packages grouped by dependency layer"></div>
+      </div>
+      <p id="wave-graph-description" class="visually-hidden"></p>
+      <details id="scheduling" class="schedule-details">
+        <summary>Implementation scheduling notes · separate from proof prerequisites</summary>
+        <p>Scheduling edges record implementation order only and do not affect prerequisite layers or certify mathematical dependencies.</p>
+        <ul id="schedule-links" aria-label="Implementation scheduling links"></ul>
+      </details>
+    </section>
+
+    <section aria-labelledby="explore-title">
+      <h2 id="explore-title">Explore fields</h2>
+      <fieldset id="filters" disabled>
+        <legend class="visually-hidden">Filter roadmap fields</legend>
+        <div class="filter">
+          <label for="search">Search fields or proof details</label>
+          <input id="search" type="search" placeholder="e.g. regulator, sha, minimal model" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="filter">
+          <label for="table-filter">LMFDB table</label>
+          <select id="table-filter"><option value="">All tables</option></select>
+        </div>
+        <div class="filter">
+          <label for="status-filter">Catalogue status</label>
+          <select id="status-filter">
+            <option value="">All statuses</option>
+            <option value="sampled">Has proof sample</option>
+            <option value="pending_review">Awaiting fixture review</option>
+            <option value="missing_checker">No checker</option>
+          </select>
+        </div>
+        <label class="checkbox-filter"><input id="blocker-filter" type="checkbox"> Show fields with missing components</label>
+        <button id="clear" type="button">Clear filters</button>
+      </fieldset>
+      <p id="load-status" class="notice" role="status" aria-live="polite">Loading field roadmap…</p>
+      <noscript><p>Enable JavaScript to explore dependency links. The source files remain available in the repository.</p></noscript>
+    </section>
+
+    <section id="workspace" class="workspace" hidden aria-label="Roadmap graph and selected field details">
+      <aside class="field-browser" aria-labelledby="field-list-title">
+        <div class="panel-heading">
+          <h2 id="field-list-title">Fields</h2>
+          <p id="field-count" aria-live="polite"></p>
+        </div>
+        <ul id="field-list" class="field-list" aria-label="Selectable certificate fields"></ul>
+      </aside>
+
+      <div class="field-workspace">
+        <section class="dag-panel" aria-labelledby="dag-title">
+          <div class="panel-heading">
+            <div>
+              <h2 id="dag-title">Dependency graph</h2>
+              <p id="graph-caption">Choose a field to inspect its direct graph neighborhood.</p>
+            </div>
+            <a id="share-link" class="share-link" href="#roadmap">Copyable field link</a>
+          </div>
+          <div id="dag" class="dag" aria-live="polite">
+            <svg id="selected-dag-svg" class="graph-lines selected-graph-lines" aria-hidden="true" focusable="false"></svg>
+            <section class="dag-column" aria-labelledby="prereq-heading">
+              <h3 id="prereq-heading">Prerequisites</h3>
+              <ul id="prerequisites" class="dag-nodes"></ul>
+            </section>
+            <div class="dag-arrow" aria-hidden="true">→</div>
+            <section class="dag-column dag-selected" aria-labelledby="selected-heading">
+              <h3 id="selected-heading">Selected node</h3>
+              <div id="selected-node"></div>
+            </section>
+            <div class="dag-arrow" aria-hidden="true">→</div>
+            <section class="dag-column" aria-labelledby="dependents-heading">
+              <h3 id="dependents-heading">Dependent claims</h3>
+              <ul id="dependents" class="dag-nodes"></ul>
+            </section>
+          </div>
+          <p id="no-edges" class="empty-state" hidden>This node has no direct dependency links in the roadmap.</p>
+        </section>
+
+        <section id="details" class="details-panel" aria-labelledby="details-title" tabindex="-1">
+          <h2 id="details-title">Field details</h2>
+          <p id="detail-intro">Select a field from the list or a dependency node.</p>
+          <div id="milestones" class="milestones" aria-label="Field evidence milestones"></div>
+          <div id="detail-content"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <footer class="container">
+    <p>Generated from the table-qualified field catalogue and fixture audit. <a href="field-dependency-roadmap.json">Download roadmap data</a> · <a href="fixtures.html">Inspect imported fixture proofs</a>.</p>
+  </footer>
+</body>
+</html>

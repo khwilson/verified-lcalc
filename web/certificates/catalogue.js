@@ -74,6 +74,11 @@ function factHeading(fact) {
     case "analytic_rank": return `Exact analytic rank ${fact.value}`;
     case "nonsingular": return "Nonsingular (Δ ≠ 0)";
     case "global_minimal": return "Globally minimal integral equation";
+    case "arithmetic_conductor": return `Arithmetic conductor formula = ${fact.value}`;
+    case "arithmetic_root_number": return `Arithmetic global root number formula = ${fact.value}`;
+    case "l_function_coefficients": return `L-function coefficients (1–${fact.value.length})`;
+    case "discriminant_prime_factorization":
+      return `Prime factorization of |Δ| = ${fact.value.join(" × ")}`;
     default: return `${fact.field} = ${fact.value}`;
   }
 }
@@ -82,6 +87,7 @@ function factDetails({fact, catalogue}, curveLabel) {
   const article = node("article");
   const list = node("dl");
   article.append(node("h3", factHeading(fact)), list);
+  if (fact.field === "l_function_coefficients") definition(list, "Coefficients", fact.value.join(", "));
   definition(list, "Lean theorem", node("code", fact.theorem));
   definition(list, "Lean module", node("code", fact.module));
   const assumptions = node("ul");
@@ -241,8 +247,13 @@ async function getJson(url) {
 function validateCatalogue(catalogue) {
   const validFact = fact => fact && typeof fact.field === "string" &&
     typeof fact.theorem === "string" && typeof fact.module === "string" &&
-    Array.isArray(fact.assumptions) && fact.assumptions.every(a => typeof a === "string");
-  if (catalogue?.schema !== 1 || !Array.isArray(catalogue.curves) ||
+    Array.isArray(fact.assumptions) && fact.assumptions.every(a => typeof a === "string") &&
+    (fact.field !== "discriminant_prime_factorization" ||
+      (Array.isArray(fact.value) && fact.value.length > 0 &&
+        fact.value.every(p => Number.isSafeInteger(p) && p > 1))) &&
+    (fact.field !== "l_function_coefficients" ||
+      (Array.isArray(fact.value) && fact.value.length > 0 && fact.value.every(Number.isSafeInteger)));
+  if (![1, 2].includes(catalogue?.schema) || !Array.isArray(catalogue.curves) ||
     !catalogue.curves.every(row => row && labelPattern.test(row.label) &&
       ["checked", "inconclusive"].includes(row.status) && Array.isArray(row.facts) &&
       (row.status === "checked" ? row.facts.length > 0 && row.facts.every(validFact) : !row.facts.length)

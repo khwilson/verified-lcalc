@@ -241,15 +241,18 @@ theorem LocalReductionClaim.check_correct (row : LocalReductionClaim) (e : Weier
 /-- Check supplied local Tamagawa values whose reduction type is supported. -/
 def LocalReductionClaim.checkTamagawa (row : LocalReductionClaim) (e : WeierstrassCurve ℤ) :
     Bool :=
-  row.tamagawaNumber.all fun n =>
-    isPrime row.prime && (n != 0) && (!supportsTamagawaOne e row.prime || n == 1)
+  (row.tamagawaTypeIIIShift.isNone || row.tamagawaNumber.isSome) &&
+    row.tamagawaNumber.all fun n =>
+      let expected := tamagawaExpected? e row.prime row.tamagawaTypeIIIShift
+      (isPrime row.prime && (n != 0) && expected.all (n == ·)) &&
+        (row.tamagawaTypeIIIShift.isNone || expected.isSome)
 
 /-- Exact local Tamagawa data at the supported primes of the supplied equation. -/
 def LocalReductionClaim.TamagawaSpec (row : LocalReductionClaim) (e : WeierstrassCurve ℤ) :
     Prop :=
   ∀ n, row.tamagawaNumber = some n → ∃ hp : row.prime.Prime,
     letI : Fact row.prime.Prime := ⟨hp⟩
-    supportsTamagawaOne e row.prime = true →
+    (tamagawaExpected? e row.prime row.tamagawaTypeIIIShift).isSome = true →
       (e.baseChange ℚ).tamagawaNumberAt (rationalPlace row.prime) = n
 
 /-- Successful local checks certify the completed-field Tamagawa factor at supported primes. -/
@@ -257,12 +260,15 @@ theorem LocalReductionClaim.tamagawa_correct (row : LocalReductionClaim) (e : We
     [(e.baseChange ℚ).IsElliptic] (h : row.checkTamagawa e = true) : row.TamagawaSpec e := by
   intro n hn
   simp only [checkTamagawa, hn, Option.all_some, Bool.and_eq_true, isPrime_correct] at h
-  obtain ⟨⟨hp, _⟩, hval⟩ := h
+  obtain ⟨_, ⟨⟨⟨hp, _⟩, hval⟩, _⟩⟩ := h
   let : Fact row.prime.Prime := ⟨hp⟩
-  refine ⟨hp, fun hs => ?_⟩
-  have heq : n = 1 := by
-    simpa only [hs, Bool.not_true, Bool.false_or, beq_iff_eq] using hval
-  exact (supportsTamagawaOne_correct e row.prime hs).trans heq.symm
+  refine ⟨hp, fun hsome => ?_⟩
+  cases hs : tamagawaExpected? e row.prime row.tamagawaTypeIIIShift with
+  | none => simp [hs] at hsome
+  | some value =>
+    have heq : n = value := by
+      simpa only [hs, Option.all_some, beq_iff_eq] using hval
+    exact (tamagawaExpected_correct e row.prime hs).trans heq.symm
 
 /-- Validate the prime and sign independently of the other local evidence. -/
 def LocalReductionClaim.checkRootNumberInput (row : LocalReductionClaim) : Bool :=
@@ -298,7 +304,8 @@ def hasLocalRootNumberClaim (rows : List LocalReductionClaim) : Bool :=
 
 /-- Whether any supplied Tamagawa code falls outside the supported reduction scope. -/
 def hasUnsupportedTamagawaClaim (e : WeierstrassCurve ℤ) (rows : List LocalReductionClaim) : Bool :=
-  rows.any fun row => row.tamagawaNumber.isSome && !supportsTamagawaOne e row.prime
+  rows.any fun row => row.tamagawaNumber.isSome &&
+    (tamagawaExpected? e row.prime row.tamagawaTypeIIIShift).isNone
 
 /-- Whether any supplied local valuation or reduction type requires a checked minimal model. -/
 def hasMinimalityDependentLocalClaim (rows : List LocalReductionClaim) : Bool :=

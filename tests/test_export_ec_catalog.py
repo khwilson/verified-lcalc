@@ -74,6 +74,8 @@ def benchmark(
         "schema": "lcalc.ec-rank.v1",
         "subject": {"ainvs": ["1", "1", "0", "-6007", "-181724"], "conductor": "285"},
         "rank": "0",
+        "arithmetic": {"minimality": ["3", "5", "19", "19"]},
+        "coefficients": ["1", "-1", "0"],
         "parameters": parameters,
     }
     witness_path = write_json(work / "witnesses/0.json", witness)
@@ -102,6 +104,12 @@ def benchmark(
                 "declaration_prefix": "Run123Attempt2Curve0000",
                 "file": "0.json",
                 "rank": "0",
+                "arithmetic_catalog": {
+                    "arithmetic_conductor": 285,
+                    "arithmetic_root_number": 1,
+                    "l_function_coefficients": [1, -1, 0],
+                    "discriminant_prime_factorization": [3, 5, 19, 19],
+                },
                 "parameters": parameters,
                 "witness_sha256": exporter.sha256(witness_path),
             }
@@ -136,7 +144,7 @@ def test_exports_verified_facts_and_complete_module_bundle(
     output.mkdir()
     exporter.export_catalog(path, output, RELEASE, root)
     catalog = exporter.read_json(output / "catalog.json")
-    assert catalog["schema"] == 1
+    assert catalog["schema"] == 2
     assert catalog["selection"] == {"count": 1, "offset": 1}
     assert catalog["tauceti_revision"] == "c" * 40
     assert catalog["batch"] == {
@@ -172,7 +180,11 @@ def test_exports_verified_facts_and_complete_module_bundle(
     assert {key: row[key] for key in SUBJECT} == SUBJECT
     assert row["witness_sha256"] == exporter.sha256(witness_path)
     facts = {fact["field"]: fact for fact in row["facts"]}
-    assert set(facts) == {"analytic_rank", "nonsingular", "global_minimal"}
+    assert set(facts) == set(exporter.ASSUMPTIONS)
+    assert facts["arithmetic_conductor"]["value"] == 285
+    assert facts["arithmetic_root_number"]["value"] == 1
+    assert facts["l_function_coefficients"]["value"] == [1, -1, 0]
+    assert facts["discriminant_prime_factorization"]["value"] == [3, 5, 19, 19]
     assert (
         type(facts["analytic_rank"]["value"]) is int
         and facts["analytic_rank"]["value"] == 0
@@ -181,14 +193,19 @@ def test_exports_verified_facts_and_complete_module_bundle(
         "VerifiedLcalc.Assumptions.ellipticModularity"
     ]
     for field, fact in facts.items():
-        assert fact["theorem"] == f"Run123Attempt2Curve0000.{field}"
+        assert (
+            fact["theorem"]
+            == f"Run123Attempt2Curve0000.{exporter.THEOREMS.get(field, field)}"
+        )
         assert fact["module"] == MODULE
         assert fact["olean_url"] == f"{RELEASE}/{MODULE}.olean"
         assert fact["bundle_url"] == f"{RELEASE}/{MODULE}.zip"
         assert fact["sha256"] == exporter.sha256(output / f"{MODULE}.olean")
         assert fact["bundle_sha256"] == exporter.sha256(output / f"{MODULE}.zip")
         if field != "analytic_rank":
-            assert fact["value"] is True and fact["assumptions"] == []
+            assert fact["assumptions"] == []
+        if field in ("nonsingular", "global_minimal"):
+            assert fact["value"] is True
     assert (output / "SHA256SUMS.txt").read_text().splitlines() == [
         f"{exporter.sha256(output / name)}  {name}"
         for name in (f"{MODULE}.olean", f"{MODULE}.zip", "catalog.json", archive.name)
@@ -217,6 +234,7 @@ def test_exports_verified_facts_and_complete_module_bundle(
         "bad_module_hashes",
         "replaced_module",
         "rank",
+        "arithmetic",
         "witness",
         "subject",
         "lean_inputs",
@@ -249,6 +267,8 @@ def test_refuses_to_export_incomplete_or_unbound_facts(
         (work / f"{MODULE}.olean").write_text("replacement")
     elif error == "rank":
         report["curves"][0]["rank"] = "1"
+    elif error == "arithmetic":
+        report["curves"][0]["arithmetic_catalog"]["arithmetic_root_number"] = -1
     elif error in {"witness", "subject"}:
         witness_path = work / "witnesses/0.json"
         witness = exporter.read_json(witness_path)
@@ -311,6 +331,11 @@ def test_exports_inconclusive_without_facts(
         ("missing", "Archive omits checked witnesses"),
         ("duplicate", "Unexpected or duplicate archived witness"),
         ("rank", "Witness rank differs from catalog"),
+        ("arithmetic_conductor", "Witness arithmetic differs from catalog"),
+        ("arithmetic_root_number", "Witness arithmetic differs from catalog"),
+        ("l_function_coefficients", "Witness arithmetic differs from catalog"),
+        ("discriminant_prime_factorization", "Witness arithmetic differs from catalog"),
+        ("missing_factorization", "Witness arithmetic differs from catalog"),
         ("theorem", "Invalid analytic_rank fact"),
         ("import", "Import groups differ from validation batches"),
     ],
@@ -341,6 +366,15 @@ def test_replay_rejects_catalog_or_archive_tampering(
         catalog["witness_archive"]["sha256"] = exporter.sha256(archive)
     elif change == "rank":
         catalog["curves"][0]["facts"][0]["value"] = 1
+    elif change in exporter.THEOREMS or change == "l_function_coefficients":
+        fact = next(f for f in catalog["curves"][0]["facts"] if f["field"] == change)
+        fact["value"] = [2] if isinstance(fact["value"], list) else 42
+    elif change == "missing_factorization":
+        catalog["curves"][0]["facts"] = [
+            f
+            for f in catalog["curves"][0]["facts"]
+            if f["field"] != "discriminant_prime_factorization"
+        ]
     elif change == "theorem":
         catalog["curves"][0]["facts"][0]["theorem"] += "\naxiom injected"
     else:
@@ -350,8 +384,11 @@ def test_replay_rejects_catalog_or_archive_tampering(
         replay.replay(catalog_path, archive, None, root)
 
 
+@pytest.mark.parametrize("legacy", [False, True])
 def test_replay_calls_lean_on_exact_source_and_consumer(
-    benchmark: tuple[Path, Path, dict[str, Any]], monkeypatch: pytest.MonkeyPatch
+    benchmark: tuple[Path, Path, dict[str, Any]],
+    monkeypatch: pytest.MonkeyPatch,
+    legacy: bool,
 ) -> None:
     root, work, report = benchmark
     output = root / "release"
@@ -362,6 +399,15 @@ def test_replay_calls_lean_on_exact_source_and_consumer(
         root,
         witness_only=True,
     )
+    catalog_path = output / "catalog.json"
+    if legacy:
+        catalog = exporter.read_json(catalog_path)
+        catalog["schema"] = 1
+        row = catalog["curves"][0]
+        row["facts"] = [
+            f for f in row["facts"] if f["field"] in replay.LEGACY_FACT_FIELDS
+        ]
+        write_json(catalog_path, catalog)
     monkeypatch.setattr(
         replay, "prepare_lean", lambda *a: (Path("lean"), {"LEAN_PATH": "lib"})
     )
@@ -385,8 +431,18 @@ def test_replay_calls_lean_on_exact_source_and_consumer(
     batch, consumer = sources
     assert 'certify_ec Run123Attempt2Curve0000 from_json "0.json"' in batch
     assert f"import {MODULE}" in consumer
-    for field in exporter.ASSUMPTIONS:
+    for field in replay.LEGACY_FACT_FIELDS:
         assert f":= Run123Attempt2Curve0000.{field}" in consumer
+    if legacy:
+        assert ".localData" not in consumer
+    else:
+        for theorem in exporter.THEOREMS.values():
+            assert f"Run123Attempt2Curve0000.{theorem}" in consumer
+        assert "let values : List ℤ := [1, -1, 0]" in consumer
+        assert ":= Run123Attempt2Curve0000.l_function_coefficients" in consumer
+        assert ".localData = 285 :=" in consumer
+        assert ".localData = 1 :=" in consumer
+        assert "⟨[3, 5, 19, 19]⟩ Run123Attempt2Curve0000.curve" in consumer
     assert "⟨1, 1, 0, -6007, -181724⟩" in consumer
     assert ".result.conductor = 285" in consumer
 
@@ -422,3 +478,27 @@ def test_replay_requires_pinned_checkout(
         ValueError, match="clean checkout at the catalog's Git revision"
     ):
         replay.replay(catalog_path, output / exporter.WITNESS_ARCHIVE, None, root)
+
+
+def test_no_prime_factorization_entry_for_empty_witness_list(
+    benchmark: tuple[Path, Path, dict[str, Any]],
+) -> None:
+    root, work, report = benchmark
+    witness_path = work / "witnesses/0.json"
+    witness = exporter.read_json(witness_path)
+    witness["arithmetic"]["minimality"] = []
+    write_json(witness_path, witness)
+    row = report["curves"][0]
+    del row["arithmetic_catalog"]["discriminant_prime_factorization"]
+    row["witness_sha256"] = exporter.sha256(witness_path)
+    output = root / "release"
+    exporter.export_catalog(
+        write_json(root / "report.json", report), output, RELEASE, root
+    )
+    catalog = exporter.read_json(output / "catalog.json")
+    rows = replay.checked_rows(catalog, root)
+    [entry] = rows.values()
+    assert "discriminant_prime_factorization" not in entry["arithmetic"]
+    replay.extract_witnesses(
+        catalog, output / exporter.WITNESS_ARCHIVE, rows, set(), work
+    )
