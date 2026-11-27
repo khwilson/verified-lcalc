@@ -30,6 +30,10 @@ def multiplicativeIndexTwo (e : WeierstrassCurve ℤ) (p : ℕ) : Bool :=
 def typeIIIChange (shift : TamagawaTypeIIIShift) : WeierstrassCurve.VariableChange ℤ :=
   ⟨1, shift.r, shift.s, shift.t⟩
 
+/-- Interpret the submitted type II coordinates as an exact integral change. -/
+def typeIIChange (shift : TamagawaTypeIIShift) : WeierstrassCurve.VariableChange ℤ :=
+  ⟨1, shift.r, shift.s, shift.t⟩
+
 /-- Interpret the submitted type IV coordinates as a unit-scale translation. -/
 def typeIVChange (evidence : TamagawaTypeIVEvidence) : WeierstrassCurve.VariableChange ℤ :=
   ⟨1, evidence.r, evidence.s, evidence.t⟩
@@ -64,6 +68,13 @@ def checkTameTypeIII (e : WeierstrassCurve ℤ) (p : ℕ) (shift : TamagawaTypeI
   decide (3 < p ∧ (p : ℤ) ∣ model.b₂ ∧ (p : ℤ) ∣ model.a₃ ∧
     (p : ℤ) ∣ model.a₄ ∧ (p : ℤ) ^ 2 ∣ model.a₆ ∧ ¬ (p : ℤ) ^ 3 ∣ model.b₈)
 
+/-- Check a submitted scale-one change against the exact tame type II terminal
+conditions. This checker performs no search for a change of variables. -/
+def checkTameTypeII (e : WeierstrassCurve ℤ) (p : ℕ) (shift : TamagawaTypeIIShift) : Bool :=
+  let model := typeIIChange shift • e
+  decide (3 < p ∧ (p : ℤ) ∣ model.b₂ ∧ (p : ℤ) ∣ model.a₃ ∧
+    (p : ℤ) ∣ model.a₄ ∧ (p : ℤ) ∣ model.a₆ ∧ ¬ (p : ℤ) ^ 2 ∣ model.a₆)
+
 /-- Check the exact submitted type IV change, its terminal conditions, and its
 tagged residue evidence. This checker evaluates no finite-field search. -/
 def checkTameTypeIV (e : WeierstrassCurve ℤ) (p : ℕ)
@@ -82,22 +93,24 @@ def checkTameTypeIV (e : WeierstrassCurve ℤ) (p : ℕ)
 def tamagawaExpected? (e : WeierstrassCurve ℤ) (p : ℕ)
     (shift : Option TamagawaTypeIIIShift := none)
     (typeIV : Option TamagawaTypeIVEvidence := none)
+    (typeII : Option TamagawaTypeIIShift := none)
     (splitting : Option TamagawaSplittingEvidence := none) : Option ℕ :=
-  match shift, typeIV, splitting with
-  | some _, some _, _ | some _, _, some _ | _, some _, some _ => none
-  | some change, none, none => if checkTameTypeIII e p change then some 2 else none
-  | none, some evidence, none => if checkTameTypeIV e p evidence then
+  match shift, typeIV, typeII, splitting with
+  | some change, none, none, none => if checkTameTypeIII e p change then some 2 else none
+  | none, some evidence, none, none => if checkTameTypeIV e p evidence then
       some (match evidence.residue with | .root _ => 3 | .nonsplitEulerPower _ => 1)
     else none
-  | none, none, some evidence =>
+  | none, none, some change, none => if checkTameTypeII e p change then some 1 else none
+  | none, none, none, some evidence =>
     if supportsTamagawaOne e p || multiplicativeIndexTwo e p then none
     else if (p : ℤ) ∣ e.c₄ then none
     else if checkTamagawaSplitting e p evidence then
       some (multiplicativeTamagawaFactor e p evidence)
     else none
-  | none, none, none =>
+  | none, none, none, none =>
     if supportsTamagawaOne e p then some 1
     else if multiplicativeIndexTwo e p then some 2
     else none
+  | _, _, _, _ => none
 
 end VerifiedLcalc.EllipticCurve

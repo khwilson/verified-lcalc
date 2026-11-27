@@ -449,6 +449,7 @@ def report_fields(
         prime = row["prime"]
         for field, value in row.items():
             if field in {
+                "tamagawa_type_ii",
                 "tamagawa_type_iii",
                 "tamagawa_type_iv",
                 TAMAGAWA_SPLITTING_FIELD,
@@ -462,7 +463,7 @@ def report_fields(
             elif field == "tamagawa_number" and not flags.get(f"tamagawa.{prime}"):
                 fields[key] = result(
                     "unsupported",
-                    "Exact Tamagawa checker supports good/I₁/I₂, supplied odd-prime Iₙ splitting evidence, or tame III/IV evidence",
+                    "Exact Tamagawa checker supports good, I₁/I₂, supplied odd-prime Iₙ splitting evidence, or supplied tame II/III/IV evidence",
                 )
             elif field == "kodaira_symbol" and not flags.get(f"kodaira.{prime}"):
                 fields[key] = result(
@@ -566,6 +567,7 @@ def produce(source: Path, output: Path, report: dict[str, Any]) -> None:
                         for key, value in row.items()
                         if key
                         not in {
+                            "tamagawa_type_ii",
                             "tamagawa_type_iii",
                             "tamagawa_type_iv",
                             TAMAGAWA_SPLITTING_FIELD,

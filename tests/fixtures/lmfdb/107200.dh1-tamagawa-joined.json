@@ -1,0 +1,9 @@
+{
+  "tables": ["ec_curvedata", "ec_localdata"],
+  "labels": ["107200.dh1", "107200.dh1"],
+  "label_cols": ["lmfdb_label", "lmfdb_label"],
+  "data": [
+    [{"lmfdb_label": "107200.dh1", "lmfdb_iso": "107200.dh", "ainvs": [0, -1, 0, -53, -133], "conductor": 107200}],
+    [{"lmfdb_label": "107200.dh1", "prime": 5, "conductor": 107200, "discriminant_valuation": 2, "conductor_valuation": 2, "reduction_type": 0, "kodaira_symbol": 2, "tamagawa_number": 1, "root_number": 1}]
+  ]
+}

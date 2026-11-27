@@ -283,7 +283,7 @@
       "status": "checked"
     },
     "local_invariants.2.tamagawa_number": {
-      "reason": "Exact Tamagawa checker supports good/I₁/I₂, supplied odd-prime Iₙ splitting evidence, or tame III/IV evidence",
+      "reason": "Exact Tamagawa checker supports good, I₁/I₂, supplied odd-prime Iₙ splitting evidence, or supplied tame II/III/IV evidence",
       "sources": [
         "ec_localdata[2].tamagawa_number"
       ],

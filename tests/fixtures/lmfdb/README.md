@@ -98,6 +98,16 @@ projections retain the source rows without it so CI exercises proposal replay.
 The verifier checks supplied evidence only. Higher multiplicative indices at
 `p = 2` remain unsupported; the existing evidence-free I₁/I₂ routes are unchanged.
 
+The `107200.dh1` Type II case is projected from line 46277 of the pinned
+John Cremona `ecdata` file `curvedata/curvedata.100000-109999` at revision
+`25cec5ecfec8b9f016eb1631ac633194c2bed39f` (Cremona label `107200bz1`). The
+source row gives equation `[0,-1,0,-53,-133]`. At p=5 it gives discriminant
+and conductor valuation 2, PARI type II code 2, and Tamagawa factor 1. `107200.dh1-tamagawa-joined.json` is the producer-facing projection
+of the `ec_curvedata` and p=5 `ec_localdata` rows. The exact source record
+digest and blob identity are in its provenance sidecar. The checked witness
+supplies the scale-one translation `(r,s,t)=(2,0,0)`. Lean checks the five
+terminal conditions. [Pinned source row](https://github.com/JohnCremona/ecdata/blob/25cec5ecfec8b9f016eb1631ac633194c2bed39f/curvedata/curvedata.100000-109999#L46277)
+
 The Lean consumer checks the finite theorems and checks the modularity dependency
 on conductor and root-number theorems. The matrix inputs contain no rank data. Its consumer also reuses the separate, already
 checked analytic-rank-one witness for 112.a2 on the same integral equation.

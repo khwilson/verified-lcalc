@@ -1,0 +1,16 @@
+{
+  "ainvs": [0, -1, 0, -53, -133],
+  "bad_primes": [2, 5, 67],
+  "local_invariants": [
+    {
+      "prime": 5,
+      "discriminant_valuation": 2,
+      "conductor_valuation": 2,
+      "reduction_type": 0,
+      "kodaira_symbol": 2,
+      "tamagawa_number": 1,
+      "root_number": 1,
+      "tamagawa_type_ii": {"r": 2, "s": 0, "t": 0}
+    }
+  ]
+}

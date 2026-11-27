@@ -1,0 +1,14 @@
+{
+  "source": "John Cremona ecdata",
+  "repository": "https://github.com/JohnCremona/ecdata",
+  "revision": "25cec5ecfec8b9f016eb1631ac633194c2bed39f",
+  "path": "curvedata/curvedata.100000-109999",
+  "git_blob": "2675af5216e5785c34ff5c9d5bf204c7663950c9",
+  "line": 46277,
+  "cremona_label": "107200bz1",
+  "lmfdb_label": "107200.dh1",
+  "record_sha256": "318799dd2db008f52364e6abe199d7d98e178ba9c0c8e29553bf0e1484a87869",
+  "projection": "ec_curvedata and ec_localdata prime 5",
+  "license": "Artistic License 2.0",
+  "source_url": "https://github.com/JohnCremona/ecdata/blob/25cec5ecfec8b9f016eb1631ac633194c2bed39f/curvedata/curvedata.100000-109999#L46277"
+}

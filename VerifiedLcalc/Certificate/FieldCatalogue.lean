@@ -528,12 +528,13 @@ private def stored : List Route :=
     ⟨["localdata"], "tamagawa_number", aliases
       (checkedPath ["tamagawa_number"]
         [vl[`EllipticWitness.localInvariants], vl[`LocalReductionClaim.tamagawaNumber],
+          vl[`LocalReductionClaim.tamagawaTypeIIShift],
           vl[`LocalReductionClaim.tamagawaTypeIIIShift],
           vl[`LocalReductionClaim.tamagawaTypeIVEvidence],
           vl[`LocalReductionClaim.tamagawaSplitting]]
         `tamagawa_numbers [arith, vl[`ArithmeticFacts.tamagawa], vl[`LocalTamagawaFact.correct]]
         ("Exact intrinsic factor at good, I₁/I₂ without extra data, odd-prime Iₙ with " ++
-          "submitted split/nonsplit evidence, or submitted tame III/IV terminal models. " ++
+          "submitted split/nonsplit evidence, or submitted tame II/III/IV terminal models. " ++
           "Residue evidence is checked without verifier search.")
         [vl[`LocalReductionClaim.tamagawaSplitting]]
         vl[`LocalReductionClaim.tamagawa_correct]) "local_invariants"⟩,

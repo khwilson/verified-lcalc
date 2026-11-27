@@ -163,7 +163,7 @@ reviewed LMFDB ordering and base-26 encoding.
 | `semistable` | `semistable` | Equivalence with TauCeti's `WeierstrassCurve.IsSemistable` over the ring of integers of ℚ, using the checked `minimality`. |
 | `squarefree_disc` | `squarefreeDiscriminant` | Equivalence with Mathlib's `Squarefree` on the absolute minimal discriminant, using the checked `minimality`. |
 | `local_invariants` or a top-level local row | `localInvariants` | Checks each supplied prime and any supplied `discriminant_valuation`, `j_denominator_valuation` or `reduction_type` against the minimal equation, using the checked `minimality`. |
-| `tamagawa_number` | `localInvariants` row field `tamagawaNumber` | Exact intrinsic Tamagawa number at a prime of good, multiplicative `I₁` or `I₂`, or tame III/IV with checked terminal evidence. A local test proves minimality at that prime. |
+| `tamagawa_number` | `localInvariants` row field `tamagawaNumber` | Exact intrinsic Tamagawa number at good reduction or multiplicative `I₁` or `I₂`. Higher odd-prime multiplicative indices require splitting evidence. Tame II/III/IV require checked terminal evidence. A local test proves minimality at that prime. |
 | `tamagawa_splitting` (evidence extension) | `localInvariants` row field `tamagawaSplitting` | At odd-prime multiplicative `Iₙ`, `n ≥ 3`, supplies either a root of the original node polynomial or an Euler-power witness that its discriminant is nonsquare. The verifier checks the value without root search. |
 | `kodaira_symbol` | `localInvariants` row field `kodairaSymbol` | Canonical TauCeti `Iₙ` equality for good or multiplicative reduction. For additive codes the theorem excludes every `Iₙ`. Requires `minimality`. |
 | `root_number` | `localInvariants` row field `rootNumber` | Arithmetic local sign at the row's prime. Requires checked `minimality` and `local_data`. |
@@ -350,6 +350,11 @@ these coordinates. The checker applies the submitted change to the original
 equation, tests the terminal III divisibilities, and checks the claimed factor
 two. A submitted change that fails its tests is rejected. Rows without the
 change can use the good, I₁, and I₂ routes.
+
+Tame type II at a rational prime p > 3 takes `tamagawa_type_ii` with
+the exact scale-one change. The checker tests all five terminal conditions
+on the changed equation, including the failure of p² divisibility for
+the new a₆. Successful evidence gives intrinsic factor one.
 
 Tame type IV at a rational prime p > 3 takes `tamagawa_type_iv` with
 the same exact change and one residue evidence key. The checker derives
