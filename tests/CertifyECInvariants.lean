@@ -240,13 +240,6 @@ certify_ec TypeIVNonsplit50a1 from_json_string
 example : (TypeIVNonsplit50a1.certificate.arithmetic.tamagawa.map (·.value)) = [1] := by
   decide +kernel
 
-/- Type II fixture: exact coefficients and local rows are projected from the
-pinned John Cremona ecdata source record for 107200.dh1. -/
-certify_ec TypeII107200 from_json "fixtures/lmfdb/107200.dh1-tamagawa.json"
-
-example : (TypeII107200.certificate.arithmetic.tamagawa.map (·.value)) = [1] := by
-  decide +kernel
-
 example :
     letI : Fact (Nat.Prime 5) := ⟨by decide +kernel⟩
     (TypeIVNonsplit50a1.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 5) = 1 := by
@@ -263,6 +256,27 @@ certify_ec TypeIVAbsent from_json_string
   r#"{"ainvs":[1,0,1,-1,-2],"prime":5,"tamagawa_number":3}"#
 
 example : TypeIVAbsent.certificate.arithmetic.tamagawa.isEmpty = true := by decide +kernel
+
+/- Type II fixture: exact coefficients and local rows are projected from the
+pinned John Cremona ecdata source record for 107200.dh1. -/
+certify_ec TypeII107200 from_json "fixtures/lmfdb/107200.dh1-tamagawa.json"
+
+example : (TypeII107200.certificate.arithmetic.tamagawa.map (·.value)) = [1] := by
+  decide +kernel
+
+certify_ec TypeIIAlternative from
+  { equation := ⟨0, -1, 0, -53, -133⟩
+    localInvariants := some [{
+      prime := 5, tamagawaNumber := some 1
+      tamagawaTypeIIShift := some ⟨7, 0, 0⟩ }] }
+
+example : (TypeIIAlternative.certificate.arithmetic.tamagawa.map (·.value)) = [1] := by
+  decide +kernel
+
+certify_ec TypeIIAbsent from_json_string
+  r#"{"ainvs":[0,-1,0,-53,-133],"prime":5,"tamagawa_number":1}"#
+
+example : TypeIIAbsent.certificate.arithmetic.tamagawa.isEmpty = true := by decide +kernel
 
 certify_ec OtherAdditive98a5 from_json_string
   r#"{"ainvs":[1,1,0,-25,-111],"minimality":[2,2,7,7,7,7,7,7,7],
@@ -484,6 +498,18 @@ run_cmd do
     (← `(certify_ec WrongTypeIITamagawaTwo from_json_string
       r#"{"ainvs":[0,-1,0,-53,-133],"prime":5,"tamagawa_number":2,
           "tamagawa_type_ii":{"r":2,"s":0,"t":0}}"#))
+  invariantRejected `InvalidTypeIIShift
+    (← `(certify_ec InvalidTypeIIShift from_json_string
+      r#"{"ainvs":[0,-1,0,-53,-133],"prime":5,"tamagawa_number":1,
+          "tamagawa_type_ii":{"r":0,"s":0,"t":0}}"#))
+  invariantRejected `UnpairedTypeIIEvidence
+    (← `(certify_ec UnpairedTypeIIEvidence from_json_string
+      r#"{"ainvs":[0,-1,0,-53,-133],"prime":5,"tamagawa_type_ii":{"r":2,"s":0,"t":0}}"#))
+  invariantRejected `ConflictingTypeIIEvidence
+    (← `(certify_ec ConflictingTypeIIEvidence from_json_string
+      r#"{"ainvs":[0,-1,0,-53,-133],"prime":5,"tamagawa_number":1,
+          "tamagawa_type_ii":{"r":2,"s":0,"t":0},
+          "tamagawa_type_iii":{"r":2,"s":0,"t":0}}"#))
   invariantRejected `WrongTypeIIITamagawaOne
     (← `(certify_ec WrongTypeIIITamagawaOne from_json_string
       r#"{"ainvs":[1,-1,0,-2,-1],"minimality":[7,7,7],"prime":7,

@@ -477,8 +477,8 @@ modularity. [TauCeti backlog TC-17](../TAUCETI_BACKLOG.md#tc-17--geometric-cm-an
 
 This section specifies the evidence boundary for each local Kodaira family.
 The installed baseline is `main` at inspected revision
-[`6f67160`](https://github.com/khwilson/verified-lcalc/commit/6f671604d0162f5cf5ff14f75b42846e08a0802b). This table also records the type II, III
-and IV checks implemented in this checkout. Planned rows describe future evidence
+[`f58e9fe`](https://github.com/khwilson/verified-lcalc/commit/f58e9fe776fc663db4f8e89894c81e3bfecd2a79). This table also records the type II
+check implemented in this checkout. Planned rows describe future evidence
 contracts. The verifier consumes supplied evidence, validates it in
 Lean, and rejects a supplied local factor when its evidence is malformed or
 contradicts the curve. Omitting evidence leaves that factor unavailable.
