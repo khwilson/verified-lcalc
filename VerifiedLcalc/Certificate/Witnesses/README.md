@@ -6,6 +6,10 @@ The index covers **85 distinct column names** across **101 table-qualified colum
 
 All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **85 of 85 distinct names** and **101 of 101 table-qualified columns** in the stated cases. The extension torsion check requires a supplied full invariant-factor proof. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
 
+The witness modules hold structures with documented data and proof fields,
+and data-only inductives with documented constructors. Companion modules
+hold helper functions, computations and theorem proofs.
+
 ## How a field reaches the certificate
 
 To trace a database column in Lean, start with its table and column name in the

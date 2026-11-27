@@ -427,7 +427,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-31 · Intrinsic Serre invariants",
-        "line": 828
+        "line": 836
       },
       "dependencies": [
         "milestone:G1"
@@ -938,7 +938,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-31 · Intrinsic Serre invariants",
-        "line": 828
+        "line": 836
       },
       "dependencies": [
         "milestone:G1"
@@ -1032,7 +1032,7 @@
           "declaration": "FixtureFieldCoverage.dirichlet112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 168
+            "line": 175
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "List.map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1))\n    (List.range 20) =\n  [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0]",
@@ -1180,7 +1180,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 168,
+            "proof_line": 175,
             "scope": "All 20 stored coefficients for the 112.a2 equation after a₀.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "List.map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1))\n    (List.range 20) =\n  [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0]",
@@ -1278,7 +1278,7 @@
           "declaration": "FixtureFieldCoverage.primeCoefficients112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 174
+            "line": 181
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "have facts := LMFDB.C112a2.certificate.arithmetic.primeCoefficients.get ⋯;\n(↑facts).length = 25 ∧\n  ∀ (p : ℕ) (a : ℤ),\n    (p, a) ∈ ↑facts → (LMFDB.C112a2.curve.baseChange ℚ).LFunction p = a",
@@ -1414,7 +1414,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 174,
+            "proof_line": 181,
             "scope": "All 25 stored prime-indexed coefficients for the 112.a2 equation.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "have facts := LMFDB.C112a2.certificate.arithmetic.primeCoefficients.get ⋯;\n(↑facts).length = 25 ∧\n  ∀ (p : ℕ) (a : ℤ),\n    (p, a) ∈ ↑facts → (LMFDB.C112a2.curve.baseChange ℚ).LFunction p = a",
@@ -2796,7 +2796,7 @@
           "example_status": "unsupported"
         }
       },
-      "status": "pending_review",
+      "status": "sampled",
       "actualLean": [
         {
           "declaration": "VerifiedLcalc.EllipticWitness.traceHash",
@@ -3731,7 +3731,7 @@
           "declaration": "FixtureFieldCoverage.abcQuality112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 190
+            "line": 197
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "|(LMFDB.C112a2.curve.baseChange ℚ).abcQuality LMFDB.C112a2.abc_quality_defined -\n      10348177494302118 / 10000000000000000| ≤\n  1 / 1000000000000000",
@@ -3878,7 +3878,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 190,
+            "proof_line": 197,
             "scope": "Absolute error enclosure for the specified decimal.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "|(LMFDB.C112a2.curve.baseChange ℚ).abcQuality LMFDB.C112a2.abc_quality_defined -\n      10348177494302118 / 10000000000000000| ≤\n  1 / 1000000000000000",
@@ -5166,7 +5166,7 @@
           "declaration": "FixtureFieldCoverage.rank112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 229
+            "line": 236
           },
           "fixture": "data/witnesses/112a2.json",
           "statement": "analyticOrderAt\n    (Modularity.modularWitness LMFDB.C112a2.curve\n        LMFDB.C112a2.nonsingular).formL\n    1 =\n  1",
@@ -5340,7 +5340,7 @@
             "project_axioms": [
               "VerifiedLcalc.Assumptions.ellipticModularity"
             ],
-            "proof_line": 229,
+            "proof_line": 236,
             "scope": "Exact order at 1 of the modular realization.",
             "source": "data/witnesses/112a2.json",
             "statement": "analyticOrderAt\n    (Modularity.modularWitness LMFDB.C112a2.curve\n        LMFDB.C112a2.nonsingular).formL\n    1 =\n  1",
@@ -6461,7 +6461,7 @@
           "declaration": "FixtureFieldCoverage.conductor112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 157
+            "line": 164
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "(Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level =\n  112",
@@ -6635,7 +6635,7 @@
             "project_axioms": [
               "VerifiedLcalc.Assumptions.ellipticModularity"
             ],
-            "proof_line": 157,
+            "proof_line": 164,
             "scope": "Level of the modular realization.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "(Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level =\n  112",
@@ -12736,7 +12736,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-31 · Intrinsic Serre invariants",
-        "line": 828
+        "line": 836
       },
       "stages": {
         "roadmap": {
@@ -12744,7 +12744,7 @@
           "scope": "TC-31 · Intrinsic Serre invariants",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 828
+            "line": 836
           }
         },
         "lean": {
@@ -14403,7 +14403,7 @@
           "declaration": "FixtureFieldCoverage.torsion112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 211
+            "line": 218
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "Nat.card\n    ↥(AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =\n  2",
@@ -14551,7 +14551,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 211,
+            "proof_line": 218,
             "scope": "Exact rational torsion cardinality.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "Nat.card\n    ↥(AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =\n  2",
@@ -14663,7 +14663,7 @@
           "declaration": "FixtureFieldCoverage.torsionPrimeSupport112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 182
+            "line": 189
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∀ (p : ℕ),\n  p ∈ [2] ↔\n    Nat.Prime p ∧\n      p ∣\n        Nat.card\n          ↥(AddCommGroup.torsion\n              (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point)",
@@ -14822,7 +14822,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 182,
+            "proof_line": 189,
             "scope": "Exact prime support [2] of the full rational torsion order.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "∀ (p : ℕ),\n  p ∈ [2] ↔\n    Nat.Prime p ∧\n      p ∣\n        Nat.card\n          ↥(AddCommGroup.torsion\n              (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point)",
@@ -14934,7 +14934,7 @@
           "declaration": "FixtureFieldCoverage.torsionStructure112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 216
+            "line": 223
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∃ e, ↑(e 1) = LMFDB.C112a2.torsion_generators.point ⟨0, ⋯⟩",
@@ -15093,7 +15093,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 216,
+            "proof_line": 223,
             "scope": "Full rational cyclic group with the submitted generator.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "∃ e, ↑(e 1) = LMFDB.C112a2.torsion_generators.point ⟨0, ⋯⟩",
@@ -18132,7 +18132,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.conductorValuation",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 178,
+          "line": 185,
           "role": "claim",
           "route": "ec_localdata.conductor_valuation#route:0"
         },
@@ -18189,7 +18189,7 @@
           "declaration": "FixtureFieldCoverage.conductorValuation112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 162
+            "line": 169
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "(Modularity.modularWitness LMFDB.C112a2.curve\n          LMFDB.C112a2.nonsingular).level.factorization\n    2 =\n  4",
@@ -18223,7 +18223,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 178,
+              "line": 185,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.conductorValuation"
             }
@@ -18280,7 +18280,7 @@
               "role": "claim"
             },
             {
-              "line": 178,
+              "line": 185,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.conductorValuation",
               "role": "claim"
@@ -18345,7 +18345,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 178,
+              "line": 185,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.conductorValuation"
             }
@@ -18402,7 +18402,7 @@
               "role": "claim"
             },
             {
-              "line": 178,
+              "line": 185,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.conductorValuation",
               "role": "claim"
@@ -18523,7 +18523,7 @@
             "project_axioms": [
               "VerifiedLcalc.Assumptions.ellipticModularity"
             ],
-            "proof_line": 162,
+            "proof_line": 169,
             "scope": "Exponent of 2 in the level of the modular realization.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "(Modularity.modularWitness LMFDB.C112a2.curve\n          LMFDB.C112a2.nonsingular).level.factorization\n    2 =\n  4",
@@ -18599,7 +18599,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.discriminantValuation",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 176,
+          "line": 183,
           "role": "claim",
           "route": "ec_localdata.discriminant_valuation#route:0"
         },
@@ -18667,7 +18667,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 176,
+              "line": 183,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.discriminantValuation"
             }
@@ -18719,7 +18719,7 @@
               "role": "claim"
             },
             {
-              "line": 176,
+              "line": 183,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.discriminantValuation",
               "role": "claim"
@@ -18778,7 +18778,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 176,
+              "line": 183,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.discriminantValuation"
             }
@@ -18830,7 +18830,7 @@
               "role": "claim"
             },
             {
-              "line": 176,
+              "line": 183,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.discriminantValuation",
               "role": "claim"
@@ -19002,7 +19002,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 180,
+          "line": 187,
           "role": "claim",
           "route": "ec_localdata.j_denominator_valuation#route:0"
         },
@@ -19070,7 +19070,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 180,
+              "line": 187,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation"
             }
@@ -19122,7 +19122,7 @@
               "role": "claim"
             },
             {
-              "line": 180,
+              "line": 187,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation",
               "role": "claim"
@@ -19181,7 +19181,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 180,
+              "line": 187,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation"
             }
@@ -19233,7 +19233,7 @@
               "role": "claim"
             },
             {
-              "line": 180,
+              "line": 187,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation",
               "role": "claim"
@@ -19405,7 +19405,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 186,
+          "line": 193,
           "role": "claim",
           "route": "ec_localdata.kodaira_symbol#route:0"
         },
@@ -19473,7 +19473,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 186,
+              "line": 193,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol"
             }
@@ -19525,7 +19525,7 @@
               "role": "claim"
             },
             {
-              "line": 186,
+              "line": 193,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol",
               "role": "claim"
@@ -19584,7 +19584,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 186,
+              "line": 193,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol"
             }
@@ -19636,7 +19636,7 @@
               "role": "claim"
             },
             {
-              "line": 186,
+              "line": 193,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol",
               "role": "claim"
@@ -20065,7 +20065,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.prime",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 174,
+          "line": 181,
           "role": "claim",
           "route": "ec_localdata.prime#route:0"
         },
@@ -20133,7 +20133,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 174,
+              "line": 181,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.prime"
             }
@@ -20185,7 +20185,7 @@
               "role": "claim"
             },
             {
-              "line": 174,
+              "line": 181,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.prime",
               "role": "claim"
@@ -20244,7 +20244,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 174,
+              "line": 181,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.prime"
             }
@@ -20296,7 +20296,7 @@
               "role": "claim"
             },
             {
-              "line": 174,
+              "line": 181,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.prime",
               "role": "claim"
@@ -20468,7 +20468,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.reductionType",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 182,
+          "line": 189,
           "role": "claim",
           "route": "ec_localdata.reduction_type#route:0"
         },
@@ -20536,7 +20536,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 182,
+              "line": 189,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.reductionType"
             }
@@ -20588,7 +20588,7 @@
               "role": "claim"
             },
             {
-              "line": 182,
+              "line": 189,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.reductionType",
               "role": "claim"
@@ -20647,7 +20647,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 182,
+              "line": 189,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.reductionType"
             }
@@ -20699,7 +20699,7 @@
               "role": "claim"
             },
             {
-              "line": 182,
+              "line": 189,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.reductionType",
               "role": "claim"
@@ -20871,7 +20871,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.rootNumber",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 188,
+          "line": 195,
           "role": "claim",
           "route": "ec_localdata.root_number#route:0"
         },
@@ -20946,7 +20946,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 188,
+              "line": 195,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.rootNumber"
             }
@@ -21003,7 +21003,7 @@
               "role": "claim"
             },
             {
-              "line": 188,
+              "line": 195,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.rootNumber",
               "role": "claim"
@@ -21068,7 +21068,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 188,
+              "line": 195,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.rootNumber"
             }
@@ -21125,7 +21125,7 @@
               "role": "claim"
             },
             {
-              "line": 188,
+              "line": 195,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.rootNumber",
               "role": "claim"
@@ -21303,21 +21303,21 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 184,
+          "line": 191,
           "role": "claim",
           "route": "ec_localdata.tamagawa_number#route:0"
         },
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 190,
+          "line": 197,
           "role": "claim",
           "route": "ec_localdata.tamagawa_number#route:0"
         },
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 192,
+          "line": 199,
           "role": "claim",
           "route": "ec_localdata.tamagawa_number#route:0"
         },
@@ -21371,17 +21371,17 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 184,
+              "line": 191,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber"
             },
             {
-              "line": 190,
+              "line": 197,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift"
             },
             {
-              "line": 192,
+              "line": 199,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence"
             }
@@ -21422,19 +21422,19 @@
               "role": "claim"
             },
             {
-              "line": 184,
+              "line": 191,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber",
               "role": "claim"
             },
             {
-              "line": 190,
+              "line": 197,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift",
               "role": "claim"
             },
             {
-              "line": 192,
+              "line": 199,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence",
               "role": "claim"
@@ -21481,17 +21481,17 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 184,
+              "line": 191,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber"
             },
             {
-              "line": 190,
+              "line": 197,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift"
             },
             {
-              "line": 192,
+              "line": 199,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence"
             }
@@ -21532,19 +21532,19 @@
               "role": "claim"
             },
             {
-              "line": 184,
+              "line": 191,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber",
               "role": "claim"
             },
             {
-              "line": 190,
+              "line": 197,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift",
               "role": "claim"
             },
             {
-              "line": 192,
+              "line": 199,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence",
               "role": "claim"
@@ -22226,7 +22226,7 @@
           "declaration": "FixtureFieldCoverage.generator112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 196
+            "line": 203
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "(LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation 0 2",
@@ -22362,7 +22362,7 @@
             "curve": "112.a2",
             "extent": "partial",
             "project_axioms": [],
-            "proof_line": 196,
+            "proof_line": 203,
             "scope": "Membership of the supplied point.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "(LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation 0 2",
@@ -22952,7 +22952,7 @@
           "declaration": "FixtureFieldCoverage.generatorCount112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 200
+            "line": 207
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "LMFDB.C112a2.generators.coordinates.length = 1",
@@ -23100,7 +23100,7 @@
             "curve": "112.a2",
             "extent": "partial",
             "project_axioms": [],
-            "proof_line": 200,
+            "proof_line": 207,
             "scope": "Length of the checked point list.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "LMFDB.C112a2.generators.coordinates.length = 1",
@@ -24388,7 +24388,7 @@
           "declaration": "FixtureFieldCoverage.torsionGenerator112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 204
+            "line": 211
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "LMFDB.C112a2.torsion_generators.coordinates = [(-2, 0)] ∧\n  AddSubgroup.closure (Set.range LMFDB.C112a2.torsion_generators.point) =\n    AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point",
@@ -24524,7 +24524,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 204,
+            "proof_line": 211,
             "scope": "The list [(-2, 0)] generates the full rational torsion subgroup.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "LMFDB.C112a2.torsion_generators.coordinates = [(-2, 0)] ∧\n  AddSubgroup.closure (Set.range LMFDB.C112a2.torsion_generators.point) =\n    AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point",
@@ -24629,7 +24629,7 @@
           "declaration": "FixtureFieldCoverage.integralFiber112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 223
+            "line": 230
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∀ (y : ℤ),\n  y ∈ LMFDB.C112a2.integral_y_fiber ⟨0, ⋯⟩ ↔\n    LMFDB.C112a2.curve.toAffine.Equation (-2) y",
@@ -24776,7 +24776,7 @@
             "curve": "112.a2",
             "extent": "partial",
             "project_axioms": [],
-            "proof_line": 223,
+            "proof_line": 230,
             "scope": "Complete integral fiber at x = -2.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "∀ (y : ℤ),\n  y ∈ LMFDB.C112a2.integral_y_fiber ⟨0, ⋯⟩ ↔\n    LMFDB.C112a2.curve.toAffine.Equation (-2) y",
@@ -25437,7 +25437,7 @@
         {
           "declaration": "VerifiedLcalc.PadicRegulatorClaim.p",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 111,
+          "line": 110,
           "role": "claim",
           "route": "ec_padic.p#route:0"
         },
@@ -25512,7 +25512,7 @@
               "name": "VerifiedLcalc.EllipticWitness.padicRegulator"
             },
             {
-              "line": 111,
+              "line": 110,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.p"
             }
@@ -25569,7 +25569,7 @@
               "role": "claim"
             },
             {
-              "line": 111,
+              "line": 110,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.p",
               "role": "claim"
@@ -25634,7 +25634,7 @@
               "name": "VerifiedLcalc.EllipticWitness.padicRegulator"
             },
             {
-              "line": 111,
+              "line": 110,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.p"
             }
@@ -25691,7 +25691,7 @@
               "role": "claim"
             },
             {
-              "line": 111,
+              "line": 110,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.p",
               "role": "claim"
@@ -26105,7 +26105,7 @@
         {
           "declaration": "VerifiedLcalc.PadicRegulatorClaim.prec",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 113,
+          "line": 112,
           "role": "claim",
           "route": "ec_padic.prec#route:0"
         },
@@ -26180,7 +26180,7 @@
               "name": "VerifiedLcalc.EllipticWitness.padicRegulator"
             },
             {
-              "line": 113,
+              "line": 112,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.prec"
             }
@@ -26237,7 +26237,7 @@
               "role": "claim"
             },
             {
-              "line": 113,
+              "line": 112,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.prec",
               "role": "claim"
@@ -26302,7 +26302,7 @@
               "name": "VerifiedLcalc.EllipticWitness.padicRegulator"
             },
             {
-              "line": 113,
+              "line": 112,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.prec"
             }
@@ -26359,7 +26359,7 @@
               "role": "claim"
             },
             {
-              "line": 113,
+              "line": 112,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.prec",
               "role": "claim"
@@ -26773,7 +26773,7 @@
         {
           "declaration": "VerifiedLcalc.PadicRegulatorClaim.unit",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 117,
+          "line": 116,
           "role": "claim",
           "route": "ec_padic.unit#route:0"
         },
@@ -26855,7 +26855,7 @@
               "name": "VerifiedLcalc.EllipticWitness.padicRegulator"
             },
             {
-              "line": 117,
+              "line": 116,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.unit"
             }
@@ -26917,7 +26917,7 @@
               "role": "claim"
             },
             {
-              "line": 117,
+              "line": 116,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.unit",
               "role": "claim"
@@ -26988,7 +26988,7 @@
               "name": "VerifiedLcalc.EllipticWitness.padicRegulator"
             },
             {
-              "line": 117,
+              "line": 116,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.unit"
             }
@@ -27050,7 +27050,7 @@
               "role": "claim"
             },
             {
-              "line": 117,
+              "line": 116,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.unit",
               "role": "claim"
@@ -27470,7 +27470,7 @@
         {
           "declaration": "VerifiedLcalc.PadicRegulatorClaim.val",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 115,
+          "line": 114,
           "role": "claim",
           "route": "ec_padic.val#route:0"
         },
@@ -27531,7 +27531,7 @@
               "name": "VerifiedLcalc.EllipticWitness.padicRegulator"
             },
             {
-              "line": 115,
+              "line": 114,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.val"
             }
@@ -27578,7 +27578,7 @@
               "role": "claim"
             },
             {
-              "line": 115,
+              "line": 114,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.val",
               "role": "claim"
@@ -27631,7 +27631,7 @@
               "name": "VerifiedLcalc.EllipticWitness.padicRegulator"
             },
             {
-              "line": 115,
+              "line": 114,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.val"
             }
@@ -27678,7 +27678,7 @@
               "role": "claim"
             },
             {
-              "line": 115,
+              "line": 114,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.PadicRegulatorClaim.val",
               "role": "claim"
@@ -28080,7 +28080,7 @@
         {
           "declaration": "VerifiedLcalc.TorsionGrowthFieldClaim.degree",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 89,
+          "line": 88,
           "role": "claim",
           "route": "ec_torsion_growth.degree#route:0"
         },
@@ -28135,7 +28135,7 @@
               "name": "VerifiedLcalc.EllipticWitness.torsionGrowthField"
             },
             {
-              "line": 89,
+              "line": 88,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.TorsionGrowthFieldClaim.degree"
             }
@@ -28177,7 +28177,7 @@
               "role": "claim"
             },
             {
-              "line": 89,
+              "line": 88,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.TorsionGrowthFieldClaim.degree",
               "role": "claim"
@@ -28599,7 +28599,7 @@
         {
           "declaration": "VerifiedLcalc.TorsionGrowthFieldClaim.coefficients",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 87,
+          "line": 86,
           "role": "claim",
           "route": "ec_torsion_growth.field#route:0"
         },
@@ -28668,7 +28668,7 @@
               "name": "VerifiedLcalc.EllipticWitness.torsionGrowthField"
             },
             {
-              "line": 87,
+              "line": 86,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.TorsionGrowthFieldClaim.coefficients"
             }
@@ -28720,7 +28720,7 @@
               "role": "claim"
             },
             {
-              "line": 87,
+              "line": 86,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.TorsionGrowthFieldClaim.coefficients",
               "role": "claim"
@@ -34066,7 +34066,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.prime",
       "declaration": "VerifiedLcalc.LocalReductionClaim.prime",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 174,
+      "line": 181,
       "dependency_layer": 0
     },
     {
@@ -34102,7 +34102,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.discriminantValuation",
       "declaration": "VerifiedLcalc.LocalReductionClaim.discriminantValuation",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 176,
+      "line": 183,
       "dependency_layer": 0
     },
     {
@@ -34111,7 +34111,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation",
       "declaration": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 180,
+      "line": 187,
       "dependency_layer": 0
     },
     {
@@ -34120,7 +34120,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.reductionType",
       "declaration": "VerifiedLcalc.LocalReductionClaim.reductionType",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 182,
+      "line": 189,
       "dependency_layer": 0
     },
     {
@@ -34129,7 +34129,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.conductorValuation",
       "declaration": "VerifiedLcalc.LocalReductionClaim.conductorValuation",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 178,
+      "line": 185,
       "dependency_layer": 0
     },
     {
@@ -34156,7 +34156,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol",
       "declaration": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 186,
+      "line": 193,
       "dependency_layer": 0
     },
     {
@@ -34192,7 +34192,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber",
       "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 184,
+      "line": 191,
       "dependency_layer": 0
     },
     {
@@ -34201,7 +34201,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift",
       "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 190,
+      "line": 197,
       "dependency_layer": 0
     },
     {
@@ -34210,7 +34210,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence",
       "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 192,
+      "line": 199,
       "dependency_layer": 0
     },
     {
@@ -34246,7 +34246,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.rootNumber",
       "declaration": "VerifiedLcalc.LocalReductionClaim.rootNumber",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 188,
+      "line": 195,
       "dependency_layer": 0
     },
     {
@@ -34336,7 +34336,7 @@
       "label": "VerifiedLcalc.PadicRegulatorClaim.p",
       "declaration": "VerifiedLcalc.PadicRegulatorClaim.p",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 111,
+      "line": 110,
       "dependency_layer": 0
     },
     {
@@ -34372,7 +34372,7 @@
       "label": "VerifiedLcalc.PadicRegulatorClaim.prec",
       "declaration": "VerifiedLcalc.PadicRegulatorClaim.prec",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 113,
+      "line": 112,
       "dependency_layer": 0
     },
     {
@@ -34408,7 +34408,7 @@
       "label": "VerifiedLcalc.PadicRegulatorClaim.val",
       "declaration": "VerifiedLcalc.PadicRegulatorClaim.val",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 115,
+      "line": 114,
       "dependency_layer": 0
     },
     {
@@ -34426,7 +34426,7 @@
       "label": "VerifiedLcalc.PadicRegulatorClaim.unit",
       "declaration": "VerifiedLcalc.PadicRegulatorClaim.unit",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 117,
+      "line": 116,
       "dependency_layer": 0
     },
     {
@@ -34462,7 +34462,7 @@
       "label": "VerifiedLcalc.TorsionGrowthFieldClaim.coefficients",
       "declaration": "VerifiedLcalc.TorsionGrowthFieldClaim.coefficients",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 87,
+      "line": 86,
       "dependency_layer": 0
     },
     {
@@ -34516,7 +34516,7 @@
       "label": "VerifiedLcalc.TorsionGrowthFieldClaim.degree",
       "declaration": "VerifiedLcalc.TorsionGrowthFieldClaim.degree",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 89,
+      "line": 88,
       "dependency_layer": 0
     },
     {
@@ -38533,8 +38533,8 @@
   ],
   "summary": {
     "catalogue_status": {
-      "pending_review": 73,
-      "sampled": 28
+      "pending_review": 72,
+      "sampled": 29
     },
     "native_table_status": {
       "present": 101

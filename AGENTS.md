@@ -61,12 +61,12 @@
   theorems. Add the raw field to the certificate coverage inventory and test
   an imported consumer. Use optional fields for absent evidence and a
   membership or bound type for partial evidence.
-- Declare public certificate witness structures in
-  `VerifiedLcalc/Certificate/Witnesses/`. Re-export the ordinary structures from
+- Declare public certificate witness structures and data-only inductives in
+  `VerifiedLcalc/Certificate/Witnesses/`. Re-export the ordinary witness types from
   `VerifiedLcalc.Certificate.Witnesses` and keep witnesses that mention an
-  opt-in assumption in separately importable modules. These files contain structures with
-  documented data and proof fields. Put predicates, constructors implemented
-  as functions, computations, and theorem proofs in companion modules outside
+  opt-in assumption in separately importable modules. Document structure data
+  and proof fields and the constructors of inductives. Put predicates, helper
+  functions, computations, and theorem proofs in companion modules outside
   the witness directory. Reuse upstream Mathlib and TauCeti mathematical
   objects first; add only narrowly justified local specifications where the
   upstream API lacks the required encoding. Keep proof-only imports ordinary

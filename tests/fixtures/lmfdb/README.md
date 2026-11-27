@@ -28,6 +28,12 @@ for the isogeny class, in addition to the five tables in
 [`112.a2-joined.json`](112.a2-joined.json). The latter is the legacy selected
 projection.
 
+[`37.a1-trace-hash-source.json`](37.a1-trace-hash-source.json) contains the
+equation and trace hash recorded on row 77 of the pinned
+`curvedata-first-1200.txt` source snapshot, plus the conductor, minimality,
+and local-data inputs used by the checker. It is the exact JSON input used by
+the imported Lean fixture and by the coverage source link.
+
 The arithmetic fixture uses the full
 `ec_classdata.anlist` and `ec_classdata.aplist` for 112.a, `ec_curvedata.torsion_primes`,
 `ec_curvedata.potential_good_reduction` and `ec_curvedata.semistable` for 112.a2, and

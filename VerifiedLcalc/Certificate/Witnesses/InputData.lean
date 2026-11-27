@@ -6,7 +6,6 @@ Authors: Kevin Wilson
 module
 
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic
-public import VerifiedLcalc.Certificate.Support.TamagawaResidue
 public import VerifiedLcalc.Certificate.Support.WeierstrassInstances
 
 /-! # Shared input records for elliptic-curve certificates
@@ -152,6 +151,14 @@ structure TamagawaTypeIIIShift where
   s : Int
   /-- Translation in the y-coordinate. -/
   t : Int
+  deriving Repr, DecidableEq
+
+/-- Supplied residue evidence for the type IV component-group factor. -/
+inductive TypeIVTamagawaResidue where
+  /-- A specific residue representative at which the terminal quadratic vanishes. -/
+  | root (value : Nat)
+  /-- The supplied Euler-power value certifying the quadratic is nonsplit at an odd prime. -/
+  | nonsplitEulerPower (value : Nat)
   deriving Repr, DecidableEq
 
 /-- Exact unit-scale translation and residue evidence for a type IV Tamagawa claim.
