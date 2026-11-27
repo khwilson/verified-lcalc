@@ -81,7 +81,7 @@ run_cmd do
     let some idx := env.getModuleIdxFor? decl | throwError "missing witness {decl}"
     let mod := modules[idx.toNat]!
     unless root.isPrefixOf mod do
-      throwError "{decl} is defined in {mod}; its structure belongs in {root}"
+      throwError "{decl} is defined in {mod}; its witness type belongs in {root}"
   -- Downstream readers can find each family in its mathematical subject module.
   for (decl, subject) in [(``VerifiedLcalc.LocalTamagawaFact, `FinitePrimes),
       (``VerifiedLcalc.NonmaxPrimeSupportFact, `FinitePrimes),
@@ -156,5 +156,5 @@ run_cmd do
           ``Parser.Command.«variable», ``Parser.Command.«universe», ``Parser.Command.eoi]
           : List Name).contains cmd.getKind then
         let line := source.toFileMap.toPosition (cmd.getPos?.getD 0)
-        throwError "{path}:{line.line}: only structures and data-only inductives belong in witness modules"
+        throwError "{path}:{line.line}: expected a structure or data-only inductive"
     if dataTypes == 0 then throwError "{path} declares no witness data types"
