@@ -107,6 +107,18 @@ theorem tamagawa17a2 :
     (LMFDB.C17a2.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 17) = 2 := by
   exact (LMFDB.C17a2.certificate.arithmetic.tamagawa[0]'(by decide +kernel)).correct
 
+/-- The imported split 11.a2 fixture checks the I₅ factor using its supplied root. -/
+theorem tamagawa11a2 :
+    letI : Fact (Nat.Prime 11) := ⟨by decide +kernel⟩
+    (LMFDB.C11a2.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 11) = 5 :=
+  (LMFDB.C11a2.certificate.arithmetic.tamagawa[0]'(by decide +kernel)).correct
+
+/-- The imported nonsplit 26.b1 fixture checks the I₇ factor using Euler evidence. -/
+theorem tamagawa26b1 :
+    letI : Fact (Nat.Prime 13) := ⟨by decide +kernel⟩
+    (LMFDB.C26b1.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 13) = 1 :=
+  (LMFDB.C26b1.certificate.arithmetic.tamagawa[1]'(by decide +kernel)).correct
+
 /-- The imported 49.a4 fixture certifies its type III Tamagawa factor at 7. -/
 theorem tamagawa49a4 :
     letI : Fact (Nat.Prime 7) := ⟨by decide +kernel⟩
@@ -306,6 +318,10 @@ private def samples : List Sample :=
       .unconditional, false⟩,
    ⟨"ec_localdata", "tamagawa_number", "17.a2", ``tamagawa17a2,
       "Intrinsic local I₂ factor at 17.", .unconditional, false⟩,
+   ⟨"ec_localdata", "tamagawa_number", "11.a2", ``tamagawa11a2,
+      "Intrinsic split I₅ factor at 11 with supplied node root.", .unconditional, false⟩,
+   ⟨"ec_localdata", "tamagawa_number", "26.b1", ``tamagawa26b1,
+      "Intrinsic nonsplit I₇ factor at 13 with Euler evidence.", .unconditional, false⟩,
    ⟨"ec_localdata", "tamagawa_number", "49.a4", ``tamagawa49a4,
       "Intrinsic local type III factor at 7.", .unconditional, false⟩,
    ⟨"ec_localdata", "tamagawa_number", "50.a3", ``tamagawa50a3,
@@ -369,6 +385,8 @@ private def auditSample (sample : Sample) : CommandElabM Json := do
     else if sample.field == "trace_hash" && sample.curve == "37.a1" then
       "tests/fixtures/lmfdb/37.a1-trace-hash-source.json"
     else if sample.curve == "17.a2" then "tests/fixtures/lmfdb/17.a2-tamagawa.json"
+    else if sample.curve == "11.a2" || sample.curve == "26.b1" then
+      s!"tests/fixtures/lmfdb/{sample.curve}-tamagawa.json"
     else if sample.curve == "49.a4" then "tests/fixtures/lmfdb/49.a4-tamagawa.json"
     else if sample.curve == "50.a1" || sample.curve == "50.a3" then
       s!"tests/fixtures/lmfdb/{sample.curve}-tamagawa.json"

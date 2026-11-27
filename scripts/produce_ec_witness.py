@@ -93,6 +93,7 @@ GENERATED_EVIDENCE = EVIDENCE_PROOFS.keys() | {
     "analytic_witness",
     "special_value_evidence",
 }
+TAMAGAWA_SPLITTING_FIELD = "tamagawa_splitting"
 
 
 def unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -259,10 +260,13 @@ def build_input(
             sources.setdefault("conductor", []).append(
                 f"{local_source}[{prime}].conductor"
             )
-        local_rows.append(
-            {key: row[key] for key in LOCAL_PROOFS if row.get(key) is not None}
-        )
+        local_row = {key: row[key] for key in LOCAL_PROOFS if row.get(key) is not None}
+        if row.get(TAMAGAWA_SPLITTING_FIELD) is not None:
+            local_row[TAMAGAWA_SPLITTING_FIELD] = row[TAMAGAWA_SPLITTING_FIELD]
+        local_rows.append(local_row)
         for field, value in row.items():
+            if field == TAMAGAWA_SPLITTING_FIELD:
+                continue
             if (
                 field not in JOIN_METADATA
                 and field != "conductor"
@@ -444,7 +448,12 @@ def report_fields(
     for row in witness.get("local_invariants", []):
         prime = row["prime"]
         for field, value in row.items():
-            if field in {"tamagawa_type_ii", "tamagawa_type_iii", "tamagawa_type_iv"}:
+            if field in {
+                "tamagawa_type_ii",
+                "tamagawa_type_iii",
+                "tamagawa_type_iv",
+                TAMAGAWA_SPLITTING_FIELD,
+            }:
                 continue
             key = f"local_invariants.{prime}.{field}"
             if not flags.get(f"WitnessCheck.{LOCAL_PROOFS[field]}"):
@@ -454,7 +463,7 @@ def report_fields(
             elif field == "tamagawa_number" and not flags.get(f"tamagawa.{prime}"):
                 fields[key] = result(
                     "unsupported",
-                    "Exact Tamagawa checker supports good, I₁, I₂ or supplied tame II/III/IV evidence",
+                    "Exact Tamagawa checker supports good, I₁/I₂, supplied odd-prime Iₙ splitting evidence, or supplied tame II/III/IV evidence",
                 )
             elif field == "kodaira_symbol" and not flags.get(f"kodaira.{prime}"):
                 fields[key] = result(
@@ -561,6 +570,7 @@ def produce(source: Path, output: Path, report: dict[str, Any]) -> None:
                             "tamagawa_type_ii",
                             "tamagawa_type_iii",
                             "tamagawa_type_iv",
+                            TAMAGAWA_SPLITTING_FIELD,
                         }
                         or key in native_row
                     }

@@ -186,6 +186,31 @@ example : (GoodTamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 3)
     (by decide +kernel) 1 rfl
   exact h (by decide +kernel)
 
+certify_ec SplitI5Tamagawa from_json_string
+  r#"{"ainvs":[0,-1,1,-10,-20],"local_invariants":[
+      {"prime":11,"tamagawa_number":5,"tamagawa_splitting":{"root":5}}]}"#
+
+certify_ec NonsplitI7Tamagawa from_json_string
+  r#"{"ainvs":[1,-1,1,-213,-1257],"local_invariants":[
+      {"prime":13,"tamagawa_number":1,
+       "tamagawa_splitting":{"nonsplit_euler_power":12}}]}"#
+
+example : (SplitI5Tamagawa.certificate.arithmetic.tamagawa.map
+    LocalTamagawaFact.value) = [5] := by decide +kernel
+
+example : (NonsplitI7Tamagawa.certificate.arithmetic.tamagawa.map
+    LocalTamagawaFact.value) = [1] := by decide +kernel
+
+example :
+    letI : Fact (Nat.Prime 11) := ⟨by decide +kernel⟩
+    (SplitI5Tamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 11) = 5 := by
+  exact (SplitI5Tamagawa.certificate.arithmetic.tamagawa[0]'(by decide +kernel)).correct
+
+example :
+    letI : Fact (Nat.Prime 13) := ⟨by decide +kernel⟩
+    (NonsplitI7Tamagawa.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 13) = 1 := by
+  exact (NonsplitI7Tamagawa.certificate.arithmetic.tamagawa[0]'(by decide +kernel)).correct
+
 certify_ec TypeIII49a4 from_json "fixtures/lmfdb/49.a4-tamagawa.json"
 
 example :
@@ -288,10 +313,9 @@ example : OtherAdditive98a5.certificate.arithmetic.tamagawa.isEmpty = true := by
   decide +kernel
 
 /--
-info: TamagawaOutsideScope: Tamagawa claims outside good, I₁, I₂ or supported tame II/III/IV reduction are unverified.
+info: TamagawaOutsideScope: Some Tamagawa factors lack supported evidence.
 ---
-info: Certified TamagawaOutsideScope.ap_correct and TamagawaOutsideScope.point_integral
-for the supplied lists
+info: Certified TamagawaOutsideScope.ap_correct and TamagawaOutsideScope.point_integral for the supplied lists
 -/
 #guard_msgs (whitespace := lax) in
 certify_ec TamagawaOutsideScope from_json_string
@@ -494,6 +518,32 @@ run_cmd do
     r#"{"ainvs":[1,-1,1,-6,-4],"minimality":[17,17],"prime":17,
         "discriminant_valuation":2,"reduction_type":1,"kodaira_symbol":6,
         "tamagawa_number":3}"#))
+  invariantRejected `WrongI5TamagawaFour (← `(certify_ec WrongI5TamagawaFour from_json_string
+    r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],"prime":11,
+        "discriminant_valuation":5,"j_denominator_valuation":5,"reduction_type":1,
+        "kodaira_symbol":9,"tamagawa_number":4,"tamagawa_splitting":{"root":5}}"#))
+  invariantRejected `WrongI7TamagawaTwo (← `(certify_ec WrongI7TamagawaTwo from_json_string
+    r#"{"ainvs":[1,-1,1,-213,-1257],"minimality":[2,13,13,13,13,13,13,13],"prime":13,
+        "discriminant_valuation":7,"j_denominator_valuation":7,"reduction_type":-1,
+        "kodaira_symbol":11,"tamagawa_number":2,
+        "tamagawa_splitting":{"nonsplit_euler_power":12}}"#))
+  invariantRejected `WrongI5TamagawaBadRoot
+    (← `(certify_ec WrongI5TamagawaBadRoot from_json_string
+      r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
+          "prime":11,"discriminant_valuation":5,"reduction_type":1,
+          "kodaira_symbol":9,"tamagawa_number":5,
+          "tamagawa_splitting":{"root":0}}"#))
+  invariantRejected `WrongI7TamagawaBadEulerPower
+    (← `(certify_ec WrongI7TamagawaBadEulerPower from_json_string
+      r#"{"ainvs":[1,-1,1,-213,-1257],"minimality":[2,13,13,13,13,13,13,13],
+          "prime":13,"discriminant_valuation":7,"reduction_type":-1,
+          "kodaira_symbol":11,"tamagawa_number":1,
+          "tamagawa_splitting":{"nonsplit_euler_power":11}}"#))
+  invariantRejected `WrongI5TamagawaEvidenceShape
+    (← `(certify_ec WrongI5TamagawaEvidenceShape from_json_string
+      r#"{"ainvs":[0,-1,1,-10,-20],"minimality":[11,11,11,11,11],
+          "prime":11,"discriminant_valuation":5,"tamagawa_number":5,
+          "tamagawa_splitting":{"root":5,"nonsplit_euler_power":10}}"#))
   invariantRejected `WrongTypeIITamagawaTwo
     (← `(certify_ec WrongTypeIITamagawaTwo from_json_string
       r#"{"ainvs":[0,-1,0,-53,-133],"prime":5,"tamagawa_number":2,
@@ -531,6 +581,11 @@ run_cmd do
     r#"{"ainvs":[1,0,1,-1,-2],"prime":5,"tamagawa_number":3,
         "tamagawa_type_iv":{"r":2,"s":0,"t":1,"residue_root":0,
           "nonsplit_euler_power":4}}"#))
+  invariantRejected `ConflictingTypeIVAndMultiplicativeEvidence
+    (← `(certify_ec ConflictingTypeIVAndMultiplicativeEvidence from_json_string
+      r#"{"ainvs":[1,0,1,-1,-2],"prime":5,"tamagawa_number":3,
+          "tamagawa_type_iv":{"r":2,"s":0,"t":1,"residue_root":0},
+          "tamagawa_splitting":{"root":0}}"#))
   invariantRejected `WrongTypeIIIShift
     (← `(certify_ec WrongTypeIIIShift from_json_string
       r#"{"ainvs":[1,-1,0,-2,-1],"prime":7,"tamagawa_number":2,
@@ -851,7 +906,7 @@ run_cmd do
   cover ``IsogenyEdgeClaim #[`target, `degree, `kernelX]
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
     `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol, `rootNumber,
-    `tamagawaTypeIIShift, `tamagawaTypeIIIShift, `tamagawaTypeIVEvidence]
+    `tamagawaTypeIIShift, `tamagawaTypeIIIShift, `tamagawaTypeIVEvidence, `tamagawaSplitting]
   cover ``TamagawaTypeIIShift #[`r, `s, `t]
   cover ``TamagawaTypeIIIShift #[`r, `s, `t]
   cover ``TamagawaTypeIVEvidence #[`r, `s, `t, `residue]

@@ -242,13 +242,14 @@ theorem LocalReductionClaim.check_correct (row : LocalReductionClaim) (e : Weier
 def LocalReductionClaim.checkTamagawa (row : LocalReductionClaim) (e : WeierstrassCurve ℤ) :
     Bool :=
   ((row.tamagawaTypeIIShift.isNone && row.tamagawaTypeIIIShift.isNone &&
-      row.tamagawaTypeIVEvidence.isNone) || row.tamagawaNumber.isSome) &&
+      row.tamagawaTypeIVEvidence.isNone && row.tamagawaSplitting.isNone) ||
+    row.tamagawaNumber.isSome) &&
     row.tamagawaNumber.all fun n =>
       let expected := tamagawaExpected? e row.prime row.tamagawaTypeIIIShift
-        row.tamagawaTypeIVEvidence row.tamagawaTypeIIShift
+        row.tamagawaTypeIVEvidence row.tamagawaTypeIIShift row.tamagawaSplitting
       (isPrime row.prime && (n != 0) && expected.all (n == ·)) &&
         ((row.tamagawaTypeIIShift.isNone && row.tamagawaTypeIIIShift.isNone &&
-          row.tamagawaTypeIVEvidence.isNone) ||
+          row.tamagawaTypeIVEvidence.isNone && row.tamagawaSplitting.isNone) ||
           expected.isSome)
 
 /-- Exact local Tamagawa data at the supported primes of the supplied equation. -/
@@ -257,7 +258,7 @@ def LocalReductionClaim.TamagawaSpec (row : LocalReductionClaim) (e : Weierstras
   ∀ n, row.tamagawaNumber = some n → ∃ hp : row.prime.Prime,
     letI : Fact row.prime.Prime := ⟨hp⟩
     (tamagawaExpected? e row.prime row.tamagawaTypeIIIShift
-      row.tamagawaTypeIVEvidence row.tamagawaTypeIIShift).isSome = true →
+      row.tamagawaTypeIVEvidence row.tamagawaTypeIIShift row.tamagawaSplitting).isSome = true →
       (e.baseChange ℚ).tamagawaNumberAt (rationalPlace row.prime) = n
 
 /-- Successful local checks certify the completed-field Tamagawa factor at supported primes. -/
@@ -269,12 +270,14 @@ theorem LocalReductionClaim.tamagawa_correct (row : LocalReductionClaim) (e : We
   let : Fact row.prime.Prime := ⟨hp⟩
   refine ⟨hp, fun hsome => ?_⟩
   cases hs : tamagawaExpected? e row.prime row.tamagawaTypeIIIShift
-      row.tamagawaTypeIVEvidence row.tamagawaTypeIIShift with
+      row.tamagawaTypeIVEvidence row.tamagawaTypeIIShift row.tamagawaSplitting with
   | none => simp [hs] at hsome
   | some value =>
     have heq : n = value := by
       simpa only [hs, Option.all_some, beq_iff_eq] using hval
-    exact (tamagawaExpected_correct e row.prime hs).trans heq.symm
+    exact (tamagawaExpected_correct e row.prime (typeII := row.tamagawaTypeIIShift)
+      (splitting := row.tamagawaSplitting) hs).trans
+      heq.symm
 
 /-- Validate the prime and sign independently of the other local evidence. -/
 def LocalReductionClaim.checkRootNumberInput (row : LocalReductionClaim) : Bool :=
@@ -312,7 +315,7 @@ def hasLocalRootNumberClaim (rows : List LocalReductionClaim) : Bool :=
 def hasUnsupportedTamagawaClaim (e : WeierstrassCurve ℤ) (rows : List LocalReductionClaim) : Bool :=
   rows.any fun row => row.tamagawaNumber.isSome &&
     (tamagawaExpected? e row.prime row.tamagawaTypeIIIShift
-      row.tamagawaTypeIVEvidence row.tamagawaTypeIIShift).isNone
+      row.tamagawaTypeIVEvidence row.tamagawaTypeIIShift row.tamagawaSplitting).isNone
 
 /-- Whether any supplied local valuation or reduction type requires a checked minimal model. -/
 def hasMinimalityDependentLocalClaim (rows : List LocalReductionClaim) : Bool :=

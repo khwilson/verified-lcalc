@@ -89,6 +89,15 @@ and the nonsplit case gives Euler value 4 modulo 5. The joined projections
 retain the native claims without the extra evidence, which the producer
 proposes independently.
 
+The 11.a2 and 26.b1 Tamagawa fixtures project rows 1 and 45 of the pinned
+`ecdata` snapshot. Row 1 is split `I₅` at 11 with factor 5. Row 45 has split
+`I₁` at 2 and nonsplit `I₇` at 13, each with factor 1. The producer proposes
+either a checked node-polynomial root or the exact nonsplit Euler-power value.
+The checked projections store that evidence; the producer-facing joined
+projections retain the source rows without it so CI exercises proposal replay.
+The verifier checks supplied evidence only. Higher multiplicative indices at
+`p = 2` remain unsupported; the existing evidence-free I₁/I₂ routes are unchanged.
+
 The `107200.dh1` Type II case is projected from line 46277 of the pinned
 John Cremona `ecdata` file `curvedata/curvedata.100000-109999` at revision
 `25cec5ecfec8b9f016eb1631ac633194c2bed39f` (Cremona label `107200bz1`). The

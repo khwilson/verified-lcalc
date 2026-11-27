@@ -140,6 +140,7 @@ private def attachTypeIIShift (e : WeierstrassCurve ℤ) (j : Json) : Except Str
   let p := row.prime
   if p ≤ 3 || row.tamagawaNumber.isNone || row.tamagawaTypeIIShift.isSome ||
       row.tamagawaTypeIIIShift.isSome || row.tamagawaTypeIVEvidence.isSome ||
+      row.tamagawaSplitting.isSome ||
       (tamagawaExpected? e p).isSome then
     return j
   let r := (-e.b₂ * Nat.gcdA 12 p) % (p : ℤ)
@@ -153,9 +154,9 @@ private def attachTypeIIShift (e : WeierstrassCurve ℤ) (j : Json) : Except Str
 private def attachTypeIIIShift (e : WeierstrassCurve ℤ) (j : Json) : Except String Json := do
   let row ← CurveDataJson.localReductionClaim j
   let p := row.prime
-  if p ≤ 3 || row.tamagawaNumber.isNone || row.tamagawaTypeIIShift.isSome ||
-      row.tamagawaTypeIIIShift.isSome ||
-      row.tamagawaTypeIVEvidence.isSome || (tamagawaExpected? e p).isSome then
+  if p ≤ 3 || row.tamagawaNumber.isNone || row.tamagawaTypeIIIShift.isSome ||
+      row.tamagawaTypeIVEvidence.isSome || row.tamagawaTypeIIShift.isSome ||
+      row.tamagawaSplitting.isSome || (tamagawaExpected? e p).isSome then
     return j
   let r := (-e.b₂ * Nat.gcdA 12 p) % (p : ℤ)
   let t := (-(e.a₃ + r * e.a₁) * Nat.gcdA 2 p) % (p : ℤ)
@@ -171,9 +172,9 @@ private def typeIVRootSearchLimit : Nat := 10000
 private def attachTypeIVEvidence (e : WeierstrassCurve ℤ) (j : Json) : Except String Json := do
   let row ← CurveDataJson.localReductionClaim j
   let p := row.prime
-  if p ≤ 3 || row.tamagawaNumber.isNone || row.tamagawaTypeIIShift.isSome ||
-      row.tamagawaTypeIIIShift.isSome ||
-      row.tamagawaTypeIVEvidence.isSome || (tamagawaExpected? e p).isSome then
+  if p ≤ 3 || row.tamagawaNumber.isNone || row.tamagawaTypeIIIShift.isSome ||
+      row.tamagawaTypeIVEvidence.isSome || row.tamagawaTypeIIShift.isSome ||
+      row.tamagawaSplitting.isSome || (tamagawaExpected? e p).isSome then
     return j
   let r := (-e.b₂ * Nat.gcdA 12 p) % (p : ℤ)
   let t := (-(e.a₃ + r * e.a₁) * Nat.gcdA 2 p) % (p : ℤ)
@@ -199,13 +200,46 @@ private def attachTypeIVEvidence (e : WeierstrassCurve ℤ) (j : Json) : Except 
       | .root y => ("residue_root", natural y)
       | .nonsplitEulerPower value => ("nonsplit_euler_power", natural value))])
 
+/-- Producer-only prefix searched for a positive split node root. The verifier
+checks any supplied root below p and does not use this limit. -/
+private def multiplicativeRootSearchLimit : Nat := 10000
+
+private def attachTamagawaSplitting (e : WeierstrassCurve ℤ) (j : Json) :
+    Except String Json := do
+  let row ← CurveDataJson.localReductionClaim j
+  let p := row.prime
+  if p ≤ 2 || !isPrime p || row.tamagawaNumber.isNone ||
+      row.tamagawaTypeIIShift.isSome || row.tamagawaTypeIIIShift.isSome ||
+      row.tamagawaTypeIVEvidence.isSome ||
+      row.tamagawaSplitting.isSome ||
+      (tamagawaExpected? e p row.tamagawaTypeIIIShift row.tamagawaTypeIVEvidence
+        row.tamagawaTypeIIShift row.tamagawaSplitting).isSome || decide ((p : ℤ) ∣ e.c₄) then
+    return j
+  let nodeDiscriminant : ZMod p := (-(e.c₄ * e.c₆) : ℤ)
+  let power := nodeDiscriminant ^ ((p - 1) / 2)
+  let evidence := if power == -1 then
+      some (TamagawaSplittingEvidence.nonsplitEulerPower (p - 1))
+    else
+      let root := (List.range (min p multiplicativeRootSearchLimit)).find? fun (x : Nat) =>
+        decide (nodeValue e x % (p : ℤ) = 0)
+      root.map TamagawaSplittingEvidence.root
+  match evidence with
+  | none => return j
+  | some evidence =>
+    if !checkTamagawaSplitting e p evidence then return j
+    let encoded := match evidence with
+      | .root value => Json.mkObj [("root", natural value)]
+      | .nonsplitEulerPower value => Json.mkObj [("nonsplit_euler_power", natural value)]
+    return j.setObjVal! "tamagawa_splitting" encoded
+
 private def proposeTamagawa (e : WeierstrassCurve ℤ) (j : Json) :
     Except String (List (String × Json)) := do
   let .ok rows := j.getObjValAs? (Array Json) "local_invariants" | return []
   let updated ← rows.mapM fun row => do
     let row ← attachTypeIIShift e row
     let row ← attachTypeIIIShift e row
-    attachTypeIVEvidence e row
+    let row ← attachTypeIVEvidence e row
+    attachTamagawaSplitting e row
   return if updated == rows then [] else [("local_invariants", .arr updated)]
 
 private def proposeArithmetic (j : Json) : Except String Json := do

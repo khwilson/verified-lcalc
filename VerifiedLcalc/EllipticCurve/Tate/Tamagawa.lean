@@ -83,6 +83,27 @@ private theorem completion_valuation_of_not_dvd (p : ℕ) [Fact p.Prime] (n : �
     Valued.v (n : (rationalPlace p).adicCompletion ℚ) = 1 := by
   simpa using completion_intCast_valuation_eq p 0 n (by simp) (by simpa using h)
 
+private theorem completion_valuation_lt_one_of_dvd (p : ℕ) [Fact p.Prime] (n : ℤ)
+    (hn : n ≠ 0) (h : (p : ℤ) ∣ n) :
+    Valued.v (n : (rationalPlace p).adicCompletion ℚ) < 1 := by
+  let k := padicValNat p n.natAbs
+  have hnabs : n.natAbs ≠ 0 := Int.natAbs_ne_zero.mpr hn
+  have hk : 0 < k := by
+    have hk1 : 1 ≤ k := by
+      simpa only [k, Nat.padicValNat_def] using
+        (one_le_multiplicity_of_dvd hnabs (Int.natCast_dvd.mp h))
+    omega
+  have hdiv : (p : ℤ) ^ k ∣ n := by
+    rw [← Nat.cast_pow, Int.natCast_dvd]
+    exact (multiplicity_dvd_iff_le hnabs).mpr (by
+      simp only [k, Nat.padicValNat_def, le_refl])
+  have hnext : ¬ (p : ℤ) ^ (k + 1) ∣ n := by
+    rw [← Nat.cast_pow, Int.natCast_dvd]
+    simpa only [k, Nat.padicValNat_def] using
+      (pow_succ_multiplicity_not_dvd (p := p) hnabs)
+  rw [completion_intCast_valuation_eq p k n hdiv hnext]
+  exact WithZero.exp_lt_exp.mpr (by omega)
+
 private theorem finite_quotient_rationalPlace (p : ℕ) [Fact p.Prime] :
     Finite (𝓞 ℚ ⧸ (rationalPlace p).asIdeal) := by
   have hres : (𝓞 ℚ ⧸ (rationalPlace p).asIdeal) ≃+* ZMod p := by
@@ -540,6 +561,217 @@ theorem tamagawaNumberAt_eq_two_of_multiplicative_index_two (e : WeierstrassCurv
     (by simpa using completion_intCast_valuation_eq p 2 e.Δ (by simpa using hd₂) hd₃)
     (completion_valuation_of_not_dvd p e.c₄ hc)
 
+private theorem hasSplitMultiplicativeReduction_completion_iff_nodePolynomial
+    (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
+    (hm : ((e.baseChange ℚ).baseChange
+      ((rationalPlace p).adicCompletion ℚ)).HasMultiplicativeReduction
+        ((rationalPlace p).adicCompletionIntegers ℚ)) :
+    ((e.baseChange ℚ).baseChange
+      ((rationalPlace p).adicCompletion ℚ)).HasSplitMultiplicativeReduction
+        ((rationalPlace p).adicCompletionIntegers ℚ) ↔
+      (e.baseChange (ZMod p)).nodePolynomial.Splits := by
+  let v := rationalPlace p
+  let F := v.adicCompletion ℚ
+  let S := v.adicCompletionIntegers ℚ
+  let W := e.baseChange S
+  let U := W.baseChange F
+  let k := completionResidueEquiv p
+  have hU : U = (e.baseChange ℚ).baseChange F := by
+    ext <;> simp [U, W, WeierstrassCurve.baseChange]
+  have hmU : U.HasMultiplicativeReduction S := by
+    simpa only [hU] using hm
+  let : IsMinimal S U := hmU.toIsMinimal
+  have hreduce : (U.reduction S).map k.toRingHom = e.baseChange (ZMod p) := by
+    rw [WeierstrassCurve.reduction, WeierstrassCurve.integralModel_baseChange_self]
+    ext <;> simp [W, WeierstrassCurve.baseChange]
+  have hsplitU : U.HasSplitMultiplicativeReduction S ↔
+      (e.baseChange (ZMod p)).nodePolynomial.Splits := by
+    rw [← hmU.splits_nodePolynomial_reduction_iff S, ← hreduce,
+      WeierstrassCurve.map_nodePolynomial]
+    exact ⟨fun hs => hs.map k.toRingHom,
+      fun hs => hs.of_splits_map k.toRingHom (fun x _ => k.surjective x)⟩
+  constructor
+  · intro hs
+    exact hsplitU.mp (by simpa only [hU] using hs)
+  · intro hs
+    simpa only [hU] using hsplitU.mpr hs
+
+private theorem completedHasMultiplicativeReduction_of_valuation
+    (e : WeierstrassCurve ℤ) (p n : ℕ) [Fact p.Prime]
+    (hn : 0 < n)
+    (hd : Valued.v (e.Δ : (rationalPlace p).adicCompletion ℚ) =
+      WithZero.exp (-(n : ℤ)))
+    (hc : Valued.v (e.c₄ : (rationalPlace p).adicCompletion ℚ) = 1) :
+    ((e.baseChange ℚ).baseChange
+      ((rationalPlace p).adicCompletion ℚ)).HasMultiplicativeReduction
+        ((rationalPlace p).adicCompletionIntegers ℚ) := by
+  let v := rationalPlace p
+  let F := v.adicCompletion ℚ
+  let S := v.adicCompletionIntegers ℚ
+  let W := (e.baseChange ℚ).baseChange F
+  have hΔ : W.Δ = (e.Δ : F) := by
+    simp only [W, WeierstrassCurve.baseChange, map_Δ, eq_intCast, map_intCast]
+  have hc₄ : W.c₄ = (e.c₄ : F) := by
+    simp only [W, WeierstrassCurve.baseChange, map_c₄, eq_intCast, map_intCast]
+  have hcval : (IsDiscreteValuationRing.maximalIdeal S).valuation _ W.c₄ = 1 := by
+    rw [v.valuation_maximalIdeal_adicCompletionIntegers, hc₄, hc]
+  let : IsIntegral S W := completedIntegral e v
+  let : IsMinimal S W := isMinimal_of_valuation_c₄_eq_one S W hcval
+  refine ⟨?_, hcval⟩
+  rw [v.valuation_maximalIdeal_adicCompletionIntegers, hΔ, hd, ← WithZero.exp_zero]
+  exact WithZero.exp_lt_exp.mpr (by omega)
+
+private theorem tamagawaNumberAt_eq_of_multiplicative_valuation
+    (e : WeierstrassCurve ℤ) (p n : ℕ) [Fact p.Prime]
+    [(e.baseChange ℚ).IsElliptic] (hn : 0 < n)
+    (hd : Valued.v (e.Δ : (rationalPlace p).adicCompletion ℚ) =
+      WithZero.exp (-(n : ℤ)))
+    (hc : Valued.v (e.c₄ : (rationalPlace p).adicCompletion ℚ) = 1)
+    (split : Bool)
+    (hs : (e.baseChange (ZMod p)).nodePolynomial.Splits ↔ split = true) :
+    (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) =
+      if split then n else Nat.gcd 2 n := by
+  let v := rationalPlace p
+  let F := v.adicCompletion ℚ
+  let V : Valuation F (WithZero (Multiplicative ℤ)) := Valued.v
+  let S := V.valuationSubring
+  let W := (e.baseChange ℚ).baseChange F
+  let : IsAdicComplete (IsLocalRing.maximalIdeal S) S :=
+    (v.isAdic_maximalIdeal_adicCompletionIntegers (K := ℚ)).isAdicComplete_iff.mpr
+      ⟨inferInstance, inferInstance⟩
+  let : Finite (IsLocalRing.ResidueField S) := by
+    change Finite (IsLocalRing.ResidueField (v.adicCompletionIntegers ℚ))
+    infer_instance
+  have hsymbol : W.reductionSymbol S = .I n := completedSymbol_eq_I e v n hn hd hc
+  obtain ⟨C, D, ϖ, hmin, hD, hϖ, hterminal⟩ := (W.reductionSymbol_eq_iff (R := S)).mp hsymbol
+  have hspan : IsLocalRing.maximalIdeal S = Ideal.span {ϖ} :=
+    (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).mp hϖ
+  let : (C.baseChange F).IsElliptic := hD ▸ inferInstanceAs (D • W).IsElliptic
+  let : IsMinimal S (C.baseChange F) := hmin
+  have hmulW := completedHasMultiplicativeReduction_of_valuation e p n hn hd hc
+  let : IsMinimal S W := hmulW.toIsMinimal
+  have hsplitW : W.HasSplitMultiplicativeReduction S ↔ split = true :=
+    (hasSplitMultiplicativeReduction_completion_iff_nodePolynomial e p hmulW).trans hs
+  have hsplitC : (C.baseChange F).HasSplitMultiplicativeReduction S ↔ split = true := by
+    constructor
+    · intro hcSplit
+      have hDinv : D⁻¹ • C.baseChange F = W := by
+        rw [← hD, inv_smul_smul]
+      exact hsplitW.mp (HasSplitMultiplicativeReduction.of_isMinimal_smul S D⁻¹ hDinv hcSplit)
+    · intro hsplit
+      exact HasSplitMultiplicativeReduction.of_isMinimal_smul S D hD (hsplitW.mpr hsplit)
+  obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hn)
+  have hlocal := (C.baseChange F).tamagawaNumber_eq_tateLocalIndex V hspan
+    (by simpa only [integralModel_baseChange_self] using hterminal)
+  have hindex : C.tateLocalIndex ϖ (.I (m + 1)) =
+      if split then m + 1 else Nat.gcd 2 (m + 1) := by
+    by_cases hsplit : split = true
+    · rw [ite_eq_left hsplit]
+      exact hterminal.tateLocalIndex_of_hasSplitMultiplicativeReduction hϖ (hsplitC.mpr hsplit)
+    · rw [ite_eq_right hsplit]
+      exact hterminal.tateLocalIndex_of_not_hasSplitMultiplicativeReduction hϖ
+        (fun hsplitC' => hsplit ((hsplitC.mp hsplitC')))
+  rw [tamagawaNumberAt_adicValued]
+  change W.tamagawaNumber V = if split then m + 1 else Nat.gcd 2 (m + 1)
+  rw [← W.tamagawaNumber_smul V D, hD, hlocal, integralModel_baseChange_self, hindex]
+
+private theorem nodePolynomial_not_splits_of_euler_power (e : WeierstrassCurve ℤ)
+    (p : ℕ) [Fact p.Prime] (hp : 2 < p)
+    (hpow : (((-(e.c₄ * e.c₆) : ℤ) : ZMod p) ^ ((p - 1) / 2)) = -1) :
+    ¬ (e.baseChange (ZMod p)).nodePolynomial.Splits := by
+  let R := ZMod p
+  let disc : R := (-(e.c₄ * e.c₆) : ℤ)
+  have hchar : ringChar R ≠ 2 := by
+    rw [ZMod.ringChar_zmod_n]
+    omega
+  let : Fact (2 < p) := ⟨hp⟩
+  have hpowDisc : disc ^ ((p - 1) / 2) = -1 := by
+    simpa [disc] using hpow
+  have hdisc : disc ≠ 0 := by
+    intro hz
+    have hexp : 0 < (p - 1) / 2 := by omega
+    rw [hz, zero_pow hexp.ne'] at hpowDisc
+    norm_num at hpowDisc
+  have hpow' : disc ^ (Fintype.card R / 2) = -1 := by
+    have hcard : Fintype.card R = p := by simp [R]
+    have hpNeTwo : p ≠ 2 := by omega
+    have hpOddMod : p % 2 = 1 :=
+      (Fact.out : p.Prime).mod_two_eq_one_iff_ne_two.mpr hpNeTwo
+    have hexp : (p - 1) / 2 = p / 2 := by omega
+    rw [hcard, ← hexp]
+    exact hpowDisc
+  have hpowNeOne : disc ^ (Fintype.card R / 2) ≠ 1 := by
+    rw [hpow']
+    exact ZMod.neg_one_ne_one
+  have hcharValue : quadraticChar R disc = -1 := by
+    rw [quadraticChar_eq_pow_of_char_ne_two hchar hdisc, ite_eq_right hpowNeOne]
+  have hnotSquare : ¬ IsSquare disc :=
+    (quadraticChar_neg_one_iff_not_isSquare).mp hcharValue
+  have : NeZero (2 : R) := ⟨by
+    intro hzero
+    have hdiv := (ZMod.natCast_eq_zero_iff 2 p).mp hzero
+    have hpNat : p ∣ 2 := by exact_mod_cast hdiv
+    have hpLe : p ≤ 2 := Nat.le_of_dvd (by decide) hpNat
+    omega⟩
+  have hsplitSquare :=
+    (e.baseChange R).splits_nodePolynomial_map_iff_isSquare (RingHom.id R)
+  intro hsplit
+  apply hnotSquare
+  have hsplit' : (Polynomial.map (RingHom.id R)
+      (e.baseChange R).nodePolynomial).Splits := by
+    simpa [R, WeierstrassCurve.baseChange, map_nodePolynomial] using hsplit
+  simpa [disc, R, WeierstrassCurve.baseChange, map_c₄, map_c₆] using
+    hsplitSquare.mp hsplit'
+
+private theorem tamagawaNumberAt_eq_of_multiplicative_evidence
+    (e : WeierstrassCurve ℤ) (p n : ℕ) [Fact p.Prime]
+    [(e.baseChange ℚ).IsElliptic] (hn : 0 < n)
+    (hpadic : n = padicValNat p e.Δ.natAbs)
+    (hd : Valued.v (e.Δ : (rationalPlace p).adicCompletion ℚ) =
+      WithZero.exp (-(n : ℤ)))
+    (hc : Valued.v (e.c₄ : (rationalPlace p).adicCompletion ℚ) = 1)
+    (evidence : TamagawaSplittingEvidence)
+    (hevidence : checkTamagawaSplitting e p evidence = true) :
+    (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) =
+      multiplicativeTamagawaFactor e p evidence := by
+  cases evidence with
+  | root value =>
+    have hrootData : 2 < p ∧ value < p ∧
+        nodeValue e value % (p : ℤ) = 0 := by
+      simpa [checkTamagawaSplitting] using hevidence
+    have hrootEval : (e.baseChange (ZMod p)).nodePolynomial.eval
+        (value : ZMod p) = 0 := by
+      rw [nodeValue_correct]
+      exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr
+        (Int.dvd_iff_emod_eq_zero.mpr hrootData.2.2)
+    have hroot : hasNodeRoot e p = true := by
+      apply (hasNodeRoot_correct e p).2
+      exact ⟨(value : ZMod p), hrootEval⟩
+    have hc' : (e.baseChange (ZMod p)).c₄ ≠ 0 := by
+      have hcne : e.c₄ ≠ 0 := by
+        intro hz
+        rw [hz] at hc
+        norm_num at hc
+      have h : ¬ (p : ℤ) ∣ e.c₄ := by
+        intro hdiv
+        have hval := completion_valuation_lt_one_of_dvd p e.c₄ hcne hdiv
+        rw [hc] at hval
+        norm_num at hval
+      simpa only [WeierstrassCurve.baseChange, map_c₄, eq_intCast,
+        ZMod.intCast_zmod_eq_zero_iff_dvd, ne_eq] using h
+    have hsplit := (hasNodeRoot_iff_splits e p hc').mp hroot
+    simpa [multiplicativeTamagawaFactor, hpadic] using
+      tamagawaNumberAt_eq_of_multiplicative_valuation e p n hn hd hc true
+        ⟨fun _ => rfl, fun _ => hsplit⟩
+  | nonsplitEulerPower value =>
+    have hdata : 2 < p ∧ value + 1 = p ∧
+        (((-(e.c₄ * e.c₆) : ℤ) : ZMod p) ^ ((p - 1) / 2)) = -1 := by
+      simpa [checkTamagawaSplitting] using hevidence
+    have hnotsplit := nodePolynomial_not_splits_of_euler_power e p hdata.1 hdata.2.2
+    simpa [multiplicativeTamagawaFactor, hpadic] using
+      tamagawaNumberAt_eq_of_multiplicative_valuation e p n hn hd hc false
+        ⟨fun hs => False.elim (hnotsplit hs), fun hfalse => by cases hfalse⟩
+
 /-- The finite support test implies that the intrinsic Tamagawa factor is one. -/
 theorem supportsTamagawaOne_correct (e : WeierstrassCurve ℤ) (p : ℕ)
     [Fact p.Prime] [(e.baseChange ℚ).IsElliptic]
@@ -554,58 +786,134 @@ theorem supportsTamagawaOne_correct (e : WeierstrassCurve ℤ) (p : ℕ)
 intrinsic local Tamagawa number at the completed place. -/
 private theorem tamagawaExpected_base_correct (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
     [(e.baseChange ℚ).IsElliptic] {shift : Option TamagawaTypeIIIShift}
-    {typeIV : Option TamagawaTypeIVEvidence} {value : ℕ}
-    (h : tamagawaExpected? e p shift typeIV = some value) :
+    {typeIV : Option TamagawaTypeIVEvidence}
+    {splitting : Option TamagawaSplittingEvidence} {value : ℕ}
+    (h : tamagawaExpected? e p shift typeIV none splitting = some value) :
     (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = value := by
-  cases shift with
-  | some shift =>
-    cases typeIV with
-    | some evidence => simp [tamagawaExpected?] at h
-    | none =>
-      by_cases ht : checkTameTypeIII e p shift = true
-      · rw [tamagawaExpected?, ht] at h
-        cases h
-        have ht' : 3 < p ∧ (p : ℤ) ∣ (typeIIIChange shift • e).b₂ ∧
-            (p : ℤ) ∣ (typeIIIChange shift • e).a₃ ∧
-            (p : ℤ) ∣ (typeIIIChange shift • e).a₄ ∧
-            (p : ℤ) ^ 2 ∣ (typeIIIChange shift • e).a₆ ∧
-            ¬ (p : ℤ) ^ 3 ∣ (typeIIIChange shift • e).b₈ := by
-          simpa [checkTameTypeIII] using ht
-        exact tamagawaNumberAt_eq_two_of_typeIII_shift e p (typeIIIChange shift)
-          ht'.2.1 ht'.2.2.1 ht'.2.2.2.1 ht'.2.2.2.2.1 ht'.2.2.2.2.2
-      · simp [tamagawaExpected?, ht] at h
+  cases splitting with
   | none =>
-    cases typeIV with
-    | some evidence =>
-      by_cases ht : checkTameTypeIV e p evidence = true
-      · rw [tamagawaExpected?, ht] at h
-        cases h
-        exact tamagawaNumberAt_eq_typeIV_of_evidence e p evidence ht
-      · simp [tamagawaExpected?, ht] at h
-    | none =>
-      by_cases hs : supportsTamagawaOne e p = true
-      · rw [tamagawaExpected?, hs] at h
-        cases h
-        exact supportsTamagawaOne_correct e p hs
-      · by_cases hm : multiplicativeIndexTwo e p = true
-        · have hsf : supportsTamagawaOne e p = false := Bool.eq_false_of_not_eq_true hs
-          rw [tamagawaExpected?, hsf, hm] at h
+    cases shift with
+    | some shift =>
+      cases typeIV with
+      | some evidence => simp [tamagawaExpected?] at h
+      | none =>
+        by_cases ht : checkTameTypeIII e p shift = true
+        · rw [tamagawaExpected?, ht] at h
           cases h
-          have hm' : (p : ℤ) ^ 2 ∣ e.Δ ∧ ¬ (p : ℤ) ^ 3 ∣ e.Δ ∧
-              ¬ (p : ℤ) ∣ e.c₄ := by
-            simpa [multiplicativeIndexTwo] using hm
-          exact tamagawaNumberAt_eq_two_of_multiplicative_index_two e p
-            hm'.1 hm'.2.1 hm'.2.2
-        · have hsf : supportsTamagawaOne e p = false := Bool.eq_false_of_not_eq_true hs
-          have hmf : multiplicativeIndexTwo e p = false := Bool.eq_false_of_not_eq_true hm
-          simp [tamagawaExpected?, hsf, hmf] at h
+          have ht' : 3 < p ∧ (p : ℤ) ∣ (typeIIIChange shift • e).b₂ ∧
+              (p : ℤ) ∣ (typeIIIChange shift • e).a₃ ∧
+              (p : ℤ) ∣ (typeIIIChange shift • e).a₄ ∧
+              (p : ℤ) ^ 2 ∣ (typeIIIChange shift • e).a₆ ∧
+              ¬ (p : ℤ) ^ 3 ∣ (typeIIIChange shift • e).b₈ := by
+            simpa [checkTameTypeIII] using ht
+          exact tamagawaNumberAt_eq_two_of_typeIII_shift e p (typeIIIChange shift)
+            ht'.2.1 ht'.2.2.1 ht'.2.2.2.1 ht'.2.2.2.2.1 ht'.2.2.2.2.2
+        · simp [tamagawaExpected?, ht] at h
+    | none =>
+      cases typeIV with
+      | some evidence =>
+        by_cases ht : checkTameTypeIV e p evidence = true
+        · rw [tamagawaExpected?, ht] at h
+          cases h
+          exact tamagawaNumberAt_eq_typeIV_of_evidence e p evidence ht
+        · simp [tamagawaExpected?, ht] at h
+      | none =>
+        by_cases hs : supportsTamagawaOne e p = true
+        · rw [tamagawaExpected?, hs] at h
+          cases h
+          exact supportsTamagawaOne_correct e p hs
+        · by_cases hm : multiplicativeIndexTwo e p = true
+          · have hsf : supportsTamagawaOne e p = false := Bool.eq_false_of_not_eq_true hs
+            rw [tamagawaExpected?, hsf, hm] at h
+            cases h
+            have hm' : (p : ℤ) ^ 2 ∣ e.Δ ∧ ¬ (p : ℤ) ^ 3 ∣ e.Δ ∧
+                ¬ (p : ℤ) ∣ e.c₄ := by
+              simpa [multiplicativeIndexTwo] using hm
+            exact tamagawaNumberAt_eq_two_of_multiplicative_index_two e p
+              hm'.1 hm'.2.1 hm'.2.2
+          · have hsf : supportsTamagawaOne e p = false := Bool.eq_false_of_not_eq_true hs
+            have hmf : multiplicativeIndexTwo e p = false := Bool.eq_false_of_not_eq_true hm
+            simp [tamagawaExpected?, hsf, hmf] at h
+  | some splitEvidence =>
+    cases shift with
+    | some _ =>
+      cases typeIV with
+      | some _ => simp [tamagawaExpected?] at h
+      | none =>
+        change (none : Option ℕ) = some value at h
+        cases h
+    | none =>
+      cases typeIV with
+      | some _ => simp [tamagawaExpected?] at h
+      | none =>
+        by_cases hs : supportsTamagawaOne e p = true
+        · simp [tamagawaExpected?, hs] at h
+        · by_cases hm : multiplicativeIndexTwo e p = true
+          · simp [tamagawaExpected?, hs, hm] at h
+          · by_cases hc : (p : ℤ) ∣ e.c₄
+            · simp [tamagawaExpected?, hs, hm, hc] at h
+            · by_cases hcheck : checkTamagawaSplitting e p splitEvidence = true
+              · have hval : value = multiplicativeTamagawaFactor e p splitEvidence := by
+                  simpa [tamagawaExpected?, hs, hm, hc, hcheck] using h.symm
+                have hbad : (p : ℤ) ∣ e.Δ := by
+                  by_contra hnot
+                  apply hs
+                  simp [supportsTamagawaOne, hnot]
+                let n := padicValNat p e.Δ.natAbs
+                have hΔne : e.Δ ≠ 0 := by
+                  have hunit : IsUnit ((e.baseChange ℚ).Δ) := by
+                    rcases ‹(e.baseChange ℚ).IsElliptic› with ⟨hunit⟩
+                    exact hunit
+                  have hQ : (e.Δ : ℚ) ≠ 0 := by
+                    simpa only [WeierstrassCurve.baseChange, map_Δ, eq_intCast] using
+                      hunit.ne_zero
+                  exact_mod_cast hQ
+                have hnabs : e.Δ.natAbs ≠ 0 := Int.natAbs_ne_zero.mpr hΔne
+                have hn : 0 < n := by
+                  have hn1 : 1 ≤ n := by
+                    simpa only [n, Nat.padicValNat_def] using
+                      (one_le_multiplicity_of_dvd hnabs (Int.natCast_dvd.mp hbad))
+                  omega
+                have hdiv : (p : ℤ) ^ n ∣ e.Δ := by
+                  rw [← Nat.cast_pow, Int.natCast_dvd]
+                  exact (multiplicity_dvd_iff_le hnabs).mpr
+                    (by simp only [n, Nat.padicValNat_def, le_refl])
+                have hnext : ¬ (p : ℤ) ^ (n + 1) ∣ e.Δ := by
+                  rw [← Nat.cast_pow, Int.natCast_dvd]
+                  simpa only [n, Nat.padicValNat_def] using
+                    (pow_succ_multiplicity_not_dvd (p := p) hnabs)
+                have hdivNat : p ^ n ∣ e.Δ.natAbs := by
+                  rw [← Nat.cast_pow, Int.natCast_dvd] at hdiv
+                  exact hdiv
+                have hnotNat : ¬ p ^ (n + 1) ∣ e.Δ.natAbs := by
+                  intro hpow
+                  apply hnext
+                  rw [← Nat.cast_pow, Int.natCast_dvd]
+                  exact hpow
+                have hpadic : n = padicValNat p e.Δ.natAbs := by
+                  have hlo : n ≤ padicValNat p e.Δ.natAbs := by
+                    simpa only [Nat.padicValNat_def] using
+                      (multiplicity_dvd_iff_le hnabs).mp hdivNat
+                  have hhi : ¬ n + 1 ≤ padicValNat p e.Δ.natAbs := by
+                    intro hle
+                    apply hnotNat
+                    exact (multiplicity_dvd_iff_le hnabs).mpr (by
+                      simpa only [Nat.padicValNat_def] using hle)
+                  omega
+                have hdval := completion_intCast_valuation_eq p n e.Δ hdiv hnext
+                have hcval := completion_valuation_of_not_dvd p e.c₄ hc
+                have hfactor := tamagawaNumberAt_eq_of_multiplicative_evidence
+                  e p n hn hpadic hdval hcval splitEvidence hcheck
+                exact hfactor.trans hval.symm
+              · simp [tamagawaExpected?, hs, hm, hc, hcheck] at h
 
 /-- Every supported result, including a supplied tame type II terminal change,
 is the intrinsic local Tamagawa number. -/
 theorem tamagawaExpected_correct (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
     [(e.baseChange ℚ).IsElliptic] {shift : Option TamagawaTypeIIIShift}
     {typeIV : Option TamagawaTypeIVEvidence} {typeII : Option TamagawaTypeIIShift}
-    {value : ℕ} (h : tamagawaExpected? e p shift typeIV typeII = some value) :
+    {splitting : Option TamagawaSplittingEvidence} {value : ℕ}
+    (h : tamagawaExpected? e p shift typeIV typeII splitting = some value) :
     (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = value := by
   cases typeII with
   | none =>
@@ -617,11 +925,14 @@ theorem tamagawaExpected_correct (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Pr
       cases typeIV with
       | some _ => simp [tamagawaExpected?] at h
       | none =>
-        by_cases hcheck : checkTameTypeII e p shiftII = true
-        · rw [tamagawaExpected?, hcheck] at h
-          cases h
-          exact tamagawaNumberAt_eq_one_of_typeII_shift e p shiftII hcheck
-        · simp [tamagawaExpected?, hcheck] at h
+        cases splitting with
+        | some _ => simp [tamagawaExpected?] at h
+        | none =>
+          by_cases hcheck : checkTameTypeII e p shiftII = true
+          · rw [tamagawaExpected?, hcheck] at h
+            cases h
+            exact tamagawaNumberAt_eq_one_of_typeII_shift e p shiftII hcheck
+          · simp [tamagawaExpected?, hcheck] at h
 
 set_option backward.isDefEq.respectTransparency.types false in
 private theorem integerPlaceValuation_eq (v : HeightOneSpectrum ℤ) (p k : ℕ) (n : ℤ)

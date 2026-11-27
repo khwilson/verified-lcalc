@@ -1,0 +1,33 @@
+{
+  "tables": ["ec_curvedata", "ec_localdata"],
+  "labels": ["11.a2", "11.a2"],
+  "label_cols": ["lmfdb_label", "lmfdb_label"],
+  "totals": [1, 1],
+  "data": [
+    [
+      {
+        "lmfdb_label": "11.a2",
+        "lmfdb_iso": "11.a",
+        "ainvs": [0, -1, 1, -10, -20],
+        "conductor": 11,
+        "bad_primes": [11],
+        "signD": -1,
+        "absD": 161051
+      }
+    ],
+    [
+      {
+        "lmfdb_label": "11.a2",
+        "conductor": 11,
+        "prime": 11,
+        "tamagawa_number": 5,
+        "kodaira_symbol": 9,
+        "reduction_type": 1,
+        "root_number": -1,
+        "conductor_valuation": 1,
+        "discriminant_valuation": 5,
+        "j_denominator_valuation": 5
+      }
+    ]
+  ]
+}

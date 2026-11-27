@@ -205,8 +205,7 @@ def weightedCoordinates (j : Json) : Except String (List (Rat × Rat)) := do
 def localReductionFields : List String :=
   ["discriminant_valuation", "j_denominator_valuation", "reduction_type", "conductor_valuation",
     "kodaira_symbol", "tamagawa_number", "tamagawa_type_ii", "tamagawa_type_iii",
-    "tamagawa_type_iv",
-    "root_number"]
+    "tamagawa_type_iv", "tamagawa_splitting", "root_number"]
 
 /-- Decode the supported exact fields from one local reduction row. -/
 def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
@@ -246,11 +245,19 @@ def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
         pure (TypeIVTamagawaResidue.nonsplitEulerPower (← nonnegativeInteger power))
       | _, _ => throw "Type IV evidence needs exactly one root or nonsplit Euler value"
     return ({ r, s, t, residue } : TamagawaTypeIVEvidence)
+  let tamagawaSplitting ← optionalValue j "tamagawa_splitting" fun value => do
+    match optional value "root", optional value "nonsplit_euler_power" with
+    | some root, none => do
+      keys value ["root"]
+      return TamagawaSplittingEvidence.root (← nonnegativeInteger root)
+    | none, some power => do
+      keys value ["nonsplit_euler_power"]
+      return TamagawaSplittingEvidence.nonsplitEulerPower (← nonnegativeInteger power)
+    | _, _ => throw "Tamagawa splitting needs exactly one root or nonsplit Euler power"
   return {
     prime, discriminantValuation, conductorValuation, jDenominatorValuation
-    reductionType, kodairaSymbol, tamagawaNumber, rootNumber, tamagawaTypeIIShift,
-    tamagawaTypeIIIShift,
-    tamagawaTypeIVEvidence }
+    reductionType, kodairaSymbol, tamagawaNumber, rootNumber, tamagawaTypeIIIShift,
+    tamagawaTypeIVEvidence, tamagawaTypeIIShift, tamagawaSplitting }
 
 /-- Decode a local-row list and any top-level local claim. -/
 def localReductionClaims (j : Json) :

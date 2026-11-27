@@ -143,6 +143,16 @@ structure TorsionBoundWitness where
 
 /-! ## Finite-prime rows and Tate transcripts -/
 
+/-- Supplied splitting evidence for a multiplicative node polynomial at an odd
+residue prime. A root proves split reduction; the Euler power proves
+nonsplit reduction. -/
+inductive TamagawaSplittingEvidence where
+  /-- An explicit root of the node polynomial in `ZMod p`. -/
+  | root (value : Nat)
+  /-- Euler's criterion witness that the node discriminant is nonsquare. -/
+  | nonsplitEulerPower (value : Nat)
+  deriving Repr, DecidableEq
+
 /-- Exact integral coordinates of a scale-one change for a type II witness. -/
 structure TamagawaTypeIIShift where
   /-- Change in the x-coordinate. -/
@@ -199,6 +209,8 @@ structure LocalReductionClaim where
   reductionType : Option Int := none
   /-- Claimed intrinsic local component-group order. -/
   tamagawaNumber : Option Nat := none
+  /-- Supplied split/nonsplit evidence for odd-prime multiplicative `Iₙ`, `n ≥ 3`. -/
+  tamagawaSplitting : Option TamagawaSplittingEvidence := none
   /-- Claimed PARI Kodaira code. Additive codes request a family check. -/
   kodairaSymbol : Option Int := none
   /-- Claimed arithmetic local sign at this prime. -/

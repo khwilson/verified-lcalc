@@ -1,0 +1,25 @@
+{
+  "ainvs": [0, -1, 1, -10, -20],
+  "signD": -1,
+  "absD": 161051,
+  "bad_primes": [11],
+  "num_bad_primes": 1,
+  "semistable": true,
+  "squarefree_disc": false,
+  "minimality": [11, 11, 11, 11, 11],
+  "discriminant": -161051,
+  "conductor": 11,
+  "local_invariants": [
+    {
+      "prime": 11,
+      "conductor_valuation": 1,
+      "discriminant_valuation": 5,
+      "j_denominator_valuation": 5,
+      "reduction_type": 1,
+      "kodaira_symbol": 9,
+      "tamagawa_number": 5,
+      "tamagawa_splitting": {"root": 5},
+      "root_number": -1
+    }
+  ]
+}

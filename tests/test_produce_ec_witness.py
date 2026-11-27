@@ -19,6 +19,8 @@ CAPTURE = ROOT / "scripts/capture_lmfdb_fixture.py"
 NATIVE = ROOT / "tests/fixtures/lmfdb/112.a2-native.json"
 NATIVE_MANIFEST = NATIVE.with_suffix(".provenance.json")
 TAMAGAWA_17A2 = ROOT / "tests/fixtures/lmfdb/17.a2-tamagawa-joined.json"
+TAMAGAWA_11A2 = ROOT / "tests/fixtures/lmfdb/11.a2-tamagawa-joined.json"
+TAMAGAWA_26B1 = ROOT / "tests/fixtures/lmfdb/26.b1-tamagawa-joined.json"
 TAMAGAWA_TYPE_III_49A4 = ROOT / "tests/fixtures/lmfdb/49.a4-tamagawa-joined.json"
 TAMAGAWA_TYPE_IV_50A1 = ROOT / "tests/fixtures/lmfdb/50.a1-tamagawa-joined.json"
 TAMAGAWA_TYPE_IV_50A3 = ROOT / "tests/fixtures/lmfdb/50.a3-tamagawa-joined.json"
@@ -56,7 +58,7 @@ def produce(
 class JoinChecks(unittest.TestCase):
     def test_out_of_scope_additive_tamagawa_is_reported_unverified(self) -> None:
         # Genuine 98.a5 arithmetic: this p=7 additive row has Kodaira code -5,
-        # outside the implemented Tamagawa routes.
+        # outside the implemented good, multiplicative Iₙ, and tame II/III/IV routes.
         source = {
             "tables": ["ec_curvedata", "ec_localdata"],
             "labels": ["98.a5", "98.a5"],
@@ -106,7 +108,7 @@ class JoinChecks(unittest.TestCase):
             fields["local_invariants.7.tamagawa_number"],
             {
                 "status": "unsupported",
-                "reason": "Exact Tamagawa checker supports good, I₁, I₂ or supplied tame II/III/IV evidence",
+                "reason": "Exact Tamagawa checker supports good, I₁/I₂, supplied odd-prime Iₙ splitting evidence, or supplied tame II/III/IV evidence",
             },
         )
 
@@ -189,6 +191,93 @@ class JoinChecks(unittest.TestCase):
     os.environ.get("VERIFIED_LCALC_PRODUCER_LEAN") == "1", "Lean CI only"
 )
 class KernelReplay(unittest.TestCase):
+    def test_native_higher_multiplicative_tamagawa_rows(self) -> None:
+        cases = (
+            (
+                "11.a2 split I5",
+                TAMAGAWA_11A2,
+                11,
+                5,
+                {"root": "5"},
+                [
+                    ("tamagawa_number", 4, "tamagawa_values_valid"),
+                    ("tamagawa_splitting", {"root": 0}, "tamagawa_values_valid"),
+                    (
+                        "tamagawa_splitting",
+                        {"root": 5, "nonsplit_euler_power": 10},
+                        "exactly one root or nonsplit Euler power",
+                    ),
+                ],
+            ),
+            (
+                "26.b1 nonsplit I7",
+                TAMAGAWA_26B1,
+                13,
+                1,
+                {"nonsplit_euler_power": "12"},
+                [
+                    ("tamagawa_number", 2, "tamagawa_values_valid"),
+                    ("reduction_type", 1, "local_invariants"),
+                    (
+                        "tamagawa_splitting",
+                        {"nonsplit_euler_power": 11},
+                        "tamagawa_values_valid",
+                    ),
+                ],
+            ),
+        )
+        for label, fixture, prime, value, expected_evidence, corruptions in cases:
+            with self.subTest(curve=label), tempfile.TemporaryDirectory() as d:
+                directory = Path(d)
+                data = json.loads(fixture.read_text(encoding="utf-8"))
+                result, report, output = produce(data, directory, timeout=600)
+                self.assertEqual(result.returncode, 0, (report, result.stderr))
+                self.assertEqual(report["status"], "checked")
+                field = report["fields"][f"local_invariants.{prime}.tamagawa_number"]
+                self.assertEqual(field["status"], "checked")
+                self.assertEqual(
+                    field["sources"],
+                    [f"ec_localdata[{prime}].tamagawa_number"],
+                )
+                witness = json.loads(output.read_text(encoding="utf-8"))
+                local = next(
+                    row for row in witness["local_invariants"] if row["prime"] == prime
+                )
+                self.assertEqual(local["tamagawa_number"], value)
+                self.assertEqual(local["tamagawa_splitting"], expected_evidence)
+                previous = output.read_bytes()
+
+                for field_name, bad_value, expected_check in corruptions:
+                    corrupted = json.loads(fixture.read_text(encoding="utf-8"))
+                    local_row = next(
+                        row
+                        for row in rows(corrupted, "ec_localdata")
+                        if row["prime"] == prime
+                    )
+                    local_row[field_name] = bad_value
+                    result, report, output = produce(corrupted, directory, timeout=600)
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertEqual(report["status"], "rejected")
+                    self.assertIn(expected_check, report["error"])
+                    self.assertEqual(output.read_bytes(), previous)
+
+    def test_mixed_tamagawa_splitting_evidence_is_rejected(self) -> None:
+        data = json.loads(TAMAGAWA_11A2.read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as d:
+            directory = Path(d)
+            result, report, output = produce(data, directory, timeout=600)
+            self.assertEqual(result.returncode, 0, (report, result.stderr))
+            previous = output.read_bytes()
+
+            rows(data, "ec_localdata")[0]["tamagawa_splitting"] = {
+                "root": 5,
+                "nonsplit_euler_power": 10,
+            }
+            result, report, output = produce(data, directory, timeout=600)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(report["status"], "rejected")
+            self.assertEqual(output.read_bytes(), previous)
+
     def test_native_i2_tamagawa_projection_and_corruption(self) -> None:
         data = json.loads(TAMAGAWA_17A2.read_text(encoding="utf-8"))
         with tempfile.TemporaryDirectory() as d:
