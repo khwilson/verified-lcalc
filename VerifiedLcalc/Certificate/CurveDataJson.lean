@@ -204,7 +204,8 @@ def weightedCoordinates (j : Json) : Except String (List (Rat × Rat)) := do
 /-- Optional data fields that identify a top-level local reduction row. -/
 def localReductionFields : List String :=
   ["discriminant_valuation", "j_denominator_valuation", "reduction_type", "conductor_valuation",
-    "kodaira_symbol", "tamagawa_number", "tamagawa_type_iii", "tamagawa_type_iv",
+    "kodaira_symbol", "tamagawa_number", "tamagawa_type_ii", "tamagawa_type_iii",
+    "tamagawa_type_iv",
     "root_number"]
 
 /-- Decode the supported exact fields from one local reduction row. -/
@@ -226,6 +227,12 @@ def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
     let s ← integer (← value.getObjVal? "s")
     let t ← integer (← value.getObjVal? "t")
     return ({ r, s, t } : TamagawaTypeIIIShift)
+  let tamagawaTypeIIShift ← optionalValue j "tamagawa_type_ii" fun value => do
+    let r ← integer (← value.getObjVal? "r")
+    let s ← integer (← value.getObjVal? "s")
+    let t ← integer (← value.getObjVal? "t")
+    keys value ["r", "s", "t"]
+    return ({ r, s, t } : TamagawaTypeIIShift)
   let tamagawaTypeIVEvidence ← optionalValue j "tamagawa_type_iv" fun value => do
     let r ← integer (← value.getObjVal? "r")
     let s ← integer (← value.getObjVal? "s")
@@ -241,7 +248,8 @@ def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
     return ({ r, s, t, residue } : TamagawaTypeIVEvidence)
   return {
     prime, discriminantValuation, conductorValuation, jDenominatorValuation
-    reductionType, kodairaSymbol, tamagawaNumber, rootNumber, tamagawaTypeIIIShift,
+    reductionType, kodairaSymbol, tamagawaNumber, rootNumber, tamagawaTypeIIShift,
+    tamagawaTypeIIIShift,
     tamagawaTypeIVEvidence }
 
 /-- Decode a local-row list and any top-level local claim. -/

@@ -89,6 +89,18 @@ and the nonsplit case gives Euler value 4 modulo 5. The joined projections
 retain the native claims without the extra evidence, which the producer
 proposes independently.
 
+The `107200.dh1` Type II case is projected from line 46277 of the pinned
+John Cremona `ecdata` file `curvedata/curvedata.100000-109999` at revision
+`25cec5ecfec8b9f016eb1631ac633194c2bed39f` (Cremona label `107200bz1`). The
+source row has equation `[0,-1,0,-53,-133]`; its p=5 local values are
+discriminant and conductor valuation 2, PARI type II code 2, and Tamagawa
+factor 1. `107200.dh1-tamagawa-joined.json` is the producer-facing projection
+of the `ec_curvedata` and p=5 `ec_localdata` rows. The exact source record
+digest and blob identity are in its provenance sidecar. The checked witness
+supplies the scale-one translation `(r,s,t)=(2,0,0)` and verifies the five
+terminal conditions. This is an ecdata snapshot projection, not a captured
+LMFDB HTTP response.
+
 The Lean consumer checks the finite theorems and checks the modularity dependency
 on conductor and root-number theorems. The matrix inputs contain no rank data. Its consumer also reuses the separate, already
 checked analytic-rank-one witness for 112.a2 on the same integral equation.

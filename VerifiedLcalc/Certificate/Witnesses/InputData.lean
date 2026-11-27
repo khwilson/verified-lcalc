@@ -143,6 +143,16 @@ structure TorsionBoundWitness where
 
 /-! ## Finite-prime rows and Tate transcripts -/
 
+/-- Exact integral coordinates of a scale-one change for a type II witness. -/
+structure TamagawaTypeIIShift where
+  /-- Change in the x-coordinate. -/
+  r : Int
+  /-- Slope of the change in the y-coordinate. -/
+  s : Int
+  /-- Translation in the y-coordinate. -/
+  t : Int
+  deriving Repr, DecidableEq
+
 /-- Exact integral coordinates of a unit-scale change of variables for a type III witness. -/
 structure TamagawaTypeIIIShift where
   /-- Change in the x-coordinate. -/
@@ -197,6 +207,8 @@ structure LocalReductionClaim where
   tamagawaTypeIIIShift : Option TamagawaTypeIIIShift := none
   /-- Submitted change and residue evidence for a type IV local factor. -/
   tamagawaTypeIVEvidence : Option TamagawaTypeIVEvidence := none
+  /-- Submitted scale-one change for a tame type II local factor. -/
+  tamagawaTypeIIShift : Option TamagawaTypeIIShift := none
   deriving Repr, DecidableEq
 
 end VerifiedLcalc

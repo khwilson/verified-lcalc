@@ -51,6 +51,10 @@ input_file witness_tests_fixtures_lmfdb_291_d1 where
   path := "tests/fixtures/lmfdb/291.d1.json"
   text := true
 
+input_file witness_tests_fixtures_lmfdb_107200_dh1_tamagawa where
+  path := "tests/fixtures/lmfdb/107200.dh1-tamagawa.json"
+  text := true
+
 input_file witness_tests_fixtures_lmfdb_37_a1_trace_hash where
   path := "tests/fixtures/lmfdb/37.a1-trace-hash-source.json"
   text := true
@@ -72,6 +76,7 @@ lean_lib VerifiedLcalcTests where
     `@/witness_tests_fixtures_lmfdb_286_f1,
     `@/witness_tests_fixtures_lmfdb_288_a1,
     `@/witness_tests_fixtures_lmfdb_291_d1,
+    `@/witness_tests_fixtures_lmfdb_107200_dh1_tamagawa,
     `@/witness_tests_fixtures_lmfdb_37_a1_trace_hash,
     `@/torsionFixture120b4]
 

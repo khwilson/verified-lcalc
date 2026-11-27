@@ -240,6 +240,13 @@ certify_ec TypeIVNonsplit50a1 from_json_string
 example : (TypeIVNonsplit50a1.certificate.arithmetic.tamagawa.map (·.value)) = [1] := by
   decide +kernel
 
+/- Type II fixture: exact coefficients and local rows are projected from the
+pinned John Cremona ecdata source record for 107200.dh1. -/
+certify_ec TypeII107200 from_json "fixtures/lmfdb/107200.dh1-tamagawa.json"
+
+example : (TypeII107200.certificate.arithmetic.tamagawa.map (·.value)) = [1] := by
+  decide +kernel
+
 example :
     letI : Fact (Nat.Prime 5) := ⟨by decide +kernel⟩
     (TypeIVNonsplit50a1.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 5) = 1 := by
@@ -267,7 +274,7 @@ example : OtherAdditive98a5.certificate.arithmetic.tamagawa.isEmpty = true := by
   decide +kernel
 
 /--
-info: TamagawaOutsideScope: Tamagawa claims outside good, I₁, I₂ or supported tame III/IV reduction are unverified.
+info: TamagawaOutsideScope: Tamagawa claims outside good, I₁, I₂ or supported tame II/III/IV reduction are unverified.
 ---
 info: Certified TamagawaOutsideScope.ap_correct and TamagawaOutsideScope.point_integral
 for the supplied lists
@@ -473,6 +480,10 @@ run_cmd do
     r#"{"ainvs":[1,-1,1,-6,-4],"minimality":[17,17],"prime":17,
         "discriminant_valuation":2,"reduction_type":1,"kodaira_symbol":6,
         "tamagawa_number":3}"#))
+  invariantRejected `WrongTypeIITamagawaTwo
+    (← `(certify_ec WrongTypeIITamagawaTwo from_json_string
+      r#"{"ainvs":[0,-1,0,-53,-133],"prime":5,"tamagawa_number":2,
+          "tamagawa_type_ii":{"r":2,"s":0,"t":0}}"#))
   invariantRejected `WrongTypeIIITamagawaOne
     (← `(certify_ec WrongTypeIIITamagawaOne from_json_string
       r#"{"ainvs":[1,-1,0,-2,-1],"minimality":[7,7,7],"prime":7,
@@ -814,7 +825,8 @@ run_cmd do
   cover ``IsogenyEdgeClaim #[`target, `degree, `kernelX]
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
     `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol, `rootNumber,
-    `tamagawaTypeIIIShift, `tamagawaTypeIVEvidence]
+    `tamagawaTypeIIShift, `tamagawaTypeIIIShift, `tamagawaTypeIVEvidence]
+  cover ``TamagawaTypeIIShift #[`r, `s, `t]
   cover ``TamagawaTypeIIIShift #[`r, `s, `t]
   cover ``TamagawaTypeIVEvidence #[`r, `s, `t, `residue]
   cover ``AbcQualityClaim #[`reported, `error, `factors]
