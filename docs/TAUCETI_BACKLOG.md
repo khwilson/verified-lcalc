@@ -219,6 +219,14 @@ where the index depends on splitting, a root-count certificate over the
 residue field. TauCeti [#43196](https://github.com/TauCetiProject/TauCeti/pull/43196)
 addresses local and global isogeny formulas.
 
+The tame type IV route takes an exact unit-scale change and either a
+residue root or an Euler nonsquare witness at `p > 3`. Its completed
+terminal proof reuses `isTateTerminal_IV` and the local-index root/no-root
+branches. The producer proposes this evidence separately. General
+additive normalization, cubic root counts at `I₀*`, and root or no-root
+certificates in characteristics 2 and 3 remain open.
+[Pinned type IV local-index formulas](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/LocalIndex.lean#L203-L208)
+
 The A3 certificate uses the product indexed by `HeightOneSpectrum ℤ`,
 matching TauCeti's rational BSD quotient. For reuse across local arithmetic
 over different presentations of the rational integers, a useful downstream

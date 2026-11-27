@@ -13,6 +13,10 @@ public import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.Reduction.Cu
 import TauCeti.AlgebraicGeometry.EllipticCurve.TateAlgorithm.LocalIndex
 import TauCeti.NumberTheory.LocalField.Henselian
 import TauCeti.RingTheory.DedekindDomain.AdicCompletionExtension
+import TauCeti.RingTheory.DedekindDomain.AdicValuation.Localization
+import TauCeti.Data.Nat.Prime.IntCast
+import Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.Basic
+import Mathlib.Data.ZMod.Basic
 
 /-! # Intrinsic Tamagawa numbers of rational curves
 
@@ -27,6 +31,50 @@ namespace VerifiedLcalc.EllipticCurve
 
 open WeierstrassCurve NumberField IsDedekindDomain
 open scoped WithZero
+
+private theorem rationalPlace_asIdeal_span (p : ℕ) [Fact p.Prime] :
+    (rationalPlace p).asIdeal = Ideal.span {(p : 𝓞 ℚ)} := by
+  let v := rationalPlace p
+  have hInt : (RationalPrimes.integerPlace v).asIdeal = Ideal.span {(p : ℤ)} := by
+    rw [← Int.ideal_span_absNorm_eq_self (RationalPrimes.integerPlace v).asIdeal,
+      RationalPrimes.norm_integerPlace, rationalPlace_norm]
+  have hMapped :
+      Ideal.map Rat.ringOfIntegersEquiv.toRingHom v.asIdeal =
+        Ideal.map Rat.ringOfIntegersEquiv.toRingHom (Ideal.span {(p : 𝓞 ℚ)}) := by
+    calc
+    v.asIdeal.map Rat.ringOfIntegersEquiv.toRingHom =
+        (RationalPrimes.integerPlace v).asIdeal :=
+      (RationalPrimes.integerPlace_asIdeal v).symm
+    _ = Ideal.span {(p : ℤ)} := hInt
+    _ = (Ideal.span {(p : 𝓞 ℚ)}).map Rat.ringOfIntegersEquiv.toRingHom := by
+      rw [Ideal.map_span, Set.image_singleton]
+      simp
+  have hcomap := congrArg (Ideal.comap Rat.ringOfIntegersEquiv.toRingHom) hMapped
+  simpa only [Ideal.comap_map_of_surjective Rat.ringOfIntegersEquiv.toRingHom
+      Rat.ringOfIntegersEquiv.surjective,
+    Ideal.comap_bot_of_injective Rat.ringOfIntegersEquiv.toRingHom
+      Rat.ringOfIntegersEquiv.injective, sup_bot_eq] using hcomap
+
+private theorem rationalLocalRing_maximalIdeal (p : ℕ) [Fact p.Prime] :
+    IsLocalRing.maximalIdeal (RationalLocalRing p) =
+      Ideal.span {(p : RationalLocalRing p)} := by
+  let v := rationalPlace p
+  let f := algebraMap (𝓞 ℚ) (RationalLocalRing p)
+  calc
+    _ = Ideal.map f v.asIdeal := (IsLocalization.AtPrime.map_eq_maximalIdeal
+      v.asIdeal (RationalLocalRing p)).symm
+    _ = Ideal.map f (Ideal.span {(p : 𝓞 ℚ)}) :=
+      congrArg (Ideal.map f) (rationalPlace_asIdeal_span p)
+    _ = _ := by rw [Ideal.map_span, Set.image_singleton, map_natCast]
+
+private theorem rationalCompletion_irreducible_natCast (p : ℕ) [Fact p.Prime] :
+    Irreducible (p : (rationalPlace p).adicCompletionIntegers ℚ) := by
+  let v := rationalPlace p
+  have hloc : Irreducible (p : RationalLocalRing p) :=
+    (IsDiscreteValuationRing.irreducible_iff_uniformizer _).mpr
+      (rationalLocalRing_maximalIdeal p)
+  simpa only [map_natCast] using
+    (v.irreducible_localizationToCompletionIntegers_iff (K := ℚ)).mpr hloc
 
 /-- At a rational prime, an integer prime to the residue characteristic
 has normalized valuation one in the completion. -/
@@ -75,8 +123,8 @@ theorem tamagawaNumberAt_eq_one_of_unit_discriminant (e : WeierstrassCurve ℤ)
     (h : Valued.v (e.Δ : v.adicCompletion ℚ) = 1) :
     (e.baseChange ℚ).tamagawaNumberAt v = 1 := by
   let F := v.adicCompletion ℚ
-  let S := v.adicCompletionIntegers ℚ
   let V : Valuation F (WithZero (Multiplicative ℤ)) := Valued.v
+  let S := v.adicCompletionIntegers ℚ
   let W := (e.baseChange ℚ).baseChange F
   let := completedIntegral e v
   have hΔ : W.Δ = (e.Δ : F) := by
@@ -150,6 +198,156 @@ theorem tamagawaNumberAt_eq_one_of_valuation_I_one (e : WeierstrassCurve ℤ)
 
 end Place
 
+/-- A supplied integral change whose image in the completed local integers is
+a Tate terminal equation computes its local index on the original curve.
+This is the shared model-to-completion transport used by the additive cases. -/
+private theorem tamagawaNumberAt_eq_tateLocalIndex_of_terminal
+    (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
+    [(e.baseChange ℚ).IsElliptic] (D : WeierstrassCurve.VariableChange ℤ)
+    (symbol : TauCeti.ReductionSymbol)
+    (hterminal : (D • e).IsTateTerminal (p : ℤ) symbol) :
+    (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) =
+      ((D • e).map
+        (algebraMap ℤ ((rationalPlace p).adicCompletionIntegers ℚ))).tateLocalIndex
+          (p : (rationalPlace p).adicCompletionIntegers ℚ) symbol := by
+  let v := rationalPlace p
+  let F := v.adicCompletion ℚ
+  let V : Valuation F (WithZero (Multiplicative ℤ)) := Valued.v
+  let S := V.valuationSubring
+  let C := (D • e).map (algebraMap ℤ S)
+  let W := (e.baseChange ℚ).baseChange F
+  let : IsAdicComplete (IsLocalRing.maximalIdeal S) S :=
+    (v.isAdic_maximalIdeal_adicCompletionIntegers (K := ℚ)).isAdicComplete_iff.mpr
+      ⟨inferInstance, inferInstance⟩
+  let : Finite (IsLocalRing.ResidueField S) := by
+    change Finite (IsLocalRing.ResidueField (v.adicCompletionIntegers ℚ))
+    infer_instance
+  have hS : (ValuativeRel.valuation F).valuationSubring = S :=
+    (Valuation.isEquiv_iff_valuationSubring (ValuativeRel.valuation F) V).mp
+      (ValuativeRel.isEquiv (ValuativeRel.valuation F) V)
+  let : HenselianLocalRing S := hS ▸ TauCeti.henselianLocalRing_valuationSubring F
+  have hϖ : Irreducible (p : S) := rationalCompletion_irreducible_natCast p
+  have hspan : IsLocalRing.maximalIdeal S = Ideal.span {(p : S)} :=
+    (IsDiscreteValuationRing.irreducible_iff_uniformizer (p : S)).mp hϖ
+  have hterminalC : C.IsTateTerminal (p : S) symbol := by
+    let f := Int.castRingHom S
+    have hdvd := (Fact.out : p.Prime).pow_dvd_intCast_iff
+      (.of_ne_zero hϖ.ne_zero) hϖ.not_isUnit
+    change ((D • e).map f).IsTateTerminal (p : S) symbol
+    rw [← map_natCast f p,
+      isTateTerminal_map_iff _ fun n x => by simpa [f] using hdvd n x]
+    exact hterminal
+  have hD : (D.baseChange F) • W = C.baseChange F := by
+    have hw : W = e.baseChange F := by
+      change e.map ((algebraMap ℚ F).comp (algebraMap ℤ ℚ)) = e.map (algebraMap ℤ F)
+      exact congrArg e.map (IsScalarTower.algebraMap_eq ℤ ℚ F).symm
+    calc
+      (D.baseChange F) • W = (D.baseChange F) • e.baseChange F := by rw [hw]
+      _ = (D • e).baseChange F := baseChange_smul_baseChange F D e
+      _ = C.baseChange F := by
+        change (D • e).map (algebraMap ℤ F) =
+          ((D • e).map (algebraMap ℤ S)).map (algebraMap S F)
+        rw [WeierstrassCurve.map_map]
+        exact congrArg (D • e).map (IsScalarTower.algebraMap_eq ℤ S F)
+  let : (C.baseChange F).IsElliptic := hD ▸ inferInstanceAs ((D.baseChange F) • W).IsElliptic
+  have hlocal := (C.baseChange F).tamagawaNumber_eq_tateLocalIndex V hspan
+    (by simpa only [integralModel_baseChange_self] using hterminalC)
+  rw [tamagawaNumberAt_adicValued]
+  change W.tamagawaNumber V = C.tateLocalIndex (p : S) symbol
+  rw [← W.tamagawaNumber_smul V (D.baseChange F), hD, hlocal,
+    integralModel_baseChange_self]
+
+/-- A terminal predicate on an integer equation transfers to the completed
+integer ring when the rational prime remains its uniformizer. -/
+private theorem isTateTerminal_baseChange_int {R : Type*} [CommRing R] [IsDomain R]
+    (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
+    (hϖ : Irreducible (p : R)) {symbol : TauCeti.ReductionSymbol}
+    (h : e.IsTateTerminal (p : ℤ) symbol) :
+    (e.baseChange R).IsTateTerminal (p : R) symbol := by
+  let f := Int.castRingHom R
+  have hdvd := (Fact.out : p.Prime).pow_dvd_intCast_iff
+    (.of_ne_zero hϖ.ne_zero) hϖ.not_isUnit
+  change (e.map f).IsTateTerminal (p : R) symbol
+  rw [← map_natCast f p, isTateTerminal_map_iff _ fun n x => by simpa [f] using hdvd n x]
+  exact h
+
+private theorem cast_divisor_mul_quotient {R : Type*} [CommRing R] {p k : ℕ} {x : ℤ}
+    (h : (p : ℤ) ^ k ∣ x) :
+    (x : R) = (p : R) ^ k * ((x / (p : ℤ) ^ k : ℤ) : R) := by
+  rw [← Int.cast_natCast p, ← Int.cast_pow, ← Int.cast_mul, mul_comm,
+    Int.ediv_mul_cancel_of_dvd h]
+
+private theorem map_residue_intCast {R : Type*} [CommRing R] [IsLocalRing R] {p : ℕ}
+    (f : IsLocalRing.ResidueField R ≃+* ZMod p) (x : ℤ) :
+    f (IsLocalRing.residue R (x : R)) = (x : ZMod p) :=
+  map_intCast (f.toRingHom.comp (IsLocalRing.residue R)) x
+
+/-- The completed type IV Tate root condition is equivalent to a root of the
+derived finite quadratic. Its coefficients are the quotients of the submitted
+terminal model, not separately trusted payload values. -/
+private theorem hasTateYRoot_iff_typeIVResiduePolynomial
+    {R : Type*} [CommRing R] [IsDomain R] [IsLocalRing R] (p : ℕ)
+    (f : IsLocalRing.ResidueField R ≃+* ZMod p) (e : WeierstrassCurve ℤ)
+    (hspan : IsLocalRing.maximalIdeal R = Ideal.span {(p : R)})
+    (hp : (p : R) ≠ 0) (h₃ : (p : ℤ) ∣ e.a₃) (h₆ : (p : ℤ) ^ 2 ∣ e.a₆) :
+    (e.baseChange R).HasTateYRoot (p : R) 1 ↔
+      ∃ y : ZMod p, typeIVResiduePolynomial e p y = 0 := by
+  have ha₃ : (e.baseChange R).a₃ = (p : R) ^ 1 * ((e.a₃ / (p : ℤ) : ℤ) : R) := by
+    change (e.a₃ : R) = _
+    simpa only [pow_one] using
+      cast_divisor_mul_quotient (R := R) (k := 1) (by simpa using h₃)
+  have ha₆ : (e.baseChange R).a₆ = (p : R) ^ 2 * ((e.a₆ / (p : ℤ) ^ 2 : ℤ) : R) := by
+    change (e.a₆ : R) = _
+    exact cast_divisor_mul_quotient h₆
+  rw [hasTateYRoot_iff_exists_residue_root hspan hp ha₃ ha₆]
+  refine f.toEquiv.exists_congr fun y => ?_
+  rw [← f.map_eq_zero_iff]
+  simp only [map_sub, map_add, map_mul, map_pow, map_residue_intCast,
+    typeIVResiduePolynomial]
+  rfl
+
+/-- Euler's nonsquare certificate excludes roots of the type IV quadratic over
+an odd prime field. -/
+private theorem no_typeIV_residue_root_of_euler_power (p : ℕ) [Fact p.Prime]
+    (hp : 3 < p) (b₃ b₆ : ℤ)
+    (hpow : ((b₃ ^ 2 + 4 * b₆ : ℤ) : ZMod p) ^ ((p - 1) / 2) = -1) :
+    ¬ ∃ y : ZMod p, y ^ 2 + (b₃ : ZMod p) * y - (b₆ : ZMod p) = 0 := by
+  rintro ⟨y, hy⟩
+  let d : ZMod p := ((b₃ ^ 2 + 4 * b₆ : ℤ) : ZMod p)
+  let z : ZMod p := 2 * y + (b₃ : ZMod p)
+  have hdisc : ((b₃ ^ 2 + 4 * b₆ : ℤ) : ZMod p) =
+      (b₃ : ZMod p) ^ 2 + 4 * (b₆ : ZMod p) := by push_cast; ring
+  have hsq : z ^ 2 = d := by
+    dsimp [z, d]
+    calc
+      (2 * y + (b₃ : ZMod p)) ^ 2 =
+          4 * (y ^ 2 + (b₃ : ZMod p) * y - (b₆ : ZMod p)) +
+            ((b₃ ^ 2 + 4 * b₆ : ℤ) : ZMod p) := by rw [hdisc]; ring
+      _ = ((b₃ ^ 2 + 4 * b₆ : ℤ) : ZMod p) := by rw [hy]; ring
+  have hpodd : Odd p := (Fact.out : Nat.Prime p).odd_of_ne_two (by omega)
+  have hodd : p / 2 = (p - 1) / 2 := by obtain ⟨k, hk⟩ := hpodd; omega
+  have hchar : ringChar (ZMod p) ≠ 2 := by
+    rw [ZMod.ringChar_zmod_n]
+    omega
+  have hcharValue : quadraticChar (ZMod p) d = -1 := by
+    have hpowD : d ^ ((p - 1) / 2) = -1 := by simpa [d] using hpow
+    have hd : d ≠ 0 := by
+      intro hz
+      rw [hz] at hpowD
+      have hexp : 0 < (p - 1) / 2 := by omega
+      rw [zero_pow hexp.ne'] at hpowD
+      norm_num at hpowD
+    have hpowNe : d ^ (Fintype.card (ZMod p) / 2) ≠ 1 := by
+      rw [ZMod.card, hodd, hpowD]
+      have hne : (-1 : ZMod p) ≠ 1 := by
+        have : Fact (2 < p) := ⟨by omega⟩
+        exact ZMod.neg_one_ne_one
+      exact hne
+    rw [quadraticChar_eq_pow_of_char_ne_two hchar hd, ite_eq_right hpowNe]
+  have hnotSquare : ¬ IsSquare d :=
+    (quadraticChar_neg_one_iff_not_isSquare).mp hcharValue
+  exact hnotSquare ⟨z, by simpa [pow_two] using hsq.symm⟩
+
 /-- At multiplicative reduction with discriminant valuation two, the intrinsic
 Tamagawa number is two in both splitting cases. -/
 theorem tamagawaNumberAt_eq_two_of_valuation_I_two (e : WeierstrassCurve ℤ)
@@ -197,114 +395,96 @@ theorem tamagawaNumberAt_eq_two_of_typeIII_shift (e : WeierstrassCurve ℤ)
     (ha₆ : (p : ℤ) ^ 2 ∣ (D • e).a₆)
     (hb₈ : ¬ (p : ℤ) ^ 3 ∣ (D • e).b₈) :
     (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = 2 := by
-  let v := rationalPlace p
-  let : Finite (𝓞 ℚ ⧸ v.asIdeal) := finite_quotient_rationalPlace p
-  let F := v.adicCompletion ℚ
-  let V : Valuation F (WithZero (Multiplicative ℤ)) := Valued.v
-  let S := V.valuationSubring
-  let A := D • e
-  let C := A.map (algebraMap ℤ S)
-  let ϖ : S := algebraMap ℤ S p
-  let W := (e.baseChange ℚ).baseChange F
-  have hpval : Valued.v (p : F) = WithZero.exp (-1 : ℤ) := by
-    apply completion_intCast_valuation_eq p 1 (p : ℤ)
-    · simp
-    · intro h
-      have hnat : p ^ 2 ∣ p := by exact_mod_cast h
-      have hp' : Nat.Prime p := Fact.out
-      have hle : p ^ 2 ≤ p := Nat.le_of_dvd hp'.pos hnat
-      nlinarith [hp'.two_le]
-  have hcast : algebraMap S F ϖ = (p : F) := by
-    change algebraMap S F (algebraMap ℤ S (p : ℤ)) = _
-    rw [← IsScalarTower.algebraMap_apply ℤ S F]
-    simp
-  have hϖval : Valued.v (algebraMap S F ϖ) = WithZero.exp (-1 : ℤ) := by
-    rw [hcast]
-    exact hpval
-  have hspan' : Ideal.span {ϖ} = IsLocalRing.maximalIdeal S := by
-    have hspan := v.span_singleton_eq_maximalIdeal_pow
-      (K := ℚ) (x := ϖ) (e := 1) hϖval
-    simp only [pow_one] at hspan
-    exact hspan
-  have hterminal : C.IsTateTerminal ϖ .III := by
+  have hterminal : (D • e).IsTateTerminal (p : ℤ) .III := by
     rw [isTateTerminal_III]
-    refine ⟨?_, ?_, ?_, ?_, ?_⟩
-    · simpa only [C, A, map_b₂] using map_dvd (algebraMap ℤ S) hb₂
-    · simpa only [C, A, map_a₃] using map_dvd (algebraMap ℤ S) ha₃
-    · simpa only [C, A, map_a₄] using map_dvd (algebraMap ℤ S) ha₄
-    · simpa only [C, A, map_a₆, map_pow] using map_dvd (algebraMap ℤ S) ha₆
-    · intro hdiv
-      have dvd_mul_sq {a b : ℤ} (ha : (p : ℤ) ∣ a) (hb : (p : ℤ) ∣ b) :
-          (p : ℤ) ^ 2 ∣ a * b := by
-        rcases ha with ⟨x, rfl⟩
-        rcases hb with ⟨y, rfl⟩
-        refine ⟨x * y, ?_⟩
-        ring
-      have hb8div : (p : ℤ) ^ 2 ∣ A.b₈ := by
-        rw [WeierstrassCurve.b₈]
-        have hterm1 : (p : ℤ) ^ 2 ∣ A.a₁ ^ 2 * A.a₆ := by
-          exact dvd_mul_of_dvd_right ha₆ _
-        have hterm2 : (p : ℤ) ^ 2 ∣ 4 * A.a₂ * A.a₆ := by
-          exact dvd_mul_of_dvd_right ha₆ _
-        have hterm3 : (p : ℤ) ^ 2 ∣ A.a₁ * A.a₃ * A.a₄ := by
-          simpa [mul_assoc] using dvd_mul_of_dvd_right (dvd_mul_sq ha₃ ha₄) A.a₁
-        have hterm4 : (p : ℤ) ^ 2 ∣ A.a₂ * A.a₃ ^ 2 := by
-          simpa [pow_two] using dvd_mul_of_dvd_right (dvd_mul_sq ha₃ ha₃) A.a₂
-        have hterm5 : (p : ℤ) ^ 2 ∣ A.a₄ ^ 2 := by
-          simpa only [pow_two] using dvd_mul_sq ha₄ ha₄
-        exact dvd_sub (dvd_add (dvd_sub (dvd_add hterm1 hterm2) hterm3) hterm4) hterm5
-      have hbval : Valued.v ((A.b₈ : ℤ) : F) = WithZero.exp (-2 : ℤ) :=
-        completion_intCast_valuation_eq p 2 A.b₈ hb8div hb₈
-      obtain ⟨x, hx⟩ : ∃ x : S, C.b₈ = ϖ ^ 3 * x := hdiv
-      have hxF : (A.b₈ : F) = (p : F) ^ 3 * (x : F) := by
-        have hx' := congrArg (algebraMap S F) hx
-        have hleft : algebraMap S F C.b₈ = (A.b₈ : F) := by
-          simp [C, A, map_b₈]
-        have hright : algebraMap S F (ϖ ^ 3 * x) = (p : F) ^ 3 * (x : F) := by
-          rw [map_mul, map_pow, hcast]
-          simp only [ValuationSubring.algebraMap_apply]
-        exact hleft.symm.trans (hx'.trans hright)
-      have hxbound : Valued.v (x : F) ≤ 1 := x.property
-      have hupper : Valued.v ((A.b₈ : ℤ) : F) ≤ WithZero.exp (-3 : ℤ) := by
-        rw [hxF, map_mul, map_pow, hpval]
-        calc
-          WithZero.exp (-1 : ℤ) ^ 3 * Valued.v (x : F) ≤
-              WithZero.exp (-1 : ℤ) ^ 3 * 1 := by gcongr
-          _ = WithZero.exp (-3 : ℤ) := by rw [← WithZero.exp_nsmul]; norm_num
-      rw [hbval] at hupper
-      exact (not_le_of_gt (WithZero.exp_lt_exp.mpr (by norm_num : (-3 : ℤ) < -2))) hupper
-  have hD : (D.baseChange F) • W = C.baseChange F := by
-    have hw : W = e.baseChange F := by
-      change e.map ((algebraMap ℚ F).comp (algebraMap ℤ ℚ)) = e.map (algebraMap ℤ F)
-      exact congrArg e.map (IsScalarTower.algebraMap_eq ℤ ℚ F).symm
+    exact ⟨hb₂, ha₃, ha₄, ha₆, hb₈⟩
+  calc
+    (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) =
+        ((D • e).map
+          (algebraMap ℤ ((rationalPlace p).adicCompletionIntegers ℚ))).tateLocalIndex
+            (p : (rationalPlace p).adicCompletionIntegers ℚ) .III :=
+      tamagawaNumberAt_eq_tateLocalIndex_of_terminal e p D .III hterminal
+    _ = 2 := tateLocalIndex_III
+
+/-- The supplied type IV translation and residue certificate determine the
+intrinsic local factor: three for a checked root, one for a checked nonsplit
+Euler value. No root or normalization is discovered by this theorem. -/
+theorem tamagawaNumberAt_eq_typeIV_of_evidence (e : WeierstrassCurve ℤ)
+    (p : ℕ) [Fact p.Prime] [(e.baseChange ℚ).IsElliptic]
+    (evidence : TamagawaTypeIVEvidence) (hcheck : checkTameTypeIV e p evidence = true) :
+    (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) =
+      match evidence.residue with
+      | .root _ => 3
+      | .nonsplitEulerPower _ => 1 := by
+  let D := typeIVChange evidence
+  let A := D • e
+  let v := rationalPlace p
+  let S := v.adicCompletionIntegers ℚ
+  let hϖ : Irreducible (p : S) := rationalCompletion_irreducible_natCast p
+  let f := completionResidueEquiv p
+  have hspan : IsLocalRing.maximalIdeal S = Ideal.span {(p : S)} :=
+    (IsDiscreteValuationRing.irreducible_iff_uniformizer (p : S)).mp hϖ
+  cases he : evidence.residue with
+  | root y =>
+    have hcheck' :
+        (decide (3 < p ∧ (p : ℤ) ∣ A.b₂ ∧ (p : ℤ) ∣ A.a₃ ∧
+          (p : ℤ) ∣ A.a₄ ∧ (p : ℤ) ^ 2 ∣ A.a₆ ∧
+          (p : ℤ) ^ 3 ∣ A.b₈ ∧ ¬ (p : ℤ) ^ 3 ∣ A.b₆) &&
+        decide (y < p ∧ typeIVResiduePolynomial A p (y : ZMod p) = 0)) = true := by
+      simp only [checkTameTypeIV, typeIVChange, he] at hcheck
+      exact hcheck
+    rcases Bool.and_eq_true_iff.mp hcheck' with ⟨ht, hroot⟩
+    have ht' : 3 < p ∧ (p : ℤ) ∣ A.b₂ ∧ (p : ℤ) ∣ A.a₃ ∧
+        (p : ℤ) ∣ A.a₄ ∧ (p : ℤ) ^ 2 ∣ A.a₆ ∧
+        (p : ℤ) ^ 3 ∣ A.b₈ ∧ ¬ (p : ℤ) ^ 3 ∣ A.b₆ := of_decide_eq_true ht
+    have hroot' : y < p ∧ typeIVResiduePolynomial A p (y : ZMod p) = 0 :=
+      of_decide_eq_true hroot
+    have hterminalInt : A.IsTateTerminal (p : ℤ) .IV := by
+      rw [isTateTerminal_IV]
+      exact ⟨ht'.2.1, ht'.2.2.1, ht'.2.2.2.1, ht'.2.2.2.2.1,
+        ht'.2.2.2.2.2.1, ht'.2.2.2.2.2.2⟩
+    have hrootIff := hasTateYRoot_iff_typeIVResiduePolynomial p f A hspan hϖ.ne_zero
+      ht'.2.2.1 ht'.2.2.2.2.1
+    have hrootTate : (A.baseChange S).HasTateYRoot (p : S) 1 :=
+      hrootIff.mpr ⟨(y : ZMod p), hroot'.2⟩
     calc
-      (D.baseChange F) • W = (D.baseChange F) • e.baseChange F := by rw [hw]
-      _ = (D • e).baseChange F := baseChange_smul_baseChange F D e
-      _ = C.baseChange F := by
-        change (D • e).map (algebraMap ℤ F) =
-          ((D • e).map (algebraMap ℤ S)).map (algebraMap S F)
-        rw [WeierstrassCurve.map_map]
-        exact congrArg (D • e).map (IsScalarTower.algebraMap_eq ℤ S F)
-  let : IsAdicComplete (IsLocalRing.maximalIdeal S) S := by
-    change IsAdicComplete
-      (IsLocalRing.maximalIdeal (v.adicCompletionIntegers ℚ))
-      (v.adicCompletionIntegers ℚ)
-    exact (v.isAdic_maximalIdeal_adicCompletionIntegers (K := ℚ)).isAdicComplete_iff.mpr
-      ⟨inferInstance, inferInstance⟩
-  let : Finite (IsLocalRing.ResidueField S) := by
-    change Finite (IsLocalRing.ResidueField (v.adicCompletionIntegers ℚ))
-    infer_instance
-  let : HenselianLocalRing S := inferInstance
-  let : IsIntegral S (C.baseChange F) := ⟨C, rfl⟩
-  have hterminalS :
-      (integralModel S (C.baseChange F)).IsTateTerminal ϖ .III := by
-    simpa only [integralModel_baseChange_self] using hterminal
-  let : (C.baseChange F).IsElliptic := hD ▸ inferInstanceAs ((D.baseChange F) • W).IsElliptic
-  have hlocal := (C.baseChange F).tamagawaNumber_eq_tateLocalIndex V hspan'.symm hterminalS
-  rw [tamagawaNumberAt_adicValued]
-  change W.tamagawaNumber V = 2
-  rw [← W.tamagawaNumber_smul V (D.baseChange F), hD, hlocal]
-  simp
+      (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) =
+          (A.baseChange S).tateLocalIndex (p : S) .IV :=
+        tamagawaNumberAt_eq_tateLocalIndex_of_terminal e p D .IV hterminalInt
+      _ = 3 := tateLocalIndex_IV_of_hasTateYRoot hrootTate
+  | nonsplitEulerPower value =>
+    have hcheck' :
+        (decide (3 < p ∧ (p : ℤ) ∣ A.b₂ ∧ (p : ℤ) ∣ A.a₃ ∧
+          (p : ℤ) ∣ A.a₄ ∧ (p : ℤ) ^ 2 ∣ A.a₆ ∧
+          (p : ℤ) ^ 3 ∣ A.b₈ ∧ ¬ (p : ℤ) ^ 3 ∣ A.b₆) &&
+        decide (value + 1 = p ∧
+          (((A.a₃ / (p : ℤ)) ^ 2 + 4 * (A.a₆ / (p : ℤ) ^ 2) : ℤ) : ZMod p) ^
+            ((p - 1) / 2) = -1)) = true := by
+      simp only [checkTameTypeIV, typeIVChange, he] at hcheck
+      exact hcheck
+    rcases Bool.and_eq_true_iff.mp hcheck' with ⟨ht, heuler⟩
+    have ht' : 3 < p ∧ (p : ℤ) ∣ A.b₂ ∧ (p : ℤ) ∣ A.a₃ ∧
+        (p : ℤ) ∣ A.a₄ ∧ (p : ℤ) ^ 2 ∣ A.a₆ ∧
+        (p : ℤ) ^ 3 ∣ A.b₈ ∧ ¬ (p : ℤ) ^ 3 ∣ A.b₆ := of_decide_eq_true ht
+    have heuler' : value + 1 = p ∧
+        (((A.a₃ / (p : ℤ)) ^ 2 + 4 * (A.a₆ / (p : ℤ) ^ 2) : ℤ) : ZMod p) ^
+          ((p - 1) / 2) = -1 := of_decide_eq_true heuler
+    have hterminalInt : A.IsTateTerminal (p : ℤ) .IV := by
+      rw [isTateTerminal_IV]
+      exact ⟨ht'.2.1, ht'.2.2.1, ht'.2.2.2.1, ht'.2.2.2.2.1,
+        ht'.2.2.2.2.2.1, ht'.2.2.2.2.2.2⟩
+    have hrootIff := hasTateYRoot_iff_typeIVResiduePolynomial p f A hspan hϖ.ne_zero
+      ht'.2.2.1 ht'.2.2.2.2.1
+    have hnotRootFinite : ¬ ∃ y : ZMod p, typeIVResiduePolynomial A p y = 0 :=
+      no_typeIV_residue_root_of_euler_power p ht'.1 (A.a₃ / (p : ℤ))
+        (A.a₆ / (p : ℤ) ^ 2) heuler'.2
+    have hnotRootTate : ¬ (A.baseChange S).HasTateYRoot (p : S) 1 :=
+      fun hroot => hnotRootFinite (hrootIff.mp hroot)
+    calc
+      (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) =
+          (A.baseChange S).tateLocalIndex (p : S) .IV :=
+        tamagawaNumberAt_eq_tateLocalIndex_of_terminal e p D .IV hterminalInt
+      _ = 1 := tateLocalIndex_IV_of_not_hasTateYRoot hnotRootTate
 
 /-- The intrinsic local Tamagawa number is one at a good prime of the
 checked model. The point-group index is taken over the completion. -/
@@ -349,35 +529,52 @@ theorem supportsTamagawaOne_correct (e : WeierstrassCurve ℤ) (p : ℕ)
 /-- Every non-`none` result of the supported Tamagawa computation is the
 intrinsic local Tamagawa number at the completed place. -/
 theorem tamagawaExpected_correct (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
-    [(e.baseChange ℚ).IsElliptic] {shift : Option TamagawaTypeIIIShift} {value : ℕ}
-    (h : tamagawaExpected? e p shift = some value) :
+    [(e.baseChange ℚ).IsElliptic] {shift : Option TamagawaTypeIIIShift}
+    {typeIV : Option TamagawaTypeIVEvidence} {value : ℕ}
+    (h : tamagawaExpected? e p shift typeIV = some value) :
     (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = value := by
   cases shift with
-  | none =>
-    by_cases hs : supportsTamagawaOne e p = true
-    · rw [tamagawaExpected?, ite_eq_left hs] at h
-      cases h
-      exact supportsTamagawaOne_correct e p hs
-    · by_cases hm : multiplicativeIndexTwo e p = true
-      · rw [tamagawaExpected?, ite_eq_right hs, ite_eq_left hm] at h
-        cases h
-        have hm' : (p : ℤ) ^ 2 ∣ e.Δ ∧ ¬ (p : ℤ) ^ 3 ∣ e.Δ ∧ ¬ (p : ℤ) ∣ e.c₄ := by
-          simpa [multiplicativeIndexTwo] using hm
-        exact tamagawaNumberAt_eq_two_of_multiplicative_index_two e p hm'.1 hm'.2.1 hm'.2.2
-      · simp [tamagawaExpected?, hs, hm] at h
   | some shift =>
-    by_cases ht : checkTameTypeIII e p shift = true
-    · rw [tamagawaExpected?, ite_eq_left ht] at h
-      cases h
-      have ht' : 3 < p ∧ (p : ℤ) ∣ (typeIIIChange shift • e).b₂ ∧
-          (p : ℤ) ∣ (typeIIIChange shift • e).a₃ ∧
-          (p : ℤ) ∣ (typeIIIChange shift • e).a₄ ∧
-          (p : ℤ) ^ 2 ∣ (typeIIIChange shift • e).a₆ ∧
-          ¬ (p : ℤ) ^ 3 ∣ (typeIIIChange shift • e).b₈ := by
-        simpa [checkTameTypeIII] using ht
-      exact tamagawaNumberAt_eq_two_of_typeIII_shift e p (typeIIIChange shift)
-        ht'.2.1 ht'.2.2.1 ht'.2.2.2.1 ht'.2.2.2.2.1 ht'.2.2.2.2.2
-    · simp [tamagawaExpected?, ht] at h
+    cases typeIV with
+    | some evidence => simp [tamagawaExpected?] at h
+    | none =>
+      by_cases ht : checkTameTypeIII e p shift = true
+      · rw [tamagawaExpected?, ht] at h
+        cases h
+        have ht' : 3 < p ∧ (p : ℤ) ∣ (typeIIIChange shift • e).b₂ ∧
+            (p : ℤ) ∣ (typeIIIChange shift • e).a₃ ∧
+            (p : ℤ) ∣ (typeIIIChange shift • e).a₄ ∧
+            (p : ℤ) ^ 2 ∣ (typeIIIChange shift • e).a₆ ∧
+            ¬ (p : ℤ) ^ 3 ∣ (typeIIIChange shift • e).b₈ := by
+          simpa [checkTameTypeIII] using ht
+        exact tamagawaNumberAt_eq_two_of_typeIII_shift e p (typeIIIChange shift)
+          ht'.2.1 ht'.2.2.1 ht'.2.2.2.1 ht'.2.2.2.2.1 ht'.2.2.2.2.2
+      · simp [tamagawaExpected?, ht] at h
+  | none =>
+    cases typeIV with
+    | some evidence =>
+      by_cases ht : checkTameTypeIV e p evidence = true
+      · rw [tamagawaExpected?, ht] at h
+        cases h
+        exact tamagawaNumberAt_eq_typeIV_of_evidence e p evidence ht
+      · simp [tamagawaExpected?, ht] at h
+    | none =>
+      by_cases hs : supportsTamagawaOne e p = true
+      · rw [tamagawaExpected?, hs] at h
+        cases h
+        exact supportsTamagawaOne_correct e p hs
+      · by_cases hm : multiplicativeIndexTwo e p = true
+        · have hsf : supportsTamagawaOne e p = false := Bool.eq_false_of_not_eq_true hs
+          rw [tamagawaExpected?, hsf, hm] at h
+          cases h
+          have hm' : (p : ℤ) ^ 2 ∣ e.Δ ∧ ¬ (p : ℤ) ^ 3 ∣ e.Δ ∧
+              ¬ (p : ℤ) ∣ e.c₄ := by
+            simpa [multiplicativeIndexTwo] using hm
+          exact tamagawaNumberAt_eq_two_of_multiplicative_index_two e p
+            hm'.1 hm'.2.1 hm'.2.2
+        · have hsf : supportsTamagawaOne e p = false := Bool.eq_false_of_not_eq_true hs
+          have hmf : multiplicativeIndexTwo e p = false := Bool.eq_false_of_not_eq_true hm
+          simp [tamagawaExpected?, hsf, hmf] at h
 
 set_option backward.isDefEq.respectTransparency.types false in
 private theorem integerPlaceValuation_eq (v : HeightOneSpectrum ℤ) (p k : ℕ) (n : ℤ)

@@ -528,10 +528,12 @@ private def stored : List Route :=
     ⟨["localdata"], "tamagawa_number", aliases
       (checkedPath ["tamagawa_number"]
         [vl[`EllipticWitness.localInvariants], vl[`LocalReductionClaim.tamagawaNumber],
-          vl[`LocalReductionClaim.tamagawaTypeIIIShift]]
+          vl[`LocalReductionClaim.tamagawaTypeIIIShift],
+          vl[`LocalReductionClaim.tamagawaTypeIVEvidence]]
         `tamagawa_numbers [arith, vl[`ArithmeticFacts.tamagawa], vl[`LocalTamagawaFact.correct]]
-        ("Exact intrinsic factor at good, I₁, I₂ or tame III reduction with a submitted " ++
-          "unit-scale change satisfying the terminal conditions.") []
+        ("Exact intrinsic factor at good, I₁, I₂, submitted tame III, or submitted tame IV " ++
+          "terminal models. Type IV requires a checked residue root or nonsplit Euler value; " ++
+          "the verifier performs no normalization or residue search.") []
         vl[`LocalReductionClaim.tamagawa_correct]) "local_invariants"⟩,
     localRow "root_number" vl[`LocalReductionClaim.rootNumber] `local_root_numbers
       [arith, minimalModel, vl[`MinimalModelArithmeticFacts.localRootNumbers],

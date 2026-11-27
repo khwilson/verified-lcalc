@@ -43,7 +43,7 @@
           "curve": "112.a2",
           "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 171,
+          "proof_line": 197,
           "scope": "Absolute error enclosure for the specified decimal.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "|(LMFDB.C112a2.curve.baseChange ℚ).abcQuality LMFDB.C112a2.abc_quality_defined -\n      10348177494302118 / 10000000000000000| ≤\n  1 / 1000000000000000",
@@ -150,7 +150,7 @@
           "project_axioms": [
             "VerifiedLcalc.Assumptions.ellipticModularity"
           ],
-          "proof_line": 210,
+          "proof_line": 236,
           "scope": "Exact order at 1 of the modular realization.",
           "source": "data/witnesses/112a2.json",
           "statement": "analyticOrderAt\n    (Modularity.modularWitness LMFDB.C112a2.curve\n        LMFDB.C112a2.nonsingular).formL\n    1 =\n  1",
@@ -162,7 +162,7 @@
           "curve": "37.a1",
           "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 217,
+          "proof_line": 243,
           "scope": "Exact order at 1 for an explicitly supplied modular realization.",
           "source": "data/witnesses/37a1.json",
           "statement": "∀ (model : Modularity.ArithmeticModularRealization Curve37.curve),\n  analyticOrderAt model.formL 1 = 1",
@@ -267,7 +267,7 @@
           "project_axioms": [
             "VerifiedLcalc.Assumptions.ellipticModularity"
           ],
-          "proof_line": 138,
+          "proof_line": 164,
           "scope": "Level of the modular realization.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "(Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level =\n  112",
@@ -845,7 +845,7 @@
           "curve": "112.a2",
           "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 192,
+          "proof_line": 218,
           "scope": "Exact rational torsion cardinality.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "Nat.card\n    ↥(AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =\n  2",
@@ -869,7 +869,7 @@
           "curve": "112.a2",
           "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 163,
+          "proof_line": 189,
           "scope": "Exact prime support [2] of the full rational torsion order.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∀ (p : ℕ),\n  p ∈ [2] ↔\n    Nat.Prime p ∧\n      p ∣\n        Nat.card\n          ↥(AddCommGroup.torsion\n              (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point)",
@@ -893,7 +893,7 @@
           "curve": "112.a2",
           "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 197,
+          "proof_line": 223,
           "scope": "Full rational cyclic group with the submitted generator.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∃ e, ↑(e 1) = LMFDB.C112a2.torsion_generators.point ⟨0, ⋯⟩",
@@ -917,7 +917,7 @@
           "curve": "112.a2",
           "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 149,
+          "proof_line": 175,
           "scope": "All 20 stored coefficients for the 112.a2 equation after a₀.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "List.map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1))\n    (List.range 20) =\n  [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0]",
@@ -941,7 +941,7 @@
           "curve": "112.a2",
           "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 155,
+          "proof_line": 181,
           "scope": "All 25 stored prime-indexed coefficients for the 112.a2 equation.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "have facts := LMFDB.C112a2.certificate.arithmetic.primeCoefficients.get ⋯;\n(↑facts).length = 25 ∧\n  ∀ (p : ℕ) (a : ℤ),\n    (p, a) ∈ ↑facts → (LMFDB.C112a2.curve.baseChange ℚ).LFunction p = a",
@@ -1011,7 +1011,7 @@
           "curve": "112.a2",
           "extent": "partial",
           "project_axioms": [],
-          "proof_line": 177,
+          "proof_line": 203,
           "scope": "Membership of the supplied point.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "(LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation 0 2",
@@ -1046,7 +1046,7 @@
           "curve": "112.a2",
           "extent": "partial",
           "project_axioms": [],
-          "proof_line": 181,
+          "proof_line": 207,
           "scope": "Length of the checked point list.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "LMFDB.C112a2.generators.coordinates.length = 1",
@@ -1125,7 +1125,7 @@
           "curve": "112.a2",
           "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 185,
+          "proof_line": 211,
           "scope": "The list [(-2, 0)] generates the full rational torsion subgroup.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "LMFDB.C112a2.torsion_generators.coordinates = [(-2, 0)] ∧\n  AddSubgroup.closure (Set.range LMFDB.C112a2.torsion_generators.point) =\n    AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point",
@@ -1149,7 +1149,7 @@
           "curve": "112.a2",
           "extent": "partial",
           "project_axioms": [],
-          "proof_line": 204,
+          "proof_line": 230,
           "scope": "Complete integral fiber at x = -2.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∀ (y : ℤ),\n  y ∈ LMFDB.C112a2.integral_y_fiber ⟨0, ⋯⟩ ↔\n    LMFDB.C112a2.curve.toAffine.Equation (-2) y",
@@ -1337,7 +1337,7 @@
           "project_axioms": [
             "VerifiedLcalc.Assumptions.ellipticModularity"
           ],
-          "proof_line": 143,
+          "proof_line": 169,
           "scope": "Exponent of 2 in the level of the modular realization.",
           "source": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "(Modularity.modularWitness LMFDB.C112a2.curve\n          LMFDB.C112a2.nonsingular).level.factorization\n    2 =\n  4",
@@ -1361,7 +1361,7 @@
           "curve": "179.a1",
           "extent": "complete_for_sample",
           "project_axioms": [],
-          "proof_line": 124,
+          "proof_line": 150,
           "scope": "Exact I₁ symbol at 179.",
           "source": "tests/fixtures/lmfdb/179.a1.json",
           "statement": "WeierstrassCurve.reductionSymbol (RationalLocalRing 179)\n    (LMFDB.C179a1.curve.baseChange ℚ) =\n  TauCeti.ReductionSymbol.I 1",
@@ -1378,7 +1378,7 @@
     },
     {
       "checker_scopes": [
-        "Exact intrinsic factor at good, I₁, I₂ or tame III reduction with a submitted unit-scale change satisfying the terminal conditions."
+        "Exact intrinsic factor at good, I₁, I₂, submitted tame III, or submitted tame IV terminal models. Type IV requires a checked residue root or nonsplit Euler value; the verifier performs no normalization or residue search."
       ],
       "evidence": [
         {
@@ -1416,6 +1416,30 @@
           "status": "unconditional",
           "theorem": "FixtureFieldCoverage.tamagawa49a4",
           "value_origin": "fixture_claim"
+        },
+        {
+          "curve": "50.a3",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 124,
+          "scope": "Intrinsic local type IV factor at 5 with a residue root.",
+          "source": "tests/fixtures/lmfdb/50.a3-tamagawa.json",
+          "statement": "(LMFDB.C50a3.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 5) = 3",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.tamagawa50a3",
+          "value_origin": "fixture_claim"
+        },
+        {
+          "curve": "50.a1",
+          "extent": "complete_for_sample",
+          "project_axioms": [],
+          "proof_line": 137,
+          "scope": "Intrinsic local type IV factor at 5 with nonsplit evidence.",
+          "source": "tests/fixtures/lmfdb/50.a1-tamagawa.json",
+          "statement": "(LMFDB.C50a1.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 5) = 1",
+          "status": "unconditional",
+          "theorem": "FixtureFieldCoverage.tamagawa50a1",
+          "value_origin": "fixture_claim"
         }
       ],
       "field": "tamagawa_number",
@@ -1433,7 +1457,7 @@
           "curve": "179.a1",
           "extent": "partial",
           "project_axioms": [],
-          "proof_line": 131,
+          "proof_line": 157,
           "scope": "Exact local arithmetic formula at 179.",
           "source": "tests/fixtures/lmfdb/179.a1.json",
           "statement": "wildLocalRootSpec LMFDB.C179a1.curve LMFDB.C179a1.localData 179 = -1",

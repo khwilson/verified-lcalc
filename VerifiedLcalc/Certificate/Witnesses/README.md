@@ -6,6 +6,10 @@ The index covers **85 distinct column names** across **101 table-qualified colum
 
 All 85 names have a Lean record. **Checked** means `certify_ec` can populate the indicated evidence in the stated cases. **Structure** means a record specifies a proof obligation for a future constructor. **Report** records supplied data and may enforce local conditions such as primality. **Metadata** records catalogue provenance. **Mixed** gives the status for each table or case in the row. Command coverage is **85 of 85 distinct names** and **101 of 101 table-qualified columns** in the stated cases. The extension torsion check requires a supplied full invariant-factor proof. [Certification guide](../../../docs/LMFDB_INVARIANTS.md) · [EC/ℚ roadmap](../../../docs/roadmaps/LMFDB_Q_CERTIFICATION.md)
 
+The witness modules hold structures with documented data and proof fields,
+and data-only inductives with documented constructors. Companion modules
+hold helper functions, computations and theorem proofs.
+
 ## How a field reaches the certificate
 
 To trace a database column in Lean, start with its table and column name in the
@@ -35,6 +39,12 @@ with TauCeti's `tamagawaNumberAt` at that row's prime. The tame type III
 route also takes the optional `LocalReductionClaim.tamagawaTypeIIIShift`.
 JSON spells it `tamagawa_type_iii` with exact integer `r`, `s`, and `t`.
 The producer proposes the change and the checker tests the submitted coordinates.
+The tame type IV route takes `LocalReductionClaim.tamagawaTypeIVEvidence` as
+`tamagawa_type_iv`: exact integer `r`, `s`, and `t`, plus exactly one of
+`residue_root` or `nonsplit_euler_power`. The checker validates the submitted
+unit-scale change and evidence against the derived terminal quadratic; it does
+not search for a change or a residue. A root proves factor three, while a
+verified nonsplit Euler value at an odd prime proves factor one.
 [Imported 179.a1 consumer](../../../tests/consumers/LmfdbCI.lean).
 
 The certificate-level `LocalReductionClaim.TamagawaSpec`, `KodairaSpec`

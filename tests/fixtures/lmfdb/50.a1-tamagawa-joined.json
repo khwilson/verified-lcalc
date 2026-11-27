@@ -1,0 +1,54 @@
+{
+  "tables": [
+    "ec_curvedata",
+    "ec_localdata"
+  ],
+  "labels": [
+    "50.a1",
+    "50.a1"
+  ],
+  "label_cols": [
+    "lmfdb_label",
+    "lmfdb_label"
+  ],
+  "totals": [
+    1,
+    1
+  ],
+  "data": [
+    [
+      {
+        "lmfdb_label": "50.a1",
+        "lmfdb_iso": "50.a",
+        "conductor": 50,
+        "bad_primes": [
+          2,
+          5
+        ],
+        "ainvs": [
+          1,
+          0,
+          1,
+          -126,
+          -552
+        ],
+        "signD": -1,
+        "absD": 5000
+      }
+    ],
+    [
+      {
+        "lmfdb_label": "50.a1",
+        "conductor": 50,
+        "prime": 5,
+        "conductor_valuation": 2,
+        "discriminant_valuation": 4,
+        "j_denominator_valuation": 0,
+        "reduction_type": 0,
+        "kodaira_symbol": 4,
+        "tamagawa_number": 1,
+        "root_number": -1
+      }
+    ]
+  ]
+}

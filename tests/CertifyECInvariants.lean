@@ -214,6 +214,49 @@ certify_ec TypeIIIAbsent from_json_string
 
 example : TypeIIIAbsent.certificate.arithmetic.tamagawa.isEmpty = true := by decide +kernel
 
+certify_ec TypeIVSplit50a3 from_json_string
+  r#"{"ainvs":[1,0,1,-1,-2],"prime":5,"tamagawa_number":3,
+      "tamagawa_type_iv":{"r":2,"s":0,"t":1,"residue_root":0}}"#
+
+example : (TypeIVSplit50a3.certificate.arithmetic.tamagawa.map (·.value)) = [3] := by
+  decide +kernel
+
+example :
+    letI : Fact (Nat.Prime 5) := ⟨by decide +kernel⟩
+    (TypeIVSplit50a3.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 5) = 3 := by
+  let fact := TypeIVSplit50a3.certificate.arithmetic.tamagawa[0]'(by decide +kernel)
+  have hp : fact.prime = ⟨5, by decide +kernel⟩ := Subtype.ext (by decide +kernel)
+  have hv : fact.value = 3 := by decide +kernel
+  obtain ⟨prime, value, correct⟩ := fact
+  change prime = _ at hp
+  change value = 3 at hv
+  subst prime value
+  exact correct
+
+certify_ec TypeIVNonsplit50a1 from_json_string
+  r#"{"ainvs":[1,0,1,-126,-552],"prime":5,"tamagawa_number":1,
+      "tamagawa_type_iv":{"r":2,"s":0,"t":1,"nonsplit_euler_power":4}}"#
+
+example : (TypeIVNonsplit50a1.certificate.arithmetic.tamagawa.map (·.value)) = [1] := by
+  decide +kernel
+
+example :
+    letI : Fact (Nat.Prime 5) := ⟨by decide +kernel⟩
+    (TypeIVNonsplit50a1.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 5) = 1 := by
+  let fact := TypeIVNonsplit50a1.certificate.arithmetic.tamagawa[0]'(by decide +kernel)
+  have hp : fact.prime = ⟨5, by decide +kernel⟩ := Subtype.ext (by decide +kernel)
+  have hv : fact.value = 1 := by decide +kernel
+  obtain ⟨prime, value, correct⟩ := fact
+  change prime = _ at hp
+  change value = 1 at hv
+  subst prime value
+  exact correct
+
+certify_ec TypeIVAbsent from_json_string
+  r#"{"ainvs":[1,0,1,-1,-2],"prime":5,"tamagawa_number":3}"#
+
+example : TypeIVAbsent.certificate.arithmetic.tamagawa.isEmpty = true := by decide +kernel
+
 certify_ec OtherAdditive98a5 from_json_string
   r#"{"ainvs":[1,1,0,-25,-111],"minimality":[2,2,7,7,7,7,7,7,7],
       "prime":7,"conductor_valuation":2,"discriminant_valuation":7,
@@ -224,7 +267,7 @@ example : OtherAdditive98a5.certificate.arithmetic.tamagawa.isEmpty = true := by
   decide +kernel
 
 /--
-info: TamagawaOutsideScope: Tamagawa claims outside good, I₁, I₂ or supported tame III reduction are unverified.
+info: TamagawaOutsideScope: Tamagawa claims outside good, I₁, I₂ or supported tame III/IV reduction are unverified.
 ---
 info: Certified TamagawaOutsideScope.ap_correct and TamagawaOutsideScope.point_integral
 for the supplied lists
@@ -440,6 +483,17 @@ run_cmd do
       r#"{"ainvs":[1,-1,0,-2,-1],"minimality":[7,7,7],"prime":7,
           "discriminant_valuation":3,"reduction_type":0,"kodaira_symbol":3,
           "tamagawa_number":3,"tamagawa_type_iii":{"r":2,"s":0,"t":6}}"#))
+  invariantRejected `WrongTypeIVRoot (← `(certify_ec WrongTypeIVRoot from_json_string
+    r#"{"ainvs":[1,0,1,-1,-2],"prime":5,"tamagawa_number":1,
+        "tamagawa_type_iv":{"r":2,"s":0,"t":1,"residue_root":1}}"#))
+  invariantRejected `WrongTypeIVEulerPower (← `(certify_ec WrongTypeIVEulerPower from_json_string
+    r#"{"ainvs":[1,0,1,-126,-552],"prime":5,"tamagawa_number":3,
+        "tamagawa_type_iv":{"r":2,"s":0,"t":1,"nonsplit_euler_power":2}}"#))
+  invariantRejected `AmbiguousTypeIVEvidence
+    (← `(certify_ec AmbiguousTypeIVEvidence from_json_string
+    r#"{"ainvs":[1,0,1,-1,-2],"prime":5,"tamagawa_number":3,
+        "tamagawa_type_iv":{"r":2,"s":0,"t":1,"residue_root":0,
+          "nonsplit_euler_power":4}}"#))
   invariantRejected `WrongTypeIIIShift
     (← `(certify_ec WrongTypeIIIShift from_json_string
       r#"{"ainvs":[1,-1,0,-2,-1],"prime":7,"tamagawa_number":2,
@@ -760,8 +814,9 @@ run_cmd do
   cover ``IsogenyEdgeClaim #[`target, `degree, `kernelX]
   cover ``LocalReductionClaim #[`prime, `discriminantValuation, `conductorValuation,
     `jDenominatorValuation, `reductionType, `tamagawaNumber, `kodairaSymbol, `rootNumber,
-    `tamagawaTypeIIIShift]
+    `tamagawaTypeIIIShift, `tamagawaTypeIVEvidence]
   cover ``TamagawaTypeIIIShift #[`r, `s, `t]
+  cover ``TamagawaTypeIVEvidence #[`r, `s, `t, `residue]
   cover ``AbcQualityClaim #[`reported, `error, `factors]
   cover ``RegulatorClaim #[`reported, `error]
   cover ``PadicRegulatorClaim #[`p, `prec, `val, `unit]

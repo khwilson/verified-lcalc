@@ -1,7 +1,7 @@
 import VerifiedLcalc.Certificate.Witnesses
 import Lean
 
-/-! Check the public witness import and the source of each witness structure. -/
+/-! Check the public witness import and the source of each witness data type. -/
 
 open Lean Elab Command
 
@@ -18,6 +18,13 @@ private def isStructureCommand (cmd : Syntax) : Bool :=
     cmd[1].isOfKind ``Parser.Command.«structure» &&
     cmd[1][0].isOfKind ``Parser.Command.structureTk
 
+private def isInductiveCommand (cmd : Syntax) : Bool :=
+  cmd.isOfKind ``Parser.Command.declaration &&
+    cmd[1].isOfKind ``Parser.Command.«inductive»
+
+private def isWitnessDataCommand (cmd : Syntax) : Bool :=
+  isStructureCommand cmd || isInductiveCommand cmd
+
 private def hasDoc (modifiers : Syntax) : Bool :=
   modifiers[0][0].isOfKind ``Parser.Command.docComment
 
@@ -27,6 +34,20 @@ private partial def forbiddenFieldTerm (stx : Syntax) : Option Syntax :=
     some stx
   else
     stx.getArgs.findSome? forbiddenFieldTerm
+
+-- Parse examples to exercise the same declaration classifier used by the directory scan.
+run_cmd do
+  let source := r#"/-- Accepted alternatives. -/
+inductive Alternative where
+  /-- A submitted natural number. -/
+  | value (n : Nat)
+theorem rejectedProof : True := by trivial
+def rejectedHelper : Nat := 1
+"#
+  let tree ← Parser.testParseModule (← getEnv) "<witness-layout-regression>" source
+  let declarations := tree[1].getArgs.filter (·.isOfKind ``Parser.Command.declaration)
+  unless declarations.map isWitnessDataCommand == #[true, false, false] do
+    throwError "witness layout must accept data-only inductives and reject proof and helper bodies"
 
 run_cmd do
   let env ← getEnv
@@ -55,11 +76,12 @@ run_cmd do
   -- Re-exporting the legacy declarations would leave their source in the old modules.
   for decl in [``VerifiedLcalc.EllipticWitness, ``VerifiedLcalc.DiscriminantWitness,
       ``VerifiedLcalc.EllipticCertificate, ``VerifiedLcalc.ArithmeticFacts,
+      ``VerifiedLcalc.TypeIVTamagawaResidue,
       ``VerifiedLcalc.AnalyticFacts, ``VerifiedLcalc.EllipticCurve.AlgebraicRankBounds] do
     let some idx := env.getModuleIdxFor? decl | throwError "missing witness {decl}"
     let mod := modules[idx.toNat]!
     unless root.isPrefixOf mod do
-      throwError "{decl} is defined in {mod}; its structure belongs in {root}"
+      throwError "{decl} is defined in {mod}; its witness type belongs in {root}"
   -- Downstream readers can find each family in its mathematical subject module.
   for (decl, subject) in [(``VerifiedLcalc.LocalTamagawaFact, `FinitePrimes),
       (``VerifiedLcalc.NonmaxPrimeSupportFact, `FinitePrimes),
@@ -94,7 +116,7 @@ run_cmd do
       throwError "the witness umbrella must import {mod}"
     let source ← IO.FS.readFile path
     let tree ← Parser.testParseModule env path.toString source
-    let mut structures := 0
+    let mut dataTypes := 0
     for cmd in tree[1].getArgs do
       if isStructureCommand cmd then
         let declaration := cmd[1]
@@ -110,11 +132,29 @@ run_cmd do
           if let some term := forbiddenFieldTerm field then
             let line := source.toFileMap.toPosition (term.getPos?.getD 0)
             throwError "{path}:{line.line}: move the computation or proof body to a companion"
-        structures := structures + 1
+        dataTypes := dataTypes + 1
+      else if isInductiveCommand cmd then
+        let declaration := cmd[1]
+        let name := declaration[1][0].getId
+        unless hasDoc cmd[0] do
+          throwError "{path}: missing documentation for {name}"
+        if declaration[5].getNumArgs != 0 || declaration[7].getNumArgs != 0 then
+          throwError "{path}: move the computation or proof body of {name} to a companion"
+        if let some term := forbiddenFieldTerm declaration[2] then
+          let line := source.toFileMap.toPosition (term.getPos?.getD 0)
+          throwError "{path}:{line.line}: move the computation or proof body to a companion"
+        for ctor in declaration[4].getArgs do
+          unless ctor[0][0].isOfKind ``Parser.Command.docComment do
+            let line := source.toFileMap.toPosition (ctor.getPos?.getD 0)
+            throwError "{path}:{line.line}: missing documentation for a constructor of {name}"
+          if let some term := forbiddenFieldTerm ctor then
+            let line := source.toFileMap.toPosition (term.getPos?.getD 0)
+            throwError "{path}:{line.line}: move the computation or proof body to a companion"
+        dataTypes := dataTypes + 1
       else if !([``Parser.Command.moduleDoc, ``Parser.Command.«namespace»,
           ``Parser.Command.«section», ``Parser.Command.«end», ``Parser.Command.«open»,
           ``Parser.Command.«variable», ``Parser.Command.«universe», ``Parser.Command.eoi]
           : List Name).contains cmd.getKind then
         let line := source.toFileMap.toPosition (cmd.getPos?.getD 0)
-        throwError "{path}:{line.line}: only structure declarations belong in witness modules"
-    if structures == 0 then throwError "{path} declares no witness structures"
+        throwError "{path}:{line.line}: expected a structure or data-only inductive"
+    if dataTypes == 0 then throwError "{path} declares no witness data types"

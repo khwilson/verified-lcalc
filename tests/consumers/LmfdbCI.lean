@@ -95,6 +95,12 @@ example :
   subst prime value
   exact correct
 
+example : (LMFDB.C50a3.certificate.arithmetic.tamagawa.map fun fact =>
+    ((fact.prime : ℕ), fact.value)) = [(5, 3)] := by decide +kernel
+
+example : (LMFDB.C50a1.certificate.arithmetic.tamagawa.map fun fact =>
+    ((fact.prime : ℕ), fact.value)) = [(5, 1)] := by decide +kernel
+
 example : (LMFDB.C112a2.certificate.arithmetic.tamagawa.map fun fact =>
     ((fact.prime : ℕ), fact.value)) = [(7, 1)] := by decide +kernel
 
