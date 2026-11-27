@@ -233,10 +233,10 @@ def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
     let residue ← match optional value "residue_root", optional value "nonsplit_euler_power" with
       | some root, none => do
         keys value ["r", "s", "t", "residue_root"]
-        return TypeIVTamagawaResidue.root (← nonnegativeInteger root)
+        pure (TypeIVTamagawaResidue.root (← nonnegativeInteger root))
       | none, some power => do
         keys value ["r", "s", "t", "nonsplit_euler_power"]
-        return TypeIVTamagawaResidue.nonsplitEulerPower (← nonnegativeInteger power)
+        pure (TypeIVTamagawaResidue.nonsplitEulerPower (← nonnegativeInteger power))
       | _, _ => throw "Type IV evidence needs exactly one root or nonsplit Euler value"
     return ({ r, s, t, residue } : TamagawaTypeIVEvidence)
   return {

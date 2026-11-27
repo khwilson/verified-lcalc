@@ -478,7 +478,7 @@ modularity. [TauCeti backlog TC-17](../TAUCETI_BACKLOG.md#tc-17--geometric-cm-an
 This section specifies the evidence boundary for each local Kodaira family.
 The installed baseline is `main` at inspected revision
 [`6f67160`](https://github.com/khwilson/verified-lcalc/commit/6f671604d0162f5cf5ff14f75b42846e08a0802b). This table also records the type III
-checker implemented in this checkout. Planned rows describe future evidence
+and IV checks implemented in this checkout. Planned rows describe future evidence
 contracts. The verifier consumes supplied evidence, validates it in
 Lean, and rejects a supplied local factor when its evidence is malformed or
 contradicts the curve. Omitting evidence leaves that factor unavailable.
@@ -524,7 +524,7 @@ particular TauCeti formula.
 | `Iₙ`, `n ≥ 3` | `n` if split; `gcd(2,n)` if nonsplit | Terminal exponent and checked tangent-root evidence: a supplied root, or a no-root certificate for the tangent quadratic. | Planned. TauCeti's formula is available; rational normalization and residue transport are incomplete. | No checked factor fixture. |
 | `II` | `1` | Supplied model satisfying all five terminal `II` conditions, including `ϖ² ∤ a₆`. | Planned. | No checked factor fixture. |
 | `III` | `2` | For `p > 3`, the producer saves the exact integers `r`, `s`, `t` in `tamagawa_type_iii`. The checker applies the scale-one change to the original equation and checks terminal `III` divisibilities. | Implemented for the intrinsic local factor. The separate additive Kodaira field still checks only the additive family. | `49.a4`, p=7. |
-| `IV` | `3` when the terminal residue quadratic has a root; otherwise `1` | Persist the exact unit-scale change and a specific root or an independently checkable no-root certificate. Use the odd-characteristic Euler test for the tame quadratic and the checked Bézout alternative where appropriate, including characteristic 2. | Planned; no Type IV support is installed. | 50.a3 / 50.a1 are candidate source rows only; no checked fixture. |
+| `IV` | `3` when the terminal residue quadratic has a root; otherwise `1` | For `p > 3`, persist the exact scale-one change and either a concrete `residue_root` or a checked `nonsplit_euler_power` in `tamagawa_type_iv`. The verifier derives the quadratic from the supplied change. A checked Bézout alternative for other characteristics remains planned. | Implemented for the intrinsic factor given the supplied tame terminal and residue evidence. | `50.a3`, p=5, factor 3; `50.a1`, p=5, factor 1. |
 | `I₀*` | `1 + card(tateCubicRoots)` | Complete root/factorization evidence for the normalized residue cubic `X³ + (a₂/p)X² + (a₄/p²)X + a₆/p³` derived from the checked terminal model; the terminal predicate also checks the cubic discriminant valuation. | Planned. | No checked factor fixture. |
 | `Iₙ*`, `n = 2k+1` | `4` when `HasTateYRoot ϖ (k+2)`, otherwise `2` | Complete odd-stage transcript, terminal exponent, and a checked root or no-root certificate for that level's quadratic. | Planned. | No checked factor fixture. |
 | `Iₙ*`, `n = 2k+2` | `4` when `HasTateXRoot ϖ (k+2)`, otherwise `2` | Complete even-stage transcript, terminal exponent, and a checked root or no-root certificate for that level's quadratic. | Planned. | No checked factor fixture. |

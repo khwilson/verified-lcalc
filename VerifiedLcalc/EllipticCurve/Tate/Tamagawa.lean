@@ -340,7 +340,7 @@ private theorem no_typeIV_residue_root_of_euler_power (p : ℕ) [Fact p.Prime]
     have hpowNe : d ^ (Fintype.card (ZMod p) / 2) ≠ 1 := by
       rw [ZMod.card, hodd, hpowD]
       have hne : (-1 : ZMod p) ≠ 1 := by
-        haveI : Fact (2 < p) := ⟨by omega⟩
+        have : Fact (2 < p) := ⟨by omega⟩
         exact ZMod.neg_one_ne_one
       exact hne
     rw [quadraticChar_eq_pow_of_char_ne_two hchar hd, ite_eq_right hpowNe]

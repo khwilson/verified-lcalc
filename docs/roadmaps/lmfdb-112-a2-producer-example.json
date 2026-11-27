@@ -283,7 +283,7 @@
       "status": "checked"
     },
     "local_invariants.2.tamagawa_number": {
-      "reason": "Exact Tamagawa checker supports good, I₁, I₂ or supported tame III reduction",
+      "reason": "Exact Tamagawa checker supports good, I₁, I₂ or supplied tame III/IV evidence",
       "sources": [
         "ec_localdata[2].tamagawa_number"
       ],

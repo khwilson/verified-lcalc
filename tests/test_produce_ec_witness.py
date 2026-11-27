@@ -260,7 +260,10 @@ class KernelReplay(unittest.TestCase):
                 local = witness["local_invariants"][0]
                 self.assertEqual(local["tamagawa_number"], expected_factor)
                 self.assertEqual(
-                    {key: int(value) for key, value in local["tamagawa_type_iv"].items()},
+                    {
+                        key: int(value)
+                        for key, value in local["tamagawa_type_iv"].items()
+                    },
                     expected_evidence,
                 )
 

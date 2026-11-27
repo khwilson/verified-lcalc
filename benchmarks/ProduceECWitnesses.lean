@@ -168,7 +168,7 @@ private def attachTypeIVEvidence (e : WeierstrassCurve ℤ) (j : Json) : Except 
   let evidence := if eulerPower == -1 then
       some { candidate with residue := .nonsplitEulerPower (p - 1) }
     else
-      let root := (List.range (min p typeIVRootSearchLimit)).find? fun y =>
+      let root := (List.range (min p typeIVRootSearchLimit)).find? fun (y : Nat) =>
         typeIVResiduePolynomial model p (y : ZMod p) == 0
       root.map fun y => { candidate with residue := .root y }
   match evidence with
