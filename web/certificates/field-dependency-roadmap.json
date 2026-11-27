@@ -379,7 +379,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "dependencies": [],
       "dependency_layer": 0,
@@ -409,7 +409,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-26 · Complete trace fingerprint inputs",
-        "line": 633
+        "line": 639
       },
       "dependencies": [],
       "dependency_layer": 0,
@@ -427,7 +427,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-31 · Intrinsic Serre invariants",
-        "line": 836
+        "line": 842
       },
       "dependencies": [
         "milestone:G1"
@@ -890,7 +890,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "dependencies": [],
       "dependency_layer": 0,
@@ -920,7 +920,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-26 · Complete trace fingerprint inputs",
-        "line": 633
+        "line": 639
       },
       "dependencies": [],
       "dependency_layer": 0,
@@ -938,7 +938,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-31 · Intrinsic Serre invariants",
-        "line": 836
+        "line": 842
       },
       "dependencies": [
         "milestone:G1"
@@ -1032,7 +1032,7 @@
           "declaration": "FixtureFieldCoverage.dirichlet112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 175
+            "line": 188
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "List.map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1))\n    (List.range 20) =\n  [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0]",
@@ -1180,7 +1180,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 175,
+            "proof_line": 188,
             "scope": "All 20 stored coefficients for the 112.a2 equation after a₀.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "List.map (fun n => (LMFDB.C112a2.curve.baseChange ℚ).LFunction (n + 1))\n    (List.range 20) =\n  [1, 0, -2, 0, -4, 0, -1, 0, 1, 0, 0, 0, 0, 0, 8, 0, -2, 0, 2, 0]",
@@ -1278,7 +1278,7 @@
           "declaration": "FixtureFieldCoverage.primeCoefficients112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 181
+            "line": 194
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "have facts := LMFDB.C112a2.certificate.arithmetic.primeCoefficients.get ⋯;\n(↑facts).length = 25 ∧\n  ∀ (p : ℕ) (a : ℤ),\n    (p, a) ∈ ↑facts → (LMFDB.C112a2.curve.baseChange ℚ).LFunction p = a",
@@ -1414,7 +1414,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 181,
+            "proof_line": 194,
             "scope": "All 25 stored prime-indexed coefficients for the 112.a2 equation.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "have facts := LMFDB.C112a2.certificate.arithmetic.primeCoefficients.get ⋯;\n(↑facts).length = 25 ∧\n  ∀ (p : ℕ) (a : ℤ),\n    (p, a) ∈ ↑facts → (LMFDB.C112a2.curve.baseChange ℚ).LFunction p = a",
@@ -2538,7 +2538,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "stages": {
         "roadmap": {
@@ -2546,7 +2546,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 561
+            "line": 567
           }
         },
         "lean": {
@@ -2762,7 +2762,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-26 · Complete trace fingerprint inputs",
-        "line": 633
+        "line": 639
       },
       "stages": {
         "roadmap": {
@@ -2770,7 +2770,7 @@
           "scope": "TC-26 · Complete trace fingerprint inputs",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 633
+            "line": 639
           }
         },
         "lean": {
@@ -2986,7 +2986,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "stages": {
         "roadmap": {
@@ -2994,7 +2994,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 561
+            "line": 567
           }
         },
         "lean": {
@@ -3210,7 +3210,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "stages": {
         "roadmap": {
@@ -3218,7 +3218,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 561
+            "line": 567
           }
         },
         "lean": {
@@ -3434,7 +3434,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "stages": {
         "roadmap": {
@@ -3442,7 +3442,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 561
+            "line": 567
           }
         },
         "lean": {
@@ -3731,7 +3731,7 @@
           "declaration": "FixtureFieldCoverage.abcQuality112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 197
+            "line": 210
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "|(LMFDB.C112a2.curve.baseChange ℚ).abcQuality LMFDB.C112a2.abc_quality_defined -\n      10348177494302118 / 10000000000000000| ≤\n  1 / 1000000000000000",
@@ -3878,7 +3878,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 197,
+            "proof_line": 210,
             "scope": "Absolute error enclosure for the specified decimal.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "|(LMFDB.C112a2.curve.baseChange ℚ).abcQuality LMFDB.C112a2.abc_quality_defined -\n      10348177494302118 / 10000000000000000| ≤\n  1 / 1000000000000000",
@@ -5166,7 +5166,7 @@
           "declaration": "FixtureFieldCoverage.rank112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 236
+            "line": 249
           },
           "fixture": "data/witnesses/112a2.json",
           "statement": "analyticOrderAt\n    (Modularity.modularWitness LMFDB.C112a2.curve\n        LMFDB.C112a2.nonsingular).formL\n    1 =\n  1",
@@ -5340,7 +5340,7 @@
             "project_axioms": [
               "VerifiedLcalc.Assumptions.ellipticModularity"
             ],
-            "proof_line": 236,
+            "proof_line": 249,
             "scope": "Exact order at 1 of the modular realization.",
             "source": "data/witnesses/112a2.json",
             "statement": "analyticOrderAt\n    (Modularity.modularWitness LMFDB.C112a2.curve\n        LMFDB.C112a2.nonsingular).formL\n    1 =\n  1",
@@ -6461,7 +6461,7 @@
           "declaration": "FixtureFieldCoverage.conductor112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 164
+            "line": 177
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "(Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level =\n  112",
@@ -6635,7 +6635,7 @@
             "project_axioms": [
               "VerifiedLcalc.Assumptions.ellipticModularity"
             ],
-            "proof_line": 164,
+            "proof_line": 177,
             "scope": "Level of the modular realization.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "(Modularity.modularWitness LMFDB.C112a2.curve LMFDB.C112a2.nonsingular).level =\n  112",
@@ -8062,7 +8062,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "stages": {
         "roadmap": {
@@ -8070,7 +8070,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 561
+            "line": 567
           }
         },
         "lean": {
@@ -8731,7 +8731,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "stages": {
         "roadmap": {
@@ -8739,7 +8739,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 561
+            "line": 567
           }
         },
         "lean": {
@@ -8955,7 +8955,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "stages": {
         "roadmap": {
@@ -8963,7 +8963,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 561
+            "line": 567
           }
         },
         "lean": {
@@ -9198,7 +9198,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "stages": {
         "roadmap": {
@@ -9206,7 +9206,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 561
+            "line": 567
           }
         },
         "lean": {
@@ -12736,7 +12736,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-31 · Intrinsic Serre invariants",
-        "line": 836
+        "line": 842
       },
       "stages": {
         "roadmap": {
@@ -12744,7 +12744,7 @@
           "scope": "TC-31 · Intrinsic Serre invariants",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 836
+            "line": 842
           }
         },
         "lean": {
@@ -14403,7 +14403,7 @@
           "declaration": "FixtureFieldCoverage.torsion112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 218
+            "line": 231
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "Nat.card\n    ↥(AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =\n  2",
@@ -14551,7 +14551,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 218,
+            "proof_line": 231,
             "scope": "Exact rational torsion cardinality.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "Nat.card\n    ↥(AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point) =\n  2",
@@ -14663,7 +14663,7 @@
           "declaration": "FixtureFieldCoverage.torsionPrimeSupport112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 189
+            "line": 202
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∀ (p : ℕ),\n  p ∈ [2] ↔\n    Nat.Prime p ∧\n      p ∣\n        Nat.card\n          ↥(AddCommGroup.torsion\n              (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point)",
@@ -14822,7 +14822,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 189,
+            "proof_line": 202,
             "scope": "Exact prime support [2] of the full rational torsion order.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "∀ (p : ℕ),\n  p ∈ [2] ↔\n    Nat.Prime p ∧\n      p ∣\n        Nat.card\n          ↥(AddCommGroup.torsion\n              (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point)",
@@ -14934,7 +14934,7 @@
           "declaration": "FixtureFieldCoverage.torsionStructure112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 223
+            "line": 236
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∃ e, ↑(e 1) = LMFDB.C112a2.torsion_generators.point ⟨0, ⋯⟩",
@@ -15093,7 +15093,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 223,
+            "proof_line": 236,
             "scope": "Full rational cyclic group with the submitted generator.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "∃ e, ↑(e 1) = LMFDB.C112a2.torsion_generators.point ⟨0, ⋯⟩",
@@ -16122,7 +16122,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "stages": {
         "roadmap": {
@@ -16130,7 +16130,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 561
+            "line": 567
           }
         },
         "lean": {
@@ -17571,7 +17571,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "stages": {
         "roadmap": {
@@ -17579,7 +17579,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 561
+            "line": 567
           }
         },
         "lean": {
@@ -18132,7 +18132,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.conductorValuation",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 185,
+          "line": 195,
           "role": "claim",
           "route": "ec_localdata.conductor_valuation#route:0"
         },
@@ -18189,7 +18189,7 @@
           "declaration": "FixtureFieldCoverage.conductorValuation112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 169
+            "line": 182
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "(Modularity.modularWitness LMFDB.C112a2.curve\n          LMFDB.C112a2.nonsingular).level.factorization\n    2 =\n  4",
@@ -18223,7 +18223,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 185,
+              "line": 195,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.conductorValuation"
             }
@@ -18280,7 +18280,7 @@
               "role": "claim"
             },
             {
-              "line": 185,
+              "line": 195,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.conductorValuation",
               "role": "claim"
@@ -18345,7 +18345,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 185,
+              "line": 195,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.conductorValuation"
             }
@@ -18402,7 +18402,7 @@
               "role": "claim"
             },
             {
-              "line": 185,
+              "line": 195,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.conductorValuation",
               "role": "claim"
@@ -18523,7 +18523,7 @@
             "project_axioms": [
               "VerifiedLcalc.Assumptions.ellipticModularity"
             ],
-            "proof_line": 169,
+            "proof_line": 182,
             "scope": "Exponent of 2 in the level of the modular realization.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "(Modularity.modularWitness LMFDB.C112a2.curve\n          LMFDB.C112a2.nonsingular).level.factorization\n    2 =\n  4",
@@ -18599,7 +18599,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.discriminantValuation",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 183,
+          "line": 193,
           "role": "claim",
           "route": "ec_localdata.discriminant_valuation#route:0"
         },
@@ -18667,7 +18667,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 183,
+              "line": 193,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.discriminantValuation"
             }
@@ -18719,7 +18719,7 @@
               "role": "claim"
             },
             {
-              "line": 183,
+              "line": 193,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.discriminantValuation",
               "role": "claim"
@@ -18778,7 +18778,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 183,
+              "line": 193,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.discriminantValuation"
             }
@@ -18830,7 +18830,7 @@
               "role": "claim"
             },
             {
-              "line": 183,
+              "line": 193,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.discriminantValuation",
               "role": "claim"
@@ -19002,7 +19002,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 187,
+          "line": 197,
           "role": "claim",
           "route": "ec_localdata.j_denominator_valuation#route:0"
         },
@@ -19070,7 +19070,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 187,
+              "line": 197,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation"
             }
@@ -19122,7 +19122,7 @@
               "role": "claim"
             },
             {
-              "line": 187,
+              "line": 197,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation",
               "role": "claim"
@@ -19181,7 +19181,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 187,
+              "line": 197,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation"
             }
@@ -19233,7 +19233,7 @@
               "role": "claim"
             },
             {
-              "line": 187,
+              "line": 197,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation",
               "role": "claim"
@@ -19377,7 +19377,7 @@
           "scope": "Exact good and multiplicative codes. Additive codes exclude all multiplicative symbols only.",
           "source": {
             "path": "VerifiedLcalc/Verification/StoredInvariants.lean",
-            "line": 334
+            "line": 335
           },
           "accepts_external_evidence": false,
           "external_evidence": [],
@@ -19405,7 +19405,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 193,
+          "line": 203,
           "role": "claim",
           "route": "ec_localdata.kodaira_symbol#route:0"
         },
@@ -19447,7 +19447,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.kodaira_correct",
           "module": "VerifiedLcalc.Verification.StoredInvariants",
-          "line": 334,
+          "line": 335,
           "role": "verify",
           "route": "ec_localdata.kodaira_symbol#route:0"
         }
@@ -19473,7 +19473,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 193,
+              "line": 203,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol"
             }
@@ -19481,7 +19481,7 @@
           "check_id": "kodaira_symbols",
           "verify": [
             {
-              "line": 334,
+              "line": 335,
               "module": "VerifiedLcalc.Verification.StoredInvariants",
               "name": "VerifiedLcalc.LocalReductionClaim.kodaira_correct"
             }
@@ -19525,7 +19525,7 @@
               "role": "claim"
             },
             {
-              "line": 193,
+              "line": 203,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol",
               "role": "claim"
@@ -19561,7 +19561,7 @@
               "role": "prerequisites"
             },
             {
-              "line": 334,
+              "line": 335,
               "module": "VerifiedLcalc.Verification.StoredInvariants",
               "name": "VerifiedLcalc.LocalReductionClaim.kodaira_correct",
               "role": "verify"
@@ -19584,7 +19584,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 193,
+              "line": 203,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol"
             }
@@ -19592,7 +19592,7 @@
           "check_id": "kodaira_symbols",
           "verify": [
             {
-              "line": 334,
+              "line": 335,
               "module": "VerifiedLcalc.Verification.StoredInvariants",
               "name": "VerifiedLcalc.LocalReductionClaim.kodaira_correct"
             }
@@ -19636,7 +19636,7 @@
               "role": "claim"
             },
             {
-              "line": 193,
+              "line": 203,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol",
               "role": "claim"
@@ -19672,7 +19672,7 @@
               "role": "prerequisites"
             },
             {
-              "line": 334,
+              "line": 335,
               "module": "VerifiedLcalc.Verification.StoredInvariants",
               "name": "VerifiedLcalc.LocalReductionClaim.kodaira_correct",
               "role": "verify"
@@ -19764,7 +19764,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "stages": {
         "roadmap": {
@@ -19772,7 +19772,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 561
+            "line": 567
           }
         },
         "lean": {
@@ -20065,7 +20065,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.prime",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 181,
+          "line": 191,
           "role": "claim",
           "route": "ec_localdata.prime#route:0"
         },
@@ -20133,7 +20133,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 181,
+              "line": 191,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.prime"
             }
@@ -20185,7 +20185,7 @@
               "role": "claim"
             },
             {
-              "line": 181,
+              "line": 191,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.prime",
               "role": "claim"
@@ -20244,7 +20244,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 181,
+              "line": 191,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.prime"
             }
@@ -20296,7 +20296,7 @@
               "role": "claim"
             },
             {
-              "line": 181,
+              "line": 191,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.prime",
               "role": "claim"
@@ -20468,7 +20468,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.reductionType",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 189,
+          "line": 199,
           "role": "claim",
           "route": "ec_localdata.reduction_type#route:0"
         },
@@ -20536,7 +20536,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 189,
+              "line": 199,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.reductionType"
             }
@@ -20588,7 +20588,7 @@
               "role": "claim"
             },
             {
-              "line": 189,
+              "line": 199,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.reductionType",
               "role": "claim"
@@ -20647,7 +20647,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 189,
+              "line": 199,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.reductionType"
             }
@@ -20699,7 +20699,7 @@
               "role": "claim"
             },
             {
-              "line": 189,
+              "line": 199,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.reductionType",
               "role": "claim"
@@ -20843,7 +20843,7 @@
           "scope": "Exact local arithmetic sign on a minimal model with the needed transcripts.",
           "source": {
             "path": "VerifiedLcalc/Verification/StoredInvariants.lean",
-            "line": 295
+            "line": 296
           },
           "accepts_external_evidence": false,
           "external_evidence": [],
@@ -20871,7 +20871,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.rootNumber",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 195,
+          "line": 205,
           "role": "claim",
           "route": "ec_localdata.root_number#route:0"
         },
@@ -20920,7 +20920,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.rootNumber_correct",
           "module": "VerifiedLcalc.Verification.StoredInvariants",
-          "line": 295,
+          "line": 296,
           "role": "verify",
           "route": "ec_localdata.root_number#route:0"
         }
@@ -20946,7 +20946,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 195,
+              "line": 205,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.rootNumber"
             }
@@ -20954,7 +20954,7 @@
           "check_id": "local_root_numbers",
           "verify": [
             {
-              "line": 295,
+              "line": 296,
               "module": "VerifiedLcalc.Verification.StoredInvariants",
               "name": "VerifiedLcalc.LocalReductionClaim.rootNumber_correct"
             }
@@ -21003,7 +21003,7 @@
               "role": "claim"
             },
             {
-              "line": 195,
+              "line": 205,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.rootNumber",
               "role": "claim"
@@ -21045,7 +21045,7 @@
               "role": "prerequisites"
             },
             {
-              "line": 295,
+              "line": 296,
               "module": "VerifiedLcalc.Verification.StoredInvariants",
               "name": "VerifiedLcalc.LocalReductionClaim.rootNumber_correct",
               "role": "verify"
@@ -21068,7 +21068,7 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 195,
+              "line": 205,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.rootNumber"
             }
@@ -21076,7 +21076,7 @@
           "check_id": "local_root_numbers",
           "verify": [
             {
-              "line": 295,
+              "line": 296,
               "module": "VerifiedLcalc.Verification.StoredInvariants",
               "name": "VerifiedLcalc.LocalReductionClaim.rootNumber_correct"
             }
@@ -21125,7 +21125,7 @@
               "role": "claim"
             },
             {
-              "line": 195,
+              "line": 205,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.rootNumber",
               "role": "claim"
@@ -21167,7 +21167,7 @@
               "role": "prerequisites"
             },
             {
-              "line": 295,
+              "line": 296,
               "module": "VerifiedLcalc.Verification.StoredInvariants",
               "name": "VerifiedLcalc.LocalReductionClaim.rootNumber_correct",
               "role": "verify"
@@ -21272,10 +21272,10 @@
         },
         "lean": {
           "status": "scoped_checker",
-          "scope": "Exact intrinsic factor at good, I₁, I₂, submitted tame III, or submitted tame IV terminal models. Type IV requires a checked residue root or nonsplit Euler value; the verifier performs no normalization or residue search.",
+          "scope": "Exact intrinsic factor at good, I₁, I₂, and submitted tame II, III, or IV terminal models. Type II/III/IV evidence supplies an exact unit-scale change; type IV also supplies a residue root or nonsplit Euler value. The verifier does no normalization or residue search.",
           "source": {
             "path": "VerifiedLcalc/Verification/StoredInvariants.lean",
-            "line": 263
+            "line": 264
           },
           "accepts_external_evidence": false,
           "external_evidence": [],
@@ -21303,21 +21303,28 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 191,
+          "line": 201,
+          "role": "claim",
+          "route": "ec_localdata.tamagawa_number#route:0"
+        },
+        {
+          "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIShift",
+          "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
+          "line": 211,
           "role": "claim",
           "route": "ec_localdata.tamagawa_number#route:0"
         },
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 197,
+          "line": 207,
           "role": "claim",
           "route": "ec_localdata.tamagawa_number#route:0"
         },
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence",
           "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-          "line": 199,
+          "line": 209,
           "role": "claim",
           "route": "ec_localdata.tamagawa_number#route:0"
         },
@@ -21345,7 +21352,7 @@
         {
           "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawa_correct",
           "module": "VerifiedLcalc.Verification.StoredInvariants",
-          "line": 263,
+          "line": 264,
           "role": "verify",
           "route": "ec_localdata.tamagawa_number#route:0"
         }
@@ -21371,17 +21378,22 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 191,
+              "line": 201,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber"
             },
             {
-              "line": 197,
+              "line": 211,
+              "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
+              "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIShift"
+            },
+            {
+              "line": 207,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift"
             },
             {
-              "line": 199,
+              "line": 209,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence"
             }
@@ -21389,7 +21401,7 @@
           "check_id": "tamagawa_numbers",
           "verify": [
             {
-              "line": 263,
+              "line": 264,
               "module": "VerifiedLcalc.Verification.StoredInvariants",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawa_correct"
             }
@@ -21412,7 +21424,7 @@
             }
           ],
           "prerequisites": [],
-          "scope": "Exact intrinsic factor at good, I₁, I₂, submitted tame III, or submitted tame IV terminal models. Type IV requires a checked residue root or nonsplit Euler value; the verifier performs no normalization or residue search.",
+          "scope": "Exact intrinsic factor at good, I₁, I₂, and submitted tame II, III, or IV terminal models. Type II/III/IV evidence supplies an exact unit-scale change; type IV also supplies a residue root or nonsplit Euler value. The verifier does no normalization or residue search.",
           "fact": null,
           "declarations": [
             {
@@ -21422,19 +21434,25 @@
               "role": "claim"
             },
             {
-              "line": 191,
+              "line": 201,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber",
               "role": "claim"
             },
             {
-              "line": 197,
+              "line": 211,
+              "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
+              "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIShift",
+              "role": "claim"
+            },
+            {
+              "line": 207,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift",
               "role": "claim"
             },
             {
-              "line": 199,
+              "line": 209,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence",
               "role": "claim"
@@ -21458,7 +21476,7 @@
               "role": "output"
             },
             {
-              "line": 263,
+              "line": 264,
               "module": "VerifiedLcalc.Verification.StoredInvariants",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawa_correct",
               "role": "verify"
@@ -21481,17 +21499,22 @@
               "name": "VerifiedLcalc.EllipticWitness.localInvariants"
             },
             {
-              "line": 191,
+              "line": 201,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber"
             },
             {
-              "line": 197,
+              "line": 211,
+              "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
+              "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIShift"
+            },
+            {
+              "line": 207,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift"
             },
             {
-              "line": 199,
+              "line": 209,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence"
             }
@@ -21499,7 +21522,7 @@
           "check_id": "tamagawa_numbers",
           "verify": [
             {
-              "line": 263,
+              "line": 264,
               "module": "VerifiedLcalc.Verification.StoredInvariants",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawa_correct"
             }
@@ -21522,7 +21545,7 @@
             }
           ],
           "prerequisites": [],
-          "scope": "Exact intrinsic factor at good, I₁, I₂, submitted tame III, or submitted tame IV terminal models. Type IV requires a checked residue root or nonsplit Euler value; the verifier performs no normalization or residue search.",
+          "scope": "Exact intrinsic factor at good, I₁, I₂, and submitted tame II, III, or IV terminal models. Type II/III/IV evidence supplies an exact unit-scale change; type IV also supplies a residue root or nonsplit Euler value. The verifier does no normalization or residue search.",
           "fact": null,
           "declarations": [
             {
@@ -21532,19 +21555,25 @@
               "role": "claim"
             },
             {
-              "line": 191,
+              "line": 201,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber",
               "role": "claim"
             },
             {
-              "line": 197,
+              "line": 211,
+              "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
+              "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIShift",
+              "role": "claim"
+            },
+            {
+              "line": 207,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift",
               "role": "claim"
             },
             {
-              "line": 199,
+              "line": 209,
               "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence",
               "role": "claim"
@@ -21568,7 +21597,7 @@
               "role": "output"
             },
             {
-              "line": 263,
+              "line": 264,
               "module": "VerifiedLcalc.Verification.StoredInvariants",
               "name": "VerifiedLcalc.LocalReductionClaim.tamagawa_correct",
               "role": "verify"
@@ -21579,7 +21608,7 @@
       ],
       "examples": [],
       "checkerScopes": [
-        "Exact intrinsic factor at good, I₁, I₂, submitted tame III, or submitted tame IV terminal models. Type IV requires a checked residue root or nonsplit Euler value; the verifier performs no normalization or residue search."
+        "Exact intrinsic factor at good, I₁, I₂, and submitted tame II, III, or IV terminal models. Type II/III/IV evidence supplies an exact unit-scale change; type IV also supplies a residue root or nonsplit Euler value. The verifier does no normalization or residue search."
       ],
       "reportOnlyScopes": [],
       "metadataScopes": [],
@@ -21622,7 +21651,7 @@
             "source": "ec_localdata[2].tamagawa_number",
             "claim_field": "local_invariants.2.tamagawa_number",
             "status": "unsupported",
-            "reason": "Exact Tamagawa checker supports good, I₁, I₂ or supplied tame III/IV evidence",
+            "reason": "Exact Tamagawa checker supports good, I₁, I₂ or supplied tame II/III/IV evidence",
             "radius": null
           },
           {
@@ -22226,7 +22255,7 @@
           "declaration": "FixtureFieldCoverage.generator112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 203
+            "line": 216
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "(LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation 0 2",
@@ -22362,7 +22391,7 @@
             "curve": "112.a2",
             "extent": "partial",
             "project_axioms": [],
-            "proof_line": 203,
+            "proof_line": 216,
             "scope": "Membership of the supplied point.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "(LMFDB.C112a2.curve.baseChange ℚ).toAffine.Equation 0 2",
@@ -22636,7 +22665,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "stages": {
         "roadmap": {
@@ -22644,7 +22673,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 561
+            "line": 567
           }
         },
         "lean": {
@@ -22952,7 +22981,7 @@
           "declaration": "FixtureFieldCoverage.generatorCount112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 207
+            "line": 220
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "LMFDB.C112a2.generators.coordinates.length = 1",
@@ -23100,7 +23129,7 @@
             "curve": "112.a2",
             "extent": "partial",
             "project_axioms": [],
-            "proof_line": 207,
+            "proof_line": 220,
             "scope": "Length of the checked point list.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "LMFDB.C112a2.generators.coordinates.length = 1",
@@ -24388,7 +24417,7 @@
           "declaration": "FixtureFieldCoverage.torsionGenerator112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 211
+            "line": 224
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "LMFDB.C112a2.torsion_generators.coordinates = [(-2, 0)] ∧\n  AddSubgroup.closure (Set.range LMFDB.C112a2.torsion_generators.point) =\n    AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point",
@@ -24524,7 +24553,7 @@
             "curve": "112.a2",
             "extent": "complete_for_sample",
             "project_axioms": [],
-            "proof_line": 211,
+            "proof_line": 224,
             "scope": "The list [(-2, 0)] generates the full rational torsion subgroup.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "LMFDB.C112a2.torsion_generators.coordinates = [(-2, 0)] ∧\n  AddSubgroup.closure (Set.range LMFDB.C112a2.torsion_generators.point) =\n    AddCommGroup.torsion (LMFDB.C112a2.curve.baseChange ℚ).toAffine.Point",
@@ -24629,7 +24658,7 @@
           "declaration": "FixtureFieldCoverage.integralFiber112",
           "source": {
             "path": "tests/consumers/FixtureFieldCoverage.lean",
-            "line": 230
+            "line": 243
           },
           "fixture": "tests/fixtures/lmfdb/112.a2.json",
           "statement": "∀ (y : ℤ),\n  y ∈ LMFDB.C112a2.integral_y_fiber ⟨0, ⋯⟩ ↔\n    LMFDB.C112a2.curve.toAffine.Equation (-2) y",
@@ -24776,7 +24805,7 @@
             "curve": "112.a2",
             "extent": "partial",
             "project_axioms": [],
-            "proof_line": 230,
+            "proof_line": 243,
             "scope": "Complete integral fiber at x = -2.",
             "source": "tests/fixtures/lmfdb/112.a2.json",
             "statement": "∀ (y : ℤ),\n  y ∈ LMFDB.C112a2.integral_y_fiber ⟨0, ⋯⟩ ↔\n    LMFDB.C112a2.curve.toAffine.Equation (-2) y",
@@ -29108,7 +29137,7 @@
       "roadmap": {
         "path": "docs/TAUCETI_BACKLOG.md",
         "heading": "TC-23 · Certified conductor rosters and catalogue ordering",
-        "line": 561
+        "line": 567
       },
       "stages": {
         "roadmap": {
@@ -29116,7 +29145,7 @@
           "scope": "TC-23 · Certified conductor rosters and catalogue ordering",
           "source": {
             "path": "docs/TAUCETI_BACKLOG.md",
-            "line": 561
+            "line": 567
           }
         },
         "lean": {
@@ -31433,9 +31462,9 @@
       "node_type": "route",
       "field_id": "ec_localdata.tamagawa_number",
       "route_index": 0,
-      "label": "Exact intrinsic factor at good, I₁, I₂, submitted tame III, or submitted tame IV terminal models. Type IV requires a checked residue root or nonsplit Euler value; the verifier performs no normalization or residue search.",
+      "label": "Exact intrinsic factor at good, I₁, I₂, and submitted tame II, III, or IV terminal models. Type II/III/IV evidence supplies an exact unit-scale change; type IV also supplies a residue root or nonsplit Euler value. The verifier does no normalization or residue search.",
       "kind": "checked",
-      "scope": "Exact intrinsic factor at good, I₁, I₂, submitted tame III, or submitted tame IV terminal models. Type IV requires a checked residue root or nonsplit Euler value; the verifier performs no normalization or residue search.",
+      "scope": "Exact intrinsic factor at good, I₁, I₂, and submitted tame II, III, or IV terminal models. Type II/III/IV evidence supplies an exact unit-scale change; type IV also supplies a residue root or nonsplit Euler value. The verifier does no normalization or residue search.",
       "json": [
         "tamagawa_number"
       ],
@@ -31446,9 +31475,9 @@
       "node_type": "route",
       "field_id": "ec_localdata.tamagawa_number",
       "route_index": 1,
-      "label": "Exact intrinsic factor at good, I₁, I₂, submitted tame III, or submitted tame IV terminal models. Type IV requires a checked residue root or nonsplit Euler value; the verifier performs no normalization or residue search.",
+      "label": "Exact intrinsic factor at good, I₁, I₂, and submitted tame II, III, or IV terminal models. Type II/III/IV evidence supplies an exact unit-scale change; type IV also supplies a residue root or nonsplit Euler value. The verifier does no normalization or residue search.",
       "kind": "checked",
-      "scope": "Exact intrinsic factor at good, I₁, I₂, submitted tame III, or submitted tame IV terminal models. Type IV requires a checked residue root or nonsplit Euler value; the verifier performs no normalization or residue search.",
+      "scope": "Exact intrinsic factor at good, I₁, I₂, and submitted tame II, III, or IV terminal models. Type II/III/IV evidence supplies an exact unit-scale change; type IV also supplies a residue root or nonsplit Euler value. The verifier does no normalization or residue search.",
       "json": [
         "local_invariants",
         "tamagawa_number"
@@ -34066,7 +34095,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.prime",
       "declaration": "VerifiedLcalc.LocalReductionClaim.prime",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 181,
+      "line": 191,
       "dependency_layer": 0
     },
     {
@@ -34102,7 +34131,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.discriminantValuation",
       "declaration": "VerifiedLcalc.LocalReductionClaim.discriminantValuation",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 183,
+      "line": 193,
       "dependency_layer": 0
     },
     {
@@ -34111,7 +34140,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation",
       "declaration": "VerifiedLcalc.LocalReductionClaim.jDenominatorValuation",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 187,
+      "line": 197,
       "dependency_layer": 0
     },
     {
@@ -34120,7 +34149,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.reductionType",
       "declaration": "VerifiedLcalc.LocalReductionClaim.reductionType",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 189,
+      "line": 199,
       "dependency_layer": 0
     },
     {
@@ -34129,7 +34158,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.conductorValuation",
       "declaration": "VerifiedLcalc.LocalReductionClaim.conductorValuation",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 185,
+      "line": 195,
       "dependency_layer": 0
     },
     {
@@ -34156,7 +34185,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol",
       "declaration": "VerifiedLcalc.LocalReductionClaim.kodairaSymbol",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 193,
+      "line": 203,
       "dependency_layer": 0
     },
     {
@@ -34183,7 +34212,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.kodaira_correct",
       "declaration": "VerifiedLcalc.LocalReductionClaim.kodaira_correct",
       "module": "VerifiedLcalc.Verification.StoredInvariants",
-      "line": 334,
+      "line": 335,
       "dependency_layer": 0
     },
     {
@@ -34192,7 +34221,16 @@
       "label": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber",
       "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 191,
+      "line": 201,
+      "dependency_layer": 0
+    },
+    {
+      "id": "lean:VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIShift",
+      "node_type": "lean_declaration",
+      "label": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIShift",
+      "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIShift",
+      "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
+      "line": 211,
       "dependency_layer": 0
     },
     {
@@ -34201,7 +34239,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift",
       "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 197,
+      "line": 207,
       "dependency_layer": 0
     },
     {
@@ -34210,7 +34248,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence",
       "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIVEvidence",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 199,
+      "line": 209,
       "dependency_layer": 0
     },
     {
@@ -34237,7 +34275,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.tamagawa_correct",
       "declaration": "VerifiedLcalc.LocalReductionClaim.tamagawa_correct",
       "module": "VerifiedLcalc.Verification.StoredInvariants",
-      "line": 263,
+      "line": 264,
       "dependency_layer": 0
     },
     {
@@ -34246,7 +34284,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.rootNumber",
       "declaration": "VerifiedLcalc.LocalReductionClaim.rootNumber",
       "module": "VerifiedLcalc.Certificate.Witnesses.InputData",
-      "line": 195,
+      "line": 205,
       "dependency_layer": 0
     },
     {
@@ -34273,7 +34311,7 @@
       "label": "VerifiedLcalc.LocalReductionClaim.rootNumber_correct",
       "declaration": "VerifiedLcalc.LocalReductionClaim.rootNumber_correct",
       "module": "VerifiedLcalc.Verification.StoredInvariants",
-      "line": 295,
+      "line": 296,
       "dependency_layer": 0
     },
     {
@@ -37731,6 +37769,12 @@
       "reason": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber is the typed input claim for this route."
     },
     {
+      "from": "lean:VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIShift",
+      "to": "ec_localdata.tamagawa_number#route:0",
+      "kind": "typed_input",
+      "reason": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIShift is the typed input claim for this route."
+    },
+    {
       "from": "lean:VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift",
       "to": "ec_localdata.tamagawa_number#route:0",
       "kind": "typed_input",
@@ -37765,6 +37809,12 @@
       "to": "ec_localdata.tamagawa_number#route:1",
       "kind": "typed_input",
       "reason": "VerifiedLcalc.LocalReductionClaim.tamagawaNumber is the typed input claim for this route."
+    },
+    {
+      "from": "lean:VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIShift",
+      "to": "ec_localdata.tamagawa_number#route:1",
+      "kind": "typed_input",
+      "reason": "VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIShift is the typed input claim for this route."
     },
     {
       "from": "lean:VerifiedLcalc.LocalReductionClaim.tamagawaTypeIIIShift",

@@ -219,6 +219,12 @@ where the index depends on splitting, a root-count certificate over the
 residue field. TauCeti [#43196](https://github.com/TauCetiProject/TauCeti/pull/43196)
 addresses local and global isogeny formulas.
 
+At tame type II the producer supplies the exact scale-one change and
+the checker tests `isTateTerminal_II` over the original integral equation
+after applying that change. The existing completion transport and
+`tateLocalIndex_II` give the exact factor one. No residue data is needed.
+[Pinned type II local-index formula](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/LocalIndex.lean#L195-L197)
+
 The tame type IV route takes an exact unit-scale change and either a
 residue root or an Euler nonsquare witness at `p > 3`. Its completed
 terminal proof reuses `isTateTerminal_IV` and the local-index root/no-root

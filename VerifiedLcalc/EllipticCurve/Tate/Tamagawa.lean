@@ -257,6 +257,30 @@ private theorem tamagawaNumberAt_eq_tateLocalIndex_of_terminal
   rw [← W.tamagawaNumber_smul V (D.baseChange F), hD, hlocal,
     integralModel_baseChange_self]
 
+/-- A supplied tame type II terminal change gives the intrinsic factor one.
+The displayed scale-one change is checked exactly; this theorem discovers no
+normalization. -/
+theorem tamagawaNumberAt_eq_one_of_typeII_shift (e : WeierstrassCurve ℤ)
+    (p : ℕ) [Fact p.Prime] [(e.baseChange ℚ).IsElliptic]
+    (shift : TamagawaTypeIIShift) (hcheck : checkTameTypeII e p shift = true) :
+    (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = 1 := by
+  have h' : 3 < p ∧ (p : ℤ) ∣ (typeIIChange shift • e).b₂ ∧
+      (p : ℤ) ∣ (typeIIChange shift • e).a₃ ∧
+      (p : ℤ) ∣ (typeIIChange shift • e).a₄ ∧
+      (p : ℤ) ∣ (typeIIChange shift • e).a₆ ∧
+      ¬ (p : ℤ) ^ 2 ∣ (typeIIChange shift • e).a₆ := by
+    simpa [checkTameTypeII] using hcheck
+  have hterminal : (typeIIChange shift • e).IsTateTerminal (p : ℤ) .II := by
+    rw [isTateTerminal_II]
+    exact ⟨h'.2.1, h'.2.2.1, h'.2.2.2.1, h'.2.2.2.2.1, h'.2.2.2.2.2⟩
+  calc
+    (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) =
+        ((typeIIChange shift • e).map
+          (algebraMap ℤ ((rationalPlace p).adicCompletionIntegers ℚ))).tateLocalIndex
+            (p : (rationalPlace p).adicCompletionIntegers ℚ) .II :=
+      tamagawaNumberAt_eq_tateLocalIndex_of_terminal e p (typeIIChange shift) .II hterminal
+    _ = 1 := tateLocalIndex_II
+
 /-- A terminal predicate on an integer equation transfers to the completed
 integer ring when the rational prime remains its uniformizer. -/
 private theorem isTateTerminal_baseChange_int {R : Type*} [CommRing R] [IsDomain R]
@@ -528,7 +552,7 @@ theorem supportsTamagawaOne_correct (e : WeierstrassCurve ℤ) (p : ℕ)
 
 /-- Every non-`none` result of the supported Tamagawa computation is the
 intrinsic local Tamagawa number at the completed place. -/
-theorem tamagawaExpected_correct (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
+private theorem tamagawaExpected_base_correct (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
     [(e.baseChange ℚ).IsElliptic] {shift : Option TamagawaTypeIIIShift}
     {typeIV : Option TamagawaTypeIVEvidence} {value : ℕ}
     (h : tamagawaExpected? e p shift typeIV = some value) :
@@ -575,6 +599,29 @@ theorem tamagawaExpected_correct (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Pr
         · have hsf : supportsTamagawaOne e p = false := Bool.eq_false_of_not_eq_true hs
           have hmf : multiplicativeIndexTwo e p = false := Bool.eq_false_of_not_eq_true hm
           simp [tamagawaExpected?, hsf, hmf] at h
+
+/-- Every supported result, including a supplied tame type II terminal change,
+is the intrinsic local Tamagawa number. -/
+theorem tamagawaExpected_correct (e : WeierstrassCurve ℤ) (p : ℕ) [Fact p.Prime]
+    [(e.baseChange ℚ).IsElliptic] {shift : Option TamagawaTypeIIIShift}
+    {typeIV : Option TamagawaTypeIVEvidence} {typeII : Option TamagawaTypeIIShift}
+    {value : ℕ} (h : tamagawaExpected? e p shift typeIV typeII = some value) :
+    (e.baseChange ℚ).tamagawaNumberAt (rationalPlace p) = value := by
+  cases typeII with
+  | none =>
+    exact tamagawaExpected_base_correct e p (by simpa [tamagawaExpected?] using h)
+  | some shiftII =>
+    cases shift with
+    | some _ => simp [tamagawaExpected?] at h
+    | none =>
+      cases typeIV with
+      | some _ => simp [tamagawaExpected?] at h
+      | none =>
+        by_cases hcheck : checkTameTypeII e p shiftII = true
+        · rw [tamagawaExpected?, hcheck] at h
+          cases h
+          exact tamagawaNumberAt_eq_one_of_typeII_shift e p shiftII hcheck
+        · simp [tamagawaExpected?, hcheck] at h
 
 set_option backward.isDefEq.respectTransparency.types false in
 private theorem integerPlaceValuation_eq (v : HeightOneSpectrum ℤ) (p k : ℕ) (n : ℤ)

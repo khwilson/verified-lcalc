@@ -146,6 +146,19 @@ theorem tamagawa50a1 :
   subst prime value
   exact correct
 
+/-- The imported 107200.dh1 fixture certifies its type II Tamagawa factor at 5. -/
+theorem tamagawa107200dh1 :
+    letI : Fact (Nat.Prime 5) := ⟨by decide +kernel⟩
+    (LMFDB.C107200dh1.curve.baseChange ℚ).tamagawaNumberAt (rationalPlace 5) = 1 := by
+  let fact := LMFDB.C107200dh1.certificate.arithmetic.tamagawa[0]'(by decide +kernel)
+  have hp : fact.prime = ⟨5, by decide +kernel⟩ := Subtype.ext (by decide +kernel)
+  have hv : fact.value = 1 := by decide +kernel
+  obtain ⟨prime, value, correct⟩ := fact
+  change prime = _ at hp
+  change value = 1 at hv
+  subst prime value
+  exact correct
+
 /-- The imported 179.a1 has Kodaira symbol I₁ at 179. -/
 theorem kodaira179 :
     letI : Fact (Nat.Prime 179) := ⟨localPrime179⟩
@@ -299,6 +312,8 @@ private def samples : List Sample :=
       "Intrinsic local type IV factor at 5 with a residue root.", .unconditional, false⟩,
    ⟨"ec_localdata", "tamagawa_number", "50.a1", ``tamagawa50a1,
       "Intrinsic local type IV factor at 5 with nonsplit evidence.", .unconditional, false⟩,
+   ⟨"ec_localdata", "tamagawa_number", "107200.dh1", ``tamagawa107200dh1,
+      "Intrinsic local type II factor at 5.", .unconditional, false⟩,
    ⟨"ec_localdata", "kodaira_symbol", "179.a1", ``kodaira179, "Exact I₁ symbol at 179.",
       .unconditional, false⟩,
    ⟨"ec_localdata", "root_number", "179.a1", ``rootNumber179,
@@ -357,6 +372,8 @@ private def auditSample (sample : Sample) : CommandElabM Json := do
     else if sample.curve == "49.a4" then "tests/fixtures/lmfdb/49.a4-tamagawa.json"
     else if sample.curve == "50.a1" || sample.curve == "50.a3" then
       s!"tests/fixtures/lmfdb/{sample.curve}-tamagawa.json"
+    else if sample.curve == "107200.dh1" then
+      "tests/fixtures/lmfdb/107200.dh1-tamagawa.json"
     else s!"tests/fixtures/lmfdb/{sample.curve}.json"
   let origin := if sample.field == "squarefree_disc" then "computed_from_equation"
     else if sample.field == "analytic_rank" then "certified_numerical_witness"

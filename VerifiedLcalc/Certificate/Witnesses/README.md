@@ -45,6 +45,12 @@ The tame type IV route takes `LocalReductionClaim.tamagawaTypeIVEvidence` as
 unit-scale change and evidence against the derived terminal quadratic; it does
 not search for a change or a residue. A root proves factor three, while a
 verified nonsplit Euler value at an odd prime proves factor one.
+The tame type II route uses `LocalReductionClaim.tamagawaTypeIIShift`, encoded
+as `tamagawa_type_ii` with exact integer `r`, `s`, and `t`. The checker applies
+that supplied scale-one change and checks the exact five terminal conditions;
+TauCeti's type II local-index formula then gives factor one without residue
+evidence or a verifier search. The 107200.dh1 regression projects a pinned
+John Cremona ecdata source row; it is not an LMFDB HTTP capture.
 [Imported 179.a1 consumer](../../../tests/consumers/LmfdbCI.lean).
 
 The certificate-level `LocalReductionClaim.TamagawaSpec`, `KodairaSpec`

@@ -27,7 +27,7 @@ open EllipticCurve NumberField WeierstrassCurve
   rows.attach.filterMap fun row =>
     match hc : row.val.tamagawaNumber,
         hs : tamagawaExpected? curve row.val.prime row.val.tamagawaTypeIIIShift
-          row.val.tamagawaTypeIVEvidence with
+          row.val.tamagawaTypeIVEvidence row.val.tamagawaTypeIIShift with
     | some value, some _ =>
       let proof := h row.val row.property value hc
       some ⟨⟨row.val.prime, Classical.choose proof⟩, value,

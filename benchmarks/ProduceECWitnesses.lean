@@ -135,10 +135,26 @@ private def proposeTorsion (e : WeierstrassCurve ℤ) (hne : e.Δ ≠ 0) (j : Js
     (if present "intrinsic_torsion" && !trivial then ["intrinsic_torsion_inconclusive"] else [])
   return (boundEvidence ++ orderEvidence, obligations)
 
+private def attachTypeIIShift (e : WeierstrassCurve ℤ) (j : Json) : Except String Json := do
+  let row ← CurveDataJson.localReductionClaim j
+  let p := row.prime
+  if p ≤ 3 || row.tamagawaNumber.isNone || row.tamagawaTypeIIShift.isSome ||
+      row.tamagawaTypeIIIShift.isSome || row.tamagawaTypeIVEvidence.isSome ||
+      (tamagawaExpected? e p).isSome then
+    return j
+  let r := (-e.b₂ * Nat.gcdA 12 p) % (p : ℤ)
+  let t := (-(e.a₃ + r * e.a₁) * Nat.gcdA 2 p) % (p : ℤ)
+  let shift : TamagawaTypeIIShift := ⟨r, 0, t⟩
+  if checkTameTypeII e p shift then
+    return j.setObjVal! "tamagawa_type_ii" (Json.mkObj
+      [("r", number r), ("s", number 0), ("t", number t)])
+  return j
+
 private def attachTypeIIIShift (e : WeierstrassCurve ℤ) (j : Json) : Except String Json := do
   let row ← CurveDataJson.localReductionClaim j
   let p := row.prime
-  if p ≤ 3 || row.tamagawaNumber.isNone || row.tamagawaTypeIIIShift.isSome ||
+  if p ≤ 3 || row.tamagawaNumber.isNone || row.tamagawaTypeIIShift.isSome ||
+      row.tamagawaTypeIIIShift.isSome ||
       row.tamagawaTypeIVEvidence.isSome || (tamagawaExpected? e p).isSome then
     return j
   let r := (-e.b₂ * Nat.gcdA 12 p) % (p : ℤ)
@@ -155,7 +171,8 @@ private def typeIVRootSearchLimit : Nat := 10000
 private def attachTypeIVEvidence (e : WeierstrassCurve ℤ) (j : Json) : Except String Json := do
   let row ← CurveDataJson.localReductionClaim j
   let p := row.prime
-  if p ≤ 3 || row.tamagawaNumber.isNone || row.tamagawaTypeIIIShift.isSome ||
+  if p ≤ 3 || row.tamagawaNumber.isNone || row.tamagawaTypeIIShift.isSome ||
+      row.tamagawaTypeIIIShift.isSome ||
       row.tamagawaTypeIVEvidence.isSome || (tamagawaExpected? e p).isSome then
     return j
   let r := (-e.b₂ * Nat.gcdA 12 p) % (p : ℤ)
@@ -186,6 +203,7 @@ private def proposeTamagawa (e : WeierstrassCurve ℤ) (j : Json) :
     Except String (List (String × Json)) := do
   let .ok rows := j.getObjValAs? (Array Json) "local_invariants" | return []
   let updated ← rows.mapM fun row => do
+    let row ← attachTypeIIShift e row
     let row ← attachTypeIIIShift e row
     attachTypeIVEvidence e row
   return if updated == rows then [] else [("local_invariants", .arr updated)]
