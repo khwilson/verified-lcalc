@@ -164,6 +164,7 @@ reviewed LMFDB ordering and base-26 encoding.
 | `squarefree_disc` | `squarefreeDiscriminant` | Equivalence with Mathlib's `Squarefree` on the absolute minimal discriminant, using the checked `minimality`. |
 | `local_invariants` or a top-level local row | `localInvariants` | Checks each supplied prime and any supplied `discriminant_valuation`, `j_denominator_valuation` or `reduction_type` against the minimal equation, using the checked `minimality`. |
 | `tamagawa_number` | `localInvariants` row field `tamagawaNumber` | Exact intrinsic Tamagawa number at a prime of good, multiplicative `I₁` or `I₂`, or tame III/IV with checked terminal evidence. A local test proves minimality at that prime. |
+| `tamagawa_splitting` (evidence extension) | `localInvariants` row field `tamagawaSplitting` | At odd-prime multiplicative `Iₙ`, `n ≥ 3`, supplies either a root of the original node polynomial or an Euler-power witness that its discriminant is nonsquare. The verifier checks the value without root search. |
 | `kodaira_symbol` | `localInvariants` row field `kodairaSymbol` | Canonical TauCeti `Iₙ` equality for good or multiplicative reduction. For additive codes the theorem excludes every `Iₙ`. Requires `minimality`. |
 | `root_number` | `localInvariants` row field `rootNumber` | Arithmetic local sign at the row's prime. Requires checked `minimality` and `local_data`. |
 | `ap` / `aplist` | `primeCoefficients` | Actual `LFunction p` coefficients with proved sufficient local minimality checks. |
@@ -336,7 +337,13 @@ level. The reduction codes are 0 for additive, 1 for split multiplicative, and �
 multiplicative reduction. Certificates cover each supplied row individually.
 
 `tamagawa_number` verifies one at good or `I₁` reduction and two at `I₂`
-reduction. Both splitting cases at `I₂` have local index two. For a rational prime p > 3, a
+reduction. Both splitting cases at `I₂` have local index two. At an odd prime,
+multiplicative `Iₙ` for `n ≥ 3` requires the optional `tamagawa_splitting`
+extension in that row: `{"root": x}` checks an explicit root of the original
+model's node polynomial, and `{"nonsplit_euler_power": p-1}` checks Euler's
+criterion for the nonsquare node discriminant. The verifier never searches
+for a root. It proves factor `n` for split reduction and `gcd(2,n)` for
+nonsplit reduction. Higher indices at `p = 2` remain unsupported. For a rational prime p > 3, a
 `tamagawa_type_iii` object in the same local row supplies the exact integers
 `r`, `s`, and `t` of a change of variables with scale 1. The producer proposes
 these coordinates. The checker applies the submitted change to the original

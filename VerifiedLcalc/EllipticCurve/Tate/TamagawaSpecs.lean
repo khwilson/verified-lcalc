@@ -6,8 +6,10 @@ Authors: Kevin Wilson
 module
 
 public import Mathlib.AlgebraicGeometry.EllipticCurve.VariableChange
-public import Mathlib.Data.ZMod.Basic
+import Mathlib.Data.Nat.PadicValNat
+import Mathlib.Data.ZMod.Basic
 public import VerifiedLcalc.Certificate.Witnesses.InputData
+public import VerifiedLcalc.EllipticCurve.BadPrimeCore
 
 /-! # Executable support conditions for intrinsic local Tamagawa factors -/
 
@@ -31,6 +33,25 @@ def typeIIIChange (shift : TamagawaTypeIIIShift) : WeierstrassCurve.VariableChan
 /-- Interpret the submitted type IV coordinates as a unit-scale translation. -/
 def typeIVChange (evidence : TamagawaTypeIVEvidence) : WeierstrassCurve.VariableChange ℤ :=
   ⟨1, evidence.r, evidence.s, evidence.t⟩
+
+/-- Check supplied splitting evidence for the original multiplicative node polynomial. -/
+def checkTamagawaSplitting (e : WeierstrassCurve ℤ) (p : ℕ)
+    (evidence : TamagawaSplittingEvidence) : Bool :=
+  match evidence with
+  | .root value => decide (2 < p ∧ value < p ∧
+      nodeValue e value % (p : ℤ) = 0)
+  | .nonsplitEulerPower value =>
+    let nodeDiscriminant : ZMod p := (-(e.c₄ * e.c₆) : ℤ)
+    decide (2 < p ∧ value + 1 = p ∧
+      nodeDiscriminant ^ ((p - 1) / 2) = -1)
+
+/-- The factor determined by supplied splitting evidence and the discriminant index. -/
+def multiplicativeTamagawaFactor (e : WeierstrassCurve ℤ) (p : ℕ)
+    (evidence : TamagawaSplittingEvidence) : ℕ :=
+  let index := padicValNat p e.Δ.natAbs
+  match evidence with
+  | .root _ => index
+  | .nonsplitEulerPower _ => Nat.gcd 2 index
 
 /-- The level-one residue quadratic attached to a submitted terminal model. -/
 def typeIVResiduePolynomial (model : WeierstrassCurve ℤ) (p : ℕ) (y : ZMod p) : ZMod p :=
@@ -60,14 +81,21 @@ def checkTameTypeIV (e : WeierstrassCurve ℤ) (p : ℕ)
 /-- Check the supported Tamagawa route for the supplied evidence, if any. -/
 def tamagawaExpected? (e : WeierstrassCurve ℤ) (p : ℕ)
     (shift : Option TamagawaTypeIIIShift := none)
-    (typeIV : Option TamagawaTypeIVEvidence := none) : Option ℕ :=
-  match shift, typeIV with
-  | some _, some _ => none
-  | some change, none => if checkTameTypeIII e p change then some 2 else none
-  | none, some evidence => if checkTameTypeIV e p evidence then
+    (typeIV : Option TamagawaTypeIVEvidence := none)
+    (splitting : Option TamagawaSplittingEvidence := none) : Option ℕ :=
+  match shift, typeIV, splitting with
+  | some _, some _, _ | some _, _, some _ | _, some _, some _ => none
+  | some change, none, none => if checkTameTypeIII e p change then some 2 else none
+  | none, some evidence, none => if checkTameTypeIV e p evidence then
       some (match evidence.residue with | .root _ => 3 | .nonsplitEulerPower _ => 1)
     else none
-  | none, none =>
+  | none, none, some evidence =>
+    if supportsTamagawaOne e p || multiplicativeIndexTwo e p then none
+    else if (p : ℤ) ∣ e.c₄ then none
+    else if checkTamagawaSplitting e p evidence then
+      some (multiplicativeTamagawaFactor e p evidence)
+    else none
+  | none, none, none =>
     if supportsTamagawaOne e p then some 1
     else if multiplicativeIndexTwo e p then some 2
     else none

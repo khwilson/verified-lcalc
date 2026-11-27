@@ -1,0 +1,45 @@
+{
+  "tables": ["ec_curvedata", "ec_localdata"],
+  "labels": ["26.b1", "26.b1"],
+  "label_cols": ["lmfdb_label", "lmfdb_label"],
+  "totals": [1, 2],
+  "data": [
+    [
+      {
+        "lmfdb_label": "26.b1",
+        "lmfdb_iso": "26.b",
+        "ainvs": [1, -1, 1, -213, -1257],
+        "conductor": 26,
+        "bad_primes": [2, 13],
+        "signD": -1,
+        "absD": 125497034
+      }
+    ],
+    [
+      {
+        "lmfdb_label": "26.b1",
+        "conductor": 26,
+        "prime": 2,
+        "tamagawa_number": 1,
+        "kodaira_symbol": 5,
+        "reduction_type": 1,
+        "root_number": -1,
+        "conductor_valuation": 1,
+        "discriminant_valuation": 1,
+        "j_denominator_valuation": 1
+      },
+      {
+        "lmfdb_label": "26.b1",
+        "conductor": 26,
+        "prime": 13,
+        "tamagawa_number": 1,
+        "kodaira_symbol": 11,
+        "reduction_type": -1,
+        "root_number": 1,
+        "conductor_valuation": 1,
+        "discriminant_valuation": 7,
+        "j_denominator_valuation": 7
+      }
+    ]
+  ]
+}

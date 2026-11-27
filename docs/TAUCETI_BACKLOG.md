@@ -197,15 +197,19 @@ compares it with `tateLocalIndex` on a checked terminal model. Good reduction
 and `I₁` both contribute one. For `I₂`, both terminal index formulas give
 two, which the rational checker now verifies. At higher multiplicative
 indices, the terminal comparison gives `n` in the split case and `gcd(2,n)`
-in the nonsplit case. The rational witness adapter still needs to transport its verified splitting
-through the residue-field identification and then through the normalized
-terminal model. For specific additive factors, connect finite row evidence
+in the nonsplit case. The rational witness adapter now accepts a submitted
+root of the original model's node polynomial or an Euler witness for its
+nonsquare discriminant at odd primes. It checks that evidence and transports
+the split predicate through the residue-field identification and normalized
+terminal model; it does not search for roots. Higher indices at `p = 2` remain
+outside the implemented route. For specific additive factors, connect finite row evidence
 to the relevant `IsTateTerminal` and residue-polynomial hypotheses.
 The full family-by-family payload, exact pinned formulas, and implemented
 versus planned boundary are tracked in the
 [L2 evidence-production roadmap](roadmaps/LMFDB_Q_CERTIFICATION.md#l2-exact-evidence-production).
 [Terminal comparison](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/Tamagawa/Local.lean#L144-L162)
 · [Split and nonsplit indices](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/TateAlgorithm/LocalIndex.lean#L469-L486)
+· [Node-polynomial discriminant criterion](https://github.com/TauCetiProject/TauCeti/blob/e0e414ce57522ba17560057ad0d7f2edab91bf0c/TauCeti/AlgebraicGeometry/EllipticCurve/NodePolynomial.lean#L195-L212)
 
 For tame type III, the producer proposes a unit-scale change at rational
 primes `p > 3`. The checker takes its exact submitted coordinates and tests

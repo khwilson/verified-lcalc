@@ -45,6 +45,15 @@ The tame type IV route takes `LocalReductionClaim.tamagawaTypeIVEvidence` as
 unit-scale change and evidence against the derived terminal quadratic; it does
 not search for a change or a residue. A root proves factor three, while a
 verified nonsplit Euler value at an odd prime proves factor one.
+At odd multiplicative primes with index at least three, a local row may also
+carry `tamagawa_splitting`. Exactly one tagged value is accepted:
+`{"root": x}` supplies a checked root of the original model's node polynomial
+in `ZMod p`, and `{"nonsplit_euler_power": p-1}` supplies Euler's criterion
+for the nonsquare node discriminant. The checker verifies the supplied value
+and never searches the residue field. This evidence is required for those
+indices; I₁/I₂ remain evidence-free, and higher indices at p=2 are unsupported.
+The producer's positive-root search is bounded, but a submitted verifier root
+may be any value below p.
 [Imported 179.a1 consumer](../../../tests/consumers/LmfdbCI.lean).
 
 The certificate-level `LocalReductionClaim.TamagawaSpec`, `KodairaSpec`
