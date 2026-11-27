@@ -54,7 +54,8 @@ test-lean:
 
 .PHONY: test-lmfdb-ci
 test-lmfdb-ci:
-	lake -f lakefile.certificates.lean build CertifiedCurves.Json VerifiedLcalcTests.Fixtures.LmfdbCI
+	lake -f lakefile.certificates.lean build CertifiedCurves.Json VerifiedLcalcTests.Fixtures.LmfdbCI \
+		VerifiedLcalcTests.Fixtures.TraceHash
 	lake -f lakefile.certificates.lean env lean tests/consumers/LmfdbCI.lean
 	python3 scripts/check_fixture_coverage.py
 	python3 scripts/check_lmfdb_dependency_contracts.py

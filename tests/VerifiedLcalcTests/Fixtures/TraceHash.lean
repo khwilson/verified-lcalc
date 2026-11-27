@@ -6,11 +6,14 @@ Authors: Kevin Wilson
 module
 
 public import VerifiedLcalc.Tactic.CertifyEC
+import VerifiedLcalc.EllipticCurve.SparsePointCount
 
 /-! # The published 37.a1 trace-hash report and its full coefficient vector
 
-The arithmetic sum is checked against the native report. The test supplies the
-vector's mathematical equality as an explicit premise to exercise the proof attachment.
+Each finite point order isolates one Hasse count. The verified full vector is
+supplied to the arithmetic checker for the native class report at
+https://www.lmfdb.org/EllipticCurve/Q/data/37.a1?_format=json.
+The proof identifies the coefficients of the displayed 37.a1 equation.
 -/
 
 @[expose] public section
@@ -54,31 +57,62 @@ def coefficients : List ℤ :=
   -114, -96, -3, 15, 7, -94, 62, -8, 0, -82, -69, 122, -94, -133, -49, 16,
   4, 174, 126, 24, 118, -23, 128, -24, -108, -58, 44, -163, 33, 66, -100, -102]
 
-/-- The vector agrees with the actual arithmetic coefficients, as a test premise. -/
-class FullCoefficients (W : outParam (WeierstrassCurve ℚ)) : Prop where
-  /-- The arithmetic statement is about 37.a1. -/
-  subject : W = curve.baseChange ℚ
-  /-- Exact equality at every prescribed prime. -/
-  correct : coefficients = lmfdbTraceHashPrimes.map (fun p => W.LFunction p)
+private def exceptions : List (ℕ × (ℕ × ℕ)) :=
+  [(4483, (4, 3679)), (4591, (3, 3413)), (4943, (3, 2673)), (5099, (16, 2565)),
+   (5153, (3, 3724)), (5381, (4, 2754)), (5477, (8, 4517)), (5521, (3, 4327)),
+   (5569, (5, 3996)), (6067, (3, 5736)), (6211, (7, 3195)), (6229, (5, 6005)),
+   (6329, (3, 4294)), (6553, (3, 3875)), (6659, (5, 5772)), (7757, (3, 7325))]
+
+private def witnessPoint (p : ℕ) : ℕ × ℕ :=
+  ((exceptions.find? fun row => row.1 == p).map Prod.snd).getD (0, 0)
+
+private abbrev TracePrime := {p // p ∈ lmfdbTraceHashPrimes}
+
+private theorem tracePrime_isPrime (p : TracePrime) : p.val.Prime := by
+  rcases p with ⟨p, hp⟩
+  change p.Prime
+  rw [lmfdbTraceHashPrimes_eq] at hp
+  exact of_decide_eq_true (List.mem_filter.mp hp).2
+
+private def rows : List (TracePrime × ℤ) :=
+  lmfdbTraceHashPrimes.attach.zip coefficients
+
+private def checkRow (row : TracePrime × ℤ) : Bool :=
+  letI : Fact row.1.val.Prime := ⟨tracePrime_isPrime row.1⟩
+  let point := witnessPoint row.1.val
+  pointOrderTraceCheck curve row.1.val point.1 point.2 row.2
+
+set_option maxRecDepth 20000 in
+set_option maxHeartbeats 0 in
+-- The kernel verifies 464 exact point orders and Hasse isolations in one list traversal.
+private theorem allRowsChecked : rows.all checkRow = true := by decide +kernel
 
 instance : (curve.baseChange ℚ).IsElliptic :=
   ⟨isUnit_iff_ne_zero.mpr (by decide +kernel)⟩
 
-/-- Supply the test's independently parameterized coefficient premise. -/
-def proofs {W : WeierstrassCurve ℚ} (h : FullCoefficients W) : IntegralCurveProofs curve :=
-  { traceHashCoefficients := some ⟨coefficients, by
-      rw [← h.subject]
-      exact h.correct⟩ }
+/-- The full reported vector is the arithmetic coefficient vector of 37.a1. -/
+theorem coefficients_correct :
+    coefficients = lmfdbTraceHashPrimes.map (fun p => (curve.baseChange ℚ).LFunction p) := by
+  have hlength : lmfdbTraceHashPrimes.attach.length = coefficients.length :=
+    List.length_attach.trans (lmfdbTraceHashWeights_length.symm.trans (by decide +kernel))
+  have hfirst : rows.map Prod.fst = lmfdbTraceHashPrimes.attach := List.map_fst_zip hlength.le
+  have hprimes : rows.map (fun row => row.1.val) = lmfdbTraceHashPrimes := by
+    rw [show (fun row : TracePrime × ℤ => row.1.val) = Subtype.val ∘ Prod.fst from rfl,
+      ← List.map_map, hfirst, List.attach_map_subtype_val]
+  have hsecond : rows.map Prod.snd = coefficients := List.map_snd_zip hlength.ge
+  rw [← hprimes, ← hsecond, List.map_map]
+  apply List.map_congr_left
+  intro row hrow
+  let : Fact row.1.val.Prime := ⟨tracePrime_isPrime row.1⟩
+  let point := witnessPoint row.1.val
+  exact (pointOrderTraceCheck_sound curve row.1.val point.1 point.2 row.2 (by decide +kernel)
+    (List.all_eq_true.mp allRowsChecked row hrow)).symm
 
-section
+/-- Supply the checked complete native coefficient vector. -/
+def proofs : IntegralCurveProofs curve :=
+  { traceHashCoefficients := some ⟨coefficients, coefficients_correct⟩ }
 
-variable {W : WeierstrassCurve ℚ} [h : FullCoefficients W]
-
-certify_ec Checked from_json_string
-  r#"{"ainvs":[0,0,1,-1,0],"trace_hash":1127515239490717889,"conductor":37,
-    "minimality":[37],"local_data":{"at_two":null,"at_three":null}}"#
-  with_proofs (proofs h)
-
-end
+certify_ec Checked from_json "../../fixtures/lmfdb/37.a1-trace-hash-source.json"
+  with_proofs proofs
 
 end VerifiedLcalcTests.TraceHash37
