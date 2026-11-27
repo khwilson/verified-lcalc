@@ -247,7 +247,7 @@ def localReductionClaim (j : Json) : Except String LocalReductionClaim := do
     | none, some power => do
       keys value ["nonsplit_euler_power"]
       return TamagawaSplittingEvidence.nonsplitEulerPower (← nonnegativeInteger power)
-    | _, _ => throw "Multiplicative Tamagawa evidence needs exactly one root or nonsplit Euler power"
+    | _, _ => throw "Tamagawa splitting needs exactly one root or nonsplit Euler power"
   return {
     prime, discriminantValuation, conductorValuation, jDenominatorValuation
     reductionType, kodairaSymbol, tamagawaNumber, rootNumber, tamagawaTypeIIIShift,

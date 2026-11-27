@@ -292,7 +292,7 @@ example : OtherAdditive98a5.certificate.arithmetic.tamagawa.isEmpty = true := by
   decide +kernel
 
 /--
-info: TamagawaOutsideScope: Tamagawa claims outside good, I₁, I₂ or supported tame III/IV reduction are unverified.
+info: TamagawaOutsideScope: Some Tamagawa factors lack supported evidence.
 ---
 info: Certified TamagawaOutsideScope.ap_correct and TamagawaOutsideScope.point_integral
 for the supplied lists
